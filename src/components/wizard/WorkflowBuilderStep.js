@@ -6,9 +6,11 @@ import useSetupWizardStore from '@/stores/setupWizardStore';
 import ComponentPalette from './ComponentPalette';
 import WorkflowCanvas from './WorkflowCanvas';
 import LinePreview from './LinePreview';
+import ConfigPanel from './ConfigPanel';
 
 export default function WorkflowBuilderStep() {
   const [showPreview, setShowPreview] = useState(false);
+  const [configComponentId, setConfigComponentId] = useState(null);
 
   const workflowComponents = useSetupWizardStore((state) => state.workflowComponents);
   const addWorkflowComponent = useSetupWizardStore((state) => state.addWorkflowComponent);
@@ -47,7 +49,9 @@ export default function WorkflowBuilderStep() {
         };
         break;
       case 'booking-menu':
-        defaultConfig = {}; // No config needed
+        defaultConfig = {
+          options: ['View My Bookings', 'Make New Booking']
+        };
         break;
       case 'service-list':
         defaultConfig = {
@@ -77,8 +81,7 @@ export default function WorkflowBuilderStep() {
 
   const handleConfigure = (componentId) => {
     setSelectedComponentId(componentId);
-    // TODO: Open configuration panel
-    alert('Configuration panel coming next!');
+    setConfigComponentId(componentId);
   };
 
   return (
@@ -182,6 +185,14 @@ export default function WorkflowBuilderStep() {
           </div>
         </div>
       </div>
+
+      {/* Configuration Panel */}
+      {configComponentId && (
+        <ConfigPanel
+          componentId={configComponentId}
+          onClose={() => setConfigComponentId(null)}
+        />
+      )}
     </div>
   );
 }

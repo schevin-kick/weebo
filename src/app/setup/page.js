@@ -7,6 +7,7 @@ import StepNavigation from '@/components/wizard/StepNavigation';
 import BusinessInfoStep from '@/components/wizard/BusinessInfoStep';
 import ServicesStep from '@/components/wizard/ServicesStep';
 import WorkflowBuilderStep from '@/components/wizard/WorkflowBuilderStep';
+import FallingSakura from '@/components/background/FallingSakura';
 
 export default function SetupWizardPage() {
   const currentStep = useSetupWizardStore((state) => state.currentStep);
@@ -44,7 +45,11 @@ export default function SetupWizardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws">
+    <>
+      {/* Falling Sakura Animation */}
+      <FallingSakura />
+
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -66,7 +71,7 @@ export default function SetupWizardPage() {
       <WizardStepper currentStep={currentStep} />
 
       {/* Main content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+      <main className={`mx-auto px-4 sm:px-6 lg:px-8 pb-32 ${currentStep === 3 ? 'max-w-[1600px]' : 'max-w-7xl'}`}>
         {currentStep === 1 && <BusinessInfoStep />}
         {currentStep === 2 && <ServicesStep />}
         {currentStep === 3 && <WorkflowBuilderStep />}
@@ -82,5 +87,6 @@ export default function SetupWizardPage() {
         isLastStep={currentStep === 3}
       />
     </div>
+    </>
   );
 }

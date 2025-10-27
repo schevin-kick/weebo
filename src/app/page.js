@@ -1,8 +1,13 @@
 import Link from "next/link";
+import FallingSakura from '@/components/background/FallingSakura';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws flex items-center justify-center p-4">
+    <>
+      {/* Falling Sakura Animation */}
+      <FallingSakura />
+
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws flex items-center justify-center p-4">
       <main className="max-w-2xl w-full">
         <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
           {/* Header */}
@@ -67,5 +72,6 @@ export default function Home() {
         </div>
       </main>
     </div>
+    </>
   );
 }

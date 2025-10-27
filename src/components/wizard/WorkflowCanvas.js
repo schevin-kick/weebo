@@ -49,7 +49,12 @@ function ComponentPreview({ component }) {
         </p>
       );
     case 'booking-menu':
-      return <p className="text-sm text-slate-500 italic">Pre-configured</p>;
+      const optionCount = config?.options?.length || 2;
+      return (
+        <p className="text-sm text-slate-600">
+          {optionCount} option{optionCount !== 1 ? 's' : ''}
+        </p>
+      );
     case 'service-list':
       return (
         <p className="text-sm text-slate-600">

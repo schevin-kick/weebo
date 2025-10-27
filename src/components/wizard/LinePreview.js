@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { Send, RotateCcw } from 'lucide-react';
+import useSetupWizardStore from '@/stores/setupWizardStore';
 
 export default function LinePreview({ components, businessName = 'Your Business' }) {
+  const services = useSetupWizardStore((state) => state.services);
   const [conversation, setConversation] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [userInput, setUserInput] = useState('');
@@ -38,19 +40,31 @@ export default function LinePreview({ components, businessName = 'Your Business'
         break;
 
       case 'booking-menu':
+        const menuOptions = component.config?.options || ['View My Bookings', 'Make New Booking'];
         newMessages.push({
           type: 'bot',
           content: 'What would you like to do?',
-          quickReplies: ['View My Bookings', 'Make New Booking'],
+          quickReplies: menuOptions.filter(opt => opt.trim() !== ''),
           timestamp: new Date(),
         });
         break;
 
       case 'service-list':
+        const serviceData = services.length > 0
+          ? services.map(s => ({
+              name: s.name,
+              price: s.price,
+              duration: s.duration,
+              description: s.description
+            }))
+          : null;
+
         newMessages.push({
           type: 'bot',
-          content: 'Please choose a service:',
-          services: ['Service 1', 'Service 2', 'Service 3'],
+          content: services.length > 0 ? 'Please choose a service:' : 'Please add services in Step 2 first',
+          serviceData: serviceData,
+          displayStyle: component.config?.displayStyle || 'carousel',
+          showPricing: component.config?.showPricing !== false,
           timestamp: new Date(),
         });
         break;
@@ -115,7 +129,7 @@ export default function LinePreview({ components, businessName = 'Your Business'
           <span className="text-xl">🦊</span>
         </div>
         <div className="flex-1">
-          <div className="font-semibold">@kitsunebook</div>
+          <div className="font-semibold">@kitsunebooking</div>
           <div className="text-xs text-green-100">LINE Official Account</div>
         </div>
       </div>
@@ -147,16 +161,69 @@ export default function LinePreview({ components, businessName = 'Your Business'
                   <p className="text-sm leading-relaxed">{message.content}</p>
 
                   {/* Services display */}
-                  {message.services && (
-                    <div className="mt-2 space-y-1">
-                      {message.services.map((service, idx) => (
-                        <div
-                          key={idx}
-                          className="text-xs bg-slate-50 px-3 py-2 rounded-lg border border-slate-200"
-                        >
-                          {service}
+                  {message.serviceData && (
+                    <div className={`mt-3 ${message.displayStyle === 'carousel' ? 'overflow-x-auto' : 'space-y-2'}`}>
+                      {message.displayStyle === 'carousel' ? (
+                        <div className="flex gap-2 pb-2">
+                          {message.serviceData.map((service, idx) => (
+                            <div
+                              key={idx}
+                              className="flex-shrink-0 w-48 bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-3"
+                            >
+                              <div className="font-semibold text-slate-900 text-sm mb-1">
+                                {service.name}
+                              </div>
+                              {service.description && (
+                                <p className="text-xs text-slate-600 mb-2 line-clamp-2">
+                                  {service.description}
+                                </p>
+                              )}
+                              <div className="flex items-center justify-between text-xs">
+                                {message.showPricing && service.price && (
+                                  <span className="font-medium text-orange-600">
+                                    ${service.price}
+                                  </span>
+                                )}
+                                {service.duration && (
+                                  <span className="text-slate-500">
+                                    {service.duration} min
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      ) : (
+                        <div className="space-y-2">
+                          {message.serviceData.map((service, idx) => (
+                            <div
+                              key={idx}
+                              className="bg-slate-50 border border-slate-200 rounded-lg p-3"
+                            >
+                              <div className="font-semibold text-slate-900 text-sm mb-1">
+                                {service.name}
+                              </div>
+                              {service.description && (
+                                <p className="text-xs text-slate-600 mb-2">
+                                  {service.description}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-3 text-xs">
+                                {message.showPricing && service.price && (
+                                  <span className="font-medium text-orange-600">
+                                    ${service.price}
+                                  </span>
+                                )}
+                                {service.duration && (
+                                  <span className="text-slate-500">
+                                    {service.duration} min
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

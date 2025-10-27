@@ -218,7 +218,7 @@ const useSetupWizardStore = create(
                 component.config?.dataType
               );
             case 'booking-menu':
-              return true; // No config required
+              return component.config?.options?.some(opt => opt.trim() !== '');
             case 'service-list':
               return component.config?.displayStyle;
             case 'staff-selector':
