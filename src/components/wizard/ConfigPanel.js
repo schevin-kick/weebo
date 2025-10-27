@@ -45,27 +45,6 @@ export default function ConfigPanel({ componentId, onClose }) {
 
   const renderConfigForm = () => {
     switch (component.type) {
-      case 'greeting':
-        return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Greeting Message
-              </label>
-              <textarea
-                value={config.message || ''}
-                onChange={(e) => setConfig({ ...config, message: e.target.value })}
-                placeholder={`Welcome to ${businessName}! How can we help you today?`}
-                rows={4}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                Use {'{business_name}'} to insert your business name
-              </p>
-            </div>
-          </div>
-        );
-
       case 'user-input':
         return (
           <div className="space-y-4">
@@ -134,6 +113,25 @@ export default function ConfigPanel({ componentId, onClose }) {
 
         return (
           <div className="space-y-4">
+            {/* Question Text */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Question Text
+              </label>
+              <input
+                type="text"
+                value={config.questionText || 'What would you like to do?'}
+                onChange={(e) => setConfig({ ...config, questionText: e.target.value })}
+                placeholder="What would you like to do?"
+                maxLength={100}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <p className="text-xs text-slate-500 mt-1">
+                The question shown before menu options (max 100 characters)
+              </p>
+            </div>
+
+            {/* Menu Options */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Menu Options

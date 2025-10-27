@@ -17,7 +17,10 @@ export default function SetupWizardPage() {
 
   // Subscribe to the actual state values that affect validation
   const businessName = useSetupWizardStore((state) => state.businessName);
+  const welcomeMessage = useSetupWizardStore((state) => state.welcomeMessage);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
+  const contactInfo = useSetupWizardStore((state) => state.contactInfo);
+  const richMenu = useSetupWizardStore((state) => state.richMenu);
   const services = useSetupWizardStore((state) => state.services);
   const staff = useSetupWizardStore((state) => state.staff);
   const workflowComponents = useSetupWizardStore((state) => state.workflowComponents);
@@ -34,7 +37,8 @@ export default function SetupWizardPage() {
   };
 
   // Calculate validation based on current step
-  const canProceed = () => {
+  // We call the validation functions directly to ensure they run with latest state
+  const canProceed = (() => {
     switch (currentStep) {
       case 1:
         return isStep1Valid();
@@ -47,7 +51,7 @@ export default function SetupWizardPage() {
       default:
         return false;
     }
-  };
+  })();
 
   return (
     <>
@@ -89,7 +93,7 @@ export default function SetupWizardPage() {
         onPrev={prevStep}
         onNext={nextStep}
         onSave={handleSave}
-        canProceed={canProceed()}
+        canProceed={canProceed}
         isLastStep={currentStep === 4}
       />
     </div>

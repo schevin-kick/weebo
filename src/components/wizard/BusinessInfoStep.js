@@ -3,25 +3,39 @@
 import { Store, Info } from 'lucide-react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import BusinessHoursPicker from '@/components/shared/BusinessHoursPicker';
+import RichMenuPicker from '@/components/shared/RichMenuPicker';
 
 export default function BusinessInfoStep() {
   const businessName = useSetupWizardStore((state) => state.businessName);
+  const welcomeMessage = useSetupWizardStore((state) => state.welcomeMessage);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
   const appointmentOnly = useSetupWizardStore((state) => state.appointmentOnly);
+  const richMenu = useSetupWizardStore((state) => state.richMenu);
+  const contactInfo = useSetupWizardStore((state) => state.contactInfo);
   const isStep1Valid = useSetupWizardStore((state) => state.isStep1Valid);
 
   const setBusinessName = useSetupWizardStore((state) => state.setBusinessName);
+  const setWelcomeMessage = useSetupWizardStore((state) => state.setWelcomeMessage);
+  const updateContactInfo = useSetupWizardStore((state) => state.updateContactInfo);
   const setBusinessHoursMode = useSetupWizardStore(
     (state) => state.setBusinessHoursMode
   );
   const setSameDailyHours = useSetupWizardStore((state) => state.setSameDailyHours);
   const setCustomDayHours = useSetupWizardStore((state) => state.setCustomDayHours);
   const setAppointmentOnly = useSetupWizardStore((state) => state.setAppointmentOnly);
+  const setRichMenuEnabled = useSetupWizardStore((state) => state.setRichMenuEnabled);
+  const updateRichMenuItem = useSetupWizardStore((state) => state.updateRichMenuItem);
+  const moveRichMenuItemUp = useSetupWizardStore((state) => state.moveRichMenuItemUp);
+  const moveRichMenuItemDown = useSetupWizardStore((state) => state.moveRichMenuItemDown);
 
   // Debug validation
   console.log('Step 1 Validation:', {
     businessName,
     businessNameLength: businessName?.length,
+    welcomeMessage,
+    welcomeMessageLength: welcomeMessage?.length,
+    contactInfo,
+    richMenu: richMenu.items.map(item => ({ type: item.type, enabled: item.enabled })),
     businessHours,
     isValid: isStep1Valid(),
   });
@@ -69,6 +83,32 @@ export default function BusinessInfoStep() {
             )}
           </div>
 
+          {/* Welcome Message */}
+          <div>
+            <label
+              htmlFor="welcome-message"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
+              Welcome Message <span className="text-orange-500">*</span>
+            </label>
+            <textarea
+              id="welcome-message"
+              value={welcomeMessage}
+              onChange={(e) => setWelcomeMessage(e.target.value)}
+              placeholder="Welcome to {business_name}! I'm here to help you book appointments."
+              rows={3}
+              className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            />
+            <p className="text-xs text-slate-500 mt-1">
+              This message appears when customers first add your bot. Use {'{business_name}'} as a placeholder for your business name.
+            </p>
+            {welcomeMessage && welcomeMessage.trim().length === 0 && (
+              <p className="text-sm text-orange-600 mt-2">
+                Welcome message is required
+              </p>
+            )}
+          </div>
+
           {/* Business Hours */}
           <BusinessHoursPicker
             mode={businessHours.mode}
@@ -100,6 +140,100 @@ export default function BusinessInfoStep() {
             </label>
           </div>
 
+          {/* Rich Menu Configuration */}
+          <div className="bg-white border border-slate-200 rounded-xl p-6">
+            <RichMenuPicker
+              enabled={richMenu.enabled}
+              items={richMenu.items}
+              onEnabledChange={setRichMenuEnabled}
+              onItemUpdate={updateRichMenuItem}
+              onItemMoveUp={moveRichMenuItemUp}
+              onItemMoveDown={moveRichMenuItemDown}
+            />
+          </div>
+
+          {/* Contact Information */}
+          <div className="bg-white border border-slate-200 rounded-xl p-6">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Contact Information
+                </label>
+                <p className="text-xs text-slate-500 mb-4">
+                  Required if &quot;Contact Us&quot; is enabled in Rich Menu. At least one field must be filled.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
+                    Phone Number
+                  </label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    value={contactInfo.phone}
+                    onChange={(e) => updateContactInfo({ phone: e.target.value })}
+                    placeholder="+66 12 345 6789"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={contactInfo.email}
+                    onChange={(e) => updateContactInfo({ email: e.target.value })}
+                    placeholder="hello@business.com"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="address" className="block text-sm font-medium text-slate-700 mb-1">
+                    Physical Address
+                  </label>
+                  <input
+                    id="address"
+                    type="text"
+                    value={contactInfo.address}
+                    onChange={(e) => updateContactInfo({ address: e.target.value })}
+                    placeholder="123 Main Street, Bangkok"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="website" className="block text-sm font-medium text-slate-700 mb-1">
+                    Website or Social Media
+                  </label>
+                  <input
+                    id="website"
+                    type="url"
+                    value={contactInfo.website}
+                    onChange={(e) => updateContactInfo({ website: e.target.value })}
+                    placeholder="https://facebook.com/yourbusiness"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  />
+                </div>
+              </div>
+
+              {/* Validation warning */}
+              {richMenu.items.some(item => item.type === 'contact-us' && item.enabled) &&
+               !Object.values(contactInfo).some(value => value && value.trim().length > 0) && (
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                  <p className="text-sm text-orange-700">
+                    <strong>Required:</strong> At least one contact method must be provided when &quot;Contact Us&quot; is enabled in Rich Menu.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Info box */}
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
             <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -129,11 +263,18 @@ export default function BusinessInfoStep() {
                 {(!businessName || businessName.length < 3) && (
                   <li>• Enter a business name (at least 3 characters)</li>
                 )}
+                {(!welcomeMessage || welcomeMessage.trim().length === 0) && (
+                  <li>• Enter a welcome message</li>
+                )}
                 {businessHours.mode === 'same-daily' && businessHours.sameDaily.open >= businessHours.sameDaily.close && (
                   <li>• Opening time must be before closing time</li>
                 )}
                 {businessHours.mode === 'custom' && !Object.values(businessHours.custom).some(day => !day.closed && day.open < day.close) && (
                   <li>• At least one day must be open with valid hours</li>
+                )}
+                {richMenu.items.some(item => item.type === 'contact-us' && item.enabled) &&
+                 !Object.values(contactInfo).some(value => value && value.trim().length > 0) && (
+                  <li>• Add at least one contact method (Contact Us is enabled)</li>
                 )}
               </ul>
             </div>

@@ -15,13 +15,33 @@ const initialBusinessHours = {
   },
 };
 
+const initialRichMenu = {
+  enabled: true,
+  items: [
+    { id: 1, type: 'view-bookings', label: 'View Bookings', enabled: true, order: 0 },
+    { id: 2, type: 'new-booking', label: 'New Booking', enabled: true, order: 1 },
+    { id: 3, type: 'business-hours', label: 'Business Hours', enabled: false, order: 2 },
+    { id: 4, type: 'contact-us', label: 'Contact Us', enabled: false, order: 3 },
+  ],
+};
+
+const initialContactInfo = {
+  phone: '',
+  email: '',
+  address: '',
+  website: '',
+};
+
 const useSetupWizardStore = create(
   persist(
     (set, get) => ({
       // Step 1: Business Info
       businessName: '',
+      welcomeMessage: 'Welcome to {business_name}! I\'m here to help you book appointments.',
       businessHours: initialBusinessHours,
       appointmentOnly: false,
+      richMenu: initialRichMenu,
+      contactInfo: initialContactInfo,
 
       // Step 2: Services
       services: [],
@@ -38,6 +58,13 @@ const useSetupWizardStore = create(
 
       // Actions
       setBusinessName: (name) => set({ businessName: name }),
+
+      setWelcomeMessage: (message) => set({ welcomeMessage: message }),
+
+      updateContactInfo: (updates) =>
+        set((state) => ({
+          contactInfo: { ...state.contactInfo, ...updates },
+        })),
 
       setBusinessHoursMode: (mode) =>
         set((state) => ({
@@ -64,6 +91,55 @@ const useSetupWizardStore = create(
         })),
 
       setAppointmentOnly: (value) => set({ appointmentOnly: value }),
+
+      // Rich Menu actions
+      setRichMenuEnabled: (enabled) =>
+        set((state) => ({
+          richMenu: { ...state.richMenu, enabled },
+        })),
+
+      updateRichMenuItem: (id, updates) =>
+        set((state) => ({
+          richMenu: {
+            ...state.richMenu,
+            items: state.richMenu.items.map((item) =>
+              item.id === id ? { ...item, ...updates } : item
+            ),
+          },
+        })),
+
+
+      moveRichMenuItemUp: (id) =>
+        set((state) => {
+          const items = [...state.richMenu.items].sort((a, b) => a.order - b.order);
+          const index = items.findIndex((item) => item.id === id);
+          if (index <= 0) return state;
+
+          [items[index], items[index - 1]] = [items[index - 1], items[index]];
+
+          return {
+            richMenu: {
+              ...state.richMenu,
+              items: items.map((item, i) => ({ ...item, order: i })),
+            },
+          };
+        }),
+
+      moveRichMenuItemDown: (id) =>
+        set((state) => {
+          const items = [...state.richMenu.items].sort((a, b) => a.order - b.order);
+          const index = items.findIndex((item) => item.id === id);
+          if (index === -1 || index >= items.length - 1) return state;
+
+          [items[index], items[index + 1]] = [items[index + 1], items[index]];
+
+          return {
+            richMenu: {
+              ...state.richMenu,
+              items: items.map((item, i) => ({ ...item, order: i })),
+            },
+          };
+        }),
 
       // Service actions
       addService: (service) =>
@@ -193,6 +269,7 @@ const useSetupWizardStore = create(
       isStep1Valid: () => {
         const state = get();
         if (!state.businessName || state.businessName.length < 3) return false;
+        if (!state.welcomeMessage || state.welcomeMessage.trim().length === 0) return false;
 
         if (state.businessHours.mode === 'same-daily') {
           const { open, close } = state.businessHours.sameDaily;
@@ -204,6 +281,17 @@ const useSetupWizardStore = create(
             (day) => !day.closed && day.open < day.close
           );
           if (!hasOpenDay) return false;
+        }
+
+        // If "Contact Us" is enabled in rich menu, at least one contact field required
+        const contactUsEnabled = state.richMenu.items.some(
+          (item) => item.type === 'contact-us' && item.enabled
+        );
+        if (contactUsEnabled) {
+          const hasContactInfo = Object.values(state.contactInfo).some(
+            (value) => value && value.trim().length > 0
+          );
+          if (!hasContactInfo) return false;
         }
 
         return true;
@@ -241,8 +329,6 @@ const useSetupWizardStore = create(
         // Check all components have required config
         return state.workflowComponents.every((component) => {
           switch (component.type) {
-            case 'greeting':
-              return component.config?.message?.length > 0;
             case 'user-input':
               return (
                 component.config?.question?.length > 0 &&
@@ -267,8 +353,11 @@ const useSetupWizardStore = create(
       reset: () =>
         set({
           businessName: '',
+          welcomeMessage: 'Welcome to {business_name}! I\'m here to help you book appointments.',
           businessHours: initialBusinessHours,
           appointmentOnly: false,
+          richMenu: initialRichMenu,
+          contactInfo: initialContactInfo,
           services: [],
           staff: [],
           workflowComponents: [],
@@ -280,8 +369,11 @@ const useSetupWizardStore = create(
       name: 'kitsune-setup-wizard',
       partialize: (state) => ({
         businessName: state.businessName,
+        welcomeMessage: state.welcomeMessage,
         businessHours: state.businessHours,
         appointmentOnly: state.appointmentOnly,
+        richMenu: state.richMenu,
+        contactInfo: state.contactInfo,
         services: state.services,
         staff: state.staff,
         workflowComponents: state.workflowComponents,

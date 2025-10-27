@@ -34,12 +34,6 @@ export default function WorkflowBuilderStep() {
     let defaultConfig = {};
 
     switch (type) {
-      case 'greeting':
-        defaultConfig = {
-          message: `Welcome to ${businessName}! How can we help you today?`,
-          logoUrl: '',
-        };
-        break;
       case 'user-input':
         defaultConfig = {
           question: '',
@@ -50,6 +44,7 @@ export default function WorkflowBuilderStep() {
         break;
       case 'booking-menu':
         defaultConfig = {
+          questionText: 'What would you like to do?',
           options: ['View My Bookings', 'Make New Booking']
         };
         break;

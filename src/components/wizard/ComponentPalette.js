@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  MessageCircle,
   MessageSquare,
   List,
   Users,
@@ -10,13 +9,6 @@ import {
 } from 'lucide-react';
 
 const COMPONENT_TYPES = [
-  {
-    type: 'greeting',
-    name: 'Greeting Message',
-    description: 'Welcome customers with a personalized message',
-    icon: MessageCircle,
-    color: 'bg-blue-500',
-  },
   {
     type: 'user-input',
     name: 'User Input',

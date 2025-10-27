@@ -7,6 +7,10 @@ import useSetupWizardStore from '@/stores/setupWizardStore';
 export default function LinePreview({ components, businessName = 'Your Business' }) {
   const services = useSetupWizardStore((state) => state.services);
   const staff = useSetupWizardStore((state) => state.staff);
+  const richMenu = useSetupWizardStore((state) => state.richMenu);
+  const welcomeMessage = useSetupWizardStore((state) => state.welcomeMessage);
+  const businessHours = useSetupWizardStore((state) => state.businessHours);
+  const contactInfo = useSetupWizardStore((state) => state.contactInfo);
   const [conversation, setConversation] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [userInput, setUserInput] = useState('');
@@ -22,20 +26,31 @@ export default function LinePreview({ components, businessName = 'Your Business'
   };
 
   const processNextComponent = () => {
-    if (currentStep >= components.length) return;
-
-    const component = components.sort((a, b) => a.order - b.order)[currentStep];
     const newMessages = [];
 
-    switch (component.type) {
-      case 'greeting':
-        newMessages.push({
-          type: 'bot',
-          content: component.config?.message?.replace('{business_name}', businessName) || 'Hello!',
-          timestamp: new Date(),
-        });
-        break;
+    // Show welcome message only at the start (currentStep === 0)
+    if (currentStep === 0) {
+      const welcomeMsg = welcomeMessage?.replace('{business_name}', businessName) ||
+                        `Welcome to ${businessName}! I'm here to help you book appointments.`;
+      newMessages.push({
+        type: 'bot',
+        content: welcomeMsg,
+        timestamp: new Date(),
+      });
+    }
 
+    // Process workflow component if available
+    if (currentStep >= components.length) {
+      if (newMessages.length > 0) {
+        setConversation([...conversation, ...newMessages]);
+        setCurrentStep(currentStep + 1);
+      }
+      return;
+    }
+
+    const component = components.sort((a, b) => a.order - b.order)[currentStep];
+
+    switch (component.type) {
       case 'user-input':
         newMessages.push({
           type: 'bot',
@@ -48,7 +63,7 @@ export default function LinePreview({ components, businessName = 'Your Business'
         const menuOptions = component.config?.options || ['View My Bookings', 'Make New Booking'];
         newMessages.push({
           type: 'bot',
-          content: 'What would you like to do?',
+          content: component.config?.questionText || 'What would you like to do?',
           quickReplies: menuOptions.filter(opt => opt.trim() !== ''),
           timestamp: new Date(),
         });
@@ -119,6 +134,100 @@ export default function LinePreview({ components, businessName = 'Your Business'
       { type: 'user', content: reply, timestamp: new Date() },
     ]);
     setTimeout(() => processNextComponent(), 500);
+  };
+
+  const handleRichMenuAction = (itemType) => {
+    const newMessages = [];
+
+    // Add user's click as a message
+    const item = richMenu.items.find(i => i.type === itemType);
+    newMessages.push({
+      type: 'user',
+      content: item?.label || 'Action',
+      timestamp: new Date(),
+    });
+
+    // Process the action
+    switch (itemType) {
+      case 'view-bookings':
+        // Show sample bookings (no DB yet)
+        newMessages.push({
+          type: 'bot',
+          content: 'Here are your upcoming bookings:',
+          timestamp: new Date(),
+        });
+        newMessages.push({
+          type: 'bot',
+          content: '📅 No bookings found.\n\nWould you like to make a new booking?',
+          quickReplies: ['Make New Booking', 'Go Back'],
+          timestamp: new Date(),
+        });
+        break;
+
+      case 'new-booking':
+        // Restart the workflow
+        newMessages.push({
+          type: 'bot',
+          content: 'Let\'s start a new booking! 🦊',
+          timestamp: new Date(),
+        });
+        setConversation([...conversation, ...newMessages]);
+        setCurrentStep(0);
+        setTimeout(() => processNextComponent(), 500);
+        return;
+
+      case 'business-hours':
+        // Display business hours
+        let hoursText = '🕐 Business Hours:\n\n';
+        if (businessHours.mode === '24/7') {
+          hoursText += 'Open 24/7';
+        } else if (businessHours.mode === 'same-daily') {
+          hoursText += `Daily: ${businessHours.sameDaily.open} - ${businessHours.sameDaily.close}`;
+        } else if (businessHours.mode === 'custom') {
+          const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+          const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+          days.forEach((day, idx) => {
+            const dayHours = businessHours.custom[day];
+            if (dayHours.closed) {
+              hoursText += `\n${dayNames[idx]}: Closed`;
+            } else {
+              hoursText += `\n${dayNames[idx]}: ${dayHours.open} - ${dayHours.close}`;
+            }
+          });
+        }
+        newMessages.push({
+          type: 'bot',
+          content: hoursText,
+          timestamp: new Date(),
+        });
+        break;
+
+      case 'contact-us':
+        // Display contact information
+        let contactText = '📞 Contact Information:\n\n';
+        const hasContact = Object.values(contactInfo).some(v => v && v.trim().length > 0);
+
+        if (!hasContact) {
+          contactText += 'Contact information not available.';
+        } else {
+          if (contactInfo.phone) contactText += `📱 Phone: ${contactInfo.phone}\n`;
+          if (contactInfo.email) contactText += `📧 Email: ${contactInfo.email}\n`;
+          if (contactInfo.address) contactText += `📍 Address: ${contactInfo.address}\n`;
+          if (contactInfo.website) contactText += `🌐 Website: ${contactInfo.website}`;
+        }
+
+        newMessages.push({
+          type: 'bot',
+          content: contactText.trim(),
+          timestamp: new Date(),
+        });
+        break;
+
+      default:
+        break;
+    }
+
+    setConversation([...conversation, ...newMessages]);
   };
 
   const handleSendInput = () => {
@@ -306,6 +415,30 @@ export default function LinePreview({ components, businessName = 'Your Business'
                 {reply}
               </button>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Rich Menu */}
+      {richMenu.enabled && (
+        <div className="bg-white border-t-2 border-slate-300">
+          <div className={`grid gap-0.5 bg-slate-200 ${
+            richMenu.items.filter(item => item.enabled).length <= 4
+              ? 'grid-cols-2'
+              : 'grid-cols-3'
+          }`}>
+            {richMenu.items
+              .filter((item) => item.enabled)
+              .sort((a, b) => a.order - b.order)
+              .map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleRichMenuAction(item.type)}
+                  className="bg-white hover:bg-[#f0f4f8] py-3 px-2 text-center text-xs font-medium text-slate-700 hover:text-[#06c755] transition-colors"
+                >
+                  {item.label}
+                </button>
+              ))}
           </div>
         </div>
       )}
