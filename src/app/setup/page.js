@@ -1,57 +1,48 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
+import useStepValidation from '@/hooks/useStepValidation';
+import { useToast } from '@/contexts/ToastContext';
 import WizardStepper from '@/components/wizard/WizardStepper';
 import StepNavigation from '@/components/wizard/StepNavigation';
 import BusinessInfoStep from '@/components/wizard/BusinessInfoStep';
 import ServicesStep from '@/components/wizard/ServicesStep';
 import StaffStep from '@/components/wizard/StaffStep';
-import WorkflowBuilderStep from '@/components/wizard/WorkflowBuilderStep';
+import PageBuilderStep from '@/components/wizard/PageBuilderStep';
 import FallingSakura from '@/components/background/FallingSakura';
 
 export default function SetupWizardPage() {
+  // Track hydration to prevent SSR/client mismatch
+  const [isHydrated, setIsHydrated] = useState(false);
+  const toast = useToast();
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   const currentStep = useSetupWizardStore((state) => state.currentStep);
   const nextStep = useSetupWizardStore((state) => state.nextStep);
   const prevStep = useSetupWizardStore((state) => state.prevStep);
 
-  // Subscribe to the actual state values that affect validation
-  const businessName = useSetupWizardStore((state) => state.businessName);
-  const welcomeMessage = useSetupWizardStore((state) => state.welcomeMessage);
-  const businessHours = useSetupWizardStore((state) => state.businessHours);
-  const contactInfo = useSetupWizardStore((state) => state.contactInfo);
-  const richMenu = useSetupWizardStore((state) => state.richMenu);
-  const services = useSetupWizardStore((state) => state.services);
-  const staff = useSetupWizardStore((state) => state.staff);
-  const workflowComponents = useSetupWizardStore((state) => state.workflowComponents);
-
-  const isStep1Valid = useSetupWizardStore((state) => state.isStep1Valid);
-  const isStep2Valid = useSetupWizardStore((state) => state.isStep2Valid);
-  const isStep3Valid = useSetupWizardStore((state) => state.isStep3Valid);
-  const isStep4Valid = useSetupWizardStore((state) => state.isStep4Valid);
+  // Use the custom hook to validate the current step reactively
+  const isStepValid = useStepValidation(currentStep);
 
   const handleSave = async () => {
     // TODO: Save to database
     console.log('Saving wizard data...');
-    alert('Workflow saved! (Database integration coming soon)');
+    toast.success('Workflow saved! (Database integration coming soon)', 5000);
   };
 
-  // Calculate validation based on current step
-  // We call the validation functions directly to ensure they run with latest state
-  const canProceed = (() => {
-    switch (currentStep) {
-      case 1:
-        return isStep1Valid();
-      case 2:
-        return isStep2Valid();
-      case 3:
-        return isStep3Valid();
-      case 4:
-        return isStep4Valid();
-      default:
-        return false;
-    }
-  })();
+  // Calculate validation based on current step using useMemo
+  // This prevents hydration mismatches by memoizing based on dependencies
+  const canProceed = useMemo(() => {
+    // During SSR, always return true to prevent hydration mismatch
+    // The actual validation will be applied after hydration
+    if (!isHydrated) return true;
+
+    return isStepValid;
+  }, [isHydrated, isStepValid]);
 
   return (
     <>
@@ -84,7 +75,7 @@ export default function SetupWizardPage() {
         {currentStep === 1 && <BusinessInfoStep />}
         {currentStep === 2 && <ServicesStep />}
         {currentStep === 3 && <StaffStep />}
-        {currentStep === 4 && <WorkflowBuilderStep />}
+        {currentStep === 4 && <PageBuilderStep />}
       </main>
 
       {/* Navigation */}

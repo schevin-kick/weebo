@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { User, Upload, X } from 'lucide-react';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function StaffAvatar({
   photo,
@@ -11,6 +12,7 @@ export default function StaffAvatar({
   onChange
 }) {
   const [isHovering, setIsHovering] = useState(false);
+  const toast = useToast();
 
   const sizeClasses = {
     sm: 'w-10 h-10 text-sm',
@@ -26,24 +28,35 @@ export default function StaffAvatar({
     xl: 'w-16 h-16',
   };
 
-  const getInitials = (name) => {
-    if (!name) return '?';
-    const parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
-  };
-
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
-    if (file && onChange) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onChange(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (!file || !onChange) return;
+
+    // Check file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      toast.error('Please upload a valid image file (JPG, PNG, WebP, or GIF)');
+      return;
     }
+
+    // Check file size (1MB = 1,048,576 bytes)
+    const maxSize = 1048576; // 1MB
+    if (file.size > maxSize) {
+      const sizeMB = (file.size / 1048576).toFixed(2);
+      toast.error(`Image is too large (${sizeMB}MB). Maximum size is 1MB`);
+      return;
+    }
+
+    // Read and convert to base64
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      onChange(reader.result);
+      toast.success('Photo uploaded successfully');
+    };
+    reader.onerror = () => {
+      toast.error('Failed to upload photo. Please try again');
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleRemove = (e) => {
@@ -60,8 +73,8 @@ export default function StaffAvatar({
       className="w-full h-full object-cover"
     />
   ) : (
-    <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-orange-400 to-amber-500 text-white font-semibold">
-      {name ? getInitials(name) : <User className={iconSizes[size]} />}
+    <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-orange-400 to-amber-500 text-white">
+      <User className={iconSizes[size]} />
     </div>
   );
 
@@ -91,7 +104,7 @@ export default function StaffAvatar({
 
         <input
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
           onChange={handleFileChange}
           className="hidden"
         />

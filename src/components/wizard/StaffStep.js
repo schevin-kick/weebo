@@ -60,7 +60,7 @@ function StaffForm({ staffMember, onSave, onCancel }) {
             onChange={(photo) => setFormData({ ...formData, photo })}
           />
           <p className="text-xs text-slate-500 mt-2">
-            Click to upload photo
+            Click to upload photo (Max 1MB)
           </p>
         </div>
 

@@ -12,7 +12,37 @@ export default function BusinessInfoStep() {
   const appointmentOnly = useSetupWizardStore((state) => state.appointmentOnly);
   const richMenu = useSetupWizardStore((state) => state.richMenu);
   const contactInfo = useSetupWizardStore((state) => state.contactInfo);
-  const isStep1Valid = useSetupWizardStore((state) => state.isStep1Valid);
+
+  // Compute validation locally so it re-renders when state changes
+  const isValid = (() => {
+    if (!businessName || businessName.length < 3) return false;
+    if (!welcomeMessage || welcomeMessage.trim().length === 0) return false;
+
+    if (businessHours.mode === 'same-daily') {
+      const { open, close } = businessHours.sameDaily;
+      if (open >= close) return false;
+    }
+
+    if (businessHours.mode === 'custom') {
+      const hasOpenDay = Object.values(businessHours.custom).some(
+        (day) => !day.closed && day.open < day.close
+      );
+      if (!hasOpenDay) return false;
+    }
+
+    // If "Contact Us" is enabled in rich menu, at least one contact field required
+    const contactUsEnabled = richMenu.items.some(
+      (item) => item.type === 'contact-us' && item.enabled
+    );
+    if (contactUsEnabled) {
+      const hasContactInfo = Object.values(contactInfo).some(
+        (value) => value && value.trim().length > 0
+      );
+      if (!hasContactInfo) return false;
+    }
+
+    return true;
+  })();
 
   const setBusinessName = useSetupWizardStore((state) => state.setBusinessName);
   const setWelcomeMessage = useSetupWizardStore((state) => state.setWelcomeMessage);
@@ -37,7 +67,7 @@ export default function BusinessInfoStep() {
     contactInfo,
     richMenu: richMenu.items.map(item => ({ type: item.type, enabled: item.enabled })),
     businessHours,
-    isValid: isStep1Valid(),
+    isValid,
   });
 
   return (
@@ -248,7 +278,7 @@ export default function BusinessInfoStep() {
           </div>
 
           {/* Validation status (for debugging) */}
-          {isStep1Valid() ? (
+          {isValid ? (
             <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
               <p className="text-sm text-green-700 font-medium">
                 ✓ Ready to proceed to next step

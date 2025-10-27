@@ -4,142 +4,135 @@ import { X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 
-export default function ConfigPanel({ componentId, onClose }) {
-  const component = useSetupWizardStore((state) =>
-    state.workflowComponents.find((c) => c.id === componentId)
-  );
-  const updateWorkflowComponent = useSetupWizardStore(
-    (state) => state.updateWorkflowComponent
-  );
-  const businessName = useSetupWizardStore((state) => state.businessName);
-  const services = useSetupWizardStore((state) => state.services);
-  const staff = useSetupWizardStore((state) => state.staff);
+const PRESET_FIELD_LABELS = {
+  name: 'Name',
+  email: 'Email',
+  phone: 'Phone',
+  notes: 'Notes',
+  address: 'Address',
+  dob: 'Date of Birth',
+};
 
-  const [config, setConfig] = useState(component?.config || {});
+export default function ConfigPanel({ pageId, componentId, onClose }) {
+  const page = useSetupWizardStore((state) => state.pages.find((p) => p.id === pageId));
+  const component = page?.components.find((c) => c.id === componentId);
+  const updateComponent = useSetupWizardStore((state) => state.updateComponent);
+
+  const [config, setConfig] = useState({});
 
   useEffect(() => {
     if (component) {
-      const componentConfig = component.config || {};
-
-      // For staff-selector, if enabled but no staff selected, default to all
-      if (component.type === 'staff-selector' &&
-          componentConfig.enabled &&
-          (!componentConfig.selectedStaff || componentConfig.selectedStaff.length === 0) &&
-          staff.length > 0) {
-        setConfig({
-          ...componentConfig,
-          selectedStaff: staff.map(s => s.id)
-        });
-      } else {
-        setConfig(componentConfig);
-      }
+      setConfig({ ...component });
     }
-  }, [component, staff]);
+  }, [component]);
 
-  if (!component) return null;
+  if (!component || !page) return null;
 
   const handleSave = () => {
-    updateWorkflowComponent(componentId, { config });
+    updateComponent(pageId, componentId, config);
     onClose();
   };
 
   const renderConfigForm = () => {
-    switch (component.type) {
-      case 'user-input':
-        return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Question to Ask
-              </label>
-              <input
-                type="text"
-                value={config.question || ''}
-                onChange={(e) => setConfig({ ...config, question: e.target.value })}
-                placeholder="What is your name?"
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
+    const isPreset = component.type === 'preset-field';
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Field Label
-              </label>
-              <input
-                type="text"
-                value={config.fieldLabel || ''}
-                onChange={(e) => setConfig({ ...config, fieldLabel: e.target.value })}
-                placeholder="customer_name"
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                This will be used to store the user's response
-              </p>
-            </div>
+    if (isPreset) {
+      // Preset field configuration
+      return (
+        <div className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-sm text-blue-900 font-medium">
+              {PRESET_FIELD_LABELS[config.fieldType]} Field
+            </p>
+            <p className="text-sm text-blue-700 mt-1">
+              This is a preset field with built-in formatting and behavior.
+            </p>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Data Type
-              </label>
-              <select
-                value={config.dataType || 'text'}
-                onChange={(e) => setConfig({ ...config, dataType: e.target.value })}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option value="text">Text</option>
-                <option value="email">Email</option>
-                <option value="phone">Phone Number</option>
-                <option value="number">Number</option>
-              </select>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Field Label
+            </label>
+            <input
+              type="text"
+              value={config.label || ''}
+              onChange={(e) => setConfig({ ...config, label: e.target.value })}
+              placeholder={`e.g., "Your ${PRESET_FIELD_LABELS[config.fieldType]}"`}
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+            <p className="text-xs text-slate-500 mt-1">
+              The text shown to customers above this field
+            </p>
+          </div>
 
-            <div className="flex items-center">
+          {/* Only show validation toggle for email field */}
+          {config.fieldType === 'email' && (
+            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+              <div>
+                <div className="font-medium text-slate-900">Enable Validation</div>
+                <div className="text-sm text-slate-600">
+                  Validate email format
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={config.validation !== false}
+                  onChange={(e) => setConfig({ ...config, validation: e.target.checked })}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
+              </label>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+            <div>
+              <div className="font-medium text-slate-900">Required Field</div>
+              <div className="text-sm text-slate-600">
+                Customers must fill this field
+              </div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                id="required"
                 checked={config.required !== false}
                 onChange={(e) => setConfig({ ...config, required: e.target.checked })}
-                className="w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500"
+                className="sr-only peer"
               />
-              <label htmlFor="required" className="ml-2 text-sm text-slate-700">
-                Required field
-              </label>
-            </div>
+              <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
+            </label>
           </div>
-        );
+        </div>
+      );
+    } else {
+      // Custom field configuration
+      const needsOptions = ['select', 'radio', 'checkbox'].includes(config.inputType);
+      const options = config.options || [''];
 
-      case 'booking-menu':
-        const options = config.options || ['View My Bookings', 'Make New Booking'];
+      return (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Field Label <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={config.label || ''}
+              onChange={(e) => setConfig({ ...config, label: e.target.value })}
+              placeholder="e.g., Party Size"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+            <p className="text-xs text-slate-500 mt-1">
+              The text shown to customers above this field
+            </p>
+          </div>
 
-        return (
-          <div className="space-y-4">
-            {/* Question Text */}
+          {needsOptions && (
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Question Text
+                Options <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
-                value={config.questionText || 'What would you like to do?'}
-                onChange={(e) => setConfig({ ...config, questionText: e.target.value })}
-                placeholder="What would you like to do?"
-                maxLength={100}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                The question shown before menu options (max 100 characters)
-              </p>
-            </div>
-
-            {/* Menu Options */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Menu Options
-              </label>
-              <p className="text-xs text-slate-500 mb-3">
-                Customize the quick reply buttons shown to customers
-              </p>
-
               <div className="space-y-2">
                 {options.map((option, index) => (
                   <div key={index} className="flex items-center gap-2">
@@ -170,292 +163,83 @@ export default function ConfigPanel({ componentId, onClose }) {
                 ))}
               </div>
 
-              {options.length < 5 && (
-                <button
-                  onClick={() => {
-                    setConfig({ ...config, options: [...options, ''] });
-                  }}
-                  className="mt-2 w-full px-4 py-2 border-2 border-dashed border-slate-300 text-slate-600 rounded-lg hover:border-orange-400 hover:text-orange-600 transition-colors font-medium"
-                >
-                  + Add Option
-                </button>
-              )}
-
-              <p className="text-xs text-slate-500 mt-2">
-                Maximum 5 options recommended for better user experience
-              </p>
+              <button
+                onClick={() => {
+                  setConfig({ ...config, options: [...options, ''] });
+                }}
+                className="mt-2 w-full px-4 py-2 border-2 border-dashed border-slate-300 text-slate-600 rounded-lg hover:border-orange-400 hover:text-orange-600 transition-colors font-medium text-sm"
+              >
+                + Add Option
+              </button>
             </div>
+          )}
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-xs text-blue-900">
-                <strong>Tip:</strong> Common options include "Make New Booking", "View My Bookings", "Contact Us", "Business Hours", etc.
-              </p>
-            </div>
-          </div>
-        );
-
-      case 'service-list':
-        return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Display Style
-              </label>
-              <div className="space-y-2">
-                <label className="flex items-center p-3 border border-slate-300 rounded-lg cursor-pointer hover:bg-slate-50">
-                  <input
-                    type="radio"
-                    name="displayStyle"
-                    value="carousel"
-                    checked={config.displayStyle === 'carousel'}
-                    onChange={(e) => setConfig({ ...config, displayStyle: e.target.value })}
-                    className="w-4 h-4 text-orange-600 border-slate-300 focus:ring-orange-500"
-                  />
-                  <div className="ml-3">
-                    <div className="font-medium text-slate-900">Carousel</div>
-                    <div className="text-xs text-slate-600">
-                      Show services as swipeable cards (recommended)
-                    </div>
-                  </div>
+          {config.inputType === 'number' && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Min Value (optional)
                 </label>
-
-                <label className="flex items-center p-3 border border-slate-300 rounded-lg cursor-pointer hover:bg-slate-50">
-                  <input
-                    type="radio"
-                    name="displayStyle"
-                    value="list"
-                    checked={config.displayStyle === 'list'}
-                    onChange={(e) => setConfig({ ...config, displayStyle: e.target.value })}
-                    className="w-4 h-4 text-orange-600 border-slate-300 focus:ring-orange-500"
-                  />
-                  <div className="ml-3">
-                    <div className="font-medium text-slate-900">List</div>
-                    <div className="text-xs text-slate-600">
-                      Show all services in a vertical list
-                    </div>
-                  </div>
+                <input
+                  type="number"
+                  value={config.min ?? ''}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      min: e.target.value === '' ? undefined : parseInt(e.target.value),
+                    })
+                  }
+                  placeholder="No minimum"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Max Value (optional)
                 </label>
+                <input
+                  type="number"
+                  value={config.max ?? ''}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      max: e.target.value === '' ? undefined : parseInt(e.target.value),
+                    })
+                  }
+                  placeholder="No maximum"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
               </div>
             </div>
+          )}
 
-            <div className="flex items-center">
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+            <div>
+              <div className="font-medium text-slate-900">Required Field</div>
+              <div className="text-sm text-slate-600">
+                Customers must fill this field
+              </div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                id="showPricing"
-                checked={config.showPricing !== false}
-                onChange={(e) => setConfig({ ...config, showPricing: e.target.checked })}
-                className="w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500"
+                checked={config.required !== false}
+                onChange={(e) => setConfig({ ...config, required: e.target.checked })}
+                className="sr-only peer"
               />
-              <label htmlFor="showPricing" className="ml-2 text-sm text-slate-700">
-                Show pricing information
-              </label>
-            </div>
-
-            {services.length > 0 ? (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                <p className="text-sm text-green-900 font-medium">
-                  {services.length} service{services.length !== 1 ? 's' : ''} configured
-                </p>
-                <ul className="text-xs text-green-800 mt-1 space-y-0.5">
-                  {services.slice(0, 3).map((service) => (
-                    <li key={service.id}>• {service.name}</li>
-                  ))}
-                  {services.length > 3 && (
-                    <li>• ... and {services.length - 3} more</li>
-                  )}
-                </ul>
-              </div>
-            ) : (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <p className="text-sm text-yellow-900">
-                  No services configured yet. Go back to Step 2 to add services.
-                </p>
-              </div>
-            )}
+              <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
+            </label>
           </div>
-        );
-
-      case 'staff-selector':
-        const selectedStaffIds = config.selectedStaff || [];
-
-        return (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-              <div>
-                <div className="font-medium text-slate-900">Enable Staff Selection</div>
-                <div className="text-sm text-slate-600">
-                  Allow customers to choose a specific staff member
-                </div>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={config.enabled || false}
-                  onChange={(e) => {
-                    if (e.target.checked && staff.length > 0) {
-                      // When enabling, default to all staff selected
-                      setConfig({
-                        ...config,
-                        enabled: true,
-                        selectedStaff: staff.map(s => s.id)
-                      });
-                    } else {
-                      setConfig({ ...config, enabled: e.target.checked });
-                    }
-                  }}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
-              </label>
-            </div>
-
-            {!config.enabled && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <p className="text-sm text-blue-900">
-                  When disabled, customers will be automatically assigned to any available
-                  staff member.
-                </p>
-              </div>
-            )}
-
-            {config.enabled && (
-              <div>
-                {staff.length === 0 ? (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                    <p className="text-sm text-yellow-900">
-                      No staff members configured yet. Go back to Step 3 to add staff members.
-                    </p>
-                  </div>
-                ) : (
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Available Staff Members
-                    </label>
-                    <p className="text-xs text-slate-500 mb-3">
-                      Select which staff members customers can choose from
-                    </p>
-                    <div className="space-y-2">
-                      {staff.map((staffMember) => (
-                        <label
-                          key={staffMember.id}
-                          className="flex items-center p-3 border border-slate-300 rounded-lg cursor-pointer hover:bg-slate-50"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedStaffIds.includes(staffMember.id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setConfig({
-                                  ...config,
-                                  selectedStaff: [...selectedStaffIds, staffMember.id],
-                                });
-                              } else {
-                                setConfig({
-                                  ...config,
-                                  selectedStaff: selectedStaffIds.filter(
-                                    (id) => id !== staffMember.id
-                                  ),
-                                });
-                              }
-                            }}
-                            className="w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500"
-                          />
-                          <div className="ml-3">
-                            <div className="font-medium text-slate-900">
-                              {staffMember.name}
-                            </div>
-                            {staffMember.specialty && (
-                              <div className="text-xs text-slate-600">
-                                {staffMember.specialty}
-                              </div>
-                            )}
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-
-                    <div className="mt-3 bg-green-50 border border-green-200 rounded-lg p-3">
-                      <p className="text-sm text-green-900">
-                        {selectedStaffIds.length === 0
-                          ? 'Select at least one staff member'
-                          : `${selectedStaffIds.length} staff member${selectedStaffIds.length !== 1 ? 's' : ''} selected`}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        );
-
-      case 'availability':
-        return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Buffer Time (minutes)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="60"
-                value={config.bufferMinutes || 0}
-                onChange={(e) =>
-                  setConfig({ ...config, bufferMinutes: parseInt(e.target.value) || 0 })
-                }
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                Time between appointments (e.g., for cleaning, setup)
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Advance Booking (days)
-              </label>
-              <input
-                type="number"
-                min="1"
-                max="90"
-                value={config.advanceBookingDays || 7}
-                onChange={(e) =>
-                  setConfig({
-                    ...config,
-                    advanceBookingDays: parseInt(e.target.value) || 7,
-                  })
-                }
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                How many days in advance customers can book
-              </p>
-            </div>
-
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-sm text-blue-900">
-                This picker will use your business hours from Step 1 to determine
-                available time slots.
-              </p>
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
+        </div>
+      );
     }
   };
 
   const getTitle = () => {
-    const titles = {
-      greeting: 'Configure Greeting Message',
-      'user-input': 'Configure User Input',
-      'booking-menu': 'Booking Menu',
-      'service-list': 'Configure Service List',
-      'staff-selector': 'Configure Staff Selector',
-      availability: 'Configure Availability Picker',
-    };
-    return titles[component.type] || 'Configure Component';
+    if (component.type === 'preset-field') {
+      return `Configure ${PRESET_FIELD_LABELS[component.fieldType]} Field`;
+    }
+    return 'Configure Custom Field';
   };
 
   return (

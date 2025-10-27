@@ -1,12 +1,13 @@
 'use client';
 
 import { Check } from 'lucide-react';
+import { Fragment } from 'react';
 
 const steps = [
   { number: 1, title: 'Business Info', description: 'Name & hours' },
   { number: 2, title: 'Services', description: 'Add services' },
   { number: 3, title: 'Staff', description: 'Add team members' },
-  { number: 4, title: 'Workflow', description: 'Build bot flow' },
+  { number: 4, title: 'Pages', description: 'Build booking flow' },
 ];
 
 export default function WizardStepper({ currentStep }) {
@@ -34,9 +35,9 @@ export default function WizardStepper({ currentStep }) {
           {/* Circles and lines row */}
           <div className="flex items-center justify-between">
             {steps.map((step, index) => (
-              <>
+              <Fragment key={step.number}>
                 {/* Circle */}
-                <div key={`circle-${step.number}`} className="flex-shrink-0">
+                <div className="flex-shrink-0">
                   <div
                     className={`
                       flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300
@@ -59,7 +60,7 @@ export default function WizardStepper({ currentStep }) {
 
                 {/* Connector line */}
                 {index < steps.length - 1 && (
-                  <div key={`line-${step.number}`} className="flex-1 h-0.5 mx-4">
+                  <div className="flex-1 h-0.5 mx-4">
                     <div
                       className={`h-full transition-all duration-300 ${
                         currentStep > step.number ? 'bg-orange-500' : 'bg-slate-300'
@@ -67,7 +68,7 @@ export default function WizardStepper({ currentStep }) {
                     />
                   </div>
                 )}
-              </>
+              </Fragment>
             ))}
           </div>
 

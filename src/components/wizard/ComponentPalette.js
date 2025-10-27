@@ -1,139 +1,212 @@
 'use client';
 
 import {
-  MessageSquare,
-  List,
-  Users,
+  Type,
+  Mail,
+  Phone,
+  FileText,
+  MapPin,
   Calendar,
-  Menu,
+  List,
+  AlignLeft,
+  Circle,
+  CheckSquare,
+  Hash,
 } from 'lucide-react';
 
-const COMPONENT_TYPES = [
+const PRESET_FIELDS = [
   {
-    type: 'user-input',
-    name: 'User Input',
-    description: 'Ask a question and collect response',
-    icon: MessageSquare,
-    color: 'bg-purple-500',
+    fieldType: 'name',
+    name: 'Name',
+    icon: Type,
+    color: 'bg-blue-500',
   },
   {
-    type: 'booking-menu',
-    name: 'Booking Menu',
-    description: 'View or make new booking options',
-    icon: Menu,
+    fieldType: 'email',
+    name: 'Email',
+    icon: Mail,
     color: 'bg-green-500',
   },
   {
-    type: 'service-list',
-    name: 'Service List',
-    description: 'Display your services with details',
-    icon: List,
-    color: 'bg-orange-500',
+    fieldType: 'phone',
+    name: 'Phone',
+    icon: Phone,
+    color: 'bg-purple-500',
   },
   {
-    type: 'staff-selector',
-    name: 'Staff Selector',
-    description: 'Let customers choose staff (optional)',
-    icon: Users,
-    color: 'bg-pink-500',
+    fieldType: 'notes',
+    name: 'Notes',
+    icon: FileText,
+    color: 'bg-amber-500',
   },
   {
-    type: 'availability',
-    name: 'Availability Picker',
-    description: 'Date and time selection',
+    fieldType: 'address',
+    name: 'Address',
+    icon: MapPin,
+    color: 'bg-red-500',
+  },
+  {
+    fieldType: 'dob',
+    name: 'Date of Birth',
     icon: Calendar,
     color: 'bg-indigo-500',
   },
 ];
 
-export default function ComponentPalette({ onAdd, currentCount, maxCount = 20 }) {
-  const isDisabled = currentCount >= maxCount;
+const CUSTOM_FIELD_TYPES = [
+  {
+    inputType: 'text',
+    name: 'Text Input',
+    description: 'Single line text',
+    icon: Type,
+    color: 'bg-slate-500',
+  },
+  {
+    inputType: 'select',
+    name: 'Select Dropdown',
+    description: 'Choose from options',
+    icon: List,
+    color: 'bg-cyan-500',
+  },
+  {
+    inputType: 'textarea',
+    name: 'Text Area',
+    description: 'Multi-line text',
+    icon: AlignLeft,
+    color: 'bg-teal-500',
+  },
+  {
+    inputType: 'radio',
+    name: 'Radio Buttons',
+    description: 'Select one option',
+    icon: Circle,
+    color: 'bg-violet-500',
+  },
+  {
+    inputType: 'checkbox',
+    name: 'Checkboxes',
+    description: 'Select multiple',
+    icon: CheckSquare,
+    color: 'bg-fuchsia-500',
+  },
+  {
+    inputType: 'number',
+    name: 'Number Input',
+    description: 'Numeric value',
+    icon: Hash,
+    color: 'bg-emerald-500',
+  },
+];
 
-  const handleAdd = (type) => {
-    if (isDisabled) return;
-    onAdd(type);
-  };
-
+export default function ComponentPalette({ onAddPresetField, onAddCustomField }) {
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-slate-900">Available Components</h3>
-        <div
-          className={`px-3 py-1 rounded-full text-sm font-medium ${
-            isDisabled
-              ? 'bg-red-100 text-red-700'
-              : currentCount > maxCount * 0.7
-              ? 'bg-amber-100 text-amber-700'
-              : 'bg-slate-100 text-slate-700'
-          }`}
-        >
-          {currentCount}/{maxCount} added
+    <div className="space-y-6">
+      {/* Preset Fields Section */}
+      <div>
+        <div className="mb-3">
+          <h3 className="font-semibold text-slate-900 text-sm">Quick Add Fields</h3>
+          <p className="text-xs text-slate-600 mt-0.5">
+            Common fields with built-in validation
+          </p>
         </div>
-      </div>
 
-      {/* Component cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
-        {COMPONENT_TYPES.map((component) => {
-          const Icon = component.icon;
-          return (
-            <button
-              key={component.type}
-              onClick={() => handleAdd(component.type)}
-              disabled={isDisabled}
-              className={`
-                group relative p-4 rounded-xl border-2 text-left transition-all
-                ${
-                  isDisabled
-                    ? 'border-slate-200 bg-slate-50 opacity-50 cursor-not-allowed'
-                    : 'border-slate-200 bg-white hover:border-orange-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer'
-                }
-              `}
-            >
-              {/* Icon */}
-              <div
-                className={`
-                  w-10 h-10 rounded-lg ${component.color} flex items-center justify-center mb-3
-                  ${!isDisabled && 'group-hover:scale-110'} transition-transform
-                `}
+        <div className="grid grid-cols-2 gap-2">
+          {PRESET_FIELDS.map((field) => {
+            const Icon = field.icon;
+            return (
+              <button
+                key={field.fieldType}
+                onClick={() => onAddPresetField(field.fieldType)}
+                className="group relative p-3 rounded-lg border-2 border-slate-200 bg-white hover:border-orange-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer transition-all text-left"
               >
-                <Icon className="w-5 h-5 text-white" />
-              </div>
+                {/* Icon */}
+                <div
+                  className={`
+                    w-8 h-8 rounded-md ${field.color} flex items-center justify-center mb-2
+                    group-hover:scale-110 transition-transform
+                  `}
+                >
+                  <Icon className="w-4 h-4 text-white" />
+                </div>
 
-              {/* Title */}
-              <div className="font-semibold text-slate-900 text-sm mb-1">
-                {component.name}
-              </div>
+                {/* Title */}
+                <div className="font-medium text-slate-900 text-xs">
+                  {field.name}
+                </div>
 
-              {/* Description */}
-              <p className="text-xs text-slate-600 leading-snug">
-                {component.description}
-              </p>
-
-              {/* Hover indicator */}
-              {!isDisabled && (
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-lg leading-none">+</span>
+                {/* Hover indicator */}
+                <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm leading-none">+</span>
                   </div>
                 </div>
-              )}
-            </button>
-          );
-        })}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Disabled message */}
-      {isDisabled && (
-        <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-700 font-medium">
-            Maximum 20 components reached
-          </p>
-          <p className="text-xs text-red-600 mt-1">
-            Remove a component to add more
+      {/* Custom Fields Section */}
+      <div>
+        <div className="mb-3">
+          <h3 className="font-semibold text-slate-900 text-sm">Custom Fields</h3>
+          <p className="text-xs text-slate-600 mt-0.5">
+            Build your own form inputs
           </p>
         </div>
-      )}
+
+        <div className="space-y-2">
+          {CUSTOM_FIELD_TYPES.map((fieldType) => {
+            const Icon = fieldType.icon;
+            return (
+              <button
+                key={fieldType.inputType}
+                onClick={() => onAddCustomField(fieldType.inputType)}
+                className="group relative w-full p-3 rounded-lg border-2 border-slate-200 bg-white hover:border-orange-300 hover:shadow-md cursor-pointer transition-all text-left"
+              >
+                <div className="flex items-center gap-3">
+                  {/* Icon */}
+                  <div
+                    className={`
+                      flex-shrink-0 w-8 h-8 rounded-md ${fieldType.color} flex items-center justify-center
+                      group-hover:scale-110 transition-transform
+                    `}
+                  >
+                    <Icon className="w-4 h-4 text-white" />
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-slate-900 text-sm">
+                      {fieldType.name}
+                    </div>
+                    <div className="text-xs text-slate-600">
+                      {fieldType.description}
+                    </div>
+                  </div>
+
+                  {/* Hover indicator */}
+                  <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm leading-none">+</span>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Info */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-900">
+        <p className="font-medium mb-1">How it works</p>
+        <ul className="text-blue-700 space-y-1">
+          <li>• Quick Add: Instant preset fields</li>
+          <li>• Custom: Configure your own</li>
+          <li>• Reorder: Drag fields up/down</li>
+        </ul>
+      </div>
     </div>
   );
 }
