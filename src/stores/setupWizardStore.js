@@ -26,7 +26,10 @@ const useSetupWizardStore = create(
       // Step 2: Services
       services: [],
 
-      // Step 3: Workflow (min 1, max 20)
+      // Step 3: Staff
+      staff: [],
+
+      // Step 4: Workflow (min 1, max 20)
       workflowComponents: [],
       selectedComponentId: null, // For configuration panel
 
@@ -78,6 +81,24 @@ const useSetupWizardStore = create(
       deleteService: (id) =>
         set((state) => ({
           services: state.services.filter((s) => s.id !== id),
+        })),
+
+      // Staff actions
+      addStaff: (staffMember) =>
+        set((state) => ({
+          staff: [...state.staff, { ...staffMember, id: Date.now() }],
+        })),
+
+      updateStaff: (id, updates) =>
+        set((state) => ({
+          staff: state.staff.map((s) =>
+            s.id === id ? { ...s, ...updates } : s
+          ),
+        })),
+
+      deleteStaff: (id) =>
+        set((state) => ({
+          staff: state.staff.filter((s) => s.id !== id),
         })),
 
       // Workflow component actions
@@ -160,7 +181,7 @@ const useSetupWizardStore = create(
 
       nextStep: () =>
         set((state) => ({
-          currentStep: Math.min(state.currentStep + 1, 3),
+          currentStep: Math.min(state.currentStep + 1, 4),
         })),
 
       prevStep: () =>
@@ -203,6 +224,17 @@ const useSetupWizardStore = create(
 
       isStep3Valid: () => {
         const state = get();
+        // Staff are optional, but if added they must be valid
+        return state.staff.every(
+          (s) =>
+            s.name &&
+            s.name.length >= 3 &&
+            (!s.description || s.description.length <= 200)
+        );
+      },
+
+      isStep4Valid: () => {
+        const state = get();
         if (state.workflowComponents.length < 1) return false;
         if (state.workflowComponents.length > 20) return false;
 
@@ -238,6 +270,7 @@ const useSetupWizardStore = create(
           businessHours: initialBusinessHours,
           appointmentOnly: false,
           services: [],
+          staff: [],
           workflowComponents: [],
           selectedComponentId: null,
           currentStep: 1,
@@ -250,6 +283,7 @@ const useSetupWizardStore = create(
         businessHours: state.businessHours,
         appointmentOnly: state.appointmentOnly,
         services: state.services,
+        staff: state.staff,
         workflowComponents: state.workflowComponents,
         currentStep: state.currentStep,
       }),

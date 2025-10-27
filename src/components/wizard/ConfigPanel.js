@@ -13,14 +13,28 @@ export default function ConfigPanel({ componentId, onClose }) {
   );
   const businessName = useSetupWizardStore((state) => state.businessName);
   const services = useSetupWizardStore((state) => state.services);
+  const staff = useSetupWizardStore((state) => state.staff);
 
   const [config, setConfig] = useState(component?.config || {});
 
   useEffect(() => {
     if (component) {
-      setConfig(component.config || {});
+      const componentConfig = component.config || {};
+
+      // For staff-selector, if enabled but no staff selected, default to all
+      if (component.type === 'staff-selector' &&
+          componentConfig.enabled &&
+          (!componentConfig.selectedStaff || componentConfig.selectedStaff.length === 0) &&
+          staff.length > 0) {
+        setConfig({
+          ...componentConfig,
+          selectedStaff: staff.map(s => s.id)
+        });
+      } else {
+        setConfig(componentConfig);
+      }
     }
-  }, [component]);
+  }, [component, staff]);
 
   if (!component) return null;
 
@@ -264,6 +278,8 @@ export default function ConfigPanel({ componentId, onClose }) {
         );
 
       case 'staff-selector':
+        const selectedStaffIds = config.selectedStaff || [];
+
         return (
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
@@ -277,7 +293,18 @@ export default function ConfigPanel({ componentId, onClose }) {
                 <input
                   type="checkbox"
                   checked={config.enabled || false}
-                  onChange={(e) => setConfig({ ...config, enabled: e.target.checked })}
+                  onChange={(e) => {
+                    if (e.target.checked && staff.length > 0) {
+                      // When enabling, default to all staff selected
+                      setConfig({
+                        ...config,
+                        enabled: true,
+                        selectedStaff: staff.map(s => s.id)
+                      });
+                    } else {
+                      setConfig({ ...config, enabled: e.target.checked });
+                    }
+                  }}
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
@@ -294,11 +321,70 @@ export default function ConfigPanel({ componentId, onClose }) {
             )}
 
             {config.enabled && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <p className="text-sm text-yellow-900">
-                  Staff member management coming soon! For now, staff will be synced from
-                  your business settings.
-                </p>
+              <div>
+                {staff.length === 0 ? (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                    <p className="text-sm text-yellow-900">
+                      No staff members configured yet. Go back to Step 3 to add staff members.
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Available Staff Members
+                    </label>
+                    <p className="text-xs text-slate-500 mb-3">
+                      Select which staff members customers can choose from
+                    </p>
+                    <div className="space-y-2">
+                      {staff.map((staffMember) => (
+                        <label
+                          key={staffMember.id}
+                          className="flex items-center p-3 border border-slate-300 rounded-lg cursor-pointer hover:bg-slate-50"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedStaffIds.includes(staffMember.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setConfig({
+                                  ...config,
+                                  selectedStaff: [...selectedStaffIds, staffMember.id],
+                                });
+                              } else {
+                                setConfig({
+                                  ...config,
+                                  selectedStaff: selectedStaffIds.filter(
+                                    (id) => id !== staffMember.id
+                                  ),
+                                });
+                              }
+                            }}
+                            className="w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500"
+                          />
+                          <div className="ml-3">
+                            <div className="font-medium text-slate-900">
+                              {staffMember.name}
+                            </div>
+                            {staffMember.specialty && (
+                              <div className="text-xs text-slate-600">
+                                {staffMember.specialty}
+                              </div>
+                            )}
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+
+                    <div className="mt-3 bg-green-50 border border-green-200 rounded-lg p-3">
+                      <p className="text-sm text-green-900">
+                        {selectedStaffIds.length === 0
+                          ? 'Select at least one staff member'
+                          : `${selectedStaffIds.length} staff member${selectedStaffIds.length !== 1 ? 's' : ''} selected`}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

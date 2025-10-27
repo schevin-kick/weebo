@@ -1,14 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Send, RotateCcw } from 'lucide-react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 
 export default function LinePreview({ components, businessName = 'Your Business' }) {
   const services = useSetupWizardStore((state) => state.services);
+  const staff = useSetupWizardStore((state) => state.staff);
   const [conversation, setConversation] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [userInput, setUserInput] = useState('');
+  const carouselRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   const resetConversation = () => {
     setConversation([]);
@@ -71,10 +76,21 @@ export default function LinePreview({ components, businessName = 'Your Business'
 
       case 'staff-selector':
         if (component.config?.enabled) {
+          const selectedStaffIds = component.config?.selectedStaff || [];
+          const availableStaff = selectedStaffIds.length > 0
+            ? staff.filter(s => selectedStaffIds.includes(s.id))
+            : staff;
+
+          const staffOptions = availableStaff.length > 0
+            ? [...availableStaff.map(s => s.name), 'Any Staff']
+            : ['No staff configured'];
+
           newMessages.push({
             type: 'bot',
-            content: 'Would you like to choose a staff member?',
-            quickReplies: component.config?.staff?.map(s => s.name) || ['Staff Member 1', 'Any Staff'],
+            content: availableStaff.length > 0
+              ? 'Please choose a staff member:'
+              : 'Please add staff in Step 3 first',
+            quickReplies: staffOptions,
             timestamp: new Date(),
           });
         }
@@ -114,6 +130,29 @@ export default function LinePreview({ components, businessName = 'Your Business'
     ]);
     setUserInput('');
     setTimeout(() => processNextComponent(), 500);
+  };
+
+  const handleMouseDown = (e) => {
+    if (!carouselRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || !carouselRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - carouselRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll speed multiplier
+    carouselRef.current.scrollLeft = scrollLeft - walk;
   };
 
   const currentComponent = components.sort((a, b) => a.order - b.order)[currentStep - 1];
@@ -162,13 +201,33 @@ export default function LinePreview({ components, businessName = 'Your Business'
 
                   {/* Services display */}
                   {message.serviceData && (
-                    <div className={`mt-3 ${message.displayStyle === 'carousel' ? 'overflow-x-auto' : 'space-y-2'}`}>
+                    <div className={`mt-3 ${message.displayStyle === 'carousel' ? 'overflow-x-auto scrollbar-hide' : 'space-y-2'}`}>
                       {message.displayStyle === 'carousel' ? (
-                        <div className="flex gap-2 pb-2">
+                        <div
+                          ref={carouselRef}
+                          onMouseDown={handleMouseDown}
+                          onMouseLeave={handleMouseLeave}
+                          onMouseUp={handleMouseUp}
+                          onMouseMove={handleMouseMove}
+                          className={`flex gap-2 pb-2 overflow-x-auto scrollbar-hide select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                          style={{ scrollBehavior: isDragging ? 'auto' : 'smooth' }}
+                        >
                           {message.serviceData.map((service, idx) => (
-                            <div
+                            <button
                               key={idx}
-                              className="flex-shrink-0 w-48 bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-3"
+                              onClick={(e) => {
+                                // Only trigger click if not dragging
+                                if (!isDragging) {
+                                  handleQuickReply(service.name);
+                                }
+                              }}
+                              onMouseDown={(e) => {
+                                // Prevent text selection during drag
+                                if (isDragging) {
+                                  e.preventDefault();
+                                }
+                              }}
+                              className="flex-shrink-0 w-48 bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-lg p-3 hover:border-orange-400 hover:shadow-md transition-all cursor-pointer text-left"
                             >
                               <div className="font-semibold text-slate-900 text-sm mb-1">
                                 {service.name}
@@ -190,15 +249,16 @@ export default function LinePreview({ components, businessName = 'Your Business'
                                   </span>
                                 )}
                               </div>
-                            </div>
+                            </button>
                           ))}
                         </div>
                       ) : (
                         <div className="space-y-2">
                           {message.serviceData.map((service, idx) => (
-                            <div
+                            <button
                               key={idx}
-                              className="bg-slate-50 border border-slate-200 rounded-lg p-3"
+                              onClick={() => handleQuickReply(service.name)}
+                              className="w-full bg-slate-50 border-2 border-slate-200 rounded-lg p-3 hover:border-orange-400 hover:bg-orange-50 transition-all cursor-pointer text-left"
                             >
                               <div className="font-semibold text-slate-900 text-sm mb-1">
                                 {service.name}
@@ -220,7 +280,7 @@ export default function LinePreview({ components, businessName = 'Your Business'
                                   </span>
                                 )}
                               </div>
-                            </div>
+                            </button>
                           ))}
                         </div>
                       )}

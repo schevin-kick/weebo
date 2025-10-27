@@ -6,6 +6,7 @@ import WizardStepper from '@/components/wizard/WizardStepper';
 import StepNavigation from '@/components/wizard/StepNavigation';
 import BusinessInfoStep from '@/components/wizard/BusinessInfoStep';
 import ServicesStep from '@/components/wizard/ServicesStep';
+import StaffStep from '@/components/wizard/StaffStep';
 import WorkflowBuilderStep from '@/components/wizard/WorkflowBuilderStep';
 import FallingSakura from '@/components/background/FallingSakura';
 
@@ -18,11 +19,13 @@ export default function SetupWizardPage() {
   const businessName = useSetupWizardStore((state) => state.businessName);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
   const services = useSetupWizardStore((state) => state.services);
+  const staff = useSetupWizardStore((state) => state.staff);
   const workflowComponents = useSetupWizardStore((state) => state.workflowComponents);
 
   const isStep1Valid = useSetupWizardStore((state) => state.isStep1Valid);
   const isStep2Valid = useSetupWizardStore((state) => state.isStep2Valid);
   const isStep3Valid = useSetupWizardStore((state) => state.isStep3Valid);
+  const isStep4Valid = useSetupWizardStore((state) => state.isStep4Valid);
 
   const handleSave = async () => {
     // TODO: Save to database
@@ -39,6 +42,8 @@ export default function SetupWizardPage() {
         return isStep2Valid();
       case 3:
         return isStep3Valid();
+      case 4:
+        return isStep4Valid();
       default:
         return false;
     }
@@ -71,10 +76,11 @@ export default function SetupWizardPage() {
       <WizardStepper currentStep={currentStep} />
 
       {/* Main content */}
-      <main className={`mx-auto px-4 sm:px-6 lg:px-8 pb-32 ${currentStep === 3 ? 'max-w-[1600px]' : 'max-w-7xl'}`}>
+      <main className={`mx-auto px-4 sm:px-6 lg:px-8 pb-32 ${currentStep === 4 ? 'max-w-[1600px]' : 'max-w-7xl'}`}>
         {currentStep === 1 && <BusinessInfoStep />}
         {currentStep === 2 && <ServicesStep />}
-        {currentStep === 3 && <WorkflowBuilderStep />}
+        {currentStep === 3 && <StaffStep />}
+        {currentStep === 4 && <WorkflowBuilderStep />}
       </main>
 
       {/* Navigation */}
@@ -84,7 +90,7 @@ export default function SetupWizardPage() {
         onNext={nextStep}
         onSave={handleSave}
         canProceed={canProceed()}
-        isLastStep={currentStep === 3}
+        isLastStep={currentStep === 4}
       />
     </div>
     </>

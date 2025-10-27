@@ -62,7 +62,7 @@ export default function WorkflowBuilderStep() {
       case 'staff-selector':
         defaultConfig = {
           enabled: false,
-          staff: [],
+          selectedStaff: [],
         };
         break;
       case 'availability':
