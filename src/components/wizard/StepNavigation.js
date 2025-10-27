@@ -11,7 +11,7 @@ export default function StepNavigation({
   isLastStep = false,
 }) {
   return (
-    <div className="border-t border-slate-200 bg-white px-4 py-4 sm:px-6 sticky bottom-0">
+    <div className="border-t border-slate-200 bg-white/95 backdrop-blur-sm px-4 py-4 sm:px-6 shadow-[0_-4px_12px_rgba(0,0,0,0.1)]">
       <div className="max-w-3xl mx-auto flex items-center justify-between">
         {/* Back button */}
         {currentStep > 1 ? (

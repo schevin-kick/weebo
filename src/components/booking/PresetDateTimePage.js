@@ -49,11 +49,14 @@ export default function PresetDateTimePage({
 
   // Generate available time slots for selected date
   const availableTimeSlots = useMemo(() => {
-    if (!selectedDate || !selectedService) return [];
+    if (!selectedDate) return [];
+
+    // Use service duration if available, otherwise default to 60 minutes
+    const duration = selectedService?.duration || 60;
 
     return generateTimeSlots(
       selectedDate,
-      selectedService.duration,
+      duration,
       businessHours,
       staffMember
     );

@@ -49,9 +49,9 @@ export default function SetupWizardPage() {
       {/* Falling Sakura Animation */}
       <FallingSakura />
 
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws">
+      <div className="h-screen flex flex-col bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws overflow-hidden">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+      <header className="bg-white border-b border-slate-200 z-40 shadow-sm flex-shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
@@ -67,26 +67,31 @@ export default function SetupWizardPage() {
         </div>
       </header>
 
-      {/* Stepper */}
-      <WizardStepper currentStep={currentStep} />
+      {/* Scrollable Content Area (includes stepper and main content) */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Stepper */}
+        <WizardStepper currentStep={currentStep} />
 
-      {/* Main content */}
-      <main className={`mx-auto px-4 sm:px-6 lg:px-8 pb-32 ${currentStep === 4 ? 'max-w-[1600px]' : 'max-w-7xl'}`}>
-        {currentStep === 1 && <BusinessInfoStep />}
-        {currentStep === 2 && <ServicesStep />}
-        {currentStep === 3 && <StaffStep />}
-        {currentStep === 4 && <PageBuilderStep />}
-      </main>
+        {/* Main content */}
+        <main className={`mx-auto px-4 sm:px-6 lg:px-8 py-4 ${currentStep === 4 ? 'max-w-[1600px]' : 'max-w-7xl'}`}>
+          {currentStep === 1 && <BusinessInfoStep />}
+          {currentStep === 2 && <ServicesStep />}
+          {currentStep === 3 && <StaffStep />}
+          {currentStep === 4 && <PageBuilderStep />}
+        </main>
+      </div>
 
-      {/* Navigation */}
-      <StepNavigation
-        currentStep={currentStep}
-        onPrev={prevStep}
-        onNext={nextStep}
-        onSave={handleSave}
-        canProceed={canProceed}
-        isLastStep={currentStep === 4}
-      />
+      {/* Fixed Navigation at Bottom */}
+      <div className="flex-shrink-0">
+        <StepNavigation
+          currentStep={currentStep}
+          onPrev={prevStep}
+          onNext={nextStep}
+          onSave={handleSave}
+          canProceed={canProceed}
+          isLastStep={currentStep === 4}
+        />
+      </div>
     </div>
     </>
   );

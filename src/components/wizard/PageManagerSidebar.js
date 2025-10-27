@@ -262,8 +262,28 @@ export default function PageManagerSidebar() {
       return;
     }
 
+    // Find the datetime page index
+    const dateTimeIndex = sortedPages.findIndex((page) => page.type === 'preset-datetime');
+
+    // Prevent moving any page to the last position (reserved for datetime)
+    if (dateTimeIndex !== -1 && newIndex === sortedPages.length - 1) {
+      setActiveId(null);
+      return;
+    }
+
     // Reorder using dnd-kit's arrayMove utility
     const reorderedPages = arrayMove(sortedPages, oldIndex, newIndex);
+
+    // Ensure datetime page is always last
+    const dateTimePage = reorderedPages.find((page) => page.type === 'preset-datetime');
+    if (dateTimePage) {
+      const currentDateTimeIndex = reorderedPages.findIndex((page) => page.type === 'preset-datetime');
+      if (currentDateTimeIndex !== reorderedPages.length - 1) {
+        // Move datetime page to the end
+        reorderedPages.splice(currentDateTimeIndex, 1);
+        reorderedPages.push(dateTimePage);
+      }
+    }
 
     // Update order property for all pages
     reorderedPages.forEach((page, index) => {
@@ -330,20 +350,26 @@ export default function PageManagerSidebar() {
             </div>
           ) : (
             <SortableContext items={pageIds} strategy={verticalListSortingStrategy}>
-              {sortedPages.map((page, index) => (
-                <SortablePageCard
-                  key={page.id}
-                  page={page}
-                  index={index}
-                  isActive={page.id === currentEditingPageId}
-                  onSelect={setCurrentEditingPageId}
-                  onDelete={() => deletePage(page.id)}
-                  onMoveUp={() => movePageUp(page.id)}
-                  onMoveDown={() => movePageDown(page.id)}
-                  canMoveUp={index > 0}
-                  canMoveDown={index < sortedPages.length - 1}
-                />
-              ))}
+              {sortedPages.map((page, index) => {
+                const isDateTimePage = page.type === 'preset-datetime';
+                const dateTimeIndex = sortedPages.findIndex((p) => p.type === 'preset-datetime');
+                const isBeforeDateTime = dateTimeIndex !== -1 && index === dateTimeIndex - 1;
+
+                return (
+                  <SortablePageCard
+                    key={page.id}
+                    page={page}
+                    index={index}
+                    isActive={page.id === currentEditingPageId}
+                    onSelect={setCurrentEditingPageId}
+                    onDelete={() => deletePage(page.id)}
+                    onMoveUp={() => movePageUp(page.id)}
+                    onMoveDown={() => movePageDown(page.id)}
+                    canMoveUp={index > 0 && !isDateTimePage}
+                    canMoveDown={index < sortedPages.length - 1 && !isDateTimePage && !isBeforeDateTime}
+                  />
+                );
+              })}
             </SortableContext>
           )}
         </div>

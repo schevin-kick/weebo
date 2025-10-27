@@ -88,7 +88,7 @@ export default function PageBuilderStep() {
   };
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       {/* Preview Modal */}
       {showPreviewModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -119,21 +119,21 @@ export default function PageBuilderStep() {
       )}
 
       {/* Main layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Page Manager */}
-        <div className="lg:col-span-3">
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sticky top-24 max-h-[calc(100vh-7rem)] overflow-hidden flex flex-col">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 overflow-hidden">
+        {/* Left: Page Manager - Fixed height, internal scrolling */}
+        <div className="lg:col-span-3 flex flex-col gap-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex-shrink-0">
             <PageManagerSidebar />
           </div>
 
           {/* Preset Page Selector */}
-          <div className="mt-4 bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex-shrink-0">
             <PresetPageSelector />
           </div>
         </div>
 
-        {/* Center: Form Builder */}
-        <div className="lg:col-span-6">
+        {/* Center: Form Builder - Scrollable */}
+        <div className="lg:col-span-6 overflow-y-auto">
           <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
             {/* Header */}
             <div className="mb-6 pb-6 border-b border-slate-200">
@@ -169,10 +169,9 @@ export default function PageBuilderStep() {
           </div>
         </div>
 
-        {/* Right: Component Palette */}
-        <div className="lg:col-span-3">
-          {/* Component Palette */}
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sticky top-24">
+        {/* Right: Component Palette - Scrollable */}
+        <div className="lg:col-span-3 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
             <ComponentPalette
               onAddPresetField={handleAddPresetField}
               onAddCustomField={handleAddCustomField}

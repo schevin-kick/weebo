@@ -62,6 +62,10 @@ export function getAvailableHours(date, businessHours, staff = null) {
 
   // Use business hours
   if (businessHours.mode === '24/7') {
+    // If mode is 24/7 but sameDaily is configured, use sameDaily
+    if (businessHours.sameDaily && businessHours.sameDaily.open && businessHours.sameDaily.close) {
+      return businessHours.sameDaily;
+    }
     return { open: '00:00', close: '23:59' };
   }
 
@@ -74,7 +78,12 @@ export function getAvailableHours(date, businessHours, staff = null) {
   }
 
   // same-daily mode
-  return businessHours.sameDaily;
+  if (businessHours.sameDaily) {
+    return businessHours.sameDaily;
+  }
+
+  // Fallback to business hours during the day
+  return { open: '09:00', close: '17:00' };
 }
 
 /**

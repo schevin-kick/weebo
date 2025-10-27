@@ -5,6 +5,11 @@ export default function BookingStepper({ pages, currentPageIndex, isReviewPage =
   const currentStep = isReviewPage ? totalSteps : currentPageIndex + 1;
   const progressPercentage = (currentStep / totalSteps) * 100;
 
+  // Hide stepper if there's only one page (2 steps total including review)
+  if (pages.length <= 1) {
+    return null;
+  }
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-xs text-slate-600">
