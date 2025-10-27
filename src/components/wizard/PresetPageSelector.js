@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { List, Users, Calendar } from 'lucide-react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 
@@ -30,6 +31,12 @@ const PRESET_PAGES = [
 export default function PresetPageSelector() {
   const presetPagesConfig = useSetupWizardStore((state) => state.presetPagesConfig);
   const togglePresetPage = useSetupWizardStore((state) => state.togglePresetPage);
+  const ensureDateTimePage = useSetupWizardStore((state) => state.ensureDateTimePage);
+
+  // Ensure DateTime page is present on mount
+  useEffect(() => {
+    ensureDateTimePage();
+  }, [ensureDateTimePage]);
 
   return (
     <div className="space-y-4">
@@ -46,11 +53,14 @@ export default function PresetPageSelector() {
         {PRESET_PAGES.map((preset) => {
           const Icon = preset.icon;
           const isEnabled = presetPagesConfig[preset.type];
+          const isRequired = preset.type === 'dateTime';
+          const isDisabled = isRequired;
 
           return (
             <button
               key={preset.type}
-              onClick={() => togglePresetPage(preset.type)}
+              onClick={() => !isDisabled && togglePresetPage(preset.type)}
+              disabled={isDisabled}
               className={`
                 w-full group relative p-4 rounded-xl border-2 text-left transition-all
                 ${
@@ -58,6 +68,7 @@ export default function PresetPageSelector() {
                     ? 'border-orange-500 bg-orange-50 shadow-md'
                     : 'border-slate-200 bg-white hover:border-orange-300 hover:shadow-md'
                 }
+                ${isDisabled ? 'cursor-not-allowed opacity-90' : ''}
               `}
             >
               <div className="flex items-start gap-3">
@@ -73,8 +84,15 @@ export default function PresetPageSelector() {
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-slate-900 text-sm mb-1">
-                    {preset.name}
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="font-semibold text-slate-900 text-sm">
+                      {preset.name}
+                    </div>
+                    {isRequired && (
+                      <span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded">
+                        Required
+                      </span>
+                    )}
                   </div>
                   <p className="text-xs text-slate-600 leading-snug">
                     {preset.description}
@@ -116,10 +134,10 @@ export default function PresetPageSelector() {
 
       {/* Info note */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-900">
-        <p className="font-medium mb-1">Flexible positioning</p>
+        <p className="font-medium mb-1">About Preset Pages</p>
         <p className="text-blue-700 text-xs">
-          Preset pages can be positioned anywhere in your flow. Reorder them in the page
-          list on the left.
+          Date & Time is required for all bookings and will always appear last. Other preset
+          pages can be positioned anywhere in your flow by reordering them in the page list.
         </p>
       </div>
     </div>

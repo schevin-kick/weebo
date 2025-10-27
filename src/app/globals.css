@@ -128,3 +128,8 @@ input:-webkit-autofill:focus {
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
 }
+
+/* Safe area support for devices with notches */
+.pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}

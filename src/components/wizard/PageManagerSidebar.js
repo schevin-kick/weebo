@@ -58,6 +58,9 @@ function SortablePageCard({
   canMoveUp,
   canMoveDown,
 }) {
+  const isDateTimePage = page.type === 'preset-datetime';
+  const isDraggable = !isDateTimePage;
+
   const {
     attributes,
     listeners,
@@ -65,7 +68,7 @@ function SortablePageCard({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: page.id });
+  } = useSortable({ id: page.id, disabled: !isDraggable });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -96,7 +99,11 @@ function SortablePageCard({
         <div
           {...attributes}
           {...listeners}
-          className="flex-shrink-0 text-slate-400 hover:text-orange-500 transition-colors cursor-grab active:cursor-grabbing touch-none"
+          className={`flex-shrink-0 transition-colors touch-none ${
+            isDraggable
+              ? 'text-slate-400 hover:text-orange-500 cursor-grab active:cursor-grabbing'
+              : 'text-slate-300 cursor-not-allowed'
+          }`}
         >
           <GripVertical className="w-4 h-4" />
         </div>
@@ -115,8 +122,15 @@ function SortablePageCard({
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="font-semibold text-slate-900 text-sm truncate">
-            {page.title}
+          <div className="flex items-center gap-1.5">
+            <div className="font-semibold text-slate-900 text-sm truncate">
+              {page.title}
+            </div>
+            {isDateTimePage && (
+              <span className="flex-shrink-0 px-1.5 py-0.5 bg-orange-100 text-orange-700 text-[10px] font-semibold rounded">
+                Required
+              </span>
+            )}
           </div>
           <div className="text-xs text-slate-500 truncate">
             {isPreset ? label : `${page.components.length} fields`}
@@ -163,18 +177,20 @@ function SortablePageCard({
         <div className="flex-1"></div>
 
         {/* Delete button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            if (confirm(`Are you sure you want to delete "${page.title}"?`)) {
-              onDelete();
-            }
-          }}
-          className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-          title="Delete page"
-        >
-          <Trash2 className="w-3 h-3" />
-        </button>
+        {!isDateTimePage && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (confirm(`Are you sure you want to delete "${page.title}"?`)) {
+                onDelete();
+              }
+            }}
+            className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+            title="Delete page"
+          >
+            <Trash2 className="w-3 h-3" />
+          </button>
+        )}
       </div>
     </div>
   );

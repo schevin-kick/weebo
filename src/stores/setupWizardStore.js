@@ -208,6 +208,12 @@ const useSetupWizardStore = create(
       deletePage: (id) =>
         set((state) => {
           const deletedPage = state.pages.find(p => p.id === id);
+
+          // Cannot delete datetime page - it's required
+          if (deletedPage?.type === 'preset-datetime') {
+            return state;
+          }
+
           const newPages = state.pages
             .filter((p) => p.id !== id)
             .map((p, index) => ({ ...p, order: index }));
@@ -216,7 +222,6 @@ const useSetupWizardStore = create(
           const newPresetConfig = { ...state.presetPagesConfig };
           if (deletedPage?.type === 'preset-services') newPresetConfig.services = false;
           if (deletedPage?.type === 'preset-staff') newPresetConfig.staff = false;
-          if (deletedPage?.type === 'preset-datetime') newPresetConfig.dateTime = false;
 
           return {
             pages: newPages,
@@ -243,8 +248,13 @@ const useSetupWizardStore = create(
 
       movePageDown: (id) =>
         set((state) => {
+          const page = state.pages.find((p) => p.id === id);
           const index = state.pages.findIndex((p) => p.id === id);
+
+          // Cannot move datetime page or move a page past the datetime page (which should be last)
           if (index === -1 || index >= state.pages.length - 1) return state;
+          if (page?.type === 'preset-datetime') return state;
+          if (state.pages[index + 1]?.type === 'preset-datetime') return state;
 
           const newPages = [...state.pages];
           [newPages[index], newPages[index + 1]] = [newPages[index + 1], newPages[index]];
@@ -328,6 +338,11 @@ const useSetupWizardStore = create(
       // Preset page toggling
       togglePresetPage: (presetType) =>
         set((state) => {
+          // DateTime page cannot be removed - it's required
+          if (presetType === 'dateTime') {
+            return state;
+          }
+
           const typeMap = {
             services: 'preset-services',
             staff: 'preset-staff',
@@ -377,6 +392,41 @@ const useSetupWizardStore = create(
               },
             };
           }
+        }),
+
+      // Ensure datetime page is always present and last
+      ensureDateTimePage: () =>
+        set((state) => {
+          const hasDateTimePage = state.pages.some((p) => p.type === 'preset-datetime');
+
+          if (!hasDateTimePage) {
+            const { generateId } = require('../utils/fieldNameHelper');
+            const newPage = {
+              id: generateId(),
+              type: 'preset-datetime',
+              title: 'Choose Date & Time',
+              order: state.pages.length,
+              components: [],
+            };
+
+            return {
+              pages: [...state.pages, newPage],
+              presetPagesConfig: {
+                ...state.presetPagesConfig,
+                dateTime: true,
+              },
+            };
+          }
+
+          // Ensure datetime page is last
+          const dateTimePage = state.pages.find((p) => p.type === 'preset-datetime');
+          const otherPages = state.pages.filter((p) => p.type !== 'preset-datetime');
+          const reorderedPages = [
+            ...otherPages.map((p, index) => ({ ...p, order: index })),
+            { ...dateTimePage, order: otherPages.length }
+          ];
+
+          return { pages: reorderedPages };
         }),
 
       // Navigation
