@@ -35,6 +35,69 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
 
   const renderConfigForm = () => {
     const isPreset = component.type === 'preset-field';
+    const isInfoText = component.type === 'info-text';
+
+    if (isInfoText) {
+      // Info text configuration
+      return (
+        <div className="space-y-4">
+          <div className="bg-sky-50 border border-sky-200 rounded-lg p-3">
+            <p className="text-sm text-sky-900 font-medium">
+              Info Text Component
+            </p>
+            <p className="text-sm text-sky-700 mt-1">
+              Display informational text to customers. No input required.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Content <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={config.content || ''}
+              onChange={(e) => setConfig({ ...config, content: e.target.value })}
+              placeholder="Enter the information you want to display to customers..."
+              rows={6}
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
+            />
+            <p className="text-xs text-slate-500 mt-1">
+              This text will be displayed to customers in the booking flow
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Display Style
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: 'info', label: 'Info', color: 'bg-blue-50 border-blue-200 text-blue-900' },
+                { value: 'warning', label: 'Warning', color: 'bg-amber-50 border-amber-200 text-amber-900' },
+                { value: 'success', label: 'Success', color: 'bg-green-50 border-green-200 text-green-900' },
+                { value: 'plain', label: 'Plain', color: 'bg-slate-50 border-slate-200 text-slate-900' },
+              ].map((style) => (
+                <button
+                  key={style.value}
+                  type="button"
+                  onClick={() => setConfig({ ...config, style: style.value })}
+                  className={`p-3 border-2 rounded-lg font-medium text-sm transition-all ${
+                    config.style === style.value
+                      ? 'border-orange-500 ring-2 ring-orange-200'
+                      : style.color
+                  }`}
+                >
+                  {style.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-slate-500 mt-2">
+              Choose how the information should be visually presented
+            </p>
+          </div>
+        </div>
+      );
+    }
 
     if (isPreset) {
       // Preset field configuration
@@ -238,6 +301,9 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
   const getTitle = () => {
     if (component.type === 'preset-field') {
       return `Configure ${PRESET_FIELD_LABELS[component.fieldType]} Field`;
+    }
+    if (component.type === 'info-text') {
+      return 'Configure Info Text';
     }
     return 'Configure Custom Field';
   };

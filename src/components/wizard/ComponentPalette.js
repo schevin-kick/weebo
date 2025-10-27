@@ -12,6 +12,7 @@ import {
   Circle,
   CheckSquare,
   Hash,
+  Info,
 } from 'lucide-react';
 
 const PRESET_FIELDS = [
@@ -54,6 +55,13 @@ const PRESET_FIELDS = [
 ];
 
 const CUSTOM_FIELD_TYPES = [
+  {
+    inputType: 'info-text',
+    name: 'Info Text',
+    description: 'Display information',
+    icon: Info,
+    color: 'bg-sky-500',
+  },
   {
     inputType: 'text',
     name: 'Text Input',

@@ -1,14 +1,15 @@
 'use client';
 
-import { Store, Info } from 'lucide-react';
+import { Store, Info, Clock } from 'lucide-react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import BusinessHoursPicker from '@/components/shared/BusinessHoursPicker';
 import RichMenuPicker from '@/components/shared/RichMenuPicker';
+import DurationPicker from '@/components/shared/DurationPicker';
 
 export default function BusinessInfoStep() {
   const businessName = useSetupWizardStore((state) => state.businessName);
-  const welcomeMessage = useSetupWizardStore((state) => state.welcomeMessage);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
+  const defaultAppointmentDuration = useSetupWizardStore((state) => state.defaultAppointmentDuration);
   const appointmentOnly = useSetupWizardStore((state) => state.appointmentOnly);
   const richMenu = useSetupWizardStore((state) => state.richMenu);
   const contactInfo = useSetupWizardStore((state) => state.contactInfo);
@@ -16,7 +17,9 @@ export default function BusinessInfoStep() {
   // Compute validation locally so it re-renders when state changes
   const isValid = (() => {
     if (!businessName || businessName.length < 3) return false;
-    if (!welcomeMessage || welcomeMessage.trim().length === 0) return false;
+
+    // Validate default appointment duration
+    if (!defaultAppointmentDuration || defaultAppointmentDuration < 5) return false;
 
     if (businessHours.mode === 'same-daily') {
       const { open, close } = businessHours.sameDaily;
@@ -45,13 +48,13 @@ export default function BusinessInfoStep() {
   })();
 
   const setBusinessName = useSetupWizardStore((state) => state.setBusinessName);
-  const setWelcomeMessage = useSetupWizardStore((state) => state.setWelcomeMessage);
   const updateContactInfo = useSetupWizardStore((state) => state.updateContactInfo);
   const setBusinessHoursMode = useSetupWizardStore(
     (state) => state.setBusinessHoursMode
   );
   const setSameDailyHours = useSetupWizardStore((state) => state.setSameDailyHours);
   const setCustomDayHours = useSetupWizardStore((state) => state.setCustomDayHours);
+  const setDefaultAppointmentDuration = useSetupWizardStore((state) => state.setDefaultAppointmentDuration);
   const setAppointmentOnly = useSetupWizardStore((state) => state.setAppointmentOnly);
   const setRichMenuEnabled = useSetupWizardStore((state) => state.setRichMenuEnabled);
   const updateRichMenuItem = useSetupWizardStore((state) => state.updateRichMenuItem);
@@ -62,8 +65,7 @@ export default function BusinessInfoStep() {
   console.log('Step 1 Validation:', {
     businessName,
     businessNameLength: businessName?.length,
-    welcomeMessage,
-    welcomeMessageLength: welcomeMessage?.length,
+    defaultAppointmentDuration,
     contactInfo,
     richMenu: richMenu.items.map(item => ({ type: item.type, enabled: item.enabled })),
     businessHours,
@@ -113,32 +115,6 @@ export default function BusinessInfoStep() {
             )}
           </div>
 
-          {/* Welcome Message */}
-          <div>
-            <label
-              htmlFor="welcome-message"
-              className="block text-sm font-medium text-slate-700 mb-2"
-            >
-              Welcome Message <span className="text-orange-500">*</span>
-            </label>
-            <textarea
-              id="welcome-message"
-              value={welcomeMessage}
-              onChange={(e) => setWelcomeMessage(e.target.value)}
-              placeholder="Welcome to {business_name}! I'm here to help you book appointments."
-              rows={3}
-              className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-            />
-            <p className="text-xs text-slate-500 mt-1">
-              This message appears when customers first add your bot. Use {'{business_name}'} as a placeholder for your business name.
-            </p>
-            {welcomeMessage && welcomeMessage.trim().length === 0 && (
-              <p className="text-sm text-orange-600 mt-2">
-                Welcome message is required
-              </p>
-            )}
-          </div>
-
           {/* Business Hours */}
           <BusinessHoursPicker
             mode={businessHours.mode}
@@ -148,6 +124,34 @@ export default function BusinessInfoStep() {
             onSameDailyChange={setSameDailyHours}
             onCustomDayChange={setCustomDayHours}
           />
+
+          {/* Default Appointment Duration */}
+          <div className="bg-white border border-slate-200 rounded-xl p-6">
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-5 h-5 text-orange-600" />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Default Appointment Duration <span className="text-orange-500">*</span>
+                  </label>
+                  <p className="text-xs text-slate-500 mb-3">
+                    Used when no service is selected or services aren&apos;t configured. Individual services can override this duration.
+                  </p>
+                  <DurationPicker
+                    value={defaultAppointmentDuration}
+                    onChange={setDefaultAppointmentDuration}
+                  />
+                  {defaultAppointmentDuration && defaultAppointmentDuration < 5 && (
+                    <p className="text-sm text-orange-600 mt-2">
+                      Duration must be at least 5 minutes
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Appointment Only Mode */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
@@ -293,8 +297,8 @@ export default function BusinessInfoStep() {
                 {(!businessName || businessName.length < 3) && (
                   <li>• Enter a business name (at least 3 characters)</li>
                 )}
-                {(!welcomeMessage || welcomeMessage.trim().length === 0) && (
-                  <li>• Enter a welcome message</li>
+                {(!defaultAppointmentDuration || defaultAppointmentDuration < 5) && (
+                  <li>• Set a default appointment duration (at least 5 minutes)</li>
                 )}
                 {businessHours.mode === 'same-daily' && businessHours.sameDaily.open >= businessHours.sameDaily.close && (
                   <li>• Opening time must be before closing time</li>

@@ -68,6 +68,21 @@ export default function PageBuilderStep() {
       return;
     }
 
+    // Handle info-text component differently
+    if (inputType === 'info-text') {
+      const newComponent = {
+        id: generateId(),
+        type: 'info-text',
+        content: 'Enter your information text here...',
+        style: 'info', // 'info', 'warning', 'success', 'plain'
+      };
+
+      addComponentToPage(currentEditingPageId, newComponent);
+      setConfigComponentId(newComponent.id);
+      toast.success('Added Info Text component');
+      return;
+    }
+
     const newComponent = {
       id: generateId(),
       type: 'custom-field',

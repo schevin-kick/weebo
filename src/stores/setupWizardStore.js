@@ -37,8 +37,8 @@ const useSetupWizardStore = create(
     (set, get) => ({
       // Step 1: Business Info
       businessName: '',
-      welcomeMessage: 'Welcome to {business_name}! I\'m here to help you book appointments.',
       businessHours: initialBusinessHours,
+      defaultAppointmentDuration: 60,
       appointmentOnly: false,
       richMenu: initialRichMenu,
       contactInfo: initialContactInfo,
@@ -63,8 +63,6 @@ const useSetupWizardStore = create(
 
       // Actions
       setBusinessName: (name) => set({ businessName: name }),
-
-      setWelcomeMessage: (message) => set({ welcomeMessage: message }),
 
       updateContactInfo: (updates) =>
         set((state) => ({
@@ -96,6 +94,8 @@ const useSetupWizardStore = create(
         })),
 
       setAppointmentOnly: (value) => set({ appointmentOnly: value }),
+
+      setDefaultAppointmentDuration: (duration) => set({ defaultAppointmentDuration: duration }),
 
       // Rich Menu actions
       setRichMenuEnabled: (enabled) =>
@@ -446,7 +446,9 @@ const useSetupWizardStore = create(
       isStep1Valid: () => {
         const state = get();
         if (!state.businessName || state.businessName.length < 3) return false;
-        if (!state.welcomeMessage || state.welcomeMessage.trim().length === 0) return false;
+
+        // Validate default appointment duration
+        if (!state.defaultAppointmentDuration || state.defaultAppointmentDuration < 5) return false;
 
         if (state.businessHours.mode === 'same-daily') {
           const { open, close } = state.businessHours.sameDaily;
@@ -541,8 +543,8 @@ const useSetupWizardStore = create(
       reset: () =>
         set({
           businessName: '',
-          welcomeMessage: 'Welcome to {business_name}! I\'m here to help you book appointments.',
           businessHours: initialBusinessHours,
+          defaultAppointmentDuration: 60,
           appointmentOnly: false,
           richMenu: initialRichMenu,
           contactInfo: initialContactInfo,
@@ -562,8 +564,8 @@ const useSetupWizardStore = create(
       name: 'kitsune-setup-wizard',
       partialize: (state) => ({
         businessName: state.businessName,
-        welcomeMessage: state.welcomeMessage,
         businessHours: state.businessHours,
+        defaultAppointmentDuration: state.defaultAppointmentDuration,
         appointmentOnly: state.appointmentOnly,
         richMenu: state.richMenu,
         contactInfo: state.contactInfo,

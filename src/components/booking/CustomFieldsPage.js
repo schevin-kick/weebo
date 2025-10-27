@@ -32,6 +32,26 @@ export default function CustomFieldsPage({ page, responses, onResponseChange }) 
   };
 
   const renderField = (component) => {
+    // Handle info-text component (display only, no input)
+    if (component.type === 'info-text') {
+      const styleClasses = {
+        info: 'bg-blue-50 border-blue-200 text-blue-900',
+        warning: 'bg-amber-50 border-amber-200 text-amber-900',
+        success: 'bg-green-50 border-green-200 text-green-900',
+        plain: 'bg-slate-50 border-slate-200 text-slate-700',
+      };
+
+      const style = component.style || 'info';
+
+      return (
+        <div key={component.id} className={`p-4 border-2 rounded-xl ${styleClasses[style]}`}>
+          <p className="text-sm whitespace-pre-wrap leading-relaxed">
+            {component.content || 'No content'}
+          </p>
+        </div>
+      );
+    }
+
     const value = responses[component.id] || '';
     const error = errors[component.id];
     const isPreset = component.type === 'preset-field';

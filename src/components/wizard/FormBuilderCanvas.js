@@ -171,11 +171,12 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
             <div className="space-y-3">
               {page.components.map((component, index) => {
                 const isPresetField = component.type === 'preset-field';
+                const isInfoText = component.type === 'info-text';
                 const icon = isPresetField
                   ? PRESET_FIELD_ICONS[component.fieldType]
                   : null;
-                const Icon = icon?.icon || Type;
-                const color = icon?.color || 'bg-slate-500';
+                const Icon = icon?.icon || FileText;
+                const color = isInfoText ? 'bg-sky-500' : (icon?.color || 'bg-slate-500');
 
                 return (
                   <div
@@ -192,22 +193,35 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-slate-900">
-                          {component.label}
-                        </div>
-                        <div className="text-sm text-slate-600">
-                          {isPresetField
-                            ? `${icon?.label}${
-                                component.fieldType === 'email'
-                                  ? ` • ${component.validation ? 'Validated' : 'No validation'}`
-                                  : ''
-                              } • ${component.required ? 'Required' : 'Optional'}`
-                            : `${
-                                CUSTOM_FIELD_LABELS[component.inputType]
-                              } • ${
-                                component.required ? 'Required' : 'Optional'
-                              }`}
-                        </div>
+                        {isInfoText ? (
+                          <>
+                            <div className="font-semibold text-slate-900">
+                              Info Text
+                            </div>
+                            <div className="text-sm text-slate-600 truncate">
+                              {component.content || 'No content'}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="font-semibold text-slate-900">
+                              {component.label}
+                            </div>
+                            <div className="text-sm text-slate-600">
+                              {isPresetField
+                                ? `${icon?.label}${
+                                    component.fieldType === 'email'
+                                      ? ` • ${component.validation ? 'Validated' : 'No validation'}`
+                                      : ''
+                                  } • ${component.required ? 'Required' : 'Optional'}`
+                                : `${
+                                    CUSTOM_FIELD_LABELS[component.inputType]
+                                  } • ${
+                                    component.required ? 'Required' : 'Optional'
+                                  }`}
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       {/* Actions */}
@@ -252,9 +266,10 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                         {/* Delete button */}
                         <button
                           onClick={() => {
+                            const componentName = isInfoText ? 'this info text' : `"${component.label}"`;
                             if (
                               confirm(
-                                `Are you sure you want to delete "${component.label}"?`
+                                `Are you sure you want to delete ${componentName}?`
                               )
                             ) {
                               deleteComponent(pageId, component.id);

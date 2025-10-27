@@ -8,7 +8,7 @@ import useSetupWizardStore from '@/stores/setupWizardStore';
 export default function useStepValidation(currentStep) {
   // Subscribe to the actual state values that affect validation
   const businessName = useSetupWizardStore((state) => state.businessName);
-  const welcomeMessage = useSetupWizardStore((state) => state.welcomeMessage);
+  const defaultAppointmentDuration = useSetupWizardStore((state) => state.defaultAppointmentDuration);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
   const contactInfo = useSetupWizardStore((state) => state.contactInfo);
   const richMenu = useSetupWizardStore((state) => state.richMenu);
@@ -22,7 +22,7 @@ export default function useStepValidation(currentStep) {
       case 1: {
         // Step 1 validation
         if (!businessName || businessName.length < 3) return false;
-        if (!welcomeMessage || welcomeMessage.trim().length === 0) return false;
+        if (!defaultAppointmentDuration || defaultAppointmentDuration < 5) return false;
 
         if (businessHours.mode === 'same-daily') {
           const { open, close } = businessHours.sameDaily;
@@ -83,7 +83,12 @@ export default function useStepValidation(currentStep) {
 
           // Validate all components in the page
           return page.components.every((component) => {
-            // All components must have label
+            // Info text components are always valid (just need content)
+            if (component.type === 'info-text') {
+              return component.content && component.content.trim().length > 0;
+            }
+
+            // All other components must have label
             if (!component.label || component.label.trim().length === 0) return false;
 
             // Preset fields are valid with just label
@@ -108,7 +113,7 @@ export default function useStepValidation(currentStep) {
       default:
         return false;
     }
-  }, [currentStep, businessName, welcomeMessage, businessHours, contactInfo, richMenu, services, staff, pages]);
+  }, [currentStep, businessName, defaultAppointmentDuration, businessHours, contactInfo, richMenu, services, staff, pages]);
 
   return isValid;
 }

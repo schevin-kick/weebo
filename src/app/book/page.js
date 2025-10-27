@@ -31,6 +31,7 @@ export default function BookingPage() {
   const services = useSetupWizardStore((state) => state.services);
   const staff = useSetupWizardStore((state) => state.staff);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
+  const defaultAppointmentDuration = useSetupWizardStore((state) => state.defaultAppointmentDuration);
 
   // Booking store
   const currentPageIndex = useBookingStore((state) => state.currentPageIndex);
@@ -147,9 +148,9 @@ export default function BookingPage() {
   };
 
   const handleConfirm = () => {
+    completeBooking();
     const summary = getBookingSummary();
     console.log('Booking Summary:', summary);
-    completeBooking();
   };
 
   const handleEditPage = (pageId) => {
@@ -213,6 +214,7 @@ export default function BookingPage() {
           selectedService={selectedService}
           selectedStaff={selectedStaffId}
           staff={staff}
+          defaultAppointmentDuration={defaultAppointmentDuration}
         />
       );
     }

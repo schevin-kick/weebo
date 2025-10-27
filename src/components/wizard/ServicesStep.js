@@ -222,7 +222,7 @@ export default function ServicesStep() {
               <div>
                 <h2 className="text-2xl font-bold text-white">Services</h2>
                 <p className="text-orange-50 text-sm mt-1">
-                  Add the services you offer (optional)
+                  Add services with different durations, prices, or descriptions (optional)
                 </p>
               </div>
             </div>
@@ -244,7 +244,7 @@ export default function ServicesStep() {
                 No services yet
               </h3>
               <p className="text-slate-600 mb-6 max-w-md mx-auto">
-                Add the services you offer. Services are optional - if you only offer one service, you can skip this step.
+                Services are optional. Add them if you offer multiple options with different durations, prices, or descriptions. Your default appointment duration will be used when no service is selected.
               </p>
             </div>
           )}

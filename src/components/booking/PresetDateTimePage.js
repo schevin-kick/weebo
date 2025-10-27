@@ -19,6 +19,7 @@ export default function PresetDateTimePage({
   selectedService,
   selectedStaff,
   staff,
+  defaultAppointmentDuration = 60,
 }) {
   const [selectedDate, setSelectedDate] = useState(
     selectedDateTime?.date ? new Date(selectedDateTime.date + 'T00:00:00') : null
@@ -51,8 +52,8 @@ export default function PresetDateTimePage({
   const availableTimeSlots = useMemo(() => {
     if (!selectedDate) return [];
 
-    // Use service duration if available, otherwise default to 60 minutes
-    const duration = selectedService?.duration || 60;
+    // Use service duration if available, otherwise use default appointment duration
+    const duration = selectedService?.duration || defaultAppointmentDuration || 60;
 
     return generateTimeSlots(
       selectedDate,
@@ -60,7 +61,7 @@ export default function PresetDateTimePage({
       businessHours,
       staffMember
     );
-  }, [selectedDate, selectedService, businessHours, staffMember]);
+  }, [selectedDate, selectedService, defaultAppointmentDuration, businessHours, staffMember]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -99,17 +100,19 @@ export default function PresetDateTimePage({
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-slate-900 mb-6">{page.title}</h2>
 
-      {/* Service duration info */}
-      {selectedService && (
-        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
-          <div className="flex items-center gap-2 text-sm">
-            <Clock className="w-4 h-4 text-orange-600" />
-            <span className="text-orange-900 font-medium">
-              Service Duration: {selectedService.duration} minutes
-            </span>
-          </div>
+      {/* Duration info */}
+      <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+        <div className="flex items-center gap-2 text-sm">
+          <Clock className="w-4 h-4 text-orange-600" />
+          <span className="text-orange-900 font-medium">
+            {selectedService ? (
+              <>Appointment Duration: {selectedService.duration} minutes</>
+            ) : (
+              <>Default Appointment Duration: {defaultAppointmentDuration || 60} minutes</>
+            )}
+          </span>
         </div>
-      )}
+      </div>
 
       {/* Calendar */}
       <div className="space-y-3">
