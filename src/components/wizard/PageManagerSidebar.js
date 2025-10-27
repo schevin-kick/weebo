@@ -19,6 +19,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragOverlay,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -28,6 +29,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useState } from 'react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import { generateId } from '@/utils/fieldNameHelper';
 
@@ -85,7 +87,7 @@ function SortablePageCard({
             ? 'border-orange-500 bg-orange-50 shadow-md'
             : 'border-slate-200 bg-white hover:border-orange-300 hover:shadow-sm'
         }
-        ${isDragging ? 'opacity-50 z-50 shadow-2xl scale-105' : ''}
+        ${isDragging ? 'opacity-30' : ''}
       `}
       onClick={() => onSelect(page.id)}
     >
@@ -125,21 +127,21 @@ function SortablePageCard({
       {/* Actions */}
       <div className="flex items-center gap-1 mt-2 pt-2 border-t border-slate-200">
         {/* Reorder buttons */}
-        <div className="flex gap-0.5">
+        <div className="flex gap-1">
           <button
             onClick={(e) => {
               e.stopPropagation();
               onMoveUp();
             }}
             disabled={!canMoveUp}
-            className={`p-1 rounded ${
+            className={`p-1.5 rounded-md transition-all ${
               !canMoveUp
-                ? 'text-slate-300 cursor-not-allowed'
-                : 'text-slate-600 hover:text-orange-600 hover:bg-orange-50'
-            } transition-colors`}
+                ? 'text-slate-300 bg-slate-50 cursor-not-allowed'
+                : 'text-slate-700 bg-slate-100 hover:text-orange-600 hover:bg-orange-100 hover:scale-110'
+            }`}
             title="Move up"
           >
-            <ChevronUp className="w-3 h-3" />
+            <ChevronUp className="w-4 h-4" />
           </button>
           <button
             onClick={(e) => {
@@ -147,14 +149,14 @@ function SortablePageCard({
               onMoveDown();
             }}
             disabled={!canMoveDown}
-            className={`p-1 rounded ${
+            className={`p-1.5 rounded-md transition-all ${
               !canMoveDown
-                ? 'text-slate-300 cursor-not-allowed'
-                : 'text-slate-600 hover:text-orange-600 hover:bg-orange-50'
-            } transition-colors`}
+                ? 'text-slate-300 bg-slate-50 cursor-not-allowed'
+                : 'text-slate-700 bg-slate-100 hover:text-orange-600 hover:bg-orange-100 hover:scale-110'
+            }`}
             title="Move down"
           >
-            <ChevronDown className="w-3 h-3" />
+            <ChevronDown className="w-4 h-4" />
           </button>
         </div>
 
@@ -190,15 +192,22 @@ export default function PageManagerSidebar() {
   );
   const updatePage = useSetupWizardStore((state) => state.updatePage);
 
+  const [activeId, setActiveId] = useState(null);
+
   const customPagesCount = pages.filter((p) => p.type === 'custom').length;
   const canAddCustomPage = customPagesCount < 10;
 
   const sortedPages = [...pages].sort((a, b) => a.order - b.order);
   const pageIds = sortedPages.map((page) => page.id);
+  const activePage = sortedPages.find((page) => page.id === activeId);
 
   // Setup dnd-kit sensors for drag interactions
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement before drag starts (prevents accidental drags)
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -217,15 +226,25 @@ export default function PageManagerSidebar() {
     addPage(newPage);
   };
 
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
+  };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    if (!over || active.id === over.id) return;
+    if (!over || active.id === over.id) {
+      setActiveId(null);
+      return;
+    }
 
     const oldIndex = sortedPages.findIndex((page) => page.id === active.id);
     const newIndex = sortedPages.findIndex((page) => page.id === over.id);
 
-    if (oldIndex === -1 || newIndex === -1) return;
+    if (oldIndex === -1 || newIndex === -1) {
+      setActiveId(null);
+      return;
+    }
 
     // Reorder using dnd-kit's arrayMove utility
     const reorderedPages = arrayMove(sortedPages, oldIndex, newIndex);
@@ -234,6 +253,12 @@ export default function PageManagerSidebar() {
     reorderedPages.forEach((page, index) => {
       updatePage(page.id, { order: index });
     });
+
+    setActiveId(null);
+  };
+
+  const handleDragCancel = () => {
+    setActiveId(null);
   };
 
   return (
@@ -272,7 +297,9 @@ export default function PageManagerSidebar() {
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
       >
         <div className="flex-1 overflow-y-auto space-y-2">
           {sortedPages.length === 0 ? (
@@ -304,6 +331,40 @@ export default function PageManagerSidebar() {
             </SortableContext>
           )}
         </div>
+
+        {/* Drag Overlay - Shows a copy of the dragged item that follows the cursor */}
+        <DragOverlay dropAnimation={null}>
+          {activeId && activePage ? (
+            <div className="rounded-xl border-2 border-orange-500 bg-orange-50 shadow-2xl p-3 cursor-grabbing rotate-3 scale-105">
+              <div className="flex items-start gap-2">
+                <div className="flex-shrink-0 text-orange-500">
+                  <GripVertical className="w-4 h-4" />
+                </div>
+                <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-md flex items-center justify-center">
+                  <span className="text-white font-bold text-xs">
+                    {sortedPages.findIndex((p) => p.id === activeId) + 1}
+                  </span>
+                </div>
+                <div className={`flex-shrink-0 w-8 h-8 ${PAGE_TYPE_ICONS[activePage.type].color} rounded-lg flex items-center justify-center`}>
+                  {(() => {
+                    const Icon = PAGE_TYPE_ICONS[activePage.type].icon;
+                    return <Icon className="w-4 h-4 text-white" />;
+                  })()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-slate-900 text-sm truncate">
+                    {activePage.title}
+                  </div>
+                  <div className="text-xs text-slate-500 truncate">
+                    {activePage.type.startsWith('preset-')
+                      ? PAGE_TYPE_LABELS[activePage.type]
+                      : `${activePage.components.length} fields`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </DragOverlay>
       </DndContext>
 
       {/* Info */}
