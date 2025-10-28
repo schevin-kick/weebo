@@ -209,7 +209,7 @@ export default function BookingPage() {
         customerDisplayName: liffProfile?.displayName,
         customerPictureUrl: liffProfile?.pictureUrl,
         serviceId: selectedServiceId || null,
-        staffId: selectedStaffId || null,
+        staffId: selectedStaffId === 'any' ? null : (selectedStaffId || null),
         dateTime: selectedDateTime,
         duration: selectedService?.duration || businessConfig?.defaultDuration,
         responses: responses || {},

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Store, Plus, Settings, LogOut, QrCode } from 'lucide-react';
 import FallingSakura from '@/components/background/FallingSakura';
+import KitsuneLogo from '@/components/loading/KitsuneLogo';
 
 export default function BusinessDashboard() {
   const router = useRouter();
@@ -43,24 +44,24 @@ export default function BusinessDashboard() {
 
       const data = await response.json();
       const userBusinesses = data.businesses || [];
-      setBusinesses(userBusinesses);
 
       // Handle redirects based on business count
       if (userBusinesses.length === 1) {
-        // One business - redirect to dashboard
+        // One business - redirect to dashboard (keep loading state)
         router.push(`/dashboard/${userBusinesses[0].id}`);
         return;
       } else if (userBusinesses.length > 1) {
-        // Multiple businesses - redirect to dashboard selection
+        // Multiple businesses - redirect to dashboard selection (keep loading state)
         router.push('/dashboard');
         return;
       }
 
       // Zero businesses - stay on this page to show "Create Your First Business"
+      setBusinesses(userBusinesses);
+      setLoading(false);
     } catch (err) {
       console.error('Load businesses error:', err);
       setError('Failed to load businesses');
-    } finally {
       setLoading(false);
     }
   }
@@ -71,12 +72,12 @@ export default function BusinessDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
+      <>
+        <FallingSakura />
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50">
+          <KitsuneLogo size="large" />
         </div>
-      </div>
+      </>
     );
   }
 

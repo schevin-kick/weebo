@@ -33,8 +33,8 @@ export async function POST(request) {
     const business = await prisma.business.findUnique({
       where: { id: businessId, isActive: true },
       include: {
-        services: { where: { id: serviceId || 'none' } },
-        staff: { where: { id: staffId || 'none' } },
+        services: true,
+        staff: true,
         closedDates: true,
       },
     });
@@ -77,36 +77,34 @@ export async function POST(request) {
     }
 
     // 2. Check if date is closed
-    const dayStart = new Date(bookingDateTime);
-    dayStart.setHours(0, 0, 0, 0);
-    const dayEnd = new Date(bookingDateTime);
-    dayEnd.setHours(23, 59, 59, 999);
-
     const closedDate = business.closedDates.find((cd) => {
-      const closedDay = new Date(cd.date);
-      return closedDay >= dayStart && closedDay <= dayEnd;
+      const closedStart = new Date(cd.startDateTime);
+      const closedEnd = new Date(cd.endDateTime);
+      return bookingDateTime >= closedStart && bookingDateTime <= closedEnd;
     });
 
     if (closedDate) {
       return NextResponse.json(
-        { error: `Business is closed: ${closedDate.reason}` },
+        { error: 'Business is closed during the selected time' },
         { status: 400 }
       );
     }
 
     // 3. Validate staff availability (if staff selected)
-    if (staffId && business.staff[0]) {
-      const staff = business.staff[0];
-      const isStaffAvailable = validateStaffAvailability(
-        bookingDateTime,
-        staff.availability
-      );
-
-      if (!isStaffAvailable) {
-        return NextResponse.json(
-          { error: 'Selected staff is not available at this time' },
-          { status: 400 }
+    if (staffId) {
+      const staff = business.staff.find(s => s.id === staffId);
+      if (staff) {
+        const isStaffAvailable = validateStaffAvailability(
+          bookingDateTime,
+          staff.availability
         );
+
+        if (!isStaffAvailable) {
+          return NextResponse.json(
+            { error: 'Selected staff is not available at this time' },
+            { status: 400 }
+          );
+        }
       }
     }
 
@@ -207,8 +205,13 @@ export async function POST(request) {
     return NextResponse.json({ booking }, { status: 201 });
   } catch (error) {
     console.error('Create booking error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
     return NextResponse.json(
-      { error: 'Failed to create booking' },
+      { error: error.message || 'Failed to create booking' },
       { status: 500 }
     );
   }

@@ -123,6 +123,9 @@ export async function POST(request) {
       }
 
       return newBusiness;
+    }, {
+      maxWait: 10000, // 10 seconds
+      timeout: 20000, // 20 seconds
     });
 
     // Generate QR code asynchronously (don't block response)

@@ -107,8 +107,12 @@ export default function BookingSuccess({ bookingSummary }) {
 
           {/* Kitsune Character */}
           <div className="flex justify-center mb-6">
-            <div className="bg-gradient-to-br from-orange-100 to-amber-100 rounded-2xl p-6">
-              <span className="text-6xl">🦊</span>
+            <div className="w-40 rounded-3xl overflow-hidden bg-gradient-to-br from-orange-100 to-amber-100">
+              <img
+                src="/kitsune-animated.gif"
+                alt="Kitsune mascot"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
 

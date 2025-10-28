@@ -12,7 +12,7 @@ export default function BusinessInfoStep() {
   const logoUrl = useSetupWizardStore((state) => state.logoUrl);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
   const defaultAppointmentDuration = useSetupWizardStore((state) => state.defaultAppointmentDuration);
-  const appointmentOnly = useSetupWizardStore((state) => state.appointmentOnly);
+  const requiresApproval = useSetupWizardStore((state) => state.requiresApproval);
   const richMenu = useSetupWizardStore((state) => state.richMenu);
   const contactInfo = useSetupWizardStore((state) => state.contactInfo);
 
@@ -58,7 +58,7 @@ export default function BusinessInfoStep() {
   const setSameDailyHours = useSetupWizardStore((state) => state.setSameDailyHours);
   const setCustomDayHours = useSetupWizardStore((state) => state.setCustomDayHours);
   const setDefaultAppointmentDuration = useSetupWizardStore((state) => state.setDefaultAppointmentDuration);
-  const setAppointmentOnly = useSetupWizardStore((state) => state.setAppointmentOnly);
+  const setRequiresApproval = useSetupWizardStore((state) => state.setRequiresApproval);
   const setRichMenuEnabled = useSetupWizardStore((state) => state.setRichMenuEnabled);
   const updateRichMenuItem = useSetupWizardStore((state) => state.updateRichMenuItem);
   const moveRichMenuItemUp = useSetupWizardStore((state) => state.moveRichMenuItemUp);
@@ -167,22 +167,22 @@ export default function BusinessInfoStep() {
             </div>
           </div>
 
-          {/* Appointment Only Mode */}
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+          {/* Requires Approval */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                checked={appointmentOnly}
-                onChange={(e) => setAppointmentOnly(e.target.checked)}
+                checked={requiresApproval}
+                onChange={(e) => setRequiresApproval(e.target.checked)}
                 className="w-5 h-5 mt-0.5 text-orange-500 rounded focus:ring-orange-500"
               />
               <div className="flex-1">
                 <div className="font-medium text-slate-900">
-                  Appointment-only mode
+                  Require manual approval for bookings
                 </div>
                 <p className="text-sm text-slate-600 mt-1">
-                  Customers can request a time, and you'll confirm via your dashboard.
-                  Perfect for businesses with flexible or irregular schedules.
+                  When enabled, all new bookings will be marked as "pending" and require your approval before being confirmed.
+                  When disabled, bookings are automatically confirmed.
                 </p>
               </div>
             </label>

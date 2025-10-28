@@ -40,6 +40,10 @@ export default function BusinessWizardPage() {
     if (businessId !== 'new') {
       loadBusinessData();
     } else {
+      // Reset wizard store for new business
+      const store = useSetupWizardStore.getState();
+      store.reset();
+      store.setCurrentStep(1);
       setLoading(false);
     }
   }, [businessId]);
@@ -77,7 +81,7 @@ export default function BusinessWizardPage() {
         businessHours: store.businessHours,
         defaultDuration: store.defaultAppointmentDuration,
         appointmentOnly: store.appointmentOnly,
-        requiresApproval: false, // TODO: Add to store
+        requiresApproval: store.requiresApproval,
         richMenu: store.richMenu,
         contactInfo: store.contactInfo,
       };

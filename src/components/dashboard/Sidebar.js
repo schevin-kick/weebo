@@ -92,7 +92,7 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
         </div>
 
         {/* Logo */}
-        <div className="px-6 py-4 border-b border-slate-200 flex-shrink-0">
+        <div className="px-6 border-b border-slate-200 flex-shrink-0 h-[73px] flex items-center">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
               <span className="text-white text-xl">🦊</span>

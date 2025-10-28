@@ -41,6 +41,7 @@ const useSetupWizardStore = create(
       businessHours: initialBusinessHours,
       defaultAppointmentDuration: 60,
       appointmentOnly: false,
+      requiresApproval: false,
       richMenu: initialRichMenu,
       contactInfo: initialContactInfo,
 
@@ -66,6 +67,10 @@ const useSetupWizardStore = create(
       setBusinessName: (name) => set({ businessName: name }),
 
       setLogoUrl: (url) => set({ logoUrl: url }),
+
+      setBusinessHours: (hours) => set({ businessHours: hours }),
+
+      setContactInfo: (info) => set({ contactInfo: info }),
 
       updateContactInfo: (updates) =>
         set((state) => ({
@@ -98,9 +103,13 @@ const useSetupWizardStore = create(
 
       setAppointmentOnly: (value) => set({ appointmentOnly: value }),
 
+      setRequiresApproval: (value) => set({ requiresApproval: value }),
+
       setDefaultAppointmentDuration: (duration) => set({ defaultAppointmentDuration: duration }),
 
       // Rich Menu actions
+      setRichMenu: (menu) => set({ richMenu: menu }),
+
       setRichMenuEnabled: (enabled) =>
         set((state) => ({
           richMenu: { ...state.richMenu, enabled },
@@ -150,6 +159,8 @@ const useSetupWizardStore = create(
         }),
 
       // Service actions
+      setServices: (services) => set({ services }),
+
       addService: (service) =>
         set((state) => ({
           services: [...state.services, { ...service, id: Date.now() }],
@@ -168,6 +179,8 @@ const useSetupWizardStore = create(
         })),
 
       // Staff actions
+      setStaff: (staff) => set({ staff }),
+
       addStaff: (staffMember) =>
         set((state) => ({
           staff: [...state.staff, { ...staffMember, id: Date.now() }],
@@ -186,6 +199,8 @@ const useSetupWizardStore = create(
         })),
 
       // Page builder actions
+      setPages: (pages) => set({ pages }),
+
       addPage: (page) =>
         set((state) => {
           const customPagesCount = state.pages.filter(p => p.type === 'custom').length;
@@ -238,9 +253,18 @@ const useSetupWizardStore = create(
             return state;
           }
 
-          const newPages = state.pages
-            .filter((p) => p.id !== id)
-            .map((p, index) => ({ ...p, order: index }));
+          // Filter out deleted page
+          const remainingPages = state.pages.filter((p) => p.id !== id);
+
+          // Separate datetime page from others
+          const dateTimePage = remainingPages.find(p => p.type === 'preset-datetime');
+          const otherPages = remainingPages.filter(p => p.type !== 'preset-datetime');
+
+          // Reorder: other pages first, then datetime page last
+          const newPages = [
+            ...otherPages.map((p, index) => ({ ...p, order: index })),
+            ...(dateTimePage ? [{ ...dateTimePage, order: otherPages.length }] : [])
+          ];
 
           // Update preset config if deleting a preset page
           const newPresetConfig = { ...state.presetPagesConfig };
@@ -378,9 +402,16 @@ const useSetupWizardStore = create(
 
           if (isCurrentlyEnabled) {
             // Remove the preset page
-            const newPages = state.pages
-              .filter((p) => p.type !== pageType)
-              .map((p, index) => ({ ...p, order: index }));
+            const remainingPages = state.pages.filter((p) => p.type !== pageType);
+
+            // Separate datetime page from others to keep it last
+            const dateTimePage = remainingPages.find(p => p.type === 'preset-datetime');
+            const otherPages = remainingPages.filter(p => p.type !== 'preset-datetime');
+
+            const newPages = [
+              ...otherPages.map((p, index) => ({ ...p, order: index })),
+              ...(dateTimePage ? [{ ...dateTimePage, order: otherPages.length }] : [])
+            ];
 
             return {
               pages: newPages,
@@ -392,7 +423,6 @@ const useSetupWizardStore = create(
           } else {
             // Add the preset page
             const { generateId } = require('../utils/fieldNameHelper');
-            const maxOrder = state.pages.reduce((max, p) => Math.max(max, p.order), -1);
 
             const titleMap = {
               services: 'Select Service',
@@ -400,16 +430,28 @@ const useSetupWizardStore = create(
               dateTime: 'Choose Date & Time',
             };
 
+            // Separate datetime page from others
+            const dateTimePage = state.pages.find(p => p.type === 'preset-datetime');
+            const otherPages = state.pages.filter(p => p.type !== 'preset-datetime');
+
+            // Create new page and insert before datetime
             const newPage = {
               id: generateId(),
               type: pageType,
               title: titleMap[presetType],
-              order: maxOrder + 1,
+              order: otherPages.length,
               components: [], // Preset pages don't have configurable components
             };
 
+            // Reorder: other pages + new page, then datetime last
+            const newPages = [
+              ...otherPages.map((p, index) => ({ ...p, order: index })),
+              newPage,
+              ...(dateTimePage ? [{ ...dateTimePage, order: otherPages.length + 1 }] : [])
+            ];
+
             return {
-              pages: [...state.pages, newPage],
+              pages: newPages,
               presetPagesConfig: {
                 ...state.presetPagesConfig,
                 [presetType]: true,
@@ -570,6 +612,7 @@ const useSetupWizardStore = create(
           businessHours: initialBusinessHours,
           defaultAppointmentDuration: 60,
           appointmentOnly: false,
+          requiresApproval: false,
           richMenu: initialRichMenu,
           contactInfo: initialContactInfo,
           services: [],
@@ -592,6 +635,7 @@ const useSetupWizardStore = create(
         businessHours: state.businessHours,
         defaultAppointmentDuration: state.defaultAppointmentDuration,
         appointmentOnly: state.appointmentOnly,
+        requiresApproval: state.requiresApproval,
         richMenu: state.richMenu,
         contactInfo: state.contactInfo,
         services: state.services,
