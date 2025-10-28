@@ -1,0 +1,69 @@
+import { NextResponse } from 'next/server';
+import { getSession } from '@/lib/auth';
+import { uploadToR2, generateR2Key } from '@/lib/r2';
+
+/**
+ * POST /api/upload
+ * Upload image to Cloudflare R2
+ * Accepts multipart/form-data with 'file' field
+ */
+export async function POST(request) {
+  try {
+    // Check authentication
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const formData = await request.formData();
+    const file = formData.get('file');
+    const folder = formData.get('folder') || 'uploads'; // staff-photos, logos, etc.
+
+    if (!file) {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    }
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      return NextResponse.json(
+        { error: 'Invalid file type. Please upload JPG, PNG, WebP, or GIF' },
+        { status: 400 }
+      );
+    }
+
+    // Validate file size (max 1MB after client-side optimization)
+    const maxSize = 1 * 1024 * 1024; // 1MB
+    if (file.size > maxSize) {
+      return NextResponse.json(
+        { error: 'File too large. Maximum size is 1MB' },
+        { status: 400 }
+      );
+    }
+
+    // Convert file to buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Determine file extension
+    const extension = file.type.split('/')[1];
+
+    // Generate unique key
+    const key = generateR2Key(folder, extension);
+
+    // Upload to R2
+    const publicUrl = await uploadToR2(buffer, key, file.type);
+
+    return NextResponse.json({
+      success: true,
+      url: publicUrl,
+      key,
+    });
+  } catch (error) {
+    console.error('Upload error:', error);
+    return NextResponse.json(
+      { error: 'Failed to upload file' },
+      { status: 500 }
+    );
+  }
+}

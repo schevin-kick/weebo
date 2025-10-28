@@ -37,6 +37,7 @@ const useSetupWizardStore = create(
     (set, get) => ({
       // Step 1: Business Info
       businessName: '',
+      logoUrl: '',
       businessHours: initialBusinessHours,
       defaultAppointmentDuration: 60,
       appointmentOnly: false,
@@ -63,6 +64,8 @@ const useSetupWizardStore = create(
 
       // Actions
       setBusinessName: (name) => set({ businessName: name }),
+
+      setLogoUrl: (url) => set({ logoUrl: url }),
 
       updateContactInfo: (updates) =>
         set((state) => ({
@@ -564,6 +567,7 @@ const useSetupWizardStore = create(
       name: 'kitsune-setup-wizard',
       partialize: (state) => ({
         businessName: state.businessName,
+        logoUrl: state.logoUrl,
         businessHours: state.businessHours,
         defaultAppointmentDuration: state.defaultAppointmentDuration,
         appointmentOnly: state.appointmentOnly,

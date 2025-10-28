@@ -5,9 +5,11 @@ import useSetupWizardStore from '@/stores/setupWizardStore';
 import BusinessHoursPicker from '@/components/shared/BusinessHoursPicker';
 import RichMenuPicker from '@/components/shared/RichMenuPicker';
 import DurationPicker from '@/components/shared/DurationPicker';
+import ImageUpload from '@/components/shared/ImageUpload';
 
 export default function BusinessInfoStep() {
   const businessName = useSetupWizardStore((state) => state.businessName);
+  const logoUrl = useSetupWizardStore((state) => state.logoUrl);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
   const defaultAppointmentDuration = useSetupWizardStore((state) => state.defaultAppointmentDuration);
   const appointmentOnly = useSetupWizardStore((state) => state.appointmentOnly);
@@ -48,6 +50,7 @@ export default function BusinessInfoStep() {
   })();
 
   const setBusinessName = useSetupWizardStore((state) => state.setBusinessName);
+  const setLogoUrl = useSetupWizardStore((state) => state.setLogoUrl);
   const updateContactInfo = useSetupWizardStore((state) => state.updateContactInfo);
   const setBusinessHoursMode = useSetupWizardStore(
     (state) => state.setBusinessHoursMode
@@ -113,6 +116,17 @@ export default function BusinessInfoStep() {
                 Business name must be at least 3 characters
               </p>
             )}
+          </div>
+
+          {/* Business Logo */}
+          <div>
+            <ImageUpload
+              imageUrl={logoUrl}
+              onChange={setLogoUrl}
+              folder="logos"
+              label="Business Logo (optional)"
+              aspectRatio="square"
+            />
           </div>
 
           {/* Business Hours */}

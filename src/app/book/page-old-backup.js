@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
 import useBookingStore from '@/stores/bookingStore';
+import useSetupWizardStore from '@/stores/setupWizardStore';
 import BookingLayout from '@/components/booking/BookingLayout';
 import BookingStepper from '@/components/booking/BookingStepper';
 import BookingNavigation from '@/components/booking/BookingNavigation';
@@ -21,20 +21,17 @@ import {
 } from '@/utils/bookingValidation';
 
 export default function BookingPage() {
-  const searchParams = useSearchParams();
-  const businessId = searchParams.get('business_id');
-
   const [isHydrated, setIsHydrated] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isReviewPage, setIsReviewPage] = useState(false);
+  const [pageErrors, setPageErrors] = useState({});
 
-  // Business config from API
-  const [businessConfig, setBusinessConfig] = useState(null);
-
-  // LIFF user profile
-  const [liffProfile, setLiffProfile] = useState(null);
-  const [liffReady, setLiffReady] = useState(false);
+  // Setup wizard config
+  const businessName = useSetupWizardStore((state) => state.businessName);
+  const pages = useSetupWizardStore((state) => state.pages);
+  const services = useSetupWizardStore((state) => state.services);
+  const staff = useSetupWizardStore((state) => state.staff);
+  const businessHours = useSetupWizardStore((state) => state.businessHours);
+  const defaultAppointmentDuration = useSetupWizardStore((state) => state.defaultAppointmentDuration);
 
   // Booking store
   const currentPageIndex = useBookingStore((state) => state.currentPageIndex);
@@ -48,7 +45,9 @@ export default function BookingPage() {
   const setCurrentPageIndex = useBookingStore((state) => state.setCurrentPageIndex);
   const nextPage = useBookingStore((state) => state.nextPage);
   const previousPage = useBookingStore((state) => state.previousPage);
+  const goToPage = useBookingStore((state) => state.goToPage);
   const setResponse = useBookingStore((state) => state.setResponse);
+  const setResponses = useBookingStore((state) => state.setResponses);
   const setSelectedService = useBookingStore((state) => state.setSelectedService);
   const setSelectedStaff = useBookingStore((state) => state.setSelectedStaff);
   const setSelectedDateTime = useBookingStore((state) => state.setSelectedDateTime);
@@ -57,92 +56,27 @@ export default function BookingPage() {
 
   useEffect(() => {
     setIsHydrated(true);
+    // Initialize session if not already done
     initializeSession();
-    initializeLIFF();
-  }, []);
-
-  useEffect(() => {
-    if (businessId && liffReady) {
-      loadBusinessConfig();
-    }
-  }, [businessId, liffReady]);
-
-  async function initializeLIFF() {
-    try {
-      // Check if LIFF SDK is available
-      if (typeof window !== 'undefined' && window.liff) {
-        const liff = window.liff;
-
-        // Initialize LIFF
-        await liff.init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID || '' });
-
-        // Check if user is logged in
-        if (!liff.isLoggedIn()) {
-          liff.login();
-          return;
-        }
-
-        // Get user profile
-        const profile = await liff.getProfile();
-        setLiffProfile({
-          userId: profile.userId,
-          displayName: profile.displayName,
-          pictureUrl: profile.pictureUrl,
-        });
-
-        setLiffReady(true);
-      } else {
-        // Development mode without LIFF
-        console.warn('LIFF SDK not available. Using test mode.');
-        setLiffProfile({
-          userId: 'test_user_123',
-          displayName: 'Test User',
-          pictureUrl: null,
-        });
-        setLiffReady(true);
-      }
-    } catch (err) {
-      console.error('LIFF initialization error:', err);
-      setError('Failed to initialize LINE app');
-      setLiffReady(true); // Continue anyway for testing
-    }
-  }
-
-  async function loadBusinessConfig() {
-    try {
-      setLoading(true);
-
-      const response = await fetch(`/api/businesses/${businessId}`);
-      if (!response.ok) throw new Error('Business not found');
-
-      const data = await response.json();
-      setBusinessConfig(data.business);
-    } catch (err) {
-      console.error('Load business error:', err);
-      setError('Business not found or inactive');
-    } finally {
-      setLoading(false);
-    }
-  }
+  }, [initializeSession]);
 
   // Sort pages by order
   const sortedPages = useMemo(() => {
-    if (!businessConfig?.pages) return [];
-    return [...businessConfig.pages].sort((a, b) => a.order - b.order);
-  }, [businessConfig]);
+    return [...pages].sort((a, b) => a.order - b.order);
+  }, [pages]);
 
   // Check if config is valid
   const hasValidConfig = useMemo(() => {
-    return sortedPages.length > 0 && businessConfig?.businessName;
-  }, [sortedPages, businessConfig]);
+    return sortedPages.length > 0 && businessName;
+  }, [sortedPages, businessName]);
 
   // Get current page
   const currentPage = sortedPages[currentPageIndex];
 
   // Get selected service object
   const selectedService = useMemo(() => {
-    return businessConfig?.services?.find((s) => s.id === selectedServiceId);
-  }, [businessConfig, selectedServiceId]);
+    return services.find((s) => s.id === selectedServiceId);
+  }, [services, selectedServiceId]);
 
   // Validate current page
   const canProceed = useMemo(() => {
@@ -150,13 +84,13 @@ export default function BookingPage() {
 
     // Service page
     if (currentPage.type === 'preset-services') {
-      const validation = validateServiceSelection(selectedServiceId, businessConfig?.services || []);
+      const validation = validateServiceSelection(selectedServiceId, services);
       return validation.valid;
     }
 
     // Staff page
     if (currentPage.type === 'preset-staff') {
-      const validation = validateStaffSelection(selectedStaffId, businessConfig?.staff || []);
+      const validation = validateStaffSelection(selectedStaffId, staff);
       return validation.valid;
     }
 
@@ -173,10 +107,26 @@ export default function BookingPage() {
     }
 
     return true;
-  }, [currentPage, selectedServiceId, selectedStaffId, selectedDateTime, responses, businessConfig]);
+  }, [currentPage, selectedServiceId, selectedStaffId, selectedDateTime, responses, services, staff]);
+
+  // Show success page if completed
+  if (isCompleted) {
+    return <BookingSuccess bookingSummary={getBookingSummary()} />;
+  }
+
+  // Show error if no valid config
+  if (isHydrated && !hasValidConfig) {
+    return <BookingError />;
+  }
+
+  // Don't render until hydrated
+  if (!isHydrated) {
+    return null;
+  }
 
   const handleNext = () => {
     if (isReviewPage) {
+      // Should not happen (confirm button handles this)
       return;
     }
 
@@ -197,43 +147,10 @@ export default function BookingPage() {
     }
   };
 
-  const handleConfirm = async () => {
-    try {
-      // Prepare booking data
-      const bookingData = {
-        businessId,
-        customerLineUserId: liffProfile?.userId,
-        customerDisplayName: liffProfile?.displayName,
-        customerPictureUrl: liffProfile?.pictureUrl,
-        serviceId: selectedServiceId || null,
-        staffId: selectedStaffId || null,
-        dateTime: selectedDateTime,
-        duration: selectedService?.duration || businessConfig?.defaultDuration,
-        responses: responses || {},
-      };
-
-      // Submit booking
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bookingData),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to create booking');
-      }
-
-      const result = await response.json();
-
-      // Mark as completed
-      completeBooking();
-
-      console.log('Booking created:', result.booking);
-    } catch (err) {
-      console.error('Booking error:', err);
-      alert(`Failed to create booking: ${err.message}`);
-    }
+  const handleConfirm = () => {
+    completeBooking();
+    const summary = getBookingSummary();
+    console.log('Booking Summary:', summary);
   };
 
   const handleEditPage = (pageId) => {
@@ -244,33 +161,6 @@ export default function BookingPage() {
     }
   };
 
-  // Show success page if completed
-  if (isCompleted) {
-    return <BookingSuccess bookingSummary={getBookingSummary()} />;
-  }
-
-  // Show loading while initializing
-  if (loading || !liffReady) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading booking system...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error if no valid config
-  if (error || !hasValidConfig) {
-    return <BookingError message={error} />;
-  }
-
-  // Don't render until hydrated
-  if (!isHydrated) {
-    return null;
-  }
-
   const renderCurrentPage = () => {
     if (isReviewPage) {
       return (
@@ -280,8 +170,8 @@ export default function BookingPage() {
           selectedService={selectedServiceId}
           selectedStaff={selectedStaffId}
           selectedDateTime={selectedDateTime}
-          services={businessConfig.services}
-          staff={businessConfig.staff}
+          services={services}
+          staff={staff}
           onEditPage={handleEditPage}
         />
       );
@@ -294,7 +184,7 @@ export default function BookingPage() {
       return (
         <PresetServicePage
           page={currentPage}
-          services={businessConfig.services}
+          services={services}
           selectedServiceId={selectedServiceId}
           onSelect={setSelectedService}
         />
@@ -306,7 +196,7 @@ export default function BookingPage() {
       return (
         <PresetStaffPage
           page={currentPage}
-          staff={businessConfig.staff}
+          staff={staff}
           selectedStaffId={selectedStaffId}
           onSelect={setSelectedStaff}
         />
@@ -320,11 +210,11 @@ export default function BookingPage() {
           page={currentPage}
           selectedDateTime={selectedDateTime}
           onSelect={setSelectedDateTime}
-          businessHours={businessConfig.businessHours}
+          businessHours={businessHours}
           selectedService={selectedService}
           selectedStaff={selectedStaffId}
-          staff={businessConfig.staff}
-          defaultAppointmentDuration={businessConfig.defaultDuration}
+          staff={staff}
+          defaultAppointmentDuration={defaultAppointmentDuration}
         />
       );
     }
@@ -345,7 +235,7 @@ export default function BookingPage() {
 
   return (
     <BookingLayout
-      businessName={businessConfig.businessName}
+      businessName={businessName}
       stepper={
         <BookingStepper
           pages={sortedPages}

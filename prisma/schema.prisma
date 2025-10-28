@@ -1,0 +1,250 @@
+// Kitsune Booking System Database Schema
+// PostgreSQL via Neon
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// AUTHENTICATION & MULTI-TENANCY
+// ============================================
+
+model BusinessOwner {
+  id            String   @id @default(cuid())
+  lineUserId    String   @unique
+  displayName   String
+  pictureUrl    String?
+  email         String?  @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  businesses       Business[]
+  serviceTemplates ServiceTemplate[]
+  pageTemplates    PageTemplate[]
+
+  @@index([lineUserId])
+  @@index([email])
+}
+
+model Business {
+  id                     String   @id @default(cuid())
+  ownerId                String
+  owner                  BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  // Business Info
+  businessName           String
+  logoUrl                String?
+  businessHours          Json     // { mode: '24/7' | 'same-daily' | 'custom', ... }
+  defaultDuration        Int      // minutes
+  appointmentOnly        Boolean  @default(false)
+  requiresApproval       Boolean  @default(false) // Manual approval vs auto-confirm
+  richMenu               Json     // LINE rich menu config
+  contactInfo            Json     // { phone, email, address, website }
+
+  // LINE Integration
+  qrCodeUrl              String?  // R2 URL for QR code image
+  lineDeepLink           String   @unique // LIFF URL with business_id
+
+  // Status
+  isActive               Boolean  @default(true)
+
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  // Relations
+  services   Service[]
+  staff      Staff[]
+  pages      Page[]
+  bookings   Booking[]
+  closedDates ClosedDate[]
+
+  @@index([ownerId])
+  @@index([lineDeepLink])
+  @@index([ownerId, isActive])
+}
+
+// ============================================
+// CUSTOMERS (END USERS)
+// ============================================
+
+model Customer {
+  id            String   @id @default(cuid())
+  lineUserId    String   @unique  // For LINE Messaging API
+  displayName   String
+  pictureUrl    String?
+  language      String?
+  statusMessage String?
+  lastActiveAt  DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  bookings Booking[]
+
+  @@index([lineUserId])
+  @@index([lastActiveAt])
+}
+
+// ============================================
+// BUSINESS CONFIGURATION
+// ============================================
+
+model Service {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  duration    Int      // minutes
+  price       Float?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+
+  // Relations
+  bookings Booking[]
+
+  @@index([businessId])
+  @@index([businessId, order])
+  @@index([businessId, isActive])
+}
+
+model Staff {
+  id           String   @id @default(cuid())
+  businessId   String
+  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  name         String
+  specialty    String?
+  description  String?
+  photoUrl     String?  // Cloudflare R2 URL
+  availability Json     // { useBusinessHours: boolean, custom: {...} }
+  order        Int      @default(0)
+  isActive     Boolean  @default(true)
+
+  // Relations
+  bookings Booking[]
+
+  @@index([businessId])
+  @@index([businessId, order])
+  @@index([businessId, isActive])
+}
+
+model Page {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  type       String   // 'preset-services' | 'preset-staff' | 'preset-datetime' | 'custom'
+  title      String
+  order      Int
+  components Json     // Array of form components
+
+  @@index([businessId, order])
+}
+
+model ClosedDate {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  date       DateTime @db.Date
+  reason     String   // "Christmas", "Staff Training", etc.
+
+  @@index([businessId, date])
+}
+
+// ============================================
+// BOOKINGS
+// ============================================
+
+model Booking {
+  id               String   @id @default(cuid())
+  businessId       String
+  business         Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  customerId       String
+  customer         Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  serviceId        String?
+  service          Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  staffId          String?
+  staff            Staff?   @relation(fields: [staffId], references: [id], onDelete: SetNull)
+
+  dateTime         DateTime
+  duration         Int      // minutes
+  status           String   // 'pending' | 'confirmed' | 'cancelled' | 'completed'
+  responses        Json     // Custom field responses from form
+
+  // LINE Messaging flags (for future implementation)
+  reminderSent     Boolean  @default(false)
+  confirmationSent Boolean  @default(false)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  messages BookingMessage[]
+
+  @@index([businessId, dateTime])
+  @@index([customerId])
+  @@index([businessId, status])
+  @@index([dateTime, reminderSent])
+  @@index([staffId])
+}
+
+model BookingMessage {
+  id             String   @id @default(cuid())
+  bookingId      String
+  booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  messageType    String   // 'confirmation' | 'reminder' | 'cancellation' | 'update'
+  sentAt         DateTime @default(now())
+  deliveryStatus String   // 'sent' | 'failed' | 'delivered'
+  messageContent Json     // Message payload
+
+  @@index([bookingId])
+  @@index([bookingId, messageType])
+}
+
+// ============================================
+// TEMPLATES (REUSABLE CONFIGURATIONS)
+// ============================================
+
+model ServiceTemplate {
+  id          String        @id @default(cuid())
+  ownerId     String
+  owner       BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  duration    Int
+  price       Float?
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([ownerId])
+}
+
+model PageTemplate {
+  id         String        @id @default(cuid())
+  ownerId    String
+  owner      BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  type       String        // 'custom' only
+  title      String
+  components Json          // Form field configuration
+
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([ownerId])
+}
