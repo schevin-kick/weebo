@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 const PRESET_FIELD_ICONS = {
   name: { icon: Type, color: 'bg-blue-500', label: 'Name' },
@@ -38,6 +39,7 @@ const CUSTOM_FIELD_LABELS = {
 export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
   const [editingTitlePageId, setEditingTitlePageId] = useState(null);
   const [titleValue, setTitleValue] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const page = useSetupWizardStore((state) =>
     state.pages.find((p) => p.id === pageId)
@@ -266,14 +268,8 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                         {/* Delete button */}
                         <button
                           onClick={() => {
-                            const componentName = isInfoText ? 'this info text' : `"${component.label}"`;
-                            if (
-                              confirm(
-                                `Are you sure you want to delete ${componentName}?`
-                              )
-                            ) {
-                              deleteComponent(pageId, component.id);
-                            }
+                            const componentName = isInfoText ? 'this info text' : component.label;
+                            setDeleteConfirm({ id: component.id, name: componentName });
                           }}
                           className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete"
@@ -289,6 +285,22 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
           )}
         </>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={() => {
+          if (deleteConfirm) {
+            deleteComponent(pageId, deleteConfirm.id);
+          }
+        }}
+        title="Delete Component"
+        message={`Are you sure you want to delete ${deleteConfirm?.name}? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   );
 }

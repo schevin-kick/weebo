@@ -83,8 +83,13 @@ export default function BookingFlowPreview() {
 
   const handleNext = () => {
     if (isReviewPage) {
-      // In preview, just show alert
-      alert('This is a preview. In the real app, the booking would be submitted here.');
+      // In preview, just reset to first page to show the flow again
+      setCurrentPageIndex(0);
+      setIsReviewPage(false);
+      setSelectedServiceId(null);
+      setSelectedStaffId(null);
+      setSelectedDateTime(null);
+      setResponses({});
       return;
     }
 

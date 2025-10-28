@@ -12,6 +12,7 @@ import {
   Sparkles,
   GripVertical,
 } from 'lucide-react';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import {
   DndContext,
   closestCenter,
@@ -57,6 +58,7 @@ function SortablePageCard({
   onMoveDown,
   canMoveUp,
   canMoveDown,
+  onRequestDelete,
 }) {
   const isDateTimePage = page.type === 'preset-datetime';
   const isDraggable = !isDateTimePage;
@@ -181,9 +183,7 @@ function SortablePageCard({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              if (confirm(`Are you sure you want to delete "${page.title}"?`)) {
-                onDelete();
-              }
+              onRequestDelete(page);
             }}
             className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
             title="Delete page"
@@ -209,6 +209,7 @@ export default function PageManagerSidebar() {
   const updatePage = useSetupWizardStore((state) => state.updatePage);
 
   const [activeId, setActiveId] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const customPagesCount = pages.filter((p) => p.type === 'custom').length;
   const canAddCustomPage = customPagesCount < 10;
@@ -373,6 +374,7 @@ export default function PageManagerSidebar() {
                     isActive={page.id === currentEditingPageId}
                     onSelect={setCurrentEditingPageId}
                     onDelete={() => deletePage(page.id)}
+                    onRequestDelete={(page) => setDeleteConfirm(page)}
                     onMoveUp={() => movePageUp(page.id)}
                     onMoveDown={() => movePageDown(page.id)}
                     canMoveUp={index > 0 && !isDateTimePage}
@@ -430,6 +432,22 @@ export default function PageManagerSidebar() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={() => {
+          if (deleteConfirm) {
+            deletePage(deleteConfirm.id);
+          }
+        }}
+        title="Delete Page"
+        message={`Are you sure you want to delete "${deleteConfirm?.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   );
 }
