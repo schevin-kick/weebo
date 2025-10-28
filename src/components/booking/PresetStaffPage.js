@@ -45,7 +45,7 @@ export default function PresetStaffPage({ page, staff, selectedStaffId, onSelect
                 </div>
 
                 {/* Avatar */}
-                <StaffAvatar photo={member.photo} name={member.name} size="lg" />
+                <StaffAvatar photo={member.photoUrl || member.photo} name={member.name} size="lg" />
 
                 {/* Staff details */}
                 <div className="flex-1 min-w-0">

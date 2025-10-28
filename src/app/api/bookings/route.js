@@ -46,7 +46,22 @@ export async function POST(request) {
       );
     }
 
-    const bookingDateTime = new Date(dateTime);
+    // Parse dateTime - it comes as { date: "YYYY-MM-DD", time: "HH:MM" }
+    let bookingDateTime;
+    if (typeof dateTime === 'object' && dateTime.date && dateTime.time) {
+      // Combine date and time strings into a proper Date object
+      const dateTimeString = `${dateTime.date}T${dateTime.time}:00`;
+      bookingDateTime = new Date(dateTimeString);
+    } else {
+      // Fallback for other formats
+      bookingDateTime = new Date(dateTime);
+    }
+
+    console.log('[Booking API] Parsed dateTime:', {
+      input: dateTime,
+      parsed: bookingDateTime.toISOString(),
+      localTime: `${bookingDateTime.getHours()}:${String(bookingDateTime.getMinutes()).padStart(2, '0')}`,
+    });
 
     // 1. Validate against business hours
     const isWithinHours = validateBusinessHours(
@@ -294,20 +309,38 @@ function validateBusinessHours(dateTime, businessHours) {
     return true;
   }
 
+  // Use local time methods to avoid timezone issues
   const dayOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][dateTime.getDay()];
-  const time = `${String(dateTime.getHours()).padStart(2, '0')}:${String(dateTime.getMinutes()).padStart(2, '0')}`;
+  const hours = dateTime.getHours();
+  const minutes = dateTime.getMinutes();
+  const time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+
+  console.log('[validateBusinessHours]', {
+    dateTime: dateTime.toISOString(),
+    localTime: time,
+    dayOfWeek,
+    businessHours,
+  });
 
   if (businessHours.mode === 'same-daily') {
     const { open, close } = businessHours.sameDaily;
-    return time >= open && time < close;
+    const isValid = time >= open && time < close;
+    console.log('[validateBusinessHours] same-daily check:', { time, open, close, isValid });
+    return isValid;
   }
 
   if (businessHours.mode === 'custom') {
     const dayConfig = businessHours.custom[dayOfWeek];
-    if (dayConfig.closed) return false;
-    return time >= dayConfig.open && time < dayConfig.close;
+    if (dayConfig.closed) {
+      console.log('[validateBusinessHours] Day is closed');
+      return false;
+    }
+    const isValid = time >= dayConfig.open && time < dayConfig.close;
+    console.log('[validateBusinessHours] custom check:', { time, open: dayConfig.open, close: dayConfig.close, isValid });
+    return isValid;
   }
 
+  console.log('[validateBusinessHours] No matching mode, returning false');
   return false;
 }
 

@@ -1,17 +1,58 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CheckCircle, Sparkles, ArrowRight } from 'lucide-react';
+import { CheckCircle, Sparkles, ArrowRight, UserPlus, Bell } from 'lucide-react';
 import Link from 'next/link';
 
 export default function BookingSuccess({ bookingSummary }) {
   const [showConfetti, setShowConfetti] = useState(true);
+  const [friendshipStatus, setFriendshipStatus] = useState(null); // null | 'friend' | 'not_friend'
+  const [checkingFriendship, setCheckingFriendship] = useState(true);
 
   useEffect(() => {
     // Hide confetti after 3 seconds
     const timer = setTimeout(() => setShowConfetti(false), 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    checkFriendship();
+  }, []);
+
+  async function checkFriendship() {
+    try {
+      if (typeof window !== 'undefined' && window.liff) {
+        const liff = window.liff;
+
+        // Check if LIFF is initialized
+        if (!liff.isLoggedIn()) {
+          setCheckingFriendship(false);
+          return;
+        }
+
+        // Get friendship status
+        const friendship = await liff.getFriendship();
+        setFriendshipStatus(friendship.friendFlag ? 'friend' : 'not_friend');
+      }
+    } catch (error) {
+      console.error('Failed to check friendship:', error);
+      // Fail silently - don't block the success page
+    } finally {
+      setCheckingFriendship(false);
+    }
+  }
+
+  function handleAddFriend() {
+    if (typeof window !== 'undefined' && window.liff) {
+      const liff = window.liff;
+      // Open bot profile in LINE app
+      // Note: Replace YOUR_BOT_ID with your actual Messaging API channel's Basic ID
+      liff.openWindow({
+        url: 'https://line.me/R/ti/p/@YOUR_BOT_ID', // TODO: Replace with actual bot ID from LINE console
+        external: false,
+      });
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws flex items-center justify-center p-4">
@@ -85,6 +126,50 @@ export default function BookingSuccess({ bookingSummary }) {
               <p className="text-xs text-slate-500">
                 Reference ID: {bookingSummary.sessionId.slice(-8).toUpperCase()}
               </p>
+            </div>
+          )}
+
+          {/* Add Friend Prompt - Only show if not already a friend */}
+          {!checkingFriendship && friendshipStatus === 'not_friend' && (
+            <div className="mb-6">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-5">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                    <Bell className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-slate-900 mb-1">Get Booking Reminders</h3>
+                    <p className="text-sm text-slate-600 mb-3">
+                      Add us as a friend to receive booking confirmations and reminders!
+                    </p>
+                    <button
+                      onClick={handleAddFriend}
+                      className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-600 transition-all shadow-lg shadow-blue-500/30"
+                    >
+                      <UserPlus className="w-5 h-5" />
+                      Add Friend
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Thank You Message - Show if already a friend */}
+          {!checkingFriendship && friendshipStatus === 'friend' && (
+            <div className="mb-6">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-slate-900">
+                      Thanks for following us! You'll receive booking updates via LINE.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 

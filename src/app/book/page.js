@@ -28,6 +28,7 @@ export default function BookingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isReviewPage, setIsReviewPage] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   // Business config from API
   const [businessConfig, setBusinessConfig] = useState(null);
@@ -199,6 +200,8 @@ export default function BookingPage() {
 
   const handleConfirm = async () => {
     try {
+      setIsConfirming(true);
+
       // Prepare booking data
       const bookingData = {
         businessId,
@@ -233,6 +236,8 @@ export default function BookingPage() {
     } catch (err) {
       console.error('Booking error:', err);
       alert(`Failed to create booking: ${err.message}`);
+    } finally {
+      setIsConfirming(false);
     }
   };
 
@@ -362,6 +367,7 @@ export default function BookingPage() {
           isLastPage={currentPageIndex === sortedPages.length - 1}
           isReviewPage={isReviewPage}
           onConfirm={handleConfirm}
+          isLoading={isConfirming}
         />
       }
     >
