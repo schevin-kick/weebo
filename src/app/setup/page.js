@@ -42,7 +42,21 @@ export default function BusinessDashboard() {
       if (!response.ok) throw new Error('Failed to load businesses');
 
       const data = await response.json();
-      setBusinesses(data.businesses || []);
+      const userBusinesses = data.businesses || [];
+      setBusinesses(userBusinesses);
+
+      // Handle redirects based on business count
+      if (userBusinesses.length === 1) {
+        // One business - redirect to dashboard
+        router.push(`/dashboard/${userBusinesses[0].id}`);
+        return;
+      } else if (userBusinesses.length > 1) {
+        // Multiple businesses - redirect to dashboard selection
+        router.push('/dashboard');
+        return;
+      }
+
+      // Zero businesses - stay on this page to show "Create Your First Business"
     } catch (err) {
       console.error('Load businesses error:', err);
       setError('Failed to load businesses');

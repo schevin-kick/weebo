@@ -150,14 +150,14 @@ model Page {
 }
 
 model ClosedDate {
-  id         String   @id @default(cuid())
-  businessId String
-  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  id            String   @id @default(cuid())
+  businessId    String
+  business      Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
-  date       DateTime @db.Date
-  reason     String   // "Christmas", "Staff Training", etc.
+  startDateTime DateTime // Support both full-day and partial-day closures
+  endDateTime   DateTime
 
-  @@index([businessId, date])
+  @@index([businessId, startDateTime])
 }
 
 // ============================================
@@ -183,9 +183,16 @@ model Booking {
   status           String   // 'pending' | 'confirmed' | 'cancelled' | 'completed'
   responses        Json     // Custom field responses from form
 
-  // LINE Messaging flags (for future implementation)
+  // LINE Messaging flags
   reminderSent     Boolean  @default(false)
   confirmationSent Boolean  @default(false)
+
+  // Booking management fields
+  notes              String?   // Owner's internal notes
+  noShow             Boolean   @default(false)
+  cancelledAt        DateTime?
+  cancelledBy        String?   // 'owner' | 'customer'
+  cancellationReason String?
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt

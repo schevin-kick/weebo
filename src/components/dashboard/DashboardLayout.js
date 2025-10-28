@@ -1,0 +1,109 @@
+/**
+ * DashboardLayout Component
+ * Main layout for dashboard pages with sidebar and navbar
+ */
+
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Menu, LogOut, Bell } from 'lucide-react';
+import Sidebar from './Sidebar';
+import BusinessPicker from './BusinessPicker';
+import FallingSakura from '@/components/background/FallingSakura';
+
+export default function DashboardLayout({
+  children,
+  user,
+  businesses,
+  currentBusinessId,
+}) {
+  const router = useRouter();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleLogout = () => {
+    window.location.href = '/api/auth/logout';
+  };
+
+  return (
+    <>
+      <FallingSakura />
+
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws flex">
+        {/* Sidebar */}
+        <Sidebar
+          businessId={currentBusinessId}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Top Navbar */}
+          <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30">
+            <div className="px-4 sm:px-6 lg:px-8 py-4">
+              <div className="flex items-center justify-between">
+                {/* Left side */}
+                <div className="flex items-center gap-4">
+                  {/* Mobile menu button */}
+                  <button
+                    onClick={() => setSidebarOpen(true)}
+                    className="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg"
+                  >
+                    <Menu className="w-6 h-6" />
+                  </button>
+
+                  {/* Business Picker */}
+                  <BusinessPicker
+                    businesses={businesses}
+                    currentBusinessId={currentBusinessId}
+                  />
+                </div>
+
+                {/* Right side */}
+                <div className="flex items-center gap-3">
+                  {/* Notifications (placeholder for future) */}
+                  <button className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg relative">
+                    <Bell className="w-5 h-5" />
+                    {/* Notification badge */}
+                    {/* <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" /> */}
+                  </button>
+
+                  {/* User menu */}
+                  {user && (
+                    <div className="flex items-center gap-3 pl-3 border-l border-slate-200">
+                      <div className="hidden sm:flex items-center gap-2">
+                        {user.pictureUrl && (
+                          <img
+                            src={user.pictureUrl}
+                            alt={user.displayName}
+                            className="w-8 h-8 rounded-full"
+                          />
+                        )}
+                        <span className="text-sm font-medium text-slate-700">
+                          {user.displayName}
+                        </span>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Logout"
+                      >
+                        <LogOut className="w-5 h-5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Page Content */}
+          <main className="flex-1 overflow-auto">
+            {children}
+          </main>
+        </div>
+      </div>
+    </>
+  );
+}

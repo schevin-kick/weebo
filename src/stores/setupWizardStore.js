@@ -604,4 +604,5 @@ const useSetupWizardStore = create(
   )
 );
 
+export { useSetupWizardStore };
 export default useSetupWizardStore;
