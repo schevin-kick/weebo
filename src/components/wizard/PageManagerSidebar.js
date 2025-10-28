@@ -312,19 +312,29 @@ export default function PageManagerSidebar() {
         onClick={handleAddCustomPage}
         disabled={!canAddCustomPage}
         className={`
-          w-full mb-4 px-4 py-3 rounded-xl border-2 border-dashed font-medium text-sm transition-all
+          w-full mb-4 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-300 relative overflow-hidden group
           ${
             canAddCustomPage
-              ? 'border-orange-300 text-orange-600 hover:border-orange-400 hover:bg-orange-50'
-              : 'border-slate-200 text-slate-400 cursor-not-allowed'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-[0.98]'
+              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
           }
         `}
       >
-        <div className="flex items-center justify-center gap-2">
-          <Plus className="w-4 h-4" />
-          Add Custom Page
+        {/* Animated gradient overlay on hover */}
+        {canAddCustomPage && (
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        )}
+
+        {/* Pulsing ring animation */}
+        {canAddCustomPage && (
+          <div className="absolute inset-0 rounded-xl bg-orange-400 animate-ping opacity-20"></div>
+        )}
+
+        <div className="relative flex items-center justify-center gap-2">
+          <Plus className={`w-5 h-5 transition-transform duration-300 ${canAddCustomPage ? 'group-hover:rotate-90' : ''}`} />
+          <span>Add Custom Page</span>
         </div>
-        <div className="text-xs mt-1">
+        <div className="relative text-xs mt-1 opacity-90">
           {customPagesCount}/10 custom pages
         </div>
       </button>

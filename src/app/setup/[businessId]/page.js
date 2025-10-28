@@ -23,6 +23,7 @@ export default function BusinessWizardPage() {
 
   const [isHydrated, setIsHydrated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [businessData, setBusinessData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const toast = useToast();
@@ -66,6 +67,7 @@ export default function BusinessWizardPage() {
   }
 
   const handleSave = async () => {
+    setSaving(true);
     try {
       const store = useSetupWizardStore.getState();
 
@@ -143,6 +145,8 @@ export default function BusinessWizardPage() {
     } catch (error) {
       console.error('Save error:', error);
       toast.error('Failed to save business configuration');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -224,6 +228,7 @@ export default function BusinessWizardPage() {
             onSave={handleSave}
             canProceed={canProceed}
             isLastStep={currentStep === 4}
+            isSaving={saving}
           />
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeft, ChevronRight, Save } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Save, Loader2 } from 'lucide-react';
 
 export default function StepNavigation({
   currentStep,
@@ -9,6 +9,7 @@ export default function StepNavigation({
   onSave,
   canProceed = true,
   isLastStep = false,
+  isSaving = false,
 }) {
   return (
     <div className="border-t border-slate-200 bg-white/95 backdrop-blur-sm px-4 py-4 sm:px-6 shadow-[0_-4px_12px_rgba(0,0,0,0.1)]">
@@ -30,18 +31,27 @@ export default function StepNavigation({
         {isLastStep ? (
           <button
             onClick={onSave}
-            disabled={!canProceed}
+            disabled={!canProceed || isSaving}
             className={`
               flex items-center gap-2 px-6 py-2 text-sm font-medium text-white rounded-lg transition-all
               ${
-                canProceed
+                canProceed && !isSaving
                   ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/30'
                   : 'bg-slate-300 cursor-not-allowed'
               }
             `}
           >
-            <Save className="w-4 h-4" />
-            Save & Deploy
+            {isSaving ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                Save & Deploy
+              </>
+            )}
           </button>
         ) : (
           <button

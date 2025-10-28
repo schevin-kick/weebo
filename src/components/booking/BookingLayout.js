@@ -2,12 +2,12 @@
 
 import FallingSakura from '@/components/background/FallingSakura';
 
-export default function BookingLayout({ businessName, children, stepper, navigation }) {
+export default function BookingLayout({ businessName, children, stepper, navigation, isPreview = false }) {
   return (
     <>
-      <FallingSakura />
+      {!isPreview && <FallingSakura />}
 
-      <div className="h-screen flex flex-col bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws overflow-hidden">
+      <div className={`${isPreview ? 'h-full' : 'h-screen'} flex flex-col bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 ${!isPreview ? 'pattern-sakura-paws' : ''} overflow-hidden`}>
         {/* Header */}
         <header className="bg-white border-b border-slate-200 z-40 shadow-sm flex-shrink-0">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4">

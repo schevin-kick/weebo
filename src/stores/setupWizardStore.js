@@ -191,14 +191,35 @@ const useSetupWizardStore = create(
           const customPagesCount = state.pages.filter(p => p.type === 'custom').length;
           if (page.type === 'custom' && customPagesCount >= 10) return state;
 
-          const maxOrder = state.pages.reduce((max, p) => Math.max(max, p.order), -1);
+          // Find the datetime page (should always be last)
+          const dateTimePageIndex = state.pages.findIndex(p => p.type === 'preset-datetime');
+
+          let newOrder;
+          let updatedPages;
+
+          if (dateTimePageIndex !== -1) {
+            // Insert custom page before datetime picker
+            const dateTimePage = state.pages[dateTimePageIndex];
+            newOrder = dateTimePage.order;
+
+            // Shift datetime (and any pages after it) down by 1
+            updatedPages = state.pages.map(p =>
+              p.order >= newOrder ? { ...p, order: p.order + 1 } : p
+            );
+          } else {
+            // No datetime page, add at end
+            const maxOrder = state.pages.reduce((max, p) => Math.max(max, p.order), -1);
+            newOrder = maxOrder + 1;
+            updatedPages = [...state.pages];
+          }
+
           const newPage = {
             ...page,
-            order: maxOrder + 1,
+            order: newOrder,
           };
 
           return {
-            pages: [...state.pages, newPage],
+            pages: [...updatedPages, newPage],
             currentEditingPageId: newPage.id,
           };
         }),

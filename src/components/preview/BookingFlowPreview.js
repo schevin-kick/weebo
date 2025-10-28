@@ -211,6 +211,7 @@ export default function BookingFlowPreview() {
   return (
     <BookingLayout
       businessName={businessName || 'Your Business'}
+      isPreview={true}
       stepper={
         <BookingStepper
           pages={sortedPages}

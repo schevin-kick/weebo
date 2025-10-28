@@ -260,19 +260,12 @@ export default function CustomFieldsPage({ page, responses, onResponseChange }) 
     return null;
   };
 
-  // Debug: Log components
-  console.log('[CustomFieldsPage] Rendering page:', page.title);
-  console.log('[CustomFieldsPage] Components:', page.components);
-
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-slate-900 mb-6">{page.title}</h2>
 
       <div className="space-y-5">
-        {page.components.map((component) => {
-          console.log('[CustomFieldsPage] Rendering component:', component);
-          return renderField(component);
-        })}
+        {page.components.map((component) => renderField(component))}
       </div>
     </div>
   );
