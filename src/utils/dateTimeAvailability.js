@@ -34,10 +34,10 @@ export function isDateAvailableForStaff(date, staff, businessHours) {
     return isDateAvailable(date, businessHours);
   }
 
-  // If staff has custom hours, use those
-  if (staff.customHours) {
+  // If staff has custom hours and isn't using business hours, use those
+  if (staff.availability && staff.availability.useBusinessHours === false && staff.availability.custom) {
     const dayOfWeek = getDayOfWeek(date);
-    const dayConfig = staff.customHours[dayOfWeek];
+    const dayConfig = staff.availability.custom[dayOfWeek];
     return dayConfig && !dayConfig.closed;
   }
 
@@ -51,9 +51,9 @@ export function isDateAvailableForStaff(date, staff, businessHours) {
 export function getAvailableHours(date, businessHours, staff = null) {
   const dayOfWeek = getDayOfWeek(date);
 
-  // If staff has custom hours, use those
-  if (staff && staff.customHours) {
-    const dayConfig = staff.customHours[dayOfWeek];
+  // If staff has custom hours and isn't using business hours, use those
+  if (staff && staff.availability && staff.availability.useBusinessHours === false && staff.availability.custom) {
+    const dayConfig = staff.availability.custom[dayOfWeek];
     if (!dayConfig || dayConfig.closed) {
       return { open: null, close: null };
     }
