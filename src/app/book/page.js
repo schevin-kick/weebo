@@ -351,6 +351,7 @@ export default function BookingPage() {
   return (
     <BookingLayout
       businessName={businessConfig.businessName}
+      logoUrl={businessConfig.logoUrl}
       stepper={
         <BookingStepper
           pages={sortedPages}

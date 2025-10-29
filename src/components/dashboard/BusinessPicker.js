@@ -46,19 +46,21 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
+        className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
       >
-        {currentBusiness.logoUrl ? (
-          <img
-            src={currentBusiness.logoUrl}
-            alt={currentBusiness.businessName}
-            className="w-8 h-8 rounded-lg object-cover"
-          />
-        ) : (
-          <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
-            <Store className="w-4 h-4 text-white" />
-          </div>
-        )}
+        <div className="bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center overflow-hidden" style={{ height: '40px', width: 'auto' }}>
+          {currentBusiness.logoUrl ? (
+            <img
+              src={currentBusiness.logoUrl}
+              alt={currentBusiness.businessName}
+              className="h-full w-auto object-contain"
+            />
+          ) : (
+            <div className="w-10 h-10 flex items-center justify-center">
+              <Store className="w-5 h-5 text-white" />
+            </div>
+          )}
+        </div>
         <span className="font-medium text-slate-900 hidden sm:block">
           {currentBusiness.businessName}
         </span>
@@ -86,17 +88,19 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
                   business.id === currentBusinessId ? 'bg-orange-50' : ''
                 }`}
               >
-                {business.logoUrl ? (
-                  <img
-                    src={business.logoUrl}
-                    alt={business.businessName}
-                    className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Store className="w-5 h-5 text-white" />
-                  </div>
-                )}
+                <div className="bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center overflow-hidden flex-shrink-0" style={{ height: '40px', width: 'auto' }}>
+                  {business.logoUrl ? (
+                    <img
+                      src={business.logoUrl}
+                      alt={business.businessName}
+                      className="h-full w-auto object-contain"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 flex items-center justify-center">
+                      <Store className="w-5 h-5 text-white" />
+                    </div>
+                  )}
+                </div>
                 <div className="flex-1 text-left min-w-0">
                   <p
                     className={`font-medium truncate ${

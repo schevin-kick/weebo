@@ -30,6 +30,7 @@ export default function BookingFlowPreview() {
 
   // Get data from wizard store
   const businessName = useSetupWizardStore((state) => state.businessName);
+  const logoUrl = useSetupWizardStore((state) => state.logoUrl);
   const pages = useSetupWizardStore((state) => state.pages);
   const services = useSetupWizardStore((state) => state.services);
   const staff = useSetupWizardStore((state) => state.staff);
@@ -216,6 +217,7 @@ export default function BookingFlowPreview() {
   return (
     <BookingLayout
       businessName={businessName || 'Your Business'}
+      logoUrl={logoUrl}
       isPreview={true}
       stepper={
         <BookingStepper

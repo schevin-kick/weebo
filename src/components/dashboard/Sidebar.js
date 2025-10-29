@@ -63,10 +63,10 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Backdrop - only show on mobile when sidebar is open */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={onClose}
         />
       )}
@@ -74,14 +74,14 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50
-          transform transition-transform duration-300 ease-in-out
-          flex flex-col
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50
+          transform transition-transform duration-300 ease-in-out lg:transform-none
+          flex flex-col flex-shrink-0
+          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        {/* Close button */}
-        <div className="flex justify-end p-4 flex-shrink-0">
+        {/* Close button - only show on mobile */}
+        <div className="flex justify-end p-4 flex-shrink-0 lg:hidden">
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600"

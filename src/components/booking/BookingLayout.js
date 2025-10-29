@@ -2,7 +2,7 @@
 
 import FallingSakura from '@/components/background/FallingSakura';
 
-export default function BookingLayout({ businessName, children, stepper, navigation, isPreview = false }) {
+export default function BookingLayout({ businessName, logoUrl, children, stepper, navigation, isPreview = false }) {
   return (
     <>
       {!isPreview && <FallingSakura />}
@@ -12,8 +12,18 @@ export default function BookingLayout({ businessName, children, stepper, navigat
         <header className="bg-white border-b border-slate-200 z-40 shadow-sm flex-shrink-0">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
-                <span className="text-white text-xl">🦊</span>
+              <div className="bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center overflow-hidden" style={{ height: '40px', width: 'auto' }}>
+                {logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt={businessName || 'Business Logo'}
+                    className="h-full w-auto object-contain"
+                  />
+                ) : (
+                  <div className="w-10 h-10 flex items-center justify-center">
+                    <span className="text-white text-xl">🦊</span>
+                  </div>
+                )}
               </div>
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">

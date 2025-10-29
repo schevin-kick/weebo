@@ -10,7 +10,6 @@ import {
   Trash2,
   Plus,
   Sparkles,
-  GripVertical,
 } from 'lucide-react';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import {
@@ -50,10 +49,8 @@ const PAGE_TYPE_LABELS = {
 
 function SortablePageCard({
   page,
-  index,
   isActive,
   onSelect,
-  onDelete,
   onMoveUp,
   onMoveDown,
   canMoveUp,
@@ -85,36 +82,21 @@ function SortablePageCard({
     <div
       ref={setNodeRef}
       style={style}
+      {...attributes}
+      {...listeners}
       className={`
-        group rounded-xl border-2 p-3 transition-all
+        group rounded-xl border-2 p-3 transition-all touch-none
         ${
           isActive
             ? 'border-orange-500 bg-orange-50 shadow-md'
             : 'border-slate-200 bg-white hover:border-orange-300 hover:shadow-sm'
         }
         ${isDragging ? 'opacity-30' : ''}
+        ${isDraggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'}
       `}
       onClick={() => onSelect(page.id)}
     >
       <div className="flex items-start gap-2">
-        {/* Drag handle */}
-        <div
-          {...attributes}
-          {...listeners}
-          className={`flex-shrink-0 transition-colors touch-none ${
-            isDraggable
-              ? 'text-slate-400 hover:text-orange-500 cursor-grab active:cursor-grabbing'
-              : 'text-slate-300 cursor-not-allowed'
-          }`}
-        >
-          <GripVertical className="w-4 h-4" />
-        </div>
-
-        {/* Order number */}
-        <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-md flex items-center justify-center">
-          <span className="text-white font-bold text-xs">{index + 1}</span>
-        </div>
-
         {/* Icon */}
         <div
           className={`flex-shrink-0 w-8 h-8 ${color} rounded-lg flex items-center justify-center`}
@@ -370,10 +352,8 @@ export default function PageManagerSidebar() {
                   <SortablePageCard
                     key={page.id}
                     page={page}
-                    index={index}
                     isActive={page.id === currentEditingPageId}
                     onSelect={setCurrentEditingPageId}
-                    onDelete={() => deletePage(page.id)}
                     onRequestDelete={(page) => setDeleteConfirm(page)}
                     onMoveUp={() => movePageUp(page.id)}
                     onMoveDown={() => movePageDown(page.id)}
@@ -391,14 +371,6 @@ export default function PageManagerSidebar() {
           {activeId && activePage ? (
             <div className="rounded-xl border-2 border-orange-500 bg-orange-50 shadow-2xl p-3 cursor-grabbing rotate-3 scale-105">
               <div className="flex items-start gap-2">
-                <div className="flex-shrink-0 text-orange-500">
-                  <GripVertical className="w-4 h-4" />
-                </div>
-                <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-md flex items-center justify-center">
-                  <span className="text-white font-bold text-xs">
-                    {sortedPages.findIndex((p) => p.id === activeId) + 1}
-                  </span>
-                </div>
                 <div className={`flex-shrink-0 w-8 h-8 ${PAGE_TYPE_ICONS[activePage.type].color} rounded-lg flex items-center justify-center`}>
                   {(() => {
                     const Icon = PAGE_TYPE_ICONS[activePage.type].icon;
