@@ -187,8 +187,12 @@ export default function BusinessWizardPage() {
                 >
                   <ArrowLeft className="w-5 h-5 text-slate-600" />
                 </button>
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
-                  <span className="text-white text-xl">🦊</span>
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center overflow-hidden">
+                  <img
+                    src="/logo.png"
+                    alt="Kitsune"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">

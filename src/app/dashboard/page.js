@@ -118,8 +118,12 @@ export default function DashboardSelectionPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
-                <span className="text-white text-2xl">🦊</span>
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="Kitsune"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
             <h1 className="text-4xl font-bold text-slate-900 mb-2">

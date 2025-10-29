@@ -7,9 +7,9 @@
 
 export default function KitsuneLogo({ size = 'large' }) {
   const sizeClasses = {
-    small: 'w-12 h-12 text-4xl',
-    medium: 'w-20 h-20 text-6xl',
-    large: 'w-32 h-32 text-8xl',
+    small: 'w-24 h-24',
+    medium: 'w-40 h-40',
+    large: 'w-64 h-64',
   };
 
   return (
@@ -19,9 +19,13 @@ export default function KitsuneLogo({ size = 'large' }) {
         {/* Glowing Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
 
-        {/* Fox Emoji */}
-        <div className="relative flex items-center justify-center w-full h-full">
-          <span className="animate-wiggle">🦊</span>
+        {/* Kitsune Animated GIF */}
+        <div className="relative flex items-center justify-center h-full rounded-3xl overflow-hidden">
+          <img
+            src="/kitsune-animated.gif"
+            alt="Kitsune Loading"
+            className=" h-full object-contain rounded-3xl"
+          />
         </div>
       </div>
 
@@ -48,24 +52,8 @@ export default function KitsuneLogo({ size = 'large' }) {
           }
         }
 
-        @keyframes wiggle {
-          0%, 100% {
-            transform: rotate(0deg);
-          }
-          25% {
-            transform: rotate(-10deg);
-          }
-          75% {
-            transform: rotate(10deg);
-          }
-        }
-
         .animate-bounce-slow {
           animation: bounce-slow 2s ease-in-out infinite;
-        }
-
-        .animate-wiggle {
-          animation: wiggle 1s ease-in-out infinite;
         }
 
         .animate-bounce-delay-0 {

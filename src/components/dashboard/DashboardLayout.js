@@ -45,10 +45,10 @@ export default function DashboardLayout({
               <div className="flex items-center justify-between w-full">
                 {/* Left side */}
                 <div className="flex items-center gap-4">
-                  {/* Mobile menu button */}
+                  {/* Menu button */}
                   <button
                     onClick={() => setSidebarOpen(true)}
-                    className="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg"
+                    className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg"
                   >
                     <Menu className="w-6 h-6" />
                   </button>
