@@ -2,101 +2,107 @@
 
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Stars } from '@react-three/drei';
+import { Stars } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Animated fox/kitsune particle
-function FoxParticle({ position, scale }) {
+// Individual sakura petal with realistic shape and animation
+function SakuraPetal({ position, rotation, scale, color, speed }) {
   const meshRef = useRef();
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-    meshRef.current.position.y = position[1] + Math.sin(time * 0.5 + position[0]) * 0.5;
-    meshRef.current.rotation.y = time * 0.3;
+    // Natural falling and drifting motion
+    meshRef.current.position.y -= speed * 0.01;
+    meshRef.current.position.x += Math.sin(time * speed + position[2]) * 0.001;
+
+    // Gentle tumbling rotation like real petals
+    meshRef.current.rotation.x += speed * 0.02;
+    meshRef.current.rotation.z += speed * 0.015;
+
+    // Reset position when petal falls too low
+    if (meshRef.current.position.y < -10) {
+      meshRef.current.position.y = 10;
+      meshRef.current.position.x = position[0];
+      meshRef.current.position.z = position[2];
+    }
   });
 
-  return (
-    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
-      <mesh ref={meshRef} position={position} scale={scale}>
-        {/* Fox head - simplified geometric shape */}
-        <coneGeometry args={[0.5, 1, 3]} />
-        <meshStandardMaterial color="#fb923c" emissive="#f97316" emissiveIntensity={0.3} />
-      </mesh>
-    </Float>
-  );
-}
+  // Create realistic sakura petal shape
+  const shape = useMemo(() => {
+    const petalShape = new THREE.Shape();
 
-// Floating particle system
-function ParticleField() {
-  const particlesRef = useRef();
+    // Create a teardrop/oval petal shape with slight notch at tip
+    petalShape.moveTo(0, 0);
+    petalShape.bezierCurveTo(0.15, 0.1, 0.25, 0.3, 0.25, 0.5);
+    petalShape.bezierCurveTo(0.25, 0.7, 0.15, 0.85, 0, 1);
+    petalShape.bezierCurveTo(-0.15, 0.85, -0.25, 0.7, -0.25, 0.5);
+    petalShape.bezierCurveTo(-0.25, 0.3, -0.15, 0.1, 0, 0);
 
-  const particles = useMemo(() => {
-    const temp = [];
-    for (let i = 0; i < 100; i++) {
-      const x = (Math.random() - 0.5) * 20;
-      const y = (Math.random() - 0.5) * 20;
-      const z = (Math.random() - 0.5) * 20;
-      temp.push(x, y, z);
-    }
-    return new Float32Array(temp);
+    return petalShape;
   }, []);
 
-  useFrame((state) => {
-    const time = state.clock.getElapsedTime();
-    particlesRef.current.rotation.y = time * 0.05;
-  });
-
   return (
-    <points ref={particlesRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={particles.length / 3}
-          array={particles}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.05}
-        color="#fbbf24"
+    <mesh ref={meshRef} position={position} rotation={rotation} scale={scale}>
+      <shapeGeometry args={[shape]} />
+      <meshStandardMaterial
+        color={color}
+        emissive={color}
+        emissiveIntensity={0.1}
+        side={THREE.DoubleSide}
         transparent
-        opacity={0.6}
-        sizeAttenuation
+        opacity={0.85}
       />
-    </points>
+    </mesh>
   );
 }
 
-// Rotating geometric shapes
-function GeometricShapes() {
-  const groupRef = useRef();
+// Collection of falling sakura petals
+function SakuraLeaves() {
+  const sakuraColors = [
+    '#ffc0cb', // light pink
+    '#ffb6c1', // pale pink
+    '#ff69b4', // hot pink
+    '#ffd1dc', // white-pink
+    '#ffb7d5', // soft rose
+    '#ffe4e1', // misty rose
+  ];
 
-  useFrame((state) => {
-    const time = state.clock.getElapsedTime();
-    groupRef.current.rotation.x = time * 0.1;
-    groupRef.current.rotation.y = time * 0.15;
-  });
+  // Generate petals with random properties
+  const petals = useMemo(() => {
+    const petalArray = [];
+    for (let i = 0; i < 35; i++) {
+      petalArray.push({
+        position: [
+          (Math.random() - 0.5) * 12, // x: -6 to 6
+          Math.random() * 12 - 3,     // y: -3 to 9
+          Math.random() * -8 - 2,     // z: -2 to -10
+        ],
+        rotation: [
+          Math.random() * Math.PI,
+          Math.random() * Math.PI,
+          Math.random() * Math.PI,
+        ],
+        scale: 0.2 + Math.random() * 0.25, // 0.2 to 0.45
+        color: sakuraColors[Math.floor(Math.random() * sakuraColors.length)],
+        speed: 0.3 + Math.random() * 0.7, // 0.3 to 1.0
+      });
+    }
+    return petalArray;
+  }, []);
 
   return (
-    <group ref={groupRef}>
-      {/* Torus */}
-      <mesh position={[3, 2, -5]}>
-        <torusGeometry args={[1, 0.3, 16, 100]} />
-        <meshStandardMaterial color="#ec4899" wireframe />
-      </mesh>
-
-      {/* Octahedron */}
-      <mesh position={[-3, -1, -3]}>
-        <octahedronGeometry args={[1]} />
-        <meshStandardMaterial color="#8b5cf6" wireframe />
-      </mesh>
-
-      {/* Dodecahedron */}
-      <mesh position={[0, -2, -8]}>
-        <dodecahedronGeometry args={[0.8]} />
-        <meshStandardMaterial color="#06b6d4" wireframe />
-      </mesh>
-    </group>
+    <>
+      {petals.map((petal, index) => (
+        <SakuraPetal
+          key={index}
+          position={petal.position}
+          rotation={petal.rotation}
+          scale={petal.scale}
+          color={petal.color}
+          speed={petal.speed}
+        />
+      ))}
+    </>
   );
 }
 
@@ -104,25 +110,16 @@ function GeometricShapes() {
 function Scene() {
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#fbbf24" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ec4899" />
+      {/* Lighting - soft pink and ambient */}
+      <ambientLight intensity={0.6} />
+      <pointLight position={[10, 10, 10]} intensity={0.8} color="#ffb6c1" />
+      <pointLight position={[-10, -10, -10]} intensity={0.4} color="#ffc0cb" />
 
       {/* Stars background */}
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 
-      {/* Fox particles */}
-      <FoxParticle position={[2, 1, -5]} scale={0.3} />
-      <FoxParticle position={[-3, -1, -7]} scale={0.4} />
-      <FoxParticle position={[1, -2, -4]} scale={0.35} />
-      <FoxParticle position={[-2, 2, -6]} scale={0.3} />
-
-      {/* Particle field */}
-      <ParticleField />
-
-      {/* Geometric shapes */}
-      <GeometricShapes />
+      {/* Falling sakura petals */}
+      <SakuraLeaves />
     </>
   );
 }
