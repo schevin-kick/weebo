@@ -6,8 +6,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Menu, LogOut, Bell } from 'lucide-react';
+import { Menu, LogOut } from 'lucide-react';
 import Sidebar from './Sidebar';
 import BusinessPicker from './BusinessPicker';
 import FallingSakura from '@/components/background/FallingSakura';
@@ -18,7 +17,6 @@ export default function DashboardLayout({
   businesses,
   currentBusinessId,
 }) {
-  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
@@ -65,13 +63,6 @@ export default function DashboardLayout({
 
                 {/* Right side */}
                 <div className="flex items-center gap-3">
-                  {/* Notifications (placeholder for future) */}
-                  <button className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg relative">
-                    <Bell className="w-5 h-5" />
-                    {/* Notification badge */}
-                    {/* <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" /> */}
-                  </button>
-
                   {/* User menu */}
                   {user && (
                     <div className="flex items-center gap-3 pl-3 border-l border-slate-200">

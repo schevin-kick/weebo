@@ -138,10 +138,12 @@ export default function ImageUpload({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  e.preventDefault();
                   handleRemove();
                 }}
-                className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
+                className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg z-10"
                 title="Remove image"
+                type="button"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -152,7 +154,7 @@ export default function ImageUpload({
               accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
               onChange={handleInputChange}
               disabled={uploading}
-              className="absolute inset-0 opacity-0 cursor-pointer"
+              className="absolute inset-0 opacity-0 cursor-pointer z-0"
             />
           </>
         ) : (
