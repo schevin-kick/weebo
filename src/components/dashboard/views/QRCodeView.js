@@ -68,30 +68,62 @@ export default function QRCodeView({ businessId }) {
       if (showLogo && business.logoUrl) {
         const ctx = canvas.getContext('2d');
         const logo = new Image();
-        logo.crossOrigin = 'anonymous';
+
         logo.onload = () => {
           const logoSize = qrSize * 0.2;
-          const logoX = (qrSize - logoSize) / 2;
-          const logoY = (qrSize - logoSize) / 2;
+          const centerX = qrSize / 2;
+          const centerY = qrSize / 2;
 
           // Draw white background circle for logo
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
-          ctx.arc(qrSize / 2, qrSize / 2, logoSize / 2 + 10, 0, 2 * Math.PI);
+          ctx.arc(centerX, centerY, logoSize / 2 + 10, 0, 2 * Math.PI);
           ctx.fill();
 
-          // Draw logo
-          ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+          // Calculate aspect ratio for object-fit: cover behavior
+          const imgAspect = logo.width / logo.height;
+          const circleAspect = 1; // Circle is always 1:1
+
+          let drawWidth, drawHeight, drawX, drawY;
+
+          if (imgAspect > circleAspect) {
+            // Image is wider - fit to height and crop sides
+            drawHeight = logoSize;
+            drawWidth = drawHeight * imgAspect;
+            drawX = centerX - drawWidth / 2;
+            drawY = centerY - drawHeight / 2;
+          } else {
+            // Image is taller - fit to width and crop top/bottom
+            drawWidth = logoSize;
+            drawHeight = drawWidth / imgAspect;
+            drawX = centerX - drawWidth / 2;
+            drawY = centerY - drawHeight / 2;
+          }
+
+          // Draw logo with circular clip (object-fit: cover)
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, logoSize / 2, 0, 2 * Math.PI);
+          ctx.closePath();
+          ctx.clip();
+          ctx.drawImage(logo, drawX, drawY, drawWidth, drawHeight);
+          ctx.restore();
 
           // Update data URL
           const dataUrl = canvas.toDataURL('image/png');
           setQrDataUrl(dataUrl);
         };
-        logo.onerror = () => {
+        logo.onerror = (error) => {
+          console.error('Failed to load logo:', business.logoUrl, error);
           const dataUrl = canvas.toDataURL('image/png');
           setQrDataUrl(dataUrl);
         };
-        logo.src = business.logoUrl;
+
+        // Use proxy API to avoid CORS issues with external images
+        const logoUrl = business.logoUrl.startsWith('http')
+          ? `/api/proxy-image?url=${encodeURIComponent(business.logoUrl)}`
+          : business.logoUrl;
+        logo.src = logoUrl;
       } else {
         const dataUrl = canvas.toDataURL('image/png');
         setQrDataUrl(dataUrl);
