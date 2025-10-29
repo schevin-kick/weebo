@@ -1,18 +1,30 @@
 /**
  * Home Page
- * Automatically redirects based on user context with cute loading animation
+ * Shows brochure to non-authenticated users, redirects authenticated users to dashboard
  */
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import FallingSakura from '@/components/background/FallingSakura';
 import KitsuneLogo from '@/components/loading/KitsuneLogo';
 import { getLastSelectedBusiness } from '@/lib/localStorage';
+import dynamic from 'next/dynamic';
+
+// Dynamically import brochure to reduce initial bundle size
+const BrochurePage = dynamic(() => import('./brochure/page'), {
+  ssr: false,
+  loading: () => (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="animate-pulse text-white">Loading...</div>
+    </div>
+  )
+});
 
 export default function Home() {
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
     async function handleRedirect() {
@@ -21,11 +33,14 @@ export default function Home() {
         const sessionRes = await fetch('/api/auth/session');
         const sessionData = await sessionRes.json();
 
-        // Not logged in - redirect to login
+        // Not logged in - show brochure
         if (!sessionData.user) {
-          window.location.href = '/api/auth/login';
+          setIsAuthenticated(false);
           return;
         }
+
+        // User is authenticated - redirect to dashboard
+        setIsAuthenticated(true);
 
         // Load businesses
         const bizRes = await fetch('/api/businesses');
@@ -50,24 +65,46 @@ export default function Home() {
         }
       } catch (error) {
         console.error('Redirect error:', error);
-        // On error, go to setup
-        router.push('/setup');
+        // On error, show brochure
+        setIsAuthenticated(false);
       }
     }
 
     handleRedirect();
   }, [router]);
 
+  // Show loading state while checking authentication
+  if (isAuthenticated === null) {
+    return (
+      <>
+        <FallingSakura />
+        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws flex items-center justify-center p-4">
+          <div className="text-center">
+            <KitsuneLogo size="large" />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mt-8 mb-2">
+              Kitsune Booking
+            </h1>
+            <p className="text-slate-500">
+              Loading...
+            </p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Show brochure for non-authenticated users
+  if (isAuthenticated === false) {
+    return <BrochurePage />;
+  }
+
+  // Show loading for authenticated users while redirecting
   return (
     <>
       <FallingSakura />
-
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws flex items-center justify-center p-4">
         <div className="text-center">
-          {/* Cute Animated Fox Logo */}
           <KitsuneLogo size="large" />
-
-          {/* Brand Name */}
           <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mt-8 mb-2">
             Kitsune Booking
           </h1>

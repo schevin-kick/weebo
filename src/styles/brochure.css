@@ -1,0 +1,68 @@
+/* Brochure-specific styles */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep functionality */
+body:has(.brochure-page) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(251, 146, 60, 0.3) transparent;
+}
+
+body:has(.brochure-page)::-webkit-scrollbar {
+  width: 8px;
+}
+
+body:has(.brochure-page)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body:has(.brochure-page)::-webkit-scrollbar-thumb {
+  background: rgba(251, 146, 60, 0.3);
+  border-radius: 4px;
+}
+
+body:has(.brochure-page)::-webkit-scrollbar-thumb:hover {
+  background: rgba(251, 146, 60, 0.5);
+}
+
+/* Prevent text selection on animated elements */
+.typewriter-text {
+  user-select: none;
+}
+
+/* Ensure Three.js canvas doesn't interfere with clicks */
+canvas {
+  pointer-events: none;
+}
+
+/* Gradient animation for pulse effect */
+@keyframes gradient-pulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-gradient-pulse {
+  animation: gradient-pulse 3s ease-in-out infinite;
+}
+
+/* Glass morphism helper */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive video */
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
