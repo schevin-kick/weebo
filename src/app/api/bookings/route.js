@@ -296,6 +296,11 @@ export async function GET(request) {
           select: {
             businessName: true,
             logoUrl: true,
+            pages: {
+              select: {
+                components: true,
+              },
+            },
           },
         },
         service: {
@@ -309,6 +314,12 @@ export async function GET(request) {
           select: {
             name: true,
             photoUrl: true,
+          },
+        },
+        customer: {
+          select: {
+            displayName: true,
+            pictureUrl: true,
           },
         },
       },

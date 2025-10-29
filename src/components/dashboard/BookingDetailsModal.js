@@ -33,6 +33,21 @@ export default function BookingDetailsModal({
 
   if (!isOpen || !booking) return null;
 
+  // Helper function to get label for a component ID from business pages
+  const getComponentLabel = (componentId) => {
+    if (!booking.business?.pages) return null;
+
+    for (const page of booking.business.pages) {
+      if (page.components && Array.isArray(page.components)) {
+        const component = page.components.find(c => c.id === componentId);
+        if (component) {
+          return component.label || component.title || null;
+        }
+      }
+    }
+    return null;
+  };
+
   const canConfirm = booking.status === 'pending';
   const canCancel = booking.status === 'pending' || booking.status === 'confirmed';
   const canMarkNoShow = booking.status === 'confirmed' && isPast(booking.dateTime);
@@ -189,10 +204,14 @@ export default function BookingDetailsModal({
                       const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
                       const isUUID = uuidPattern.test(key);
 
+                      // Get human-readable label if available
+                      const label = isUUID ? getComponentLabel(key) : null;
+                      const displayLabel = label || (isUUID ? 'Response' : key);
+
                       return (
                         <div key={key} className="flex justify-between gap-4">
                           <span className="text-slate-600">
-                            {isUUID ? 'Response' : key}
+                            {displayLabel}
                           </span>
                           <span className="font-medium text-slate-900 text-right max-w-xs break-words">
                             {typeof value === 'object' ? JSON.stringify(value) : value}
