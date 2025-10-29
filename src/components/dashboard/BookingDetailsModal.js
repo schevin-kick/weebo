@@ -6,7 +6,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X, User, Calendar, Clock, FileText, AlertCircle } from 'lucide-react';
+import { X, User, Calendar, FileText, AlertCircle } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import ConfirmDialog from './ConfirmDialog';
 import { formatDateTime, formatDuration, isPast } from '@/lib/dateUtils';
@@ -88,10 +88,10 @@ export default function BookingDetailsModal({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-[60] overflow-y-auto">
         {/* Backdrop */}
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+          className="fixed inset-0 bg-black/50 transition-opacity"
           onClick={onClose}
         />
 
@@ -183,14 +183,22 @@ export default function BookingDetailsModal({
                     <h3 className="font-semibold text-slate-900">Customer Responses</h3>
                   </div>
                   <div className="ml-7 space-y-2">
-                    {Object.entries(booking.responses).map(([key, value]) => (
-                      <div key={key} className="flex justify-between">
-                        <span className="text-slate-600">{key}</span>
-                        <span className="font-medium text-slate-900 text-right max-w-xs">
-                          {typeof value === 'object' ? JSON.stringify(value) : value}
-                        </span>
-                      </div>
-                    ))}
+                    {Object.entries(booking.responses).map(([key, value]) => {
+                      // Check if key is a UUID (internal field ID)
+                      const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+                      const isUUID = uuidPattern.test(key);
+
+                      return (
+                        <div key={key} className="flex justify-between gap-4">
+                          <span className="text-slate-600">
+                            {isUUID ? 'Response' : key}
+                          </span>
+                          <span className="font-medium text-slate-900 text-right max-w-xs break-words">
+                            {typeof value === 'object' ? JSON.stringify(value) : value}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

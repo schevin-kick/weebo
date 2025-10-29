@@ -163,13 +163,35 @@ export async function POST(request) {
       });
     }
 
+    // Validate and sanitize serviceId if provided (gracefully handle deleted/invalid services)
+    let validatedServiceId = null;
+    if (serviceId) {
+      const serviceExists = business.services.find(s => s.id === serviceId);
+      if (serviceExists) {
+        validatedServiceId = serviceId;
+      } else {
+        console.warn(`[Booking API] Service ${serviceId} not found, proceeding without service`);
+      }
+    }
+
+    // Validate and sanitize staffId if provided (gracefully handle deleted/invalid staff)
+    let validatedStaffId = null;
+    if (staffId) {
+      const staffExists = business.staff.find(s => s.id === staffId);
+      if (staffExists) {
+        validatedStaffId = staffId;
+      } else {
+        console.warn(`[Booking API] Staff ${staffId} not found, proceeding without staff`);
+      }
+    }
+
     // Create booking
     const booking = await prisma.booking.create({
       data: {
         businessId,
         customerId: customer.id,
-        serviceId: serviceId || null,
-        staffId: staffId || null,
+        serviceId: validatedServiceId,
+        staffId: validatedStaffId,
         dateTime: bookingDateTime,
         duration: duration || business.defaultDuration,
         status: business.requiresApproval ? 'pending' : 'confirmed',

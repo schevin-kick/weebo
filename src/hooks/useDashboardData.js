@@ -164,7 +164,8 @@ export function useCalendarBookings(businessId, startDate, endDate, filters = {}
   if (filters.status && filters.status !== 'all') params.append('status', filters.status);
 
   const queryString = params.toString();
-  const url = businessId && startDate && endDate ? `/api/bookings?${queryString}` : null;
+  // Allow fetching without date range (will fetch all bookings for the business)
+  const url = businessId ? `/api/bookings?${queryString}` : null;
 
   const { data, error, mutate, isLoading } = useSWR(url, fetcher);
 

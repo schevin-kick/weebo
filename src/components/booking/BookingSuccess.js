@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CheckCircle, Sparkles, ArrowRight, UserPlus, Bell } from 'lucide-react';
-import Link from 'next/link';
+import { CheckCircle, Sparkles, X, UserPlus, Bell } from 'lucide-react';
 
 export default function BookingSuccess({ bookingSummary }) {
   const [showConfetti, setShowConfetti] = useState(true);
@@ -51,6 +50,14 @@ export default function BookingSuccess({ bookingSummary }) {
         url: 'https://line.me/R/ti/p/@YOUR_BOT_ID', // TODO: Replace with actual bot ID from LINE console
         external: false,
       });
+    }
+  }
+
+  function handleClose() {
+    if (typeof window !== 'undefined' && window.liff) {
+      const liff = window.liff;
+      // Close the LIFF window
+      liff.closeWindow();
     }
   }
 
@@ -179,13 +186,13 @@ export default function BookingSuccess({ bookingSummary }) {
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <Link
-              href="/setup"
+            <button
+              onClick={handleClose}
               className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-lg shadow-orange-500/30"
             >
-              Go to Setup
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+              Close
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </div>
 

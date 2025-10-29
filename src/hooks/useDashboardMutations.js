@@ -10,15 +10,12 @@ import { mutate } from 'swr';
  */
 export function useUpdateBookingStatus() {
   return async (bookingId, newStatus, businessId) => {
-    // Get the current bookings cache key
-    const bookingsKey = `/api/bookings?businessId=${businessId}`;
-
     try {
-      // Optimistically update the cache
+      // Optimistically update all bookings cache keys that match the pattern
       await mutate(
-        bookingsKey,
+        (key) => typeof key === 'string' && key.startsWith(`/api/bookings?businessId=${businessId}`),
         async (currentData) => {
-          if (!currentData) return currentData;
+          if (!currentData?.bookings) return currentData;
 
           return {
             ...currentData,
@@ -29,7 +26,7 @@ export function useUpdateBookingStatus() {
             ),
           };
         },
-        false // Don't revalidate yet
+        { revalidate: false } // Don't revalidate yet
       );
 
       // Make the API call
@@ -43,8 +40,8 @@ export function useUpdateBookingStatus() {
         throw new Error('Failed to update booking status');
       }
 
-      // Revalidate to get fresh data from server
-      await mutate(bookingsKey);
+      // Revalidate all bookings queries for this business
+      await mutate((key) => typeof key === 'string' && key.startsWith(`/api/bookings?businessId=${businessId}`));
 
       // Also revalidate metrics and today's schedule
       await mutate(`/api/dashboard/${businessId}/metrics`);
@@ -52,8 +49,8 @@ export function useUpdateBookingStatus() {
 
       return { success: true };
     } catch (error) {
-      // Rollback on error - SWR will revalidate and restore previous state
-      await mutate(bookingsKey);
+      // Rollback on error - revalidate to restore previous state
+      await mutate((key) => typeof key === 'string' && key.startsWith(`/api/bookings?businessId=${businessId}`));
       throw error;
     }
   };
@@ -64,14 +61,12 @@ export function useUpdateBookingStatus() {
  */
 export function useUpdateBookingNotes() {
   return async (bookingId, notes, businessId) => {
-    const bookingsKey = `/api/bookings?businessId=${businessId}`;
-
     try {
-      // Optimistically update
+      // Optimistically update all bookings cache keys that match the pattern
       await mutate(
-        bookingsKey,
+        (key) => typeof key === 'string' && key.startsWith(`/api/bookings?businessId=${businessId}`),
         async (currentData) => {
-          if (!currentData) return currentData;
+          if (!currentData?.bookings) return currentData;
 
           return {
             ...currentData,
@@ -82,7 +77,7 @@ export function useUpdateBookingNotes() {
             ),
           };
         },
-        false
+        { revalidate: false }
       );
 
       // API call
@@ -96,12 +91,12 @@ export function useUpdateBookingNotes() {
         throw new Error('Failed to update notes');
       }
 
-      // Revalidate
-      await mutate(bookingsKey);
+      // Revalidate all bookings queries for this business
+      await mutate((key) => typeof key === 'string' && key.startsWith(`/api/bookings?businessId=${businessId}`));
 
       return { success: true };
     } catch (error) {
-      await mutate(bookingsKey);
+      await mutate((key) => typeof key === 'string' && key.startsWith(`/api/bookings?businessId=${businessId}`));
       throw error;
     }
   };
@@ -112,14 +107,12 @@ export function useUpdateBookingNotes() {
  */
 export function useMarkNoShow() {
   return async (bookingId, businessId) => {
-    const bookingsKey = `/api/bookings?businessId=${businessId}`;
-
     try {
-      // Optimistically update
+      // Optimistically update all bookings cache keys that match the pattern
       await mutate(
-        bookingsKey,
+        (key) => typeof key === 'string' && key.startsWith(`/api/bookings?businessId=${businessId}`),
         async (currentData) => {
-          if (!currentData) return currentData;
+          if (!currentData?.bookings) return currentData;
 
           return {
             ...currentData,
@@ -130,7 +123,7 @@ export function useMarkNoShow() {
             ),
           };
         },
-        false
+        { revalidate: false }
       );
 
       // API call
@@ -144,13 +137,13 @@ export function useMarkNoShow() {
         throw new Error('Failed to mark as no-show');
       }
 
-      // Revalidate
-      await mutate(bookingsKey);
+      // Revalidate all bookings queries for this business
+      await mutate((key) => typeof key === 'string' && key.startsWith(`/api/bookings?businessId=${businessId}`));
       await mutate(`/api/dashboard/${businessId}/metrics`);
 
       return { success: true };
     } catch (error) {
-      await mutate(bookingsKey);
+      await mutate((key) => typeof key === 'string' && key.startsWith(`/api/bookings?businessId=${businessId}`));
       throw error;
     }
   };

@@ -30,10 +30,10 @@ export default function ConfirmDialog({
   const buttonClass = confirmButtonClasses[confirmColor] || confirmButtonClasses.orange;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-[60] overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+        className="fixed inset-0 bg-black/50 transition-opacity"
         onClick={onClose}
       />
 
