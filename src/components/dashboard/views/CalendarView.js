@@ -343,7 +343,7 @@ export default function CalendarView({ businessId }) {
           endAccessor="end"
           style={{ height: 600 }}
           defaultView="week"
-          views={['week', 'day', 'agenda']}
+          views={['month', 'week', 'day', 'agenda']}
           eventPropGetter={eventStyleGetter}
           onSelectEvent={handleSelectEvent}
           step={30}

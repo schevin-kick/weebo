@@ -7,13 +7,15 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { RefreshCw, Save, Building2, Briefcase, Users, Layout } from 'lucide-react';
+import { RefreshCw, Save, Building2, Briefcase, Users, Layout, Eye } from 'lucide-react';
 import { useBusiness } from '@/hooks/useDashboardData';
 import { useUpdateBusinessSettings } from '@/hooks/useDashboardMutations';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import useSettingsStore from '@/stores/settingsStore';
 import { useToast } from '@/contexts/ToastContext';
 import Skeleton from '@/components/loading/Skeleton';
+import PreviewModal from '@/components/preview/PreviewModal';
+import BookingFlowPreview from '@/components/preview/BookingFlowPreview';
 
 // Import wizard step components
 import BusinessInfoStep from '@/components/wizard/BusinessInfoStep';
@@ -41,6 +43,7 @@ export default function SettingsView({ businessId }) {
 
   // Track if data has been loaded into wizard store
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Load business data into wizard store
   useEffect(() => {
@@ -208,6 +211,13 @@ export default function SettingsView({ businessId }) {
             <RefreshCw className="w-5 h-5" />
           </button>
           <button
+            onClick={() => setShowPreview(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg font-medium"
+          >
+            <Eye className="w-4 h-4" />
+            Preview
+          </button>
+          <button
             onClick={handleSave}
             disabled={!isDirty || isSaving}
             className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
@@ -276,6 +286,11 @@ export default function SettingsView({ businessId }) {
           {isSaving ? 'Saving...' : 'Save All Changes'}
         </button>
       </div>
+
+      {/* Preview Modal */}
+      <PreviewModal isOpen={showPreview} onClose={() => setShowPreview(false)}>
+        <BookingFlowPreview />
+      </PreviewModal>
     </div>
   );
 }

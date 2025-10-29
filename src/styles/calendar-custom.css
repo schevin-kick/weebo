@@ -1,0 +1,480 @@
+/**
+ * Custom Calendar Styling
+ * Enhances react-big-calendar with colorful, branded design
+ */
+
+/* ===================================
+   FILTERS SECTION STYLING
+   =================================== */
+
+/* Enhanced Filters Card */
+.calendar-container {
+  position: relative;
+}
+
+/* Clean filters card with subtle border */
+.bg-white.rounded-xl.border:has(.flex.items-center.gap-2:has(svg[class*="Filter"])) {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Prevent filter wrapping - keep on single line */
+.bg-white.rounded-xl.border:has(.flex.items-center.gap-2:has(svg[class*="Filter"])) .grid {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 1rem !important;
+  align-items: flex-start !important;
+}
+
+.bg-white.rounded-xl.border:has(.flex.items-center.gap-2:has(svg[class*="Filter"])) .grid > div {
+  min-width: 0;
+}
+
+/* Adjust flex basis for each filter section */
+.bg-white.rounded-xl.border:has(.flex.items-center.gap-2:has(svg[class*="Filter"])) .grid > div:nth-child(1),
+.bg-white.rounded-xl.border:has(.flex.items-center.gap-2:has(svg[class*="Filter"])) .grid > div:nth-child(2) {
+  flex: 0 0 150px;
+  max-width: 150px;
+}
+
+.bg-white.rounded-xl.border:has(.flex.items-center.gap-2:has(svg[class*="Filter"])) .grid > div:nth-child(3) {
+  flex: 1 1 auto;
+  min-width: 400px;
+}
+
+/* Ensure status checkboxes stay on one line */
+.bg-white.rounded-xl.border:has(.flex.items-center.gap-2:has(svg[class*="Filter"])) .flex.flex-wrap.gap-2 {
+  flex-wrap: nowrap !important;
+  gap: 0.75rem !important;
+}
+
+/* Style filter labels */
+label:has(svg[class*="Users"]),
+label:has(svg[class*="Briefcase"]),
+label:has(svg[class*="AlertCircle"]) {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Icon colors - subtle but distinctive */
+svg[class*="Users"] {
+  color: #ec4899 !important;
+  opacity: 0.8;
+}
+
+svg[class*="Briefcase"] {
+  color: #f97316 !important;
+  opacity: 0.8;
+}
+
+svg[class*="AlertCircle"] {
+  color: #eab308 !important;
+  opacity: 0.8;
+}
+
+svg[class*="Filter"] {
+  color: #f97316 !important;
+  opacity: 0.7;
+}
+
+/* Enhanced Select Dropdowns - clean and minimal */
+select:not([multiple]) {
+  background: #ffffff;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.5rem !important;
+  padding: 0.625rem 1rem !important;
+  font-weight: 500;
+  color: #334155 !important;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+select:not([multiple]):hover {
+  border-color: #f97316 !important;
+  box-shadow: 0 1px 3px rgba(249, 115, 22, 0.1);
+}
+
+select:not([multiple]):focus {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  outline: none;
+}
+
+/* Status Checkboxes Styling - minimal and clean */
+input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1.5px solid #cbd5e1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+input[type="checkbox"]:checked {
+  background: #f97316;
+  border-color: #f97316;
+}
+
+input[type="checkbox"]:hover {
+  border-color: #f97316;
+}
+
+/* Status Label Colors - minimal styling */
+label:has(input[type="checkbox"]) {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+label:has(input[type="checkbox"]):hover {
+  background: #f8fafc;
+}
+
+
+/* ===================================
+   CALENDAR GRID STYLING
+   =================================== */
+
+/* Calendar container - clean and minimal */
+.calendar-container > .bg-white {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+  background: #ffffff;
+}
+
+/* Calendar header styling - sleek with subtle color */
+.rbc-header {
+  padding: 0.875rem 0.5rem !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  background: linear-gradient(to bottom, #fef3c7, #fef9e7) !important;
+  border-bottom: 1px solid #fbbf24 !important;
+  border-right: 1px solid #fde68a !important;
+  font-size: 0.8125rem;
+  letter-spacing: 0.025em;
+}
+
+.rbc-header:last-child {
+  border-right: none !important;
+}
+
+/* Time slot styling - minimal */
+.rbc-time-slot {
+  border-top: 1px solid #f1f5f9 !important;
+  min-height: 40px !important;
+}
+
+/* Day column borders - subtle */
+.rbc-day-slot {
+  border-left: 1px solid #f8fafc !important;
+}
+
+.rbc-time-column {
+  border-left: 1px solid #f1f5f9 !important;
+}
+
+/* Time labels styling */
+.rbc-time-slot .rbc-label {
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+.rbc-timeslot-group {
+  border-left: 1px solid #f1f5f9 !important;
+  min-height: 80px !important;
+}
+
+/* Today column highlight - subtle background fill only */
+.rbc-today {
+  background: #fffbeb !important;
+}
+
+/* Current time indicator */
+.rbc-current-time-indicator {
+  background-color: #f97316 !important;
+  height: 2px !important;
+  box-shadow: 0 0 4px rgba(249, 115, 22, 0.4);
+}
+
+.rbc-current-time-indicator::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  background-color: #f97316;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 4px rgba(249, 115, 22, 0.5);
+}
+
+
+/* ===================================
+   CALENDAR TOOLBAR STYLING
+   =================================== */
+
+.rbc-toolbar {
+  padding: 1rem !important;
+  margin-bottom: 1rem !important;
+  background: linear-gradient(to right, #fef3c7, #fed7aa, #fecaca) !important;
+  border-radius: 0.75rem;
+  border: 1px solid #fbbf24;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.rbc-toolbar-label {
+  font-weight: 600 !important;
+  font-size: 1.125rem !important;
+  color: #1e293b !important;
+}
+
+/* Toolbar buttons - minimal and sleek with better spacing */
+.rbc-toolbar button {
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  margin: 0 0.25rem !important;
+}
+
+/* Add spacing between button groups */
+.rbc-toolbar .rbc-btn-group {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 0.75rem;
+}
+
+.rbc-toolbar .rbc-btn-group:first-child {
+  margin-left: 0;
+}
+
+.rbc-toolbar .rbc-btn-group:last-child {
+  margin-right: 0;
+}
+
+.rbc-toolbar button:hover {
+  background: #f97316 !important;
+  color: white !important;
+  border-color: #f97316 !important;
+  box-shadow: 0 1px 3px rgba(249, 115, 22, 0.2);
+}
+
+.rbc-toolbar button:active {
+  transform: scale(0.98);
+}
+
+.rbc-toolbar button.rbc-active {
+  background: #f97316 !important;
+  color: white !important;
+  border-color: #f97316 !important;
+  box-shadow: 0 1px 3px rgba(249, 115, 22, 0.3);
+}
+
+.rbc-toolbar button.rbc-active:hover {
+  background: #ea580c !important;
+}
+
+/* Today button special styling */
+.rbc-toolbar .rbc-btn-group:first-child button {
+  background: #fbbf24 !important;
+  color: #78350f !important;
+  border-color: #fbbf24 !important;
+  font-weight: 600 !important;
+}
+
+.rbc-toolbar .rbc-btn-group:first-child button:hover {
+  background: #f59e0b !important;
+  color: white !important;
+}
+
+
+/* ===================================
+   EVENT STYLING ENHANCEMENTS
+   =================================== */
+
+.rbc-event {
+  border-radius: 0.375rem !important;
+  padding: 0.25rem 0.5rem !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.rbc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  opacity: 0.95 !important;
+}
+
+.rbc-event:active {
+  transform: translateY(0);
+}
+
+.rbc-event-content {
+  font-weight: 500;
+}
+
+/* Selected event styling */
+.rbc-selected {
+  outline: 2px solid #f97316 !important;
+  outline-offset: 1px;
+}
+
+
+/* ===================================
+   MONTH VIEW STYLING
+   =================================== */
+
+/* Month view grid */
+.rbc-month-view {
+  border: 1px solid #f1f5f9;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* Month view header */
+.rbc-month-view .rbc-header {
+  padding: 0.75rem 0.5rem !important;
+  background: linear-gradient(to bottom, #fef3c7, #fef9e7) !important;
+  border-bottom: 1px solid #fbbf24 !important;
+}
+
+/* Month view day cells */
+.rbc-month-row {
+  border-top: 1px solid #f1f5f9;
+  min-height: 100px;
+}
+
+.rbc-day-bg {
+  border-left: 1px solid #f8fafc;
+}
+
+.rbc-off-range-bg {
+  background: #f8fafc;
+}
+
+.rbc-today.rbc-day-bg {
+  background: #fffbeb !important;
+}
+
+/* Month view date numbers */
+.rbc-date-cell {
+  padding: 0.5rem;
+  text-align: right;
+}
+
+.rbc-date-cell > a {
+  color: #475569;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.rbc-off-range .rbc-date-cell > a {
+  color: #cbd5e1;
+}
+
+.rbc-now .rbc-date-cell > a {
+  color: #f97316;
+  font-weight: 700;
+}
+
+/* Month view events */
+.rbc-month-view .rbc-event {
+  padding: 0.125rem 0.375rem !important;
+  font-size: 0.75rem !important;
+  margin: 1px 2px;
+}
+
+.rbc-show-more {
+  color: #f97316;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.375rem;
+  margin: 1px 2px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.rbc-show-more:hover {
+  background: #fff5ed;
+  text-decoration: underline;
+}
+
+
+/* ===================================
+   AGENDA VIEW STYLING
+   =================================== */
+
+.rbc-agenda-view {
+  border: 1px solid #f1f5f9 !important;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.rbc-agenda-table {
+  border: none !important;
+}
+
+.rbc-agenda-date-cell,
+.rbc-agenda-time-cell {
+  background: linear-gradient(to right, #fef3c7, #fde68a) !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+  padding: 0.625rem 1rem !important;
+  border-bottom: 1px solid #fbbf24 !important;
+  font-size: 0.875rem;
+}
+
+.rbc-agenda-event-cell {
+  padding: 0.625rem 1rem !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.rbc-agenda-event-cell:hover {
+  background-color: #f8fafc;
+}
+
+
+/* ===================================
+   RESPONSIVE ADJUSTMENTS
+   =================================== */
+
+@media (max-width: 768px) {
+  /* Allow filters to wrap on mobile */
+  .bg-white.rounded-xl.border:has(.flex.items-center.gap-2:has(svg[class*="Filter"])) .grid {
+    flex-wrap: wrap !important;
+  }
+
+  .rbc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .rbc-toolbar button {
+    padding: 0.5rem 0.875rem !important;
+    font-size: 0.8125rem !important;
+  }
+
+  .rbc-header {
+    font-size: 0.75rem;
+    padding: 0.75rem 0.25rem !important;
+  }
+
+  select:not([multiple]) {
+    padding: 0.5rem 0.75rem !important;
+  }
+}

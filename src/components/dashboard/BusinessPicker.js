@@ -65,14 +65,13 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
           {currentBusiness.businessName}
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-slate-400 transition-transform ${
-            isOpen ? 'rotate-180' : ''
-          }`}
+          className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''
+            }`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50">
+        <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50 left-0">
           <div className="px-3 py-2 border-b border-slate-200">
             <p className="text-xs font-semibold text-slate-500 uppercase">
               Your Businesses
@@ -84,9 +83,8 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
               <button
                 key={business.id}
                 onClick={() => handleSelectBusiness(business.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-slate-50 transition-colors ${
-                  business.id === currentBusinessId ? 'bg-orange-50' : ''
-                }`}
+                className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-slate-50 transition-colors ${business.id === currentBusinessId ? 'bg-orange-50' : ''
+                  }`}
               >
                 <div className="bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center overflow-hidden flex-shrink-0" style={{ height: '40px', width: 'auto' }}>
                   {business.logoUrl ? (
@@ -103,11 +101,10 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
                 </div>
                 <div className="flex-1 text-left min-w-0">
                   <p
-                    className={`font-medium truncate ${
-                      business.id === currentBusinessId
-                        ? 'text-orange-600'
-                        : 'text-slate-900'
-                    }`}
+                    className={`font-medium truncate ${business.id === currentBusinessId
+                      ? 'text-orange-600'
+                      : 'text-slate-900'
+                      }`}
                   >
                     {business.businessName}
                   </p>
