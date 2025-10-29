@@ -99,7 +99,7 @@ input:-webkit-autofill:focus {
 }
 
 /* Ensure UI elements are above the floating petals */
-.pattern-sakura-paws > * {
+.pattern-sakura-paws > :not(aside):not([class*="fixed"]) {
   position: relative;
   z-index: 10;
 }

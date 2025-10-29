@@ -66,7 +66,7 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
       {/* Backdrop - only show on mobile when sidebar is open */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={onClose}
         />
       )}
