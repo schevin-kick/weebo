@@ -6,6 +6,7 @@
 'use client';
 
 import { X } from 'lucide-react';
+import ModalPortal from '@/components/portal/ModalPortal';
 
 export default function ConfirmDialog({
   isOpen,
@@ -30,7 +31,8 @@ export default function ConfirmDialog({
   const buttonClass = confirmButtonClasses[confirmColor] || confirmButtonClasses.orange;
 
   return (
-    <div className="fixed inset-0 z-[60] overflow-y-auto">
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] overflow-y-auto">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 transition-opacity"
@@ -78,5 +80,6 @@ export default function ConfirmDialog({
         </div>
       </div>
     </div>
+    </ModalPortal>
   );
 }

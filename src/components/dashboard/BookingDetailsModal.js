@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { X, User, Calendar, FileText, AlertCircle } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import ConfirmDialog from './ConfirmDialog';
+import ModalPortal from '@/components/portal/ModalPortal';
 import { formatDateTime, formatDuration, isPast } from '@/lib/dateUtils';
 
 export default function BookingDetailsModal({
@@ -87,8 +88,8 @@ export default function BookingDetailsModal({
   };
 
   return (
-    <>
-      <div className="fixed inset-0 z-[60] overflow-y-auto">
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] overflow-y-auto">
         {/* Backdrop */}
         <div
           className="fixed inset-0 bg-black/50 transition-opacity"
@@ -355,6 +356,6 @@ export default function BookingDetailsModal({
           />
         </div>
       </ConfirmDialog>
-    </>
+    </ModalPortal>
   );
 }

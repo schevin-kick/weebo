@@ -29,6 +29,9 @@ export default function DashboardLayout({
     <>
       <FallingSakura />
 
+      {/* Modal Portal Container - renders outside main DOM hierarchy with highest z-index */}
+      <div id="modal-root" className="relative z-[9999]" />
+
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws flex">
         {/* Sidebar */}
         <Sidebar
