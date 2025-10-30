@@ -207,3 +207,119 @@ export function useRefresh() {
     },
   };
 }
+
+/**
+ * Hook to fetch analytics overview
+ */
+export function useAnalyticsOverview(businessId, startDate, endDate) {
+  const params = new URLSearchParams();
+  if (startDate) params.append('startDate', startDate);
+  if (endDate) params.append('endDate', endDate);
+
+  const queryString = params.toString();
+  const url = businessId
+    ? `/api/dashboard/${businessId}/analytics/overview?${queryString}`
+    : null;
+
+  const { data, error, mutate, isLoading } = useSWR(url, fetcher);
+
+  return {
+    overview: data,
+    isLoading,
+    isError: error,
+    mutate,
+  };
+}
+
+/**
+ * Hook to fetch bookings trend data
+ */
+export function useBookingsTrend(businessId, startDate, endDate, groupBy = 'day') {
+  const params = new URLSearchParams();
+  if (startDate) params.append('startDate', startDate);
+  if (endDate) params.append('endDate', endDate);
+  if (groupBy) params.append('groupBy', groupBy);
+
+  const queryString = params.toString();
+  const url = businessId
+    ? `/api/dashboard/${businessId}/analytics/bookings-trend?${queryString}`
+    : null;
+
+  const { data, error, mutate, isLoading } = useSWR(url, fetcher);
+
+  return {
+    trendData: data?.trendData || [],
+    isLoading,
+    isError: error,
+    mutate,
+  };
+}
+
+/**
+ * Hook to fetch revenue analytics
+ */
+export function useRevenueAnalytics(businessId, startDate, endDate) {
+  const params = new URLSearchParams();
+  if (startDate) params.append('startDate', startDate);
+  if (endDate) params.append('endDate', endDate);
+
+  const queryString = params.toString();
+  const url = businessId
+    ? `/api/dashboard/${businessId}/analytics/revenue?${queryString}`
+    : null;
+
+  const { data, error, mutate, isLoading } = useSWR(url, fetcher);
+
+  return {
+    revenueData: data,
+    isLoading,
+    isError: error,
+    mutate,
+  };
+}
+
+/**
+ * Hook to fetch service performance
+ */
+export function useServicePerformance(businessId, startDate, endDate) {
+  const params = new URLSearchParams();
+  if (startDate) params.append('startDate', startDate);
+  if (endDate) params.append('endDate', endDate);
+
+  const queryString = params.toString();
+  const url = businessId
+    ? `/api/dashboard/${businessId}/analytics/service-performance?${queryString}`
+    : null;
+
+  const { data, error, mutate, isLoading } = useSWR(url, fetcher);
+
+  return {
+    servicePerformance: data?.servicePerformance || [],
+    isLoading,
+    isError: error,
+    mutate,
+  };
+}
+
+/**
+ * Hook to fetch staff performance
+ */
+export function useStaffPerformance(businessId, startDate, endDate) {
+  const params = new URLSearchParams();
+  if (startDate) params.append('startDate', startDate);
+  if (endDate) params.append('endDate', endDate);
+
+  const queryString = params.toString();
+  const url = businessId
+    ? `/api/dashboard/${businessId}/analytics/staff-performance?${queryString}`
+    : null;
+
+  const { data, error, mutate, isLoading } = useSWR(url, fetcher);
+
+  return {
+    staffPerformance: data?.staffPerformance || [],
+    isLoading,
+    isError: error,
+    mutate,
+  };
+}

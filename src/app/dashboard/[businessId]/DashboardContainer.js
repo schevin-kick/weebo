@@ -15,6 +15,7 @@ import Skeleton from '@/components/loading/Skeleton';
 
 // Import view components
 import HomeView from '@/components/dashboard/views/HomeView';
+import AnalyticsView from '@/components/dashboard/views/AnalyticsView';
 import CalendarView from '@/components/dashboard/views/CalendarView';
 import BookingsView from '@/components/dashboard/views/BookingsView';
 import QRCodeView from '@/components/dashboard/views/QRCodeView';
@@ -108,6 +109,8 @@ export default function DashboardContainer({ businessId, view = 'home' }) {
     switch (view) {
       case 'home':
         return <HomeView businessId={businessId} />;
+      case 'analytics':
+        return <AnalyticsView businessId={businessId} />;
       case 'calendar':
         return <CalendarView businessId={businessId} />;
       case 'bookings':

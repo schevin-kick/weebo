@@ -14,6 +14,7 @@ import {
   QrCode,
   Settings,
   CalendarX,
+  BarChart3,
   X,
 } from 'lucide-react';
 
@@ -22,6 +23,11 @@ const navItems = [
     name: 'Home',
     href: '',
     icon: LayoutDashboard,
+  },
+  {
+    name: 'Analytics',
+    href: '/analytics',
+    icon: BarChart3,
   },
   {
     name: 'Calendar',
