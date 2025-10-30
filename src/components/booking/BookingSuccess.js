@@ -115,11 +115,16 @@ export default function BookingSuccess({ bookingSummary }) {
           {/* Kitsune Character */}
           <div className="flex justify-center mb-6">
             <div className="w-40 rounded-3xl overflow-hidden bg-gradient-to-br from-orange-100 to-amber-100">
-              <img
-                src="/kitsune-animated.gif"
-                alt="Kitsune mascot"
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
                 className="w-full h-full object-cover"
-              />
+              >
+                <source src="/kitsune-animated.webm" type="video/webm" />
+                <source src="/kitsune-animated.mp4" type="video/mp4" />
+              </video>
             </div>
           </div>
 

@@ -19,13 +19,18 @@ export default function KitsuneLogo({ size = 'large' }) {
         {/* Glowing Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
 
-        {/* Kitsune Animated GIF */}
+        {/* Kitsune Animated Video */}
         <div className="relative flex items-center justify-center h-full rounded-3xl overflow-hidden">
-          <img
-            src="/kitsune-animated.gif"
-            alt="Kitsune Loading"
-            className=" h-full object-contain rounded-3xl"
-          />
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full object-contain rounded-3xl"
+          >
+            <source src="/kitsune-animated.webm" type="video/webm" />
+            <source src="/kitsune-animated.mp4" type="video/mp4" />
+          </video>
         </div>
       </div>
 

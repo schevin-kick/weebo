@@ -44,18 +44,18 @@ export default function BrochurePage() {
             className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6"
           >
             <TypewriterText
-              text="Transform Your Business"
+              text="Kitsune Booking"
               speed={80}
               className="block bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 bg-clip-text text-transparent"
               onComplete={() => setShowSubheading(true)}
             />
-            {showSubheading && (
+            {/* {showSubheading && (
               <TypewriterText
                 text="with Kitsune Booking"
                 speed={80}
                 className="block bg-gradient-to-r from-pink-400 via-rose-400 to-orange-400 bg-clip-text text-transparent"
               />
-            )}
+            )} */}
           </motion.h1>
 
           {/* Subheading */}
@@ -105,11 +105,15 @@ export default function BrochurePage() {
             >
               <div className="relative max-w-4xl mx-auto">
                 <div className="aspect-video rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-2xl overflow-hidden">
-                  <img
-                    src="/brochure/kitsune2.jpeg"
-                    alt="Kitsune Dashboard Preview"
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
                     className="w-full h-full object-cover"
-                  />
+                  >
+                    <source src="/brochure/kitsune-hero.mp4" type="video/mp4" />
+                  </video>
                 </div>
                 {/* Glow effect */}
                 <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/20 via-pink-500/20 to-purple-500/20 blur-3xl -z-10" />
@@ -502,7 +506,7 @@ export default function BrochurePage() {
 
           <div className="space-y-32">
             <ScreenshotCard
-              src="/brochure/kitsune2.jpeg"
+              src="/brochure/kitsune2.webp"
               alt="Kitsune Dashboard Overview"
               title="Powerful Dashboard"
               description="Get instant insights into your business performance. Track bookings, monitor revenue, identify top customers, and make data-driven decisions with real-time analytics at your fingertips."
@@ -510,7 +514,7 @@ export default function BrochurePage() {
             />
 
             <ScreenshotCard
-              src="/brochure/kitsune2.jpeg"
+              src="/brochure/kitsune2.webp"
               alt="Calendar and Scheduling Interface"
               title="Smart Calendar Management"
               description="Visualize your schedule with ease. Multi-view calendar supports day, week, month, and agenda views. Filter by staff, service, or status. Color-coded bookings help you stay organized."
@@ -519,7 +523,7 @@ export default function BrochurePage() {
             />
 
             <ScreenshotCard
-              src="/brochure/kitsune2.jpeg"
+              src="/brochure/kitsune2.webp"
               alt="LINE Integration Chat Interface"
               title="Seamless LINE Integration"
               description="Your customers book directly through LINE - Asia's favorite messaging app. Automatic confirmations, reminders, and updates keep everyone informed without any extra effort."
@@ -527,7 +531,7 @@ export default function BrochurePage() {
             />
 
             <ScreenshotCard
-              src="/brochure/kitsune2.jpeg"
+              src="/brochure/kitsune2.webp"
               alt="QR Code Generator Interface"
               title="Beautiful QR Codes"
               description="Generate branded QR codes in seconds. Customize with your logo and colors, then download or print. Customers scan and book instantly - no app downloads required."
@@ -665,7 +669,7 @@ export default function BrochurePage() {
               "Automated Reminders",
               "Multi-language Support"
             ],
-            "screenshot": "/brochure/kitsune2.jpeg"
+            "screenshot": "/brochure/kitsune2.webp"
           })
         }}
       />

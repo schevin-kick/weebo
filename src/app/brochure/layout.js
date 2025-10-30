@@ -10,7 +10,7 @@ export const metadata = {
     siteName: 'Kitsune Booking',
     images: [
       {
-        url: '/brochure/kitsune2.jpeg',
+        url: '/brochure/kitsune2.webp',
         width: 1200,
         height: 630,
         alt: 'Kitsune Booking Dashboard Preview',
@@ -21,7 +21,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Kitsune Booking - Smart Appointment Scheduling for Asia',
     description: 'Transform your business with LINE-powered booking. 5-minute setup, powerful analytics, 24/7 availability.',
-    images: ['/brochure/kitsune2.jpeg'],
+    images: ['/brochure/kitsune2.webp'],
   },
   robots: {
     index: true,
