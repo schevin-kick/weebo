@@ -15,6 +15,7 @@ export default function ImageUpload({
   label = 'Upload Image',
   aspectRatio = 'square', // 'square', 'wide', 'tall'
   maxSizeMB = 1,
+  size = 'md', // 'sm', 'md', 'lg'
 }) {
   const [uploading, setUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -24,6 +25,12 @@ export default function ImageUpload({
     square: 'aspect-square',
     wide: 'aspect-video',
     tall: 'aspect-[3/4]',
+  };
+
+  const sizeClasses = {
+    sm: 'max-w-xs', // 320px
+    md: 'max-w-md', // 448px
+    lg: 'max-w-lg', // 512px
   };
 
   const handleFileChange = async (file) => {
@@ -104,7 +111,7 @@ export default function ImageUpload({
       </label>
 
       <div
-        className={`relative ${aspectRatioClasses[aspectRatio]} w-full max-w-md border-2 ${
+        className={`relative ${aspectRatioClasses[aspectRatio]} w-full ${sizeClasses[size]} border-2 ${
           isDragging ? 'border-orange-500 bg-orange-50' : 'border-dashed border-slate-300'
         } rounded-xl overflow-hidden ${uploading ? 'cursor-wait' : 'cursor-pointer'} group`}
         onDrop={handleDrop}

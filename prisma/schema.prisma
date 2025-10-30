@@ -45,7 +45,12 @@ model Business {
   appointmentOnly        Boolean  @default(false)
   requiresApproval       Boolean  @default(false) // Manual approval vs auto-confirm
   richMenu               Json     // LINE rich menu config
-  contactInfo            Json     // { phone, email, address, website }
+
+  // Contact Information (individual fields)
+  phone                  String?
+  email                  String?
+  address                String   // Required - every business needs an address
+  website                String?
 
   // LINE Integration
   qrCodeUrl              String?  // R2 URL for QR code image

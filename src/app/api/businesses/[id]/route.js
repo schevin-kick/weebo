@@ -49,7 +49,10 @@ export async function GET(request, { params }) {
         defaultDuration: business.defaultDuration,
         appointmentOnly: business.appointmentOnly,
         requiresApproval: business.requiresApproval,
-        contactInfo: business.contactInfo,
+        phone: business.phone,
+        email: business.email,
+        address: business.address,
+        website: business.website,
         services: business.services,
         staff: business.staff,
         pages: business.pages,
@@ -106,7 +109,10 @@ export async function PUT(request, { params }) {
           appointmentOnly: data.business.appointmentOnly,
           requiresApproval: data.business.requiresApproval,
           richMenu: data.business.richMenu,
-          contactInfo: data.business.contactInfo,
+          phone: data.business.phone,
+          email: data.business.email,
+          address: data.business.address,
+          website: data.business.website,
         },
       });
 

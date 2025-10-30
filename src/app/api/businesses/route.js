@@ -6,8 +6,9 @@ import { generateBusinessQRCode } from '@/lib/qrGenerator';
 /**
  * GET /api/businesses
  * Get all businesses for authenticated owner
+ * Supports search via query params: ?q=searchTerm&limit=5
  */
-export async function GET() {
+export async function GET(request) {
   try {
     const session = await getSession();
 
@@ -15,11 +16,42 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { searchParams } = new URL(request.url);
+    const searchQuery = searchParams.get('q');
+    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')) : undefined;
+
+    // Build where clause
+    const whereClause = {
+      ownerId: session.id,
+      isActive: true,
+    };
+
+    // Add search filter if query provided
+    if (searchQuery && searchQuery.trim().length > 0) {
+      whereClause.OR = [
+        {
+          businessName: {
+            contains: searchQuery.trim(),
+            mode: 'insensitive',
+          },
+        },
+        {
+          address: {
+            contains: searchQuery.trim(),
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
+
+    // Get total count (for pagination info)
+    const totalCount = await prisma.business.count({
+      where: whereClause,
+    });
+
+    // Get businesses with optional limit
     const businesses = await prisma.business.findMany({
-      where: {
-        ownerId: session.id,
-        isActive: true,
-      },
+      where: whereClause,
       include: {
         _count: {
           select: {
@@ -32,6 +64,7 @@ export async function GET() {
       orderBy: {
         createdAt: 'desc',
       },
+      take: limit,
     });
 
     // Transform _count for easier access
@@ -44,7 +77,10 @@ export async function GET() {
       },
     }));
 
-    return NextResponse.json({ businesses: businessesWithCounts });
+    return NextResponse.json({
+      businesses: businessesWithCounts,
+      total: totalCount,
+    });
   } catch (error) {
     console.error('Get businesses error:', error);
     return NextResponse.json(
@@ -86,7 +122,10 @@ export async function POST(request) {
           appointmentOnly: data.business.appointmentOnly || false,
           requiresApproval: data.business.requiresApproval || false,
           richMenu: data.business.richMenu,
-          contactInfo: data.business.contactInfo,
+          phone: data.business.phone || null,
+          email: data.business.email || null,
+          address: data.business.address,
+          website: data.business.website || null,
           lineDeepLink,
           isActive: true,
         },
@@ -146,8 +185,10 @@ export async function POST(request) {
     return NextResponse.json({ business }, { status: 201 });
   } catch (error) {
     console.error('Create business error:', error);
+    console.error('Error details:', error.message);
+    console.error('Stack trace:', error.stack);
     return NextResponse.json(
-      { error: 'Failed to create business' },
+      { error: 'Failed to create business', details: error.message },
       { status: 500 }
     );
   }

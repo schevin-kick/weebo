@@ -528,12 +528,17 @@ const useSetupWizardStore = create(
           if (!hasOpenDay) return false;
         }
 
-        // If "Contact Us" is enabled in rich menu, at least one contact field required
+        // Address is always required
+        if (!state.contactInfo.address || state.contactInfo.address.trim().length === 0) {
+          return false;
+        }
+
+        // If "Contact Us" is enabled in rich menu, at least one contact field required (besides address)
         const contactUsEnabled = state.richMenu.items.some(
           (item) => item.type === 'contact-us' && item.enabled
         );
         if (contactUsEnabled) {
-          const hasContactInfo = Object.values(state.contactInfo).some(
+          const hasContactInfo = [state.contactInfo.phone, state.contactInfo.email, state.contactInfo.website].some(
             (value) => value && value.trim().length > 0
           );
           if (!hasContactInfo) return false;

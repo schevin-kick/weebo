@@ -58,7 +58,12 @@ export default function SettingsView({ businessId }) {
       store.setAppointmentOnly(business.appointmentOnly || false);
       store.setRequiresApproval(business.requiresApproval || false);
       store.setRichMenu(business.richMenu || { enabled: false });
-      store.setContactInfo(business.contactInfo || { phone: '', email: '', address: '' });
+      store.setContactInfo({
+        phone: business.phone || '',
+        email: business.email || '',
+        address: business.address || '',
+        website: business.website || '',
+      });
 
       // Load services
       if (business.services && business.services.length > 0) {
@@ -122,7 +127,10 @@ export default function SettingsView({ businessId }) {
         appointmentOnly: store.appointmentOnly,
         requiresApproval: store.requiresApproval,
         richMenu: store.richMenu,
-        contactInfo: store.contactInfo,
+        phone: store.contactInfo.phone || null,
+        email: store.contactInfo.email || null,
+        address: store.contactInfo.address,
+        website: store.contactInfo.website || null,
       };
 
       const servicesData = store.services.map((service, index) => ({

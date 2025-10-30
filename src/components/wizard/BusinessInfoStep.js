@@ -6,6 +6,7 @@ import BusinessHoursPicker from '@/components/shared/BusinessHoursPicker';
 import RichMenuPicker from '@/components/shared/RichMenuPicker';
 import DurationPicker from '@/components/shared/DurationPicker';
 import ImageUpload from '@/components/shared/ImageUpload';
+import AddressAutocomplete from '@/components/shared/AddressAutocomplete';
 
 export default function BusinessInfoStep() {
   const businessName = useSetupWizardStore((state) => state.businessName);
@@ -35,12 +36,15 @@ export default function BusinessInfoStep() {
       if (!hasOpenDay) return false;
     }
 
-    // If "Contact Us" is enabled in rich menu, at least one contact field required
+    // Address is always required
+    if (!contactInfo.address || contactInfo.address.trim().length === 0) return false;
+
+    // If "Contact Us" is enabled in rich menu, at least one contact field required (besides address)
     const contactUsEnabled = richMenu.items.some(
       (item) => item.type === 'contact-us' && item.enabled
     );
     if (contactUsEnabled) {
-      const hasContactInfo = Object.values(contactInfo).some(
+      const hasContactInfo = [contactInfo.phone, contactInfo.email, contactInfo.website].some(
         (value) => value && value.trim().length > 0
       );
       if (!hasContactInfo) return false;
@@ -126,6 +130,7 @@ export default function BusinessInfoStep() {
               folder="logos"
               label="Business Logo (optional)"
               aspectRatio="square"
+              size="sm"
             />
           </div>
 
@@ -208,74 +213,81 @@ export default function BusinessInfoStep() {
                   Contact Information
                 </label>
                 <p className="text-xs text-slate-500 mb-4">
-                  Required if &quot;Contact Us&quot; is enabled in Rich Menu. At least one field must be filled.
+                  Address is required. Other fields are optional but at least one is required if &quot;Contact Us&quot; is enabled in Rich Menu.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    id="phone"
-                    type="tel"
-                    value={contactInfo.phone}
-                    onChange={(e) => updateContactInfo({ phone: e.target.value })}
-                    placeholder="+66 12 345 6789"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
-                    Email Address
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    value={contactInfo.email}
-                    onChange={(e) => updateContactInfo({ email: e.target.value })}
-                    placeholder="hello@business.com"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-
+              <div className="grid grid-cols-1 gap-4">
+                {/* Address - Required with Autocomplete */}
                 <div>
                   <label htmlFor="address" className="block text-sm font-medium text-slate-700 mb-1">
-                    Physical Address
+                    Physical Address <span className="text-orange-500">*</span>
                   </label>
-                  <input
+                  <AddressAutocomplete
                     id="address"
-                    type="text"
                     value={contactInfo.address}
-                    onChange={(e) => updateContactInfo({ address: e.target.value })}
-                    placeholder="123 Main Street, Bangkok"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    onChange={(value) => updateContactInfo({ address: value })}
+                    placeholder="Start typing to search for address..."
+                    required
                   />
+                  {!contactInfo.address && (
+                    <p className="text-xs text-orange-600 mt-1">
+                      Address is required
+                    </p>
+                  )}
                 </div>
 
-                <div>
-                  <label htmlFor="website" className="block text-sm font-medium text-slate-700 mb-1">
-                    Website or Social Media
-                  </label>
-                  <input
-                    id="website"
-                    type="url"
-                    value={contactInfo.website}
-                    onChange={(e) => updateContactInfo({ website: e.target.value })}
-                    placeholder="https://facebook.com/yourbusiness"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
+                      Phone Number
+                    </label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      value={contactInfo.phone}
+                      onChange={(e) => updateContactInfo({ phone: e.target.value })}
+                      placeholder="+66 12 345 6789"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+                      Email Address
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={contactInfo.email}
+                      onChange={(e) => updateContactInfo({ email: e.target.value })}
+                      placeholder="hello@business.com"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="website" className="block text-sm font-medium text-slate-700 mb-1">
+                      Website or Social Media
+                    </label>
+                    <input
+                      id="website"
+                      type="url"
+                      value={contactInfo.website}
+                      onChange={(e) => updateContactInfo({ website: e.target.value })}
+                      placeholder="https://facebook.com/yourbusiness"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Validation warning */}
               {richMenu.items.some(item => item.type === 'contact-us' && item.enabled) &&
-               !Object.values(contactInfo).some(value => value && value.trim().length > 0) && (
+               ![contactInfo.phone, contactInfo.email, contactInfo.website].some(value => value && value.trim().length > 0) && (
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
                   <p className="text-sm text-orange-700">
-                    <strong>Required:</strong> At least one contact method must be provided when &quot;Contact Us&quot; is enabled in Rich Menu.
+                    <strong>Required:</strong> At least one contact method (phone, email, or website) must be provided when &quot;Contact Us&quot; is enabled in Rich Menu.
                   </p>
                 </div>
               )}
@@ -320,9 +332,12 @@ export default function BusinessInfoStep() {
                 {businessHours.mode === 'custom' && !Object.values(businessHours.custom).some(day => !day.closed && day.open < day.close) && (
                   <li>• At least one day must be open with valid hours</li>
                 )}
+                {(!contactInfo.address || contactInfo.address.trim().length === 0) && (
+                  <li>• Enter a business address (required)</li>
+                )}
                 {richMenu.items.some(item => item.type === 'contact-us' && item.enabled) &&
-                 !Object.values(contactInfo).some(value => value && value.trim().length > 0) && (
-                  <li>• Add at least one contact method (Contact Us is enabled)</li>
+                 ![contactInfo.phone, contactInfo.email, contactInfo.website].some(value => value && value.trim().length > 0) && (
+                  <li>• Add at least one contact method besides address (Contact Us is enabled)</li>
                 )}
               </ul>
             </div>

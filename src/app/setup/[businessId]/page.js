@@ -59,7 +59,52 @@ export default function BusinessWizardPage() {
       // Populate Zustand store with existing data
       const store = useSetupWizardStore.getState();
       store.setBusinessName(data.business.businessName);
-      // TODO: Load other fields into store
+      store.setLogoUrl(data.business.logoUrl || '');
+      store.setBusinessHours(data.business.businessHours || {});
+      store.setDefaultAppointmentDuration(data.business.defaultDuration || 60);
+      store.setAppointmentOnly(data.business.appointmentOnly || false);
+      store.setRequiresApproval(data.business.requiresApproval || false);
+      store.setRichMenu(data.business.richMenu || { enabled: false });
+      store.setContactInfo({
+        phone: data.business.phone || '',
+        email: data.business.email || '',
+        address: data.business.address || '',
+        website: data.business.website || '',
+      });
+
+      // Load services
+      if (data.business.services && data.business.services.length > 0) {
+        store.setServices(data.business.services.map(service => ({
+          id: service.id,
+          name: service.name,
+          description: service.description || '',
+          duration: service.duration,
+          price: service.price || 0,
+        })));
+      }
+
+      // Load staff
+      if (data.business.staff && data.business.staff.length > 0) {
+        store.setStaff(data.business.staff.map(member => ({
+          id: member.id,
+          name: member.name,
+          specialty: member.specialty || '',
+          description: member.description || '',
+          photo: member.photoUrl || '',
+          availability: member.availability || {},
+        })));
+      }
+
+      // Load pages
+      if (data.business.pages && data.business.pages.length > 0) {
+        store.setPages(data.business.pages.map(page => ({
+          id: page.id,
+          type: page.type,
+          title: page.title,
+          order: page.order,
+          components: page.components || [],
+        })));
+      }
 
     } catch (error) {
       console.error('Load business error:', error);
@@ -83,7 +128,10 @@ export default function BusinessWizardPage() {
         appointmentOnly: store.appointmentOnly,
         requiresApproval: store.requiresApproval,
         richMenu: store.richMenu,
-        contactInfo: store.contactInfo,
+        phone: store.contactInfo.phone || null,
+        email: store.contactInfo.email || null,
+        address: store.contactInfo.address,
+        website: store.contactInfo.website || null,
       };
 
       const servicesData = store.services.map((service, index) => ({

@@ -16,7 +16,10 @@ export async function GET(request, { params }) {
           select: {
             businessName: true,
             logoUrl: true,
-            contactInfo: true,
+            phone: true,
+            email: true,
+            address: true,
+            website: true,
           },
         },
         service: {
