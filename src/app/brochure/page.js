@@ -23,12 +23,14 @@ import FeatureCard from '@/components/brochure/FeatureCard';
 import AnimatedCounter from '@/components/brochure/AnimatedCounter';
 import ScreenshotCard from '@/components/brochure/ScreenshotCard';
 import FloatingNotification from '@/components/brochure/FloatingNotification';
+import ImageModal from '@/components/brochure/ImageModal';
 
 export default function BrochurePage() {
   const [showSubheading, setShowSubheading] = useState(false);
   const [heroRef, heroInView] = useInView({ threshold: 0.1 });
   const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.1 });
   const [activeNotification, setActiveNotification] = useState(0);
+  const [modalImage, setModalImage] = useState(null);
 
   // Floating notifications data
   const notifications = [
@@ -176,7 +178,7 @@ export default function BrochurePage() {
               className="mt-20"
             >
               <div className="relative max-w-4xl mx-auto">
-                <div className="relative aspect-video rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-2xl overflow-hidden">
+                <div className="relative rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-2xl overflow-hidden" style={{ aspectRatio: '16/11' }}>
                   <video
                     autoPlay
                     loop
@@ -287,7 +289,7 @@ export default function BrochurePage() {
                 transition={{ duration: 0.8 }}
                 className="relative"
               >
-                <div className="aspect-video rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl">
+                <div className="aspect-video aspect-hero rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl">
                   <video
                     autoPlay
                     loop
@@ -500,7 +502,7 @@ export default function BrochurePage() {
                 transition={{ duration: 0.8 }}
                 className="relative order-2 md:order-1"
               >
-                <div className="aspect-video rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl">
+                <div className="aspect-video aspect-hero rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl">
                   <video
                     autoPlay
                     loop
@@ -590,37 +592,41 @@ export default function BrochurePage() {
 
           <div className="space-y-32">
             <ScreenshotCard
-              src="/brochure/kitsune2.webp"
-              alt="Kitsune Dashboard Overview"
+              src="/brochure/booking-modal.webp"
+              alt="Kitsune Dashboard with Booking Details"
               title="Powerful Dashboard"
               description="Get instant insights into your business performance. Track bookings, monitor revenue, identify top customers, and make data-driven decisions with real-time analytics at your fingertips."
               delay={0.1}
+              onClick={() => setModalImage({ src: '/brochure/booking-modal.png', alt: 'Kitsune Dashboard with Booking Details' })}
             />
 
             <ScreenshotCard
-              src="/brochure/kitsune2.webp"
+              src="/brochure/calendar-view.webp"
               alt="Calendar and Scheduling Interface"
               title="Smart Calendar Management"
               description="Visualize your schedule with ease. Multi-view calendar supports day, week, month, and agenda views. Filter by staff, service, or status. Color-coded bookings help you stay organized."
               delay={0.2}
               reverse
+              onClick={() => setModalImage({ src: '/brochure/calendar-view.png', alt: 'Calendar and Scheduling Interface' })}
             />
 
             <ScreenshotCard
-              src="/brochure/kitsune2.webp"
-              alt="LINE Integration Chat Interface"
+              src="/brochure/mobile-form.webp"
+              alt="Mobile Booking Form Interface"
               title="Seamless LINE Integration"
               description="Your customers book directly through LINE - Asia's favorite messaging app. Automatic confirmations, reminders, and updates keep everyone informed without any extra effort."
               delay={0.3}
+              onClick={() => setModalImage({ src: '/brochure/mobile-form.png', alt: 'Mobile Booking Form Interface' })}
             />
 
             <ScreenshotCard
-              src="/brochure/kitsune2.webp"
-              alt="QR Code Generator Interface"
-              title="Beautiful QR Codes"
-              description="Generate branded QR codes in seconds. Customize with your logo and colors, then download or print. Customers scan and book instantly - no app downloads required."
+              src="/brochure/form-builder.webp"
+              alt="Custom Booking Form Builder"
+              title="Beautiful QR Codes & Custom Forms"
+              description="Generate branded QR codes in seconds. Customize with your logo and colors, then download or print. Build custom booking forms with drag-and-drop simplicity. Customers scan and book instantly - no app downloads required."
               delay={0.4}
               reverse
+              onClick={() => setModalImage({ src: '/brochure/form-builder.png', alt: 'Custom Booking Form Builder' })}
             />
           </div>
         </div>
@@ -721,6 +727,14 @@ export default function BrochurePage() {
         </div>
       </footer>
 
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={modalImage !== null}
+        onClose={() => setModalImage(null)}
+        src={modalImage?.src || ''}
+        alt={modalImage?.alt || ''}
+      />
+
       {/* Structured Data for SEO */}
       <script
         type="application/ld+json"
@@ -753,7 +767,7 @@ export default function BrochurePage() {
               "Automated Reminders",
               "Multi-language Support"
             ],
-            "screenshot": "/brochure/kitsune2.webp"
+            "screenshot": "/brochure/booking-modal.png"
           })
         }}
       />

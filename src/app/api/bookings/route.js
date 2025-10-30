@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { generateMockCalendarBookings } from '@/lib/mockAnalyticsData';
+
+// TODO: Remove this flag when real data is ready
+const USE_MOCK_DATA = true;
 
 /**
  * POST /api/bookings
@@ -269,6 +273,12 @@ export async function GET(request) {
       }
 
       whereClause.businessId = businessId;
+
+      // Return mock data for demo purposes
+      if (USE_MOCK_DATA) {
+        const mockBookings = generateMockCalendarBookings(businessId);
+        return NextResponse.json({ bookings: mockBookings });
+      }
     } else if (customerLineUserId) {
       // Customer checking their own bookings (LIFF)
       const customer = await prisma.customer.findUnique({

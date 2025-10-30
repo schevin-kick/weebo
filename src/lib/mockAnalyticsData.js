@@ -4,6 +4,35 @@
  * TODO: Remove this file when real data is available
  */
 
+// Mock services and staff data
+const MOCK_SERVICES = [
+  { id: 'svc_1', name: 'Haircut & Styling', price: 65, duration: 45 },
+  { id: 'svc_2', name: 'Hair Coloring', price: 120, duration: 90 },
+  { id: 'svc_3', name: 'Massage Therapy', price: 90, duration: 60 },
+  { id: 'svc_4', name: 'Facial Treatment', price: 75, duration: 50 },
+  { id: 'svc_5', name: 'Manicure & Pedicure', price: 55, duration: 40 },
+];
+
+const MOCK_STAFF = [
+  { id: 'staff_1', name: 'Sarah Chen', photoUrl: 'https://i.pravatar.cc/150?img=5' },
+  { id: 'staff_2', name: 'Michael Torres', photoUrl: 'https://i.pravatar.cc/150?img=12' },
+  { id: 'staff_3', name: 'Emma Rodriguez', photoUrl: 'https://i.pravatar.cc/150?img=9' },
+  { id: 'staff_4', name: 'David Kim', photoUrl: 'https://i.pravatar.cc/150?img=13' },
+];
+
+const MOCK_CUSTOMERS = [
+  { id: 'cust_1', displayName: 'Jennifer Lee', pictureUrl: 'https://i.pravatar.cc/150?img=1' },
+  { id: 'cust_2', displayName: 'Robert Smith', pictureUrl: 'https://i.pravatar.cc/150?img=33' },
+  { id: 'cust_3', displayName: 'Maria Garcia', pictureUrl: 'https://i.pravatar.cc/150?img=20' },
+  { id: 'cust_4', displayName: 'James Wilson', pictureUrl: 'https://i.pravatar.cc/150?img=11' },
+  { id: 'cust_5', displayName: 'Lisa Anderson', pictureUrl: 'https://i.pravatar.cc/150?img=45' },
+  { id: 'cust_6', displayName: 'David Martinez', pictureUrl: 'https://i.pravatar.cc/150?img=14' },
+  { id: 'cust_7', displayName: 'Susan Taylor', pictureUrl: 'https://i.pravatar.cc/150?img=47' },
+  { id: 'cust_8', displayName: 'Michael Brown', pictureUrl: 'https://i.pravatar.cc/150?img=15' },
+  { id: 'cust_9', displayName: 'Patricia Johnson', pictureUrl: 'https://i.pravatar.cc/150?img=23' },
+  { id: 'cust_10', displayName: 'Christopher Davis', pictureUrl: 'https://i.pravatar.cc/150?img=52' },
+];
+
 /**
  * Generate overview statistics
  */
@@ -234,4 +263,139 @@ export function generateMockStaffPerformance() {
       revenue: completedBookings * 85, // Average price
     };
   }).sort((a, b) => b.totalBookings - a.totalBookings);
+}
+
+/**
+ * Generate mock calendar bookings for several months
+ * Creates realistic booking patterns across past and future months
+ */
+export function generateMockCalendarBookings(businessId) {
+  const bookings = [];
+  const now = new Date();
+
+  // Generate bookings for 2 months in the past and 2 months in the future
+  const startDate = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+  const endDate = new Date(now.getFullYear(), now.getMonth() + 3, 0); // Last day of 2 months ahead
+
+  let bookingId = 1000;
+
+  // Iterate through each day
+  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+    const dayOfWeek = d.getDay();
+    const isPast = d < now;
+
+    // Skip some random days to make it realistic
+    if (Math.random() < 0.15) continue;
+
+    // Business hours: 9am to 6pm
+    // More bookings on weekends and mid-week
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const isMidWeek = dayOfWeek === 3 || dayOfWeek === 4;
+
+    let bookingsPerDay = 3 + Math.floor(Math.random() * 4); // 3-6 bookings
+    if (isWeekend) bookingsPerDay += 2;
+    if (isMidWeek) bookingsPerDay += 1;
+
+    // Generate bookings for this day
+    const usedTimeSlots = new Set();
+
+    for (let i = 0; i < bookingsPerDay; i++) {
+      // Random time between 9am and 6pm
+      let hour, minute, timeSlot;
+      let attempts = 0;
+
+      do {
+        hour = 9 + Math.floor(Math.random() * 9); // 9am to 5pm
+        minute = Math.random() < 0.5 ? 0 : 30; // On the hour or half hour
+        timeSlot = `${hour}:${minute}`;
+        attempts++;
+      } while (usedTimeSlots.has(timeSlot) && attempts < 20);
+
+      if (attempts >= 20) continue; // Skip if we can't find a slot
+
+      usedTimeSlots.add(timeSlot);
+
+      // Create booking datetime
+      const bookingDate = new Date(d);
+      bookingDate.setHours(hour, minute, 0, 0);
+
+      // Random service and staff
+      const service = MOCK_SERVICES[Math.floor(Math.random() * MOCK_SERVICES.length)];
+      const staff = MOCK_STAFF[Math.floor(Math.random() * MOCK_STAFF.length)];
+      const customer = MOCK_CUSTOMERS[Math.floor(Math.random() * MOCK_CUSTOMERS.length)];
+
+      // Determine status based on whether it's in the past or future
+      let status;
+      let noShow = false;
+      let cancelledAt = null;
+      let cancelledBy = null;
+
+      if (isPast) {
+        // Past bookings
+        const rand = Math.random();
+        if (rand < 0.72) {
+          status = 'completed';
+        } else if (rand < 0.77) {
+          status = 'cancelled';
+          cancelledAt = new Date(bookingDate);
+          cancelledAt.setDate(cancelledAt.getDate() - Math.floor(Math.random() * 3));
+          cancelledBy = Math.random() < 0.7 ? 'customer' : 'owner';
+        } else if (rand < 0.80) {
+          status = 'completed';
+          noShow = true;
+        } else {
+          status = 'confirmed';
+        }
+      } else {
+        // Future bookings
+        const rand = Math.random();
+        if (rand < 0.15) {
+          status = 'pending';
+        } else if (rand < 0.20) {
+          status = 'cancelled';
+          cancelledAt = new Date();
+          cancelledBy = Math.random() < 0.7 ? 'customer' : 'owner';
+        } else {
+          status = 'confirmed';
+        }
+      }
+
+      bookings.push({
+        id: `mock_booking_${bookingId++}`,
+        businessId,
+        customerId: customer.id,
+        customer: {
+          displayName: customer.displayName,
+          pictureUrl: customer.pictureUrl,
+        },
+        serviceId: service.id,
+        service: {
+          name: service.name,
+          duration: service.duration,
+          price: service.price,
+        },
+        staffId: staff.id,
+        staff: {
+          name: staff.name,
+          photoUrl: staff.photoUrl,
+        },
+        dateTime: bookingDate.toISOString(),
+        duration: service.duration,
+        status,
+        responses: {},
+        reminderSent: isPast,
+        confirmationSent: status !== 'pending',
+        notes: '',
+        noShow,
+        cancelledAt: cancelledAt ? cancelledAt.toISOString() : null,
+        cancelledBy,
+        cancellationReason: cancelledAt ? 'Schedule conflict' : null,
+        createdAt: new Date(bookingDate.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(bookingDate.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      });
+    }
+  }
+
+  // Sort by date
+  return bookings.sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
 }

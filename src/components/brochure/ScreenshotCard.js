@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { Expand } from 'lucide-react';
 
 export default function ScreenshotCard({
   src,
@@ -9,7 +10,8 @@ export default function ScreenshotCard({
   title,
   description,
   delay = 0,
-  reverse = false
+  reverse = false,
+  onClick
 }) {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -30,7 +32,19 @@ export default function ScreenshotCard({
         transition={{ duration: 0.3 }}
         className={`relative ${reverse ? 'md:col-start-2' : ''}`}
       >
-        <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+        <div
+          className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 cursor-pointer group"
+          onClick={onClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onClick();
+            }
+          }}
+          aria-label={`Click to enlarge ${alt}`}
+        >
           <img
             src={src}
             alt={alt}
@@ -38,7 +52,14 @@ export default function ScreenshotCard({
             loading="lazy"
           />
           {/* Overlay gradient on hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+          {/* Expand icon on hover */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="bg-white/20 backdrop-blur-lg rounded-full p-4 border border-white/30">
+              <Expand className="w-8 h-8 text-white" />
+            </div>
+          </div>
         </div>
         {/* Glow effect */}
         <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/10 via-pink-500/10 to-purple-500/10 blur-3xl -z-10" />

@@ -5,6 +5,8 @@
 
 'use client';
 
+import './kitsune-logo.css';
+
 export default function KitsuneLogo({ size = 'large' }) {
   const sizeClasses = {
     small: 'w-24 h-24',
@@ -45,43 +47,6 @@ export default function KitsuneLogo({ size = 'large' }) {
       <p className="mt-4 text-slate-600 font-medium animate-pulse">
         Loading...
       </p>
-
-      {/* Custom Animations */}
-      <style jsx>{`
-        @keyframes bounce-slow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-
-        .animate-bounce-slow {
-          animation: bounce-slow 2s ease-in-out infinite;
-        }
-
-        .animate-bounce-delay-0 {
-          animation: bounce 1s ease-in-out infinite;
-        }
-
-        .animate-bounce-delay-1 {
-          animation: bounce 1s ease-in-out 0.2s infinite;
-        }
-
-        .animate-bounce-delay-2 {
-          animation: bounce 1s ease-in-out 0.4s infinite;
-        }
-
-        @keyframes bounce {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-      `}</style>
     </div>
   );
 }
