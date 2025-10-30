@@ -4,148 +4,7 @@ import { useState } from 'react';
 import { Users, Plus, Edit2, Trash2, Calendar, Briefcase } from 'lucide-react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import StaffAvatar from '@/components/shared/StaffAvatar';
-import AvailabilityPicker from '@/components/shared/AvailabilityPicker';
-
-function StaffForm({ staffMember, onSave, onCancel }) {
-  const businessHours = useSetupWizardStore((state) => state.businessHours);
-
-  const [formData, setFormData] = useState(
-    staffMember || {
-      name: '',
-      photo: '',
-      specialty: '',
-      description: '',
-      availability: { useBusinessHours: true },
-    }
-  );
-
-  const [errors, setErrors] = useState({});
-
-  const validate = () => {
-    const newErrors = {};
-
-    if (!formData.name || formData.name.length < 3) {
-      newErrors.name = 'Staff name must be at least 3 characters';
-    }
-
-    if (formData.description && formData.description.length > 200) {
-      newErrors.description = 'Description must be at most 200 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      onSave(formData);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-6">
-      {/* Photo and Name Row */}
-      <div className="flex gap-6">
-        {/* Avatar */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Photo <span className="text-slate-400 text-xs">(optional)</span>
-          </label>
-          <StaffAvatar
-            photo={formData.photo}
-            name={formData.name}
-            size="xl"
-            editable
-            onChange={(photo) => setFormData({ ...formData, photo })}
-          />
-          <p className="text-xs text-slate-500 mt-2">
-            Click to upload photo (Max 1MB)
-          </p>
-        </div>
-
-        {/* Name and Specialty */}
-        <div className="flex-1 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Name <span className="text-orange-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g., Sarah Johnson"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-            />
-            {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Specialty <span className="text-slate-400 text-xs">(optional)</span>
-            </label>
-            <input
-              type="text"
-              value={formData.specialty}
-              onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
-              placeholder="e.g., Senior Stylist, Massage Therapist"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Description */}
-      <div>
-        <label className="block text-sm font-medium text-slate-700 mb-2">
-          Description <span className="text-slate-400 text-xs">(optional)</span>
-        </label>
-        <textarea
-          value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          placeholder="Brief bio or description..."
-          rows={3}
-          maxLength={200}
-          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
-        />
-        <div className="flex justify-between items-center mt-1">
-          {errors.description && (
-            <p className="text-sm text-red-600">{errors.description}</p>
-          )}
-          <p className="text-xs text-slate-500 ml-auto">
-            {formData.description.length}/200 characters
-          </p>
-        </div>
-      </div>
-
-      {/* Availability */}
-      <div>
-        <AvailabilityPicker
-          availability={formData.availability}
-          businessHours={businessHours}
-          onChange={(availability) => setFormData({ ...formData, availability })}
-        />
-      </div>
-
-      {/* Actions */}
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all"
-        >
-          {staffMember ? 'Update Staff Member' : 'Add Staff Member'}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-6 py-2 border border-slate-300 rounded-lg font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  );
-}
+import StaffModal from '@/components/modals/StaffModal';
 
 function StaffCard({ staffMember, onEdit, onDelete }) {
   const getAvailabilitySummary = (availability) => {
@@ -217,27 +76,30 @@ export default function StaffStep() {
   const updateStaff = useSetupWizardStore((state) => state.updateStaff);
   const deleteStaff = useSetupWizardStore((state) => state.deleteStaff);
 
-  const [isAdding, setIsAdding] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [editingStaff, setEditingStaff] = useState(null);
 
   const handleSave = (staffData) => {
     if (editingStaff) {
       updateStaff(editingStaff.id, staffData);
-      setEditingStaff(null);
     } else {
       addStaff(staffData);
-      setIsAdding(false);
     }
   };
 
   const handleEdit = (staffMember) => {
     setEditingStaff(staffMember);
-    setIsAdding(false);
+    setShowModal(true);
   };
 
-  const handleCancel = () => {
-    setIsAdding(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
     setEditingStaff(null);
+  };
+
+  const handleAddClick = () => {
+    setEditingStaff(null);
+    setShowModal(true);
   };
 
   return (
@@ -266,7 +128,7 @@ export default function StaffStep() {
         {/* Content */}
         <div className="p-8 space-y-6">
           {/* Info */}
-          {staff.length === 0 && !isAdding && !editingStaff && (
+          {staff.length === 0 && (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="w-8 h-8 text-orange-500" />
@@ -283,43 +145,35 @@ export default function StaffStep() {
           {/* Staff list */}
           {staff.length > 0 && (
             <div className="space-y-3">
-              {staff.map((member) =>
-                editingStaff?.id === member.id ? (
-                  <StaffForm
-                    key={member.id}
-                    staffMember={editingStaff}
-                    onSave={handleSave}
-                    onCancel={handleCancel}
-                  />
-                ) : (
-                  <StaffCard
-                    key={member.id}
-                    staffMember={member}
-                    onEdit={handleEdit}
-                    onDelete={deleteStaff}
-                  />
-                )
-              )}
+              {staff.map((member) => (
+                <StaffCard
+                  key={member.id}
+                  staffMember={member}
+                  onEdit={handleEdit}
+                  onDelete={deleteStaff}
+                />
+              ))}
             </div>
           )}
 
-          {/* Add staff form */}
-          {isAdding && !editingStaff && (
-            <StaffForm onSave={handleSave} onCancel={handleCancel} />
-          )}
-
           {/* Add button */}
-          {!isAdding && !editingStaff && (
-            <button
-              onClick={() => setIsAdding(true)}
-              className="w-full border-2 border-dashed border-slate-300 rounded-xl px-6 py-4 text-slate-600 hover:border-orange-400 hover:bg-orange-50 hover:text-orange-600 transition-all flex items-center justify-center gap-2 font-medium"
-            >
-              <Plus className="w-5 h-5" />
-              Add Staff Member
-            </button>
-          )}
+          <button
+            onClick={handleAddClick}
+            className="w-full border-2 border-dashed border-slate-300 rounded-xl px-6 py-4 text-slate-600 hover:border-orange-400 hover:bg-orange-50 hover:text-orange-600 transition-all flex items-center justify-center gap-2 font-medium"
+          >
+            <Plus className="w-5 h-5" />
+            Add Staff Member
+          </button>
         </div>
       </div>
+
+      {/* Staff Modal */}
+      <StaffModal
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        staffMember={editingStaff}
+        onSave={handleSave}
+      />
     </div>
   );
 }

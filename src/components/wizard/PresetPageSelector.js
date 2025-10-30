@@ -32,11 +32,17 @@ export default function PresetPageSelector() {
   const presetPagesConfig = useSetupWizardStore((state) => state.presetPagesConfig);
   const togglePresetPage = useSetupWizardStore((state) => state.togglePresetPage);
   const ensureDateTimePage = useSetupWizardStore((state) => state.ensureDateTimePage);
+  const ensureServicesPage = useSetupWizardStore((state) => state.ensureServicesPage);
+  const ensureStaffPage = useSetupWizardStore((state) => state.ensureStaffPage);
+  const services = useSetupWizardStore((state) => state.services);
+  const staff = useSetupWizardStore((state) => state.staff);
 
-  // Ensure DateTime page is present on mount
+  // Ensure preset pages are auto-added when appropriate
   useEffect(() => {
-    ensureDateTimePage();
-  }, [ensureDateTimePage]);
+    ensureDateTimePage(); // Always required
+    ensureServicesPage(); // Auto-add if services exist
+    ensureStaffPage();    // Auto-add if staff exist
+  }, [ensureDateTimePage, ensureServicesPage, ensureStaffPage, services, staff]);
 
   return (
     <div className="space-y-4">

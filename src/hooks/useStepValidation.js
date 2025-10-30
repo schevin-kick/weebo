@@ -36,12 +36,15 @@ export default function useStepValidation(currentStep) {
           if (!hasOpenDay) return false;
         }
 
-        // If "Contact Us" is enabled in rich menu, at least one contact field required
+        // Address is always required
+        if (!contactInfo.address || contactInfo.address.trim().length === 0) return false;
+
+        // If "Contact Us" is enabled in rich menu, at least one contact field required (besides address)
         const contactUsEnabled = richMenu.items.some(
           (item) => item.type === 'contact-us' && item.enabled
         );
         if (contactUsEnabled) {
-          const hasContactInfo = Object.values(contactInfo).some(
+          const hasContactInfo = [contactInfo.phone, contactInfo.email, contactInfo.website].some(
             (value) => value && value.trim().length > 0
           );
           if (!hasContactInfo) return false;

@@ -495,6 +495,88 @@ const useSetupWizardStore = create(
           return { pages: reorderedPages };
         }),
 
+      // Ensure services page is added when services exist
+      ensureServicesPage: () =>
+        set((state) => {
+          // Only add if services exist and page doesn't already exist
+          const hasServices = state.services.length > 0;
+          const hasServicesPage = state.pages.some((p) => p.type === 'preset-services');
+
+          if (hasServices && !hasServicesPage) {
+            const { generateId } = require('../utils/fieldNameHelper');
+
+            // Separate datetime page from others to keep it last
+            const dateTimePage = state.pages.find(p => p.type === 'preset-datetime');
+            const otherPages = state.pages.filter(p => p.type !== 'preset-datetime');
+
+            const newPage = {
+              id: generateId(),
+              type: 'preset-services',
+              title: 'Select Service',
+              order: otherPages.length,
+              components: [],
+            };
+
+            // Insert before datetime page
+            const newPages = [
+              ...otherPages.map((p, index) => ({ ...p, order: index })),
+              newPage,
+              ...(dateTimePage ? [{ ...dateTimePage, order: otherPages.length + 1 }] : [])
+            ];
+
+            return {
+              pages: newPages,
+              presetPagesConfig: {
+                ...state.presetPagesConfig,
+                services: true,
+              },
+            };
+          }
+
+          return state;
+        }),
+
+      // Ensure staff page is added when staff exist
+      ensureStaffPage: () =>
+        set((state) => {
+          // Only add if staff exist and page doesn't already exist
+          const hasStaff = state.staff.length > 0;
+          const hasStaffPage = state.pages.some((p) => p.type === 'preset-staff');
+
+          if (hasStaff && !hasStaffPage) {
+            const { generateId } = require('../utils/fieldNameHelper');
+
+            // Separate datetime page from others to keep it last
+            const dateTimePage = state.pages.find(p => p.type === 'preset-datetime');
+            const otherPages = state.pages.filter(p => p.type !== 'preset-datetime');
+
+            const newPage = {
+              id: generateId(),
+              type: 'preset-staff',
+              title: 'Select Staff',
+              order: otherPages.length,
+              components: [],
+            };
+
+            // Insert before datetime page
+            const newPages = [
+              ...otherPages.map((p, index) => ({ ...p, order: index })),
+              newPage,
+              ...(dateTimePage ? [{ ...dateTimePage, order: otherPages.length + 1 }] : [])
+            ];
+
+            return {
+              pages: newPages,
+              presetPagesConfig: {
+                ...state.presetPagesConfig,
+                staff: true,
+              },
+            };
+          }
+
+          return state;
+        }),
+
       // Navigation
       setCurrentStep: (step) => set({ currentStep: step }),
 

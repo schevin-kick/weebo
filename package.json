@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "ngrok": "ngrok http 3000 --log=stdout"
+    "ngrok": "ngrok http 3000 --log=stdout",
+    "db:push": "npx prisma db push",
+    "db:reset": "npx prisma migrate reset --force"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.918.0",
