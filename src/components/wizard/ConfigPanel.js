@@ -3,6 +3,7 @@
 import { X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import useSetupWizardStore from '@/stores/setupWizardStore';
+import { useToast } from '@/contexts/ToastContext';
 
 const PRESET_FIELD_LABELS = {
   name: 'Name',
@@ -17,6 +18,7 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
   const page = useSetupWizardStore((state) => state.pages.find((p) => p.id === pageId));
   const component = page?.components.find((c) => c.id === componentId);
   const updateComponent = useSetupWizardStore((state) => state.updateComponent);
+  const toast = useToast();
 
   const [config, setConfig] = useState({});
 
@@ -29,6 +31,42 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
   if (!component || !page) return null;
 
   const handleSave = () => {
+    // Validate required fields before saving
+    const isInfoText = component.type === 'info-text';
+    const isCustomField = component.type === 'custom-field';
+
+    // Validate info-text content
+    if (isInfoText) {
+      if (!config.content || config.content.trim() === '') {
+        toast.error('Content is required for info text components');
+        return;
+      }
+    }
+
+    // Validate custom field label
+    if (isCustomField) {
+      if (!config.label || config.label.trim() === '') {
+        toast.error('Field Label is required');
+        return;
+      }
+
+      // Validate options for select/radio/checkbox fields
+      const needsOptions = ['select', 'radio', 'checkbox'].includes(config.inputType);
+      if (needsOptions) {
+        const hasValidOptions = config.options &&
+          config.options.length > 0 &&
+          config.options.some(opt => opt && opt.trim() !== '');
+
+        if (!hasValidOptions) {
+          toast.error('At least one non-empty option is required for this field type');
+          return;
+        }
+
+        // Filter out empty options before saving
+        config.options = config.options.filter(opt => opt && opt.trim() !== '');
+      }
+    }
+
     updateComponent(pageId, componentId, config);
     onClose();
   };
@@ -81,11 +119,10 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
                   key={style.value}
                   type="button"
                   onClick={() => setConfig({ ...config, style: style.value })}
-                  className={`p-3 border-2 rounded-lg font-medium text-sm transition-all ${
-                    config.style === style.value
-                      ? 'border-orange-500 ring-2 ring-orange-200'
-                      : style.color
-                  }`}
+                  className={`p-3 border-2 rounded-lg font-medium text-sm transition-all ${config.style === style.value
+                    ? 'border-orange-500 ring-2 ring-orange-200'
+                    : style.color
+                    }`}
                 >
                   {style.label}
                 </button>
@@ -130,40 +167,40 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
 
           {/* Only show validation toggle for email field */}
           {config.fieldType === 'email' && (
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-              <div>
+            <div className="flex items-center justify-between gap-4 p-4 bg-slate-50 rounded-lg">
+              <div className="flex-1">
                 <div className="font-medium text-slate-900">Enable Validation</div>
                 <div className="text-sm text-slate-600">
                   Validate email format
                 </div>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
                 <input
                   type="checkbox"
                   checked={config.validation !== false}
                   onChange={(e) => setConfig({ ...config, validation: e.target.checked })}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
+                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[6px] after:left-[10px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
               </label>
             </div>
           )}
 
-          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-            <div>
+          <div className="flex items-center justify-between gap-4 p-4 bg-slate-50 rounded-lg">
+            <div className="flex-1">
               <div className="font-medium text-slate-900">Required Field</div>
               <div className="text-sm text-slate-600">
                 Customers must fill this field
               </div>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
               <input
                 type="checkbox"
                 checked={config.required !== false}
                 onChange={(e) => setConfig({ ...config, required: e.target.checked })}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
+              <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[6px] after:left-[10px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
             </label>
           </div>
         </div>
@@ -276,21 +313,21 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
             </div>
           )}
 
-          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-            <div>
+          <div className="flex items-center justify-between gap-4 p-4 bg-slate-50 rounded-lg">
+            <div className="flex-1">
               <div className="font-medium text-slate-900">Required Field</div>
               <div className="text-sm text-slate-600">
                 Customers must fill this field
               </div>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
               <input
                 type="checkbox"
                 checked={config.required !== false}
                 onChange={(e) => setConfig({ ...config, required: e.target.checked })}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
+              <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[6px] after:left-[10px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
             </label>
           </div>
         </div>

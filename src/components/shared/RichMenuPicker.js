@@ -39,7 +39,7 @@ export default function RichMenuPicker({
               onChange={(e) => onEnabledChange(e.target.checked)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+            <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[6px] after:left-[10px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
             <span className="ml-3 text-sm font-medium text-slate-700">
               {enabled ? 'Enabled' : 'Disabled'}
             </span>
@@ -57,11 +57,10 @@ export default function RichMenuPicker({
           {/* Validation message */}
           {validationMessage && (
             <div
-              className={`rounded-lg p-3 text-sm ${
-                validationMessage.type === 'error'
+              className={`rounded-lg p-3 text-sm ${validationMessage.type === 'error'
                   ? 'bg-red-50 border border-red-200 text-red-700'
                   : 'bg-amber-50 border border-amber-200 text-amber-700'
-              }`}
+                }`}
             >
               {validationMessage.text}
             </div>
@@ -72,11 +71,10 @@ export default function RichMenuPicker({
             {sortedItems.map((item, index) => (
               <div
                 key={item.id}
-                className={`border-2 rounded-lg p-3 transition-colors ${
-                  item.enabled
+                className={`border-2 rounded-lg p-3 transition-colors ${item.enabled
                     ? 'border-slate-300 bg-white'
                     : 'border-slate-200 bg-slate-50'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   {/* Enable toggle */}
@@ -90,9 +88,8 @@ export default function RichMenuPicker({
                   />
 
                   {/* Static label (not editable) */}
-                  <div className={`flex-1 font-medium text-sm ${
-                    !item.enabled && 'text-slate-500'
-                  }`}>
+                  <div className={`flex-1 font-medium text-sm ${!item.enabled && 'text-slate-500'
+                    }`}>
                     {item.label}
                   </div>
 
