@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
 import * as THREE from 'three';
@@ -205,16 +205,41 @@ function Scene() {
   );
 }
 
+// Loading Spinner Component
+function LoadingSpinner() {
+  return (
+    <div className="fixed inset-0 -z-10 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e293b 100%)' }}>
+      <div className="relative">
+        {/* Outer spinning ring */}
+        <div className="w-16 h-16 border-4 border-white/10 border-t-orange-400 rounded-full animate-spin" />
+        {/* Inner pulsing circle */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-amber-400 rounded-full animate-pulse" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Main component
 export default function ThreeBackground() {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
-    <div className="fixed inset-0 -z-10">
-      <Canvas
-        camera={{ position: [0, 0, 5], fov: 75 }}
-        style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e293b 100%)' }}
-      >
-        <Scene />
-      </Canvas>
-    </div>
+    <>
+      {isLoading && <LoadingSpinner />}
+      <div className="fixed inset-0 -z-10">
+        <Canvas
+          camera={{ position: [0, 0, 5], fov: 75 }}
+          style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e293b 100%)' }}
+          onCreated={() => {
+            // Hide loading spinner once canvas is created
+            setTimeout(() => setIsLoading(false), 100);
+          }}
+        >
+          <Scene />
+        </Canvas>
+      </div>
+    </>
   );
 }

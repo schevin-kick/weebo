@@ -348,6 +348,7 @@ export default function CalendarView({ businessId }) {
           onSelectEvent={handleSelectEvent}
           step={30}
           timeslots={2}
+          scrollToTime={new Date()}
         />
       </div>
 
