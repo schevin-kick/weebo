@@ -7,10 +7,6 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { generateMockTrendData } from '@/lib/mockAnalyticsData';
-
-// TODO: Remove this flag when real data is ready
-const USE_MOCK_DATA = true;
 
 export async function GET(request, { params }) {
   try {
@@ -41,16 +37,6 @@ export async function GET(request, { params }) {
 
     if (!business) {
       return NextResponse.json({ error: 'Business not found' }, { status: 404 });
-    }
-
-    // Return mock data for demo purposes
-    if (USE_MOCK_DATA) {
-      const trendData = generateMockTrendData(startDate.toISOString(), endDate.toISOString(), groupBy);
-      return NextResponse.json({
-        trendData,
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-      });
     }
 
     // Get bookings grouped by date

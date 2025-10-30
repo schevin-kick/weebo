@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { generateMockCalendarBookings } from '@/lib/mockAnalyticsData';
-
-// TODO: Remove this flag when real data is ready
-const USE_MOCK_DATA = true;
 
 /**
  * POST /api/bookings
@@ -287,55 +283,7 @@ export async function GET(request) {
 
       whereClause.businessId = businessId;
 
-      // Return mock data for demo purposes (with filtering, sorting, pagination)
-      if (USE_MOCK_DATA) {
-        let mockBookings = generateMockCalendarBookings(businessId);
-
-        // Apply search filter
-        if (search) {
-          const searchLower = search.toLowerCase();
-          mockBookings = mockBookings.filter(booking =>
-            booking.customer?.displayName?.toLowerCase().includes(searchLower)
-          );
-        }
-
-        // Apply status filter
-        if (status && status !== 'all') {
-          mockBookings = mockBookings.filter(booking => booking.status === status);
-        }
-
-        // Apply sorting
-        mockBookings.sort((a, b) => {
-          let compareValue = 0;
-
-          if (sortBy === 'dateTime') {
-            compareValue = new Date(a.dateTime) - new Date(b.dateTime);
-          } else if (sortBy === 'customer') {
-            const nameA = a.customer?.displayName || '';
-            const nameB = b.customer?.displayName || '';
-            compareValue = nameA.localeCompare(nameB);
-          } else if (sortBy === 'status') {
-            compareValue = a.status.localeCompare(b.status);
-          }
-
-          return sortOrder === 'asc' ? compareValue : -compareValue;
-        });
-
-        // Get total count before pagination
-        const totalCount = mockBookings.length;
-
-        // Apply pagination
-        const paginatedBookings = mockBookings.slice(skip, skip + limit);
-
-        return NextResponse.json({
-          bookings: paginatedBookings,
-          totalCount,
-          page,
-          limit
-        });
-      }
-
-      // Add status filter for real data
+      // Add status filter
       if (status && status !== 'all') {
         whereClause.status = status;
       }
