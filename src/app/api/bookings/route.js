@@ -254,6 +254,19 @@ export async function GET(request) {
     const customerId = searchParams.get('customerId');
     const customerLineUserId = searchParams.get('customerLineUserId');
 
+    // Pagination params
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '20', 10);
+    const skip = (page - 1) * limit;
+
+    // Filter params
+    const search = searchParams.get('search');
+    const status = searchParams.get('status');
+
+    // Sort params
+    const sortBy = searchParams.get('sortBy') || 'dateTime';
+    const sortOrder = searchParams.get('sortOrder') || 'desc';
+
     let whereClause = {};
 
     if (businessId) {
@@ -274,10 +287,67 @@ export async function GET(request) {
 
       whereClause.businessId = businessId;
 
-      // Return mock data for demo purposes
+      // Return mock data for demo purposes (with filtering, sorting, pagination)
       if (USE_MOCK_DATA) {
-        const mockBookings = generateMockCalendarBookings(businessId);
-        return NextResponse.json({ bookings: mockBookings });
+        let mockBookings = generateMockCalendarBookings(businessId);
+
+        // Apply search filter
+        if (search) {
+          const searchLower = search.toLowerCase();
+          mockBookings = mockBookings.filter(booking =>
+            booking.customer?.displayName?.toLowerCase().includes(searchLower)
+          );
+        }
+
+        // Apply status filter
+        if (status && status !== 'all') {
+          mockBookings = mockBookings.filter(booking => booking.status === status);
+        }
+
+        // Apply sorting
+        mockBookings.sort((a, b) => {
+          let compareValue = 0;
+
+          if (sortBy === 'dateTime') {
+            compareValue = new Date(a.dateTime) - new Date(b.dateTime);
+          } else if (sortBy === 'customer') {
+            const nameA = a.customer?.displayName || '';
+            const nameB = b.customer?.displayName || '';
+            compareValue = nameA.localeCompare(nameB);
+          } else if (sortBy === 'status') {
+            compareValue = a.status.localeCompare(b.status);
+          }
+
+          return sortOrder === 'asc' ? compareValue : -compareValue;
+        });
+
+        // Get total count before pagination
+        const totalCount = mockBookings.length;
+
+        // Apply pagination
+        const paginatedBookings = mockBookings.slice(skip, skip + limit);
+
+        return NextResponse.json({
+          bookings: paginatedBookings,
+          totalCount,
+          page,
+          limit
+        });
+      }
+
+      // Add status filter for real data
+      if (status && status !== 'all') {
+        whereClause.status = status;
+      }
+
+      // Add search filter for real data
+      if (search) {
+        whereClause.customer = {
+          displayName: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        };
       }
     } else if (customerLineUserId) {
       // Customer checking their own bookings (LIFF)
@@ -286,7 +356,7 @@ export async function GET(request) {
       });
 
       if (!customer) {
-        return NextResponse.json({ bookings: [] });
+        return NextResponse.json({ bookings: [], totalCount: 0 });
       }
 
       whereClause.customerId = customer.id;
@@ -299,6 +369,26 @@ export async function GET(request) {
       );
     }
 
+    // Build orderBy clause for real data
+    let orderBy = {};
+    if (sortBy === 'dateTime') {
+      orderBy.dateTime = sortOrder;
+    } else if (sortBy === 'status') {
+      orderBy.status = sortOrder;
+    } else if (sortBy === 'customer') {
+      orderBy.customer = {
+        displayName: sortOrder,
+      };
+    } else {
+      orderBy.dateTime = 'desc'; // default
+    }
+
+    // Get total count for pagination (real data)
+    const totalCount = await prisma.booking.count({
+      where: whereClause,
+    });
+
+    // Fetch bookings with pagination (real data)
     const bookings = await prisma.booking.findMany({
       where: whereClause,
       include: {
@@ -333,12 +423,17 @@ export async function GET(request) {
           },
         },
       },
-      orderBy: {
-        dateTime: 'asc',
-      },
+      orderBy,
+      skip,
+      take: limit,
     });
 
-    return NextResponse.json({ bookings });
+    return NextResponse.json({
+      bookings,
+      totalCount,
+      page,
+      limit
+    });
   } catch (error) {
     console.error('Get bookings error:', error);
     return NextResponse.json(

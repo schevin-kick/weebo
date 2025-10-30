@@ -39,13 +39,43 @@ export default function BookingsView({ businessId }) {
     setCurrentPage,
   } = useBookingsFilterStore();
 
+  // Local search state for debouncing
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const [isSearching, setIsSearching] = useState(false);
+
   // Initialize from URL params (deep linking)
   useEffect(() => {
     const urlStatus = searchParams.get('status');
     const urlSearch = searchParams.get('search');
     if (urlStatus) setStatusFilter(urlStatus);
-    if (urlSearch) setSearchQuery(urlSearch);
+    if (urlSearch) {
+      setSearchQuery(urlSearch);
+      setLocalSearchQuery(urlSearch);
+    }
   }, []);
+
+  // Debounce search query (2 seconds)
+  useEffect(() => {
+    // If local search matches global search, no need to debounce
+    if (localSearchQuery === searchQuery) {
+      setIsSearching(false);
+      return;
+    }
+
+    // Show loading state immediately when user types
+    setIsSearching(true);
+
+    // Set up debounce timer
+    const timeoutId = setTimeout(() => {
+      setSearchQuery(localSearchQuery);
+      setIsSearching(false);
+    }, 2000);
+
+    // Cleanup function
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [localSearchQuery, searchQuery, setSearchQuery]);
 
   // Modal state
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -170,8 +200,8 @@ export default function BookingsView({ businessId }) {
     }
   };
 
-  // Loading state
-  if (isLoading || settingsLoading) {
+  // Loading state for initial load
+  if (settingsLoading) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <div className="mb-6">
@@ -212,10 +242,15 @@ export default function BookingsView({ businessId }) {
               <input
                 type="text"
                 placeholder="Search by customer name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               />
+              {isSearching && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -238,72 +273,75 @@ export default function BookingsView({ businessId }) {
 
       {/* Bookings Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th
-                  onClick={() => handleSort('dateTime')}
-                  className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
-                >
-                  <div className="flex items-center gap-1">
-                    Date & Time
-                    {sortBy === 'dateTime' &&
-                      (sortOrder === 'asc' ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      ))}
-                  </div>
-                </th>
-                <th
-                  onClick={() => handleSort('customer')}
-                  className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
-                >
-                  <div className="flex items-center gap-1">
-                    Customer
-                    {sortBy === 'customer' &&
-                      (sortOrder === 'asc' ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      ))}
-                  </div>
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                  Service
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                  Staff
-                </th>
-                <th
-                  onClick={() => handleSort('status')}
-                  className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
-                >
-                  <div className="flex items-center gap-1">
-                    Status
-                    {sortBy === 'status' &&
-                      (sortOrder === 'asc' ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      ))}
-                  </div>
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-slate-700 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-slate-200">
-              {filteredBookings.length === 0 ? (
+        {isLoading || isSearching ? (
+          <SkeletonTable rows={10} columns={6} />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
-                    No bookings found
-                  </td>
+                  <th
+                    onClick={() => handleSort('dateTime')}
+                    className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                  >
+                    <div className="flex items-center gap-1">
+                      Date & Time
+                      {sortBy === 'dateTime' &&
+                        (sortOrder === 'asc' ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
+                    </div>
+                  </th>
+                  <th
+                    onClick={() => handleSort('customer')}
+                    className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                  >
+                    <div className="flex items-center gap-1">
+                      Customer
+                      {sortBy === 'customer' &&
+                        (sortOrder === 'asc' ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
+                    </div>
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                    Service
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
+                    Staff
+                  </th>
+                  <th
+                    onClick={() => handleSort('status')}
+                    className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                  >
+                    <div className="flex items-center gap-1">
+                      Status
+                      {sortBy === 'status' &&
+                        (sortOrder === 'asc' ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
+                    </div>
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-slate-700 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
-              ) : (
-                filteredBookings.map((booking) => (
+              </thead>
+              <tbody className="bg-white divide-y divide-slate-200">
+                {filteredBookings.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
+                      No bookings found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredBookings.map((booking) => (
                   <tr key={booking.id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-slate-900">
@@ -348,12 +386,13 @@ export default function BookingsView({ businessId }) {
                   </tr>
                 ))
               )}
-            </tbody>
-          </table>
-        </div>
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Pagination */}
-        {totalPages > 1 && (
+        {!isLoading && !isSearching && totalPages > 1 && (
           <div className="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
             <div className="text-sm text-slate-600">
               Page {currentPage} of {totalPages}
