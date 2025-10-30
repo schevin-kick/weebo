@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import {
   Sparkles,
@@ -22,11 +22,53 @@ import ParallaxSection from '@/components/brochure/ParallaxSection';
 import FeatureCard from '@/components/brochure/FeatureCard';
 import AnimatedCounter from '@/components/brochure/AnimatedCounter';
 import ScreenshotCard from '@/components/brochure/ScreenshotCard';
+import FloatingNotification from '@/components/brochure/FloatingNotification';
 
 export default function BrochurePage() {
   const [showSubheading, setShowSubheading] = useState(false);
   const [heroRef, heroInView] = useInView({ threshold: 0.1 });
   const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [activeNotification, setActiveNotification] = useState(0);
+
+  // Floating notifications data
+  const notifications = [
+    {
+      icon: CheckCircle,
+      title: 'New Booking Confirmed',
+      message: 'Sarah Chen - 2:30 PM Haircut & Style',
+      position: 'top-right',
+      gradient: 'from-green-500 to-emerald-500'
+    },
+    {
+      icon: Users,
+      title: 'Payment Received',
+      message: '$45.00 - Visa ending in 4242',
+      position: 'bottom-left',
+      gradient: 'from-blue-500 to-cyan-500'
+    },
+    {
+      icon: MessageSquare,
+      title: 'LINE Message Sent',
+      message: 'Confirmation sent to customer',
+      position: 'middle-left',
+      gradient: 'from-pink-500 to-rose-500'
+    },
+    {
+      icon: BarChart3,
+      title: 'Analytics Updated',
+      message: 'Dashboard refreshed with real-time data',
+      position: 'bottom-right',
+      gradient: 'from-purple-500 to-violet-500'
+    }
+  ];
+
+  // Cycle through notifications
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveNotification((prev) => (prev + 1) % notifications.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [notifications.length]);
 
   return (
     <div className="brochure-page relative min-h-screen overflow-x-hidden">
@@ -63,11 +105,41 @@ export default function BrochurePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: showSubheading ? 1 : 0 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="text-xl md:text-2xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed"
+            className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed"
           >
             The intelligent booking platform built for Asia. Powered by LINE integration,
             designed for simplicity, packed with analytics.
           </motion.p>
+
+          {/* Quick Value Propositions */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: showSubheading ? 1 : 0, y: showSubheading ? 0 : 20 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="flex flex-wrap justify-center gap-3 mb-10 px-4"
+          >
+            {[
+              { icon: Zap, text: '5 Min Setup', gradient: 'from-yellow-400 to-orange-400' },
+              { icon: Star, text: 'Free Trial', gradient: 'from-pink-400 to-rose-400' },
+              { icon: MessageSquare, text: 'LINE Native', gradient: 'from-green-400 to-emerald-400' },
+              { icon: BarChart3, text: 'Real-time Analytics', gradient: 'from-purple-400 to-blue-400' }
+            ].map((item, index) => (
+              <motion.div
+                key={item.text}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: showSubheading ? 1 : 0, scale: showSubheading ? 1 : 0.8 }}
+                transition={{ duration: 0.5, delay: 0.9 + index * 0.1 }}
+                className="group"
+              >
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-lg border border-white/20 rounded-full hover:bg-white/20 transition-all">
+                  <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center flex-shrink-0`}>
+                    <item.icon className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <span className="text-sm font-medium text-white whitespace-nowrap">{item.text}</span>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
@@ -104,7 +176,7 @@ export default function BrochurePage() {
               className="mt-20"
             >
               <div className="relative max-w-4xl mx-auto">
-                <div className="aspect-video rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-2xl overflow-hidden">
+                <div className="relative aspect-video rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-2xl overflow-hidden">
                   <video
                     autoPlay
                     loop
@@ -114,6 +186,18 @@ export default function BrochurePage() {
                   >
                     <source src="/brochure/kitsune-hero.mp4" type="video/mp4" />
                   </video>
+
+                  {/* Floating Notifications Overlay */}
+                  <AnimatePresence mode="wait">
+                    <FloatingNotification
+                      key={activeNotification}
+                      icon={notifications[activeNotification].icon}
+                      title={notifications[activeNotification].title}
+                      message={notifications[activeNotification].message}
+                      position={notifications[activeNotification].position}
+                      gradient={notifications[activeNotification].gradient}
+                    />
+                  </AnimatePresence>
                 </div>
                 {/* Glow effect */}
                 <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/20 via-pink-500/20 to-purple-500/20 blur-3xl -z-10" />

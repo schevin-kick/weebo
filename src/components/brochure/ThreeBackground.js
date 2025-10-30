@@ -106,6 +106,84 @@ function SakuraLeaves() {
   );
 }
 
+// Interactive particles with mouse interaction
+function InteractiveParticles() {
+  const particlesRef = useRef();
+  const mouseRef = useRef({ x: 0, y: 0 });
+
+  // Generate particles with brand colors
+  const particles = useMemo(() => {
+    const brandColors = ['#fb923c', '#fbbf24', '#f472b6', '#ff6b9d']; // orange, amber, pink
+    const particleArray = [];
+
+    for (let i = 0; i < 200; i++) {
+      particleArray.push({
+        position: [
+          (Math.random() - 0.5) * 20,
+          (Math.random() - 0.5) * 20,
+          Math.random() * -15 - 5,
+        ],
+        color: brandColors[Math.floor(Math.random() * brandColors.length)],
+        size: Math.random() * 0.05 + 0.02,
+        speed: Math.random() * 0.3 + 0.1,
+        offset: Math.random() * Math.PI * 2,
+      });
+    }
+    return particleArray;
+  }, []);
+
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+
+    if (particlesRef.current) {
+      particlesRef.current.children.forEach((particle, i) => {
+        const data = particles[i];
+
+        // Floating animation
+        particle.position.y += Math.sin(time * data.speed + data.offset) * 0.001;
+        particle.position.x += Math.cos(time * data.speed * 0.5 + data.offset) * 0.001;
+
+        // Mouse interaction - gentle repulsion
+        const dx = particle.position.x - mouseRef.current.x;
+        const dy = particle.position.y - mouseRef.current.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 2) {
+          const force = (2 - distance) / 2;
+          particle.position.x += (dx / distance) * force * 0.01;
+          particle.position.y += (dy / distance) * force * 0.01;
+        }
+
+        // Gentle pulsing
+        particle.scale.setScalar(1 + Math.sin(time * 2 + data.offset) * 0.2);
+      });
+    }
+  });
+
+  // Track mouse movement
+  useFrame((state) => {
+    mouseRef.current.x = (state.mouse.x * state.viewport.width) / 2;
+    mouseRef.current.y = (state.mouse.y * state.viewport.height) / 2;
+  });
+
+  return (
+    <group ref={particlesRef}>
+      {particles.map((particle, i) => (
+        <mesh key={i} position={particle.position}>
+          <sphereGeometry args={[particle.size, 16, 16]} />
+          <meshStandardMaterial
+            color={particle.color}
+            emissive={particle.color}
+            emissiveIntensity={0.8}
+            transparent
+            opacity={0.6}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 // Main scene component
 function Scene() {
   return (
@@ -117,6 +195,9 @@ function Scene() {
 
       {/* Stars background */}
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+
+      {/* Interactive particles */}
+      <InteractiveParticles />
 
       {/* Falling sakura petals */}
       <SakuraLeaves />
