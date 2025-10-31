@@ -37,7 +37,7 @@ export default function DashboardSelectionPage() {
       setUser(authData.user);
 
       // Load businesses
-      const bizResponse = await fetch('/api/businesses');
+      const bizResponse = await fetch('/api/businesses/list');
       if (!bizResponse.ok) throw new Error('Failed to load businesses');
 
       const bizData = await bizResponse.json();

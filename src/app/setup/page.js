@@ -46,13 +46,9 @@ export default function BusinessDashboard() {
       const userBusinesses = data.businesses || [];
 
       // Handle redirects based on business count
-      if (userBusinesses.length === 1) {
-        // One business - redirect to dashboard (keep loading state)
+      if (userBusinesses.length >= 1) {
+        // Has businesses - redirect to first business dashboard (keep loading state)
         router.push(`/dashboard/${userBusinesses[0].id}`);
-        return;
-      } else if (userBusinesses.length > 1) {
-        // Multiple businesses - redirect to dashboard selection (keep loading state)
-        router.push('/dashboard');
         return;
       }
 

@@ -8,6 +8,7 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useNotificationBadge } from '@/hooks/useNotificationBadge';
+import { version } from '../../../package.json';
 import {
   LayoutDashboard,
   Calendar,
@@ -167,7 +168,7 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
               />
               <span>Kitsune Booking</span>
             </div>
-            <p className="mt-1">v1.0.0</p>
+            <p className="mt-1">v{version}</p>
           </div>
         </div>
       </aside>

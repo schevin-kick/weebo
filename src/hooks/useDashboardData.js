@@ -36,10 +36,10 @@ export function useAuth() {
 }
 
 /**
- * Hook to fetch user's businesses
+ * Hook to fetch user's businesses (lightweight list)
  */
 export function useBusinesses() {
-  const { data, error, mutate, isLoading } = useSWR('/api/businesses', fetcher, {
+  const { data, error, mutate, isLoading } = useSWR('/api/businesses/list', fetcher, {
     revalidateOnFocus: false,
   });
 

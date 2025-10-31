@@ -187,11 +187,12 @@ export default function BusinessWizardPage() {
       if (!response.ok) throw new Error('Failed to save business');
 
       const result = await response.json();
+      const savedBusinessId = result.business.id;
       toast.success('Business saved successfully!', 5000);
 
-      // Redirect to dashboard
+      // Redirect directly to the business dashboard
       setTimeout(() => {
-        router.push('/setup');
+        router.push(`/dashboard/${savedBusinessId}`);
       }, 1500);
 
     } catch (error) {

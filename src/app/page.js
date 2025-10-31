@@ -43,7 +43,7 @@ export default function Home() {
         setIsAuthenticated(true);
 
         // Load businesses
-        const bizRes = await fetch('/api/businesses');
+        const bizRes = await fetch('/api/businesses/list');
         const bizData = await bizRes.json();
         const businesses = bizData.businesses || [];
 
@@ -55,12 +55,13 @@ export default function Home() {
           // One business - go directly to dashboard
           router.push(`/dashboard/${businesses[0].id}`);
         } else {
-          // Multiple businesses - check last selected or go to picker
+          // Multiple businesses - always redirect to last selected or first business
           const lastSelected = getLastSelectedBusiness(sessionData.user.id);
           if (lastSelected && businesses.some((b) => b.id === lastSelected)) {
             router.push(`/dashboard/${lastSelected}`);
           } else {
-            router.push('/dashboard');
+            // No last selected - redirect to first business
+            router.push(`/dashboard/${businesses[0].id}`);
           }
         }
       } catch (error) {
