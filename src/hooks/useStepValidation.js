@@ -11,7 +11,6 @@ export default function useStepValidation(currentStep) {
   const defaultAppointmentDuration = useSetupWizardStore((state) => state.defaultAppointmentDuration);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
   const contactInfo = useSetupWizardStore((state) => state.contactInfo);
-  const richMenu = useSetupWizardStore((state) => state.richMenu);
   const services = useSetupWizardStore((state) => state.services);
   const staff = useSetupWizardStore((state) => state.staff);
   const pages = useSetupWizardStore((state) => state.pages);
@@ -38,17 +37,6 @@ export default function useStepValidation(currentStep) {
 
         // Address is always required
         if (!contactInfo.address || contactInfo.address.trim().length === 0) return false;
-
-        // If "Contact Us" is enabled in rich menu, at least one contact field required (besides address)
-        const contactUsEnabled = richMenu.items.some(
-          (item) => item.type === 'contact-us' && item.enabled
-        );
-        if (contactUsEnabled) {
-          const hasContactInfo = [contactInfo.phone, contactInfo.email, contactInfo.website].some(
-            (value) => value && value.trim().length > 0
-          );
-          if (!hasContactInfo) return false;
-        }
 
         return true;
       }
@@ -116,7 +104,7 @@ export default function useStepValidation(currentStep) {
       default:
         return false;
     }
-  }, [currentStep, businessName, defaultAppointmentDuration, businessHours, contactInfo, richMenu, services, staff, pages]);
+  }, [currentStep, businessName, defaultAppointmentDuration, businessHours, contactInfo, services, staff, pages]);
 
   return isValid;
 }

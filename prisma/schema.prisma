@@ -32,7 +32,6 @@ model Business {
   defaultDuration        Int
   appointmentOnly        Boolean       @default(false)
   requiresApproval       Boolean       @default(false)
-  richMenu               Json
   qrCodeUrl              String?
   lineDeepLink           String        @unique
   isActive               Boolean       @default(true)

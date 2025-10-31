@@ -64,7 +64,6 @@ export default function BusinessWizardPage() {
       store.setDefaultAppointmentDuration(data.business.defaultDuration || 60);
       store.setAppointmentOnly(data.business.appointmentOnly || false);
       store.setRequiresApproval(data.business.requiresApproval || false);
-      store.setRichMenu(data.business.richMenu || { enabled: false });
       store.setContactInfo({
         phone: data.business.phone || '',
         email: data.business.email || '',
@@ -127,7 +126,6 @@ export default function BusinessWizardPage() {
         defaultDuration: store.defaultAppointmentDuration,
         appointmentOnly: store.appointmentOnly,
         requiresApproval: store.requiresApproval,
-        richMenu: store.richMenu,
         phone: store.contactInfo.phone || null,
         email: store.contactInfo.email || null,
         address: store.contactInfo.address,

@@ -15,16 +15,6 @@ const initialBusinessHours = {
   },
 };
 
-const initialRichMenu = {
-  enabled: true,
-  items: [
-    { id: 1, type: 'view-bookings', label: 'View Bookings', enabled: true, order: 0 },
-    { id: 2, type: 'new-booking', label: 'New Booking', enabled: true, order: 1 },
-    { id: 3, type: 'business-hours', label: 'Business Hours', enabled: false, order: 2 },
-    { id: 4, type: 'contact-us', label: 'Contact Us', enabled: false, order: 3 },
-  ],
-};
-
 const initialContactInfo = {
   phone: '',
   email: '',
@@ -42,7 +32,6 @@ const useSetupWizardStore = create(
       defaultAppointmentDuration: 60,
       appointmentOnly: false,
       requiresApproval: false,
-      richMenu: initialRichMenu,
       contactInfo: initialContactInfo,
 
       // Step 2: Services
@@ -106,57 +95,6 @@ const useSetupWizardStore = create(
       setRequiresApproval: (value) => set({ requiresApproval: value }),
 
       setDefaultAppointmentDuration: (duration) => set({ defaultAppointmentDuration: duration }),
-
-      // Rich Menu actions
-      setRichMenu: (menu) => set({ richMenu: menu }),
-
-      setRichMenuEnabled: (enabled) =>
-        set((state) => ({
-          richMenu: { ...state.richMenu, enabled },
-        })),
-
-      updateRichMenuItem: (id, updates) =>
-        set((state) => ({
-          richMenu: {
-            ...state.richMenu,
-            items: state.richMenu.items.map((item) =>
-              item.id === id ? { ...item, ...updates } : item
-            ),
-          },
-        })),
-
-
-      moveRichMenuItemUp: (id) =>
-        set((state) => {
-          const items = [...state.richMenu.items].sort((a, b) => a.order - b.order);
-          const index = items.findIndex((item) => item.id === id);
-          if (index <= 0) return state;
-
-          [items[index], items[index - 1]] = [items[index - 1], items[index]];
-
-          return {
-            richMenu: {
-              ...state.richMenu,
-              items: items.map((item, i) => ({ ...item, order: i })),
-            },
-          };
-        }),
-
-      moveRichMenuItemDown: (id) =>
-        set((state) => {
-          const items = [...state.richMenu.items].sort((a, b) => a.order - b.order);
-          const index = items.findIndex((item) => item.id === id);
-          if (index === -1 || index >= items.length - 1) return state;
-
-          [items[index], items[index + 1]] = [items[index + 1], items[index]];
-
-          return {
-            richMenu: {
-              ...state.richMenu,
-              items: items.map((item, i) => ({ ...item, order: i })),
-            },
-          };
-        }),
 
       // Service actions
       setServices: (services) => set({ services }),
@@ -615,17 +553,6 @@ const useSetupWizardStore = create(
           return false;
         }
 
-        // If "Contact Us" is enabled in rich menu, at least one contact field required (besides address)
-        const contactUsEnabled = state.richMenu.items.some(
-          (item) => item.type === 'contact-us' && item.enabled
-        );
-        if (contactUsEnabled) {
-          const hasContactInfo = [state.contactInfo.phone, state.contactInfo.email, state.contactInfo.website].some(
-            (value) => value && value.trim().length > 0
-          );
-          if (!hasContactInfo) return false;
-        }
-
         return true;
       },
 
@@ -700,7 +627,6 @@ const useSetupWizardStore = create(
           defaultAppointmentDuration: 60,
           appointmentOnly: false,
           requiresApproval: false,
-          richMenu: initialRichMenu,
           contactInfo: initialContactInfo,
           services: [],
           staff: [],
@@ -723,7 +649,6 @@ const useSetupWizardStore = create(
         defaultAppointmentDuration: state.defaultAppointmentDuration,
         appointmentOnly: state.appointmentOnly,
         requiresApproval: state.requiresApproval,
-        richMenu: state.richMenu,
         contactInfo: state.contactInfo,
         services: state.services,
         staff: state.staff,

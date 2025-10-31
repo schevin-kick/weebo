@@ -148,7 +148,6 @@ export async function POST(request) {
           defaultDuration: data.business.defaultDuration,
           appointmentOnly: data.business.appointmentOnly || false,
           requiresApproval: data.business.requiresApproval || false,
-          richMenu: data.business.richMenu,
           phone: data.business.phone || null,
           email: data.business.email || null,
           address: data.business.address,

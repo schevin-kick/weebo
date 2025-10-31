@@ -128,7 +128,6 @@ export async function PUT(request, { params }) {
           defaultDuration: data.business.defaultDuration,
           appointmentOnly: data.business.appointmentOnly,
           requiresApproval: data.business.requiresApproval,
-          richMenu: data.business.richMenu,
           phone: data.business.phone,
           email: data.business.email,
           address: data.business.address,

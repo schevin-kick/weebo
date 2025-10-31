@@ -57,7 +57,6 @@ export default function SettingsView({ businessId }) {
       store.setDefaultAppointmentDuration(business.defaultDuration || 60);
       store.setAppointmentOnly(business.appointmentOnly || false);
       store.setRequiresApproval(business.requiresApproval || false);
-      store.setRichMenu(business.richMenu || { enabled: false });
       store.setContactInfo({
         phone: business.phone || '',
         email: business.email || '',
@@ -126,7 +125,6 @@ export default function SettingsView({ businessId }) {
         defaultDuration: store.defaultAppointmentDuration,
         appointmentOnly: store.appointmentOnly,
         requiresApproval: store.requiresApproval,
-        richMenu: store.richMenu,
         phone: store.contactInfo.phone || null,
         email: store.contactInfo.email || null,
         address: store.contactInfo.address,
