@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/contexts/ToastContext';
 import { optimizeImage, validateImageFile } from '@/lib/imageOptimizer';
+import { fetchWithCSRF } from '@/hooks/useCSRF';
 
 /**
  * Generic image upload component for logos, banners, etc.
@@ -54,7 +55,7 @@ export default function ImageUpload({
       formData.append('file', optimizedFile);
       formData.append('folder', folder);
 
-      const response = await fetch('/api/upload', {
+      const response = await fetchWithCSRF('/api/upload', {
         method: 'POST',
         body: formData,
       });

@@ -7,6 +7,8 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
+import { validateCSRFToken } from '@/lib/csrf';
 
 export async function GET(request) {
   try {
@@ -62,6 +64,23 @@ export async function POST(request) {
     const session = await getSession();
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Apply rate limiting
+    const identifier = getIdentifier(request, session);
+    const rateLimitResult = await checkRateLimit(authenticatedRateLimit, identifier);
+
+    if (!rateLimitResult.success) {
+      return createRateLimitResponse(rateLimitResult);
+    }
+
+    // Validate CSRF token
+    const csrfValid = await validateCSRFToken(request);
+    if (!csrfValid) {
+      return NextResponse.json(
+        { error: 'Invalid CSRF token' },
+        { status: 403 }
+      );
     }
 
     const body = await request.json();

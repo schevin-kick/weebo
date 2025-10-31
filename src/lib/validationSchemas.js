@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import DOMPurify from 'isomorphic-dompurify';
 
 // Time format validation (HH:MM)
 const timeSchema = z
@@ -148,13 +149,17 @@ export const phoneSchema = z
     'Invalid phone number'
   );
 
-// Sanitization function
+// Sanitization function using DOMPurify
 export const sanitizeUserInput = (input, type = 'text') => {
   if (!input) return '';
 
-  // Remove any script tags or dangerous HTML
-  let sanitized = input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-  sanitized = sanitized.replace(/<[^>]*>/g, '');
+  // Use DOMPurify to remove all HTML and scripts
+  // ALLOWED_TAGS: [] means strip all HTML tags
+  let sanitized = DOMPurify.sanitize(input, {
+    ALLOWED_TAGS: [], // Strip all HTML tags
+    ALLOWED_ATTR: [], // Strip all attributes
+    KEEP_CONTENT: true, // Keep text content
+  });
 
   // Trim whitespace
   sanitized = sanitized.trim();
@@ -162,17 +167,25 @@ export const sanitizeUserInput = (input, type = 'text') => {
   // Type-specific sanitization
   switch (type) {
     case 'email':
+      // Convert to lowercase and validate basic email format
       sanitized = sanitized.toLowerCase();
+      // Remove any characters that aren't valid in emails
+      sanitized = sanitized.replace(/[^a-z0-9@._+-]/g, '');
       break;
     case 'phone':
       // Keep only numbers, +, -, (), and spaces
       sanitized = sanitized.replace(/[^0-9+\-() ]/g, '');
       break;
     case 'number':
+      // Keep only numbers, decimal point, and minus sign
       sanitized = sanitized.replace(/[^0-9.-]/g, '');
       break;
+    case 'text':
     default:
-      // Text - keep as is after HTML removal
+      // For text, limit length to prevent abuse
+      if (sanitized.length > 1000) {
+        sanitized = sanitized.substring(0, 1000);
+      }
       break;
   }
 

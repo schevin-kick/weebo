@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { sendBookingConfirmation } from '@/lib/lineMessaging';
+import { publicRateLimit, authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
 
 /**
  * POST /api/bookings
@@ -9,6 +10,14 @@ import { sendBookingConfirmation } from '@/lib/lineMessaging';
  */
 export async function POST(request) {
   try {
+    // Apply rate limiting (public endpoint - 10 req/min per IP)
+    const identifier = getIdentifier(request);
+    const rateLimitResult = await checkRateLimit(publicRateLimit, identifier);
+
+    if (!rateLimitResult.success) {
+      return createRateLimitResponse(rateLimitResult);
+    }
+
     const data = await request.json();
     const {
       businessId,
@@ -275,6 +284,16 @@ export async function POST(request) {
  */
 export async function GET(request) {
   try {
+    // Apply rate limiting
+    const session = await getSession();
+    const identifier = getIdentifier(request, session);
+    const rateLimiter = session ? authenticatedRateLimit : publicRateLimit;
+    const rateLimitResult = await checkRateLimit(rateLimiter, identifier);
+
+    if (!rateLimitResult.success) {
+      return createRateLimitResponse(rateLimitResult);
+    }
+
     const { searchParams } = new URL(request.url);
     const businessId = searchParams.get('businessId');
     const customerId = searchParams.get('customerId');
@@ -297,7 +316,7 @@ export async function GET(request) {
 
     if (businessId) {
       // Business owner checking their bookings (requires auth)
-      const session = await getSession();
+      // Note: session already retrieved above for rate limiting
       if (!session) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }

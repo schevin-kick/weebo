@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { Calendar as CalendarIcon, Trash2, Plus, RefreshCw } from 'lucide-react';
+import { fetchWithCSRF } from '@/hooks/useCSRF';
 import ConfirmDialog from '@/components/dashboard/ConfirmDialog';
 import Skeleton from '@/components/loading/Skeleton';
 import { formatDate, formatTime, formatDateTime } from '@/lib/dateUtils';
@@ -62,7 +63,7 @@ export default function HolidayHoursView({ businessId }) {
         endDateTime = new Date(`${endDate}T${endTime}`);
       }
 
-      const response = await fetch('/api/closed-dates', {
+      const response = await fetchWithCSRF('/api/closed-dates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,7 +98,7 @@ export default function HolidayHoursView({ businessId }) {
     if (!deleteId) return;
 
     try {
-      const response = await fetch(`/api/closed-dates/${deleteId}`, {
+      const response = await fetchWithCSRF(`/api/closed-dates/${deleteId}`, {
         method: 'DELETE',
       });
 

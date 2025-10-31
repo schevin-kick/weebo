@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { uploadToR2, generateR2Key } from '@/lib/r2';
+import { uploadRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
+import { validateCSRFToken } from '@/lib/csrf';
 
 /**
  * POST /api/upload
@@ -13,6 +15,23 @@ export async function POST(request) {
     const session = await getSession();
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Apply rate limiting (5 uploads per minute)
+    const identifier = getIdentifier(request, session);
+    const rateLimitResult = await checkRateLimit(uploadRateLimit, identifier);
+
+    if (!rateLimitResult.success) {
+      return createRateLimitResponse(rateLimitResult);
+    }
+
+    // Validate CSRF token
+    const csrfValid = await validateCSRFToken(request);
+    if (!csrfValid) {
+      return NextResponse.json(
+        { error: 'Invalid CSRF token' },
+        { status: 403 }
+      );
     }
 
     const formData = await request.formData();

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { User, Upload, X } from 'lucide-react';
 import { useToast } from '@/contexts/ToastContext';
 import { optimizeImage, validateImageFile } from '@/lib/imageOptimizer';
+import { fetchWithCSRF } from '@/hooks/useCSRF';
 
 export default function StaffAvatar({
   photo,
@@ -52,7 +53,7 @@ export default function StaffAvatar({
       formData.append('file', optimizedFile);
       formData.append('folder', 'staff-photos');
 
-      const response = await fetch('/api/upload', {
+      const response = await fetchWithCSRF('/api/upload', {
         method: 'POST',
         body: formData,
       });

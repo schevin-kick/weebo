@@ -4,6 +4,7 @@
  */
 
 import { mutate } from 'swr';
+import { fetchWithCSRF } from './useCSRF';
 
 /**
  * Hook to update booking status with optimistic updates
@@ -29,8 +30,8 @@ export function useUpdateBookingStatus() {
         { revalidate: false } // Don't revalidate yet
       );
 
-      // Make the API call
-      const response = await fetch(`/api/bookings/${bookingId}/status`, {
+      // Make the API call (with CSRF token)
+      const response = await fetchWithCSRF(`/api/bookings/${bookingId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -80,8 +81,8 @@ export function useUpdateBookingNotes() {
         { revalidate: false }
       );
 
-      // API call
-      const response = await fetch(`/api/bookings/${bookingId}/notes`, {
+      // API call (with CSRF token)
+      const response = await fetchWithCSRF(`/api/bookings/${bookingId}/notes`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notes }),
@@ -126,8 +127,8 @@ export function useMarkNoShow() {
         { revalidate: false }
       );
 
-      // API call
-      const response = await fetch(`/api/bookings/${bookingId}/no-show`, {
+      // API call (with CSRF token)
+      const response = await fetchWithCSRF(`/api/bookings/${bookingId}/no-show`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ noShow: true }),
@@ -173,8 +174,8 @@ export function useUpdateBusinessSettings() {
         false
       );
 
-      // API call - use PUT method as defined in API route
-      const response = await fetch(businessKey, {
+      // API call - use PUT method as defined in API route (with CSRF token)
+      const response = await fetchWithCSRF(businessKey, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),

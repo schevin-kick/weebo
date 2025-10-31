@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
+import { generateCSRFToken, setCSRFCookie } from './csrf';
 
 const SESSION_COOKIE_NAME = 'kitsune_session';
 const SESSION_SECRET = new TextEncoder().encode(
@@ -52,6 +53,7 @@ export async function getSession() {
 
 /**
  * Set session cookie (server-side only)
+ * Also generates and sets CSRF token
  * @param {string} token - JWT token
  */
 export async function setSessionCookie(token) {
@@ -63,14 +65,26 @@ export async function setSessionCookie(token) {
     maxAge: 60 * 60 * 24 * 30, // 30 days
     path: '/',
   });
+
+  // Generate and set CSRF token
+  const csrfToken = generateCSRFToken();
+  await setCSRFCookie(csrfToken);
+
+  // Return CSRF token so it can be sent to client
+  return csrfToken;
 }
 
 /**
  * Clear session cookie (logout)
+ * Also clears CSRF token
  */
 export async function clearSession() {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE_NAME);
+
+  // Also clear CSRF cookie
+  const { clearCSRFCookie } = await import('./csrf');
+  await clearCSRFCookie();
 }
 
 /**
