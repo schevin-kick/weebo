@@ -255,6 +255,8 @@ export default function BookingPage() {
       <BookingSuccess
         bookingSummary={getBookingSummary()}
         botBasicId={businessConfig?.lineBotBasicId}
+        businessAddress={businessConfig?.address}
+        businessPhone={businessConfig?.phone}
       />
     );
   }
@@ -292,6 +294,8 @@ export default function BookingPage() {
           selectedDateTime={selectedDateTime}
           services={businessConfig.services}
           staff={businessConfig.staff}
+          businessAddress={businessConfig.address}
+          businessPhone={businessConfig.phone}
           onEditPage={handleEditPage}
         />
       );

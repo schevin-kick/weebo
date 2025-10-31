@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CheckCircle, Sparkles, X, UserPlus, Bell } from 'lucide-react';
+import { CheckCircle, Sparkles, X, UserPlus, Bell, MapPin, Phone } from 'lucide-react';
 
-export default function BookingSuccess({ bookingSummary, botBasicId }) {
+export default function BookingSuccess({ bookingSummary, botBasicId, businessAddress, businessPhone }) {
   const [showConfetti, setShowConfetti] = useState(true);
   const [friendshipStatus, setFriendshipStatus] = useState(null); // null | 'friend' | 'not_friend'
   const [checkingFriendship, setCheckingFriendship] = useState(true);
@@ -135,14 +135,43 @@ export default function BookingSuccess({ bookingSummary, botBasicId }) {
             </p>
           </div>
 
+          {/* Location Info */}
+          {(businessAddress || businessPhone) && (
+            <div className="bg-white border-2 border-slate-200 rounded-xl p-5 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin className="w-5 h-5 text-orange-500" />
+                <h3 className="font-semibold text-slate-900">Location</h3>
+              </div>
+              <div className="space-y-3">
+                {businessAddress && (
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-4 h-4 text-slate-400 flex-shrink-0 mt-1" />
+                    <p className="text-sm text-slate-700">{businessAddress}</p>
+                  </div>
+                )}
+                {businessPhone && (
+                  <div className="flex items-center gap-3">
+                    <Phone className="w-4 h-4 text-slate-400" />
+                    <a
+                      href={`tel:${businessPhone}`}
+                      className="text-sm text-blue-600 hover:underline font-medium"
+                    >
+                      {businessPhone}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Session ID (for reference) */}
-          {bookingSummary?.sessionId && (
+          {/* {bookingSummary?.sessionId && (
             <div className="text-center mb-6">
               <p className="text-xs text-slate-500">
                 Reference ID: {bookingSummary.sessionId.slice(-8).toUpperCase()}
               </p>
             </div>
-          )}
+          )} */}
 
           {/* Add Friend Prompt - Only show if not already a friend and bot ID is configured */}
           {!checkingFriendship && friendshipStatus === 'not_friend' && botBasicId && (

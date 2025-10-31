@@ -129,6 +129,24 @@ export default function LINEMessagePreview({
                         </span>
                       </div>
                     </div>
+
+                    {/* Contact Info */}
+                    {(business?.phone || business?.address) && (
+                      <div className="border-t border-slate-100 pt-3">
+                        <div className="space-y-1">
+                          {business.phone && (
+                            <div className="text-xs text-slate-400">
+                              📞 {business.phone}
+                            </div>
+                          )}
+                          {business.address && (
+                            <div className="text-xs text-slate-400">
+                              📍 {business.address}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Footer Button */}

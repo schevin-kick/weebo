@@ -1,6 +1,6 @@
 'use client';
 
-import { Edit2, Calendar, Clock, User, Package } from 'lucide-react';
+import { Edit2, Calendar, Clock, User, Package, MapPin, Phone } from 'lucide-react';
 import StaffAvatar from '@/components/shared/StaffAvatar';
 import { formatDateForDisplay, formatTimeForDisplay } from '@/utils/dateTimeAvailability';
 
@@ -12,6 +12,8 @@ export default function ReviewConfirmPage({
   selectedDateTime,
   services,
   staff,
+  businessAddress,
+  businessPhone,
   onEditPage,
 }) {
   // Get service object
@@ -99,6 +101,38 @@ export default function ReviewConfirmPage({
                 {formatTimeForDisplay(selectedDateTime.time)}
               </span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Location Summary */}
+      {(businessAddress || businessPhone) && (
+        <div className="bg-white border-2 border-slate-200 rounded-xl p-5">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <MapPin className="w-4 h-4" />
+              <span>Location</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            {businessAddress && (
+              <div className="flex items-start gap-3 text-slate-900">
+                <MapPin className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                <span className="font-medium">{businessAddress}</span>
+              </div>
+            )}
+            {businessPhone && (
+              <div className="flex items-center gap-3 text-slate-900">
+                <Phone className="w-5 h-5 text-orange-500" />
+                <a
+                  href={`tel:${businessPhone}`}
+                  className="font-medium text-blue-600 hover:underline"
+                >
+                  {businessPhone}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}

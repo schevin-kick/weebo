@@ -223,27 +223,50 @@ function createBookingConfirmationMessage(booking, business) {
   });
 
   // Add contact info if available
-  const contactParts = [];
-  if (business.contactInfo?.phone) contactParts.push(business.contactInfo.phone);
-  if (business.contactInfo?.address) contactParts.push(business.contactInfo.address);
-
-  if (contactParts.length > 0) {
+  if (business.phone || business.address) {
     bodyContents.push({
       type: 'separator',
       margin: 'lg',
     });
+
+    const contactContents = [];
+
+    // Add clickable phone number
+    if (business.phone) {
+      contactContents.push({
+        type: 'text',
+        text: `📞 ${business.phone}`,
+        color: '#0066cc',
+        size: 'xs',
+        wrap: true,
+        action: {
+          type: 'uri',
+          uri: `tel:${business.phone.replace(/[^0-9+]/g, '')}`,
+        },
+      });
+    }
+
+    // Add clickable address (opens in maps)
+    if (business.address) {
+      contactContents.push({
+        type: 'text',
+        text: `📍 ${business.address}`,
+        color: '#0066cc',
+        size: 'xs',
+        wrap: true,
+        action: {
+          type: 'uri',
+          uri: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.address)}`,
+        },
+      });
+    }
+
     bodyContents.push({
       type: 'box',
       layout: 'vertical',
       margin: 'lg',
       spacing: 'sm',
-      contents: contactParts.map((text) => ({
-        type: 'text',
-        text,
-        color: '#999999',
-        size: 'xs',
-        wrap: true,
-      })),
+      contents: contactContents,
     });
   }
 
@@ -394,31 +417,59 @@ function createBookingCancellationMessage(booking, business, reason = null) {
   });
 
   // Add contact info if available
-  if (business.contactInfo?.phone) {
+  if (business.phone || business.address) {
     bodyContents.push({
       type: 'separator',
       margin: 'lg',
     });
+
+    const contactContents = [
+      {
+        type: 'text',
+        text: 'Questions? Contact us:',
+        color: '#aaaaaa',
+        size: 'xs',
+      },
+    ];
+
+    // Add clickable phone number
+    if (business.phone) {
+      contactContents.push({
+        type: 'text',
+        text: `📞 ${business.phone}`,
+        color: '#0066cc',
+        size: 'xs',
+        margin: 'xs',
+        wrap: true,
+        action: {
+          type: 'uri',
+          uri: `tel:${business.phone.replace(/[^0-9+]/g, '')}`,
+        },
+      });
+    }
+
+    // Add clickable address (opens in maps)
+    if (business.address) {
+      contactContents.push({
+        type: 'text',
+        text: `📍 ${business.address}`,
+        color: '#0066cc',
+        size: 'xs',
+        margin: 'xs',
+        wrap: true,
+        action: {
+          type: 'uri',
+          uri: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.address)}`,
+        },
+      });
+    }
+
     bodyContents.push({
       type: 'box',
       layout: 'vertical',
       margin: 'lg',
       spacing: 'sm',
-      contents: [
-        {
-          type: 'text',
-          text: 'Questions? Contact us:',
-          color: '#aaaaaa',
-          size: 'xs',
-        },
-        {
-          type: 'text',
-          text: business.contactInfo.phone,
-          color: '#999999',
-          size: 'xs',
-          margin: 'xs',
-        },
-      ],
+      contents: contactContents,
     });
   }
 
@@ -617,6 +668,54 @@ function createBookingReminderMessage(booking, business) {
       },
     ],
   });
+
+  // Add contact info if available
+  if (business.phone || business.address) {
+    bodyContents.push({
+      type: 'separator',
+      margin: 'lg',
+    });
+
+    const contactContents = [];
+
+    // Add clickable phone number
+    if (business.phone) {
+      contactContents.push({
+        type: 'text',
+        text: `📞 ${business.phone}`,
+        color: '#0066cc',
+        size: 'xs',
+        wrap: true,
+        action: {
+          type: 'uri',
+          uri: `tel:${business.phone.replace(/[^0-9+]/g, '')}`,
+        },
+      });
+    }
+
+    // Add clickable address (opens in maps)
+    if (business.address) {
+      contactContents.push({
+        type: 'text',
+        text: `📍 ${business.address}`,
+        color: '#0066cc',
+        size: 'xs',
+        wrap: true,
+        action: {
+          type: 'uri',
+          uri: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.address)}`,
+        },
+      });
+    }
+
+    bodyContents.push({
+      type: 'box',
+      layout: 'vertical',
+      margin: 'lg',
+      spacing: 'sm',
+      contents: contactContents,
+    });
+  }
 
   return {
     type: 'flex',
