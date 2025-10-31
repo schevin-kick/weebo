@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, User, MapPin, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, User, MapPin, X, CheckCircle, AlertCircle, Phone } from 'lucide-react';
 
 export default function MyBookingsPage() {
   const [loading, setLoading] = useState(true);
@@ -264,6 +264,25 @@ function BookingCard({ booking, onCancel, showCancel }) {
           <div className="flex items-center gap-2 text-slate-700">
             <User className="w-4 h-4 text-slate-400" />
             <span>{booking.staff.name}</span>
+          </div>
+        )}
+
+        {booking.business.address && (
+          <div className="flex items-center gap-2 text-slate-700">
+            <MapPin className="w-4 h-4 text-slate-400" />
+            <span>{booking.business.address}</span>
+          </div>
+        )}
+
+        {booking.business.phone && (
+          <div className="flex items-center gap-2 text-slate-700">
+            <Phone className="w-4 h-4 text-slate-400" />
+            <a
+              href={`tel:${booking.business.phone}`}
+              className="text-orange-600 hover:text-orange-700 hover:underline"
+            >
+              {booking.business.phone}
+            </a>
           </div>
         )}
       </div>

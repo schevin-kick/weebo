@@ -439,19 +439,8 @@ export default function MessagingView({ businessId }) {
               {/* Hours Before Input */}
               {enableReminders && (
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Send reminder (hours before appointment)
-                  </label>
-                  <input
-                    type="number"
-                    value={reminderHoursBefore}
-                    onChange={(e) => setReminderHoursBefore(parseInt(e.target.value) || 24)}
-                    min={1}
-                    max={168}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  />
-                  <p className="text-xs text-slate-500 mt-1">
-                    Default is 24 hours (1 day) before the appointment
+                  <p className="text-sm text-slate-600">
+                    Reminders will be sent daily at 9:00 AM UTC for all appointments in the next 24 hours.
                   </p>
                 </div>
               )}

@@ -393,6 +393,8 @@ export async function GET(request) {
           select: {
             businessName: true,
             logoUrl: true,
+            address: true,
+            phone: true,
             pages: {
               select: {
                 components: true,

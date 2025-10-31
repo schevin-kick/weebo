@@ -37,7 +37,6 @@ export async function GET(request) {
       select: {
         id: true,
         businessName: true,
-        reminderHoursBefore: true,
         logoUrl: true,
         lineDeepLink: true,
         lineChannelAccessToken: true,
@@ -51,12 +50,11 @@ export async function GET(request) {
 
     // Process each business
     for (const business of businesses) {
-      // Calculate reminder window
-      const reminderWindow = business.reminderHoursBefore || 24;
-      const startTime = new Date(now.getTime() + (reminderWindow - 0.5) * 60 * 60 * 1000);
-      const endTime = new Date(now.getTime() + (reminderWindow + 0.5) * 60 * 60 * 1000);
+      // Find all bookings in the next 24 hours (tomorrow's appointments)
+      const startTime = now; // Now
+      const endTime = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
 
-      // Find confirmed bookings in the reminder window that haven't been sent yet
+      // Find confirmed bookings in the next 24 hours that haven't been sent yet
       const bookingsToRemind = await prisma.booking.findMany({
         where: {
           businessId: business.id,
