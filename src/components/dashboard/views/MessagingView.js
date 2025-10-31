@@ -7,13 +7,15 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Save, Link as LinkIcon, CheckCircle, AlertCircle, Clock } from 'lucide-react';
+import { Save, CheckCircle, AlertCircle, Info, Eye, EyeOff, Key } from 'lucide-react';
 import { useBusiness } from '@/hooks/useDashboardData';
 import { useToast } from '@/contexts/ToastContext';
 import { useNotificationBadge } from '@/hooks/useNotificationBadge';
 import Skeleton from '@/components/loading/Skeleton';
 import LINEMessagePreview from '@/components/dashboard/LINEMessagePreview';
 import { DEFAULT_TEMPLATES } from '@/lib/messageTemplates';
+import LineBotIdHelpModal from '@/components/modals/LineBotIdHelpModal';
+import LineTokenHelpModal from '@/components/modals/LineTokenHelpModal';
 
 export default function MessagingView({ businessId }) {
   const toast = useToast();
@@ -23,6 +25,8 @@ export default function MessagingView({ businessId }) {
 
   const [activeTab, setActiveTab] = useState('confirmation');
   const [isSaving, setIsSaving] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showTokenHelpModal, setShowTokenHelpModal] = useState(false);
 
   // Form state
   const [templates, setTemplates] = useState({
@@ -33,6 +37,10 @@ export default function MessagingView({ businessId }) {
 
   const [enableReminders, setEnableReminders] = useState(true);
   const [reminderHoursBefore, setReminderHoursBefore] = useState(24);
+  const [lineBotBasicId, setLineBotBasicId] = useState('');
+  const [botIdError, setBotIdError] = useState('');
+  const [channelAccessToken, setChannelAccessToken] = useState('');
+  const [showToken, setShowToken] = useState(false);
 
   // Mark as visited when component mounts
   useEffect(() => {
@@ -81,6 +89,9 @@ export default function MessagingView({ businessId }) {
 
       setEnableReminders(business.enableReminders ?? true);
       setReminderHoursBefore(business.reminderHoursBefore ?? 24);
+      setLineBotBasicId(business.lineBotBasicId || '');
+      // Don't load the actual token for security - just show if it exists
+      setChannelAccessToken(business.lineChannelAccessToken ? '••••••••' : '');
     }
   }, [business]);
 
@@ -94,18 +105,57 @@ export default function MessagingView({ businessId }) {
     }));
   };
 
+  const validateBotId = (value) => {
+    if (!value) {
+      setBotIdError('');
+      return true;
+    }
+
+    if (!value.startsWith('@')) {
+      setBotIdError('Bot ID must start with @');
+      return false;
+    }
+
+    if (!/^@[a-zA-Z0-9]+$/.test(value)) {
+      setBotIdError('Bot ID must contain only letters and numbers after @');
+      return false;
+    }
+
+    setBotIdError('');
+    return true;
+  };
+
+  const handleBotIdChange = (value) => {
+    setLineBotBasicId(value);
+    validateBotId(value);
+  };
+
   const handleSave = async () => {
+    // Validate bot ID before saving
+    if (lineBotBasicId && !validateBotId(lineBotBasicId)) {
+      toast.error('Please fix the Bot Basic ID format');
+      return;
+    }
+
     setIsSaving(true);
 
     try {
+      const body = {
+        messageTemplates: templates,
+        enableReminders,
+        reminderHoursBefore,
+        lineBotBasicId: lineBotBasicId || null,
+      };
+
+      // Only include token if it's been changed (not the masked value)
+      if (channelAccessToken && channelAccessToken !== '••••••••') {
+        body.lineChannelAccessToken = channelAccessToken;
+      }
+
       const response = await fetch(`/api/dashboard/${businessId}/messaging`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messageTemplates: templates,
-          enableReminders,
-          reminderHoursBefore,
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
@@ -122,67 +172,7 @@ export default function MessagingView({ businessId }) {
     }
   };
 
-  const handleConnectLINE = () => {
-    // Redirect to LINE OAuth flow with businessId parameter
-    window.location.href = `/api/line/oauth/connect?businessId=${businessId}`;
-  };
-
-  const getLINEConnectionStatus = () => {
-    if (!business) return null;
-
-    if (!business.lineChannelAccessToken) {
-      return {
-        connected: false,
-        status: 'disconnected',
-        icon: AlertCircle,
-        color: 'text-slate-400',
-        bgColor: 'bg-slate-50',
-        borderColor: 'border-slate-200',
-        message: 'LINE account not connected',
-      };
-    }
-
-    // Check expiration
-    if (business.lineTokenExpiresAt) {
-      const expiresAt = new Date(business.lineTokenExpiresAt);
-      const now = new Date();
-      const daysUntilExpiry = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
-
-      if (daysUntilExpiry <= 0) {
-        return {
-          connected: false,
-          status: 'expired',
-          icon: AlertCircle,
-          color: 'text-red-600',
-          bgColor: 'bg-red-50',
-          borderColor: 'border-red-200',
-          message: 'LINE token expired - reconnection required',
-        };
-      }
-
-      if (daysUntilExpiry <= 7) {
-        return {
-          connected: true,
-          status: 'expiring_soon',
-          icon: Clock,
-          color: 'text-amber-600',
-          bgColor: 'bg-amber-50',
-          borderColor: 'border-amber-200',
-          message: `Token expiring in ${daysUntilExpiry} day${daysUntilExpiry !== 1 ? 's' : ''} - will auto-refresh`,
-        };
-      }
-    }
-
-    return {
-      connected: true,
-      status: 'active',
-      icon: CheckCircle,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      borderColor: 'border-green-200',
-      message: 'LINE account connected',
-    };
-  };
+  const isLineConnected = business?.lineChannelAccessToken ? true : false;
 
   if (isLoading) {
     return (
@@ -199,8 +189,6 @@ export default function MessagingView({ businessId }) {
     );
   }
 
-  const connectionStatus = getLINEConnectionStatus();
-  const StatusIcon = connectionStatus?.icon;
   const currentTemplate = templates[activeTab];
 
   return (
@@ -234,36 +222,103 @@ export default function MessagingView({ businessId }) {
             </div>
 
             <div className="p-6">
-              {connectionStatus && (
-                <div
-                  className={`flex items-start gap-4 p-4 rounded-lg border ${connectionStatus.bgColor} ${connectionStatus.borderColor} mb-4`}
-                >
-                  <StatusIcon className={`w-5 h-5 flex-shrink-0 ${connectionStatus.color}`} />
-                  <div className="flex-1">
-                    <div className={`font-medium ${connectionStatus.color}`}>
-                      {connectionStatus.message}
-                    </div>
-                    {business.lineTokenExpiresAt && connectionStatus.connected && (
-                      <div className="text-xs text-slate-500 mt-1">
-                        Token expires: {new Date(business.lineTokenExpiresAt).toLocaleDateString()}
-                      </div>
-                    )}
+              {/* Connection Status Badge */}
+              <div className={`flex items-start gap-3 p-4 rounded-lg border mb-4 ${
+                isLineConnected
+                  ? 'bg-green-50 border-green-200'
+                  : 'bg-slate-50 border-slate-200'
+              }`}>
+                {isLineConnected ? (
+                  <CheckCircle className="w-5 h-5 flex-shrink-0 text-green-600" />
+                ) : (
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 text-slate-400" />
+                )}
+                <div className="flex-1">
+                  <div className={`font-medium ${
+                    isLineConnected ? 'text-green-600' : 'text-slate-600'
+                  }`}>
+                    {isLineConnected ? 'LINE Messaging API Connected' : 'LINE Messaging API Not Connected'}
                   </div>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {isLineConnected
+                      ? 'Your bot can send messages to customers'
+                      : 'Add your Channel Access Token below to enable messaging'}
+                  </p>
                 </div>
-              )}
+              </div>
 
-              <button
-                onClick={handleConnectLINE}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all font-medium shadow-md hover:shadow-lg"
-              >
-                <LinkIcon className="w-4 h-4" />
-                {connectionStatus?.connected ? 'Reconnect LINE Account' : 'Connect LINE Account'}
-              </button>
+              {/* Manual Channel Access Token Input */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-slate-700">
+                    <Key className="w-4 h-4 inline mr-1" />
+                    Channel Access Token
+                  </label>
+                  <button
+                    onClick={() => setShowTokenHelpModal(true)}
+                    className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 font-medium"
+                  >
+                    <Info className="w-3.5 h-3.5" />
+                    How do I get this?
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showToken ? 'text' : 'password'}
+                    value={channelAccessToken}
+                    onChange={(e) => setChannelAccessToken(e.target.value)}
+                    placeholder="Enter your LINE Channel Access Token"
+                    className="w-full px-4 py-2 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent font-mono text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowToken(!showToken)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
+                  >
+                    {showToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">
+                  Get this from LINE Developers Console → Your Channel → Messaging API → Channel access token (long-lived)
+                </p>
+              </div>
 
-              <p className="text-xs text-slate-500 mt-3">
-                Messages will be sent from your LINE Official Account when connected.
-                {!connectionStatus?.connected && ' Requires LINE Official Account with Messaging API enabled.'}
-              </p>
+              {/* Bot Basic ID Input */}
+              <div className="mt-6 pt-6 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-slate-700">
+                    Bot Basic ID
+                  </label>
+                  <button
+                    onClick={() => setShowHelpModal(true)}
+                    className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 font-medium"
+                  >
+                    <Info className="w-3.5 h-3.5" />
+                    How do I find this?
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  value={lineBotBasicId}
+                  onChange={(e) => handleBotIdChange(e.target.value)}
+                  placeholder="@abc1234"
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                    botIdError ? 'border-red-300' : 'border-slate-300'
+                  }`}
+                />
+                {botIdError && (
+                  <p className="text-xs text-red-600 mt-1">{botIdError}</p>
+                )}
+                {!botIdError && lineBotBasicId && (
+                  <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                    <CheckCircle className="w-3 h-3" />
+                    Valid Bot ID format
+                  </p>
+                )}
+                <p className="text-xs text-slate-500 mt-1">
+                  Your LINE bot's unique identifier (e.g., @abc1234). This allows customers to add your bot as a friend.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -414,6 +469,16 @@ export default function MessagingView({ businessId }) {
           />
         </div>
       </div>
+
+      {/* Help Modals */}
+      <LineBotIdHelpModal
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
+      />
+      <LineTokenHelpModal
+        isOpen={showTokenHelpModal}
+        onClose={() => setShowTokenHelpModal(false)}
+      />
     </div>
   );
 }

@@ -60,12 +60,14 @@ export default function MyBookingsPage() {
 
       const data = await response.json();
 
-      // Filter upcoming and past bookings
+      // Only show future bookings that are not cancelled
       const now = new Date();
-      const upcoming = data.bookings.filter(b => new Date(b.dateTime) >= now);
-      const past = data.bookings.filter(b => new Date(b.dateTime) < now);
+      const upcoming = data.bookings.filter(b =>
+        new Date(b.dateTime) >= now &&
+        b.status !== 'cancelled'
+      );
 
-      setBookings({ upcoming, past });
+      setBookings({ upcoming });
     } catch (err) {
       console.error('Load bookings error:', err);
       setError('Failed to load your bookings');
@@ -134,9 +136,12 @@ export default function MyBookingsPage() {
       <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
-              <span className="text-white text-xl">🦊</span>
-            </div>
+            {/* Kitsune Platform Logo */}
+            <img
+              src="/logo.png"
+              alt="Kitsune"
+              className="w-10 h-10 rounded-xl object-contain"
+            />
             <div>
               <h1 className="text-xl font-bold text-slate-900">My Bookings</h1>
               <p className="text-sm text-slate-600">{liffProfile?.displayName}</p>
@@ -146,40 +151,34 @@ export default function MyBookingsPage() {
       </header>
 
       {/* Content */}
-      <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-        {/* Upcoming Bookings */}
-        <section>
-          <h2 className="text-lg font-bold text-slate-900 mb-4">Upcoming Bookings</h2>
-
-          {!bookings.upcoming || bookings.upcoming.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center">
-              <Calendar className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-              <p className="text-slate-600">No upcoming bookings</p>
+      <main className="max-w-4xl mx-auto px-4 py-6">
+        {!bookings.upcoming || bookings.upcoming.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Calendar className="w-10 h-10 text-orange-500" />
             </div>
-          ) : (
+            <h2 className="text-2xl font-bold text-slate-900 mb-3">No Upcoming Bookings</h2>
+            <p className="text-slate-600 mb-6 max-w-md mx-auto">
+              You don't have any scheduled appointments at the moment. Book a service to get started!
+            </p>
+            <button
+              onClick={() => window.liff?.closeWindow()}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg"
+            >
+              <Calendar className="w-5 h-5" />
+              Browse Services
+            </button>
+          </div>
+        ) : (
+          <section>
+            <h2 className="text-lg font-bold text-slate-900 mb-4">Upcoming Bookings</h2>
             <div className="space-y-3">
               {bookings.upcoming.map((booking) => (
                 <BookingCard
                   key={booking.id}
                   booking={booking}
                   onCancel={handleCancelBooking}
-                  showCancel={booking.status !== 'cancelled'}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Past Bookings */}
-        {bookings.past && bookings.past.length > 0 && (
-          <section>
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Past Bookings</h2>
-            <div className="space-y-3">
-              {bookings.past.map((booking) => (
-                <BookingCard
-                  key={booking.id}
-                  booking={booking}
-                  isPast
+                  showCancel={true}
                 />
               ))}
             </div>
@@ -190,34 +189,32 @@ export default function MyBookingsPage() {
   );
 }
 
-function BookingCard({ booking, onCancel, showCancel, isPast }) {
+function BookingCard({ booking, onCancel, showCancel }) {
   const date = new Date(booking.dateTime);
   const statusColors = {
     pending: 'bg-yellow-100 text-yellow-700 border-yellow-200',
     confirmed: 'bg-green-100 text-green-700 border-green-200',
-    cancelled: 'bg-red-100 text-red-700 border-red-200',
-    completed: 'bg-blue-100 text-blue-700 border-blue-200',
   };
 
   const statusIcons = {
     pending: <Clock className="w-4 h-4" />,
     confirmed: <CheckCircle className="w-4 h-4" />,
-    cancelled: <X className="w-4 h-4" />,
-    completed: <CheckCircle className="w-4 h-4" />,
   };
 
   return (
-    <div className={`bg-white rounded-xl border border-slate-200 p-5 ${isPast ? 'opacity-60' : ''}`}>
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           {booking.business.logoUrl ? (
-            <img
-              src={booking.business.logoUrl}
-              alt={booking.business.businessName}
-              className="w-12 h-12 rounded-lg object-cover"
-            />
+            <div className="w-12 h-12 rounded-lg bg-white border border-slate-200 flex items-center justify-center p-1 flex-shrink-0">
+              <img
+                src={booking.business.logoUrl}
+                alt={booking.business.businessName}
+                className="w-full h-full object-contain"
+              />
+            </div>
           ) : (
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center text-white text-xl">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center text-white text-xl flex-shrink-0">
               🦊
             </div>
           )}
@@ -267,7 +264,7 @@ function BookingCard({ booking, onCancel, showCancel, isPast }) {
         )}
       </div>
 
-      {showCancel && !isPast && (
+      {showCancel && (
         <div className="mt-4 pt-4 border-t border-slate-200">
           <button
             onClick={() => onCancel(booking.id)}

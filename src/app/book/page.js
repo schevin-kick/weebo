@@ -251,7 +251,12 @@ export default function BookingPage() {
 
   // Show success page if completed
   if (isCompleted) {
-    return <BookingSuccess bookingSummary={getBookingSummary()} />;
+    return (
+      <BookingSuccess
+        bookingSummary={getBookingSummary()}
+        botBasicId={businessConfig?.lineBotBasicId}
+      />
+    );
   }
 
   // Show loading while initializing

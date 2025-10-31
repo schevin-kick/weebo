@@ -8,7 +8,7 @@ import { sendBookingCancellation } from '@/lib/lineMessaging';
  */
 export async function GET(request, { params }) {
   try {
-    const bookingId = params.id;
+    const { id: bookingId } = await params;
 
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
@@ -65,7 +65,7 @@ export async function GET(request, { params }) {
  */
 export async function PATCH(request, { params }) {
   try {
-    const bookingId = params.id;
+    const { id: bookingId } = await params;
     const data = await request.json();
     const { status, customerLineUserId } = data;
 

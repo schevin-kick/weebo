@@ -1,6 +1,3 @@
-// Kitsune Booking System Database Schema
-// PostgreSQL via Neon
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,120 +7,87 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================
-// AUTHENTICATION & MULTI-TENANCY
-// ============================================
-
 model BusinessOwner {
-  id            String   @id @default(cuid())
-  lineUserId    String   @unique
-  displayName   String
-  pictureUrl    String?
-  email         String?  @unique
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  // Relations
+  id               String            @id @default(cuid())
+  lineUserId       String            @unique
+  displayName      String
+  pictureUrl       String?
+  email            String?           @unique
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   businesses       Business[]
-  serviceTemplates ServiceTemplate[]
   pageTemplates    PageTemplate[]
+  serviceTemplates ServiceTemplate[]
 
   @@index([lineUserId])
   @@index([email])
 }
 
 model Business {
-  id                     String   @id @default(cuid())
+  id                     String        @id @default(cuid())
   ownerId                String
-  owner                  BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
-  // Business Info
   businessName           String
   logoUrl                String?
-  businessHours          Json     // { mode: '24/7' | 'same-daily' | 'custom', ... }
-  defaultDuration        Int      // minutes
-  appointmentOnly        Boolean  @default(false)
-  requiresApproval       Boolean  @default(false) // Manual approval vs auto-confirm
-  richMenu               Json     // LINE rich menu config
-
-  // Contact Information (individual fields)
-  phone                  String?
+  businessHours          Json
+  defaultDuration        Int
+  appointmentOnly        Boolean       @default(false)
+  requiresApproval       Boolean       @default(false)
+  richMenu               Json
+  qrCodeUrl              String?
+  lineDeepLink           String        @unique
+  isActive               Boolean       @default(true)
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+  address                String
   email                  String?
-  address                String   // Required - every business needs an address
+  phone                  String?
   website                String?
-
-  // LINE Integration
-  qrCodeUrl              String?  // R2 URL for QR code image
-  lineDeepLink           String   @unique // LIFF URL with business_id
-
-  // LINE OAuth Messaging API
-  lineChannelAccessToken String?  // Business owner's LINE Messaging API token
-  lineRefreshToken       String?  // Refresh token for token renewal
-  lineTokenExpiresAt     DateTime? // Token expiration timestamp
-
-  // Message Customization
-  messageTemplates       Json     @default("{\"confirmation\":{\"header\":\"Your booking is confirmed!\",\"body\":\"We look forward to seeing you!\"},\"cancellation\":{\"header\":\"Booking Cancelled\",\"body\":\"Your booking has been cancelled. We hope to see you again soon!\"},\"reminder\":{\"header\":\"Reminder: Upcoming Appointment\",\"body\":\"Don't forget your appointment tomorrow!\"}}")
-  enableReminders        Boolean  @default(true)
-  reminderHoursBefore    Int      @default(24)
-
-  // Status
-  isActive               Boolean  @default(true)
-
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
-
-  // Relations
-  services   Service[]
-  staff      Staff[]
-  pages      Page[]
-  bookings   Booking[]
-  closedDates ClosedDate[]
+  enableReminders        Boolean       @default(true)
+  lineChannelAccessToken String?
+  lineRefreshToken       String?
+  lineTokenExpiresAt     DateTime?
+  messageTemplates       Json          @default("{\"reminder\": {\"body\": \"Don't forget your appointment tomorrow!\", \"header\": \"Reminder: Upcoming Appointment\"}, \"cancellation\": {\"body\": \"Your booking has been cancelled. We hope to see you again soon!\", \"header\": \"Booking Cancelled\"}, \"confirmation\": {\"body\": \"We look forward to seeing you!\", \"header\": \"Your booking is confirmed!\"}}")
+  reminderHoursBefore    Int           @default(24)
+  lineBotBasicId         String?
+  bookings               Booking[]
+  owner                  BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  closedDates            ClosedDate[]
+  pages                  Page[]
+  services               Service[]
+  staff                  Staff[]
 
   @@index([ownerId])
   @@index([lineDeepLink])
   @@index([ownerId, isActive])
 }
 
-// ============================================
-// CUSTOMERS (END USERS)
-// ============================================
-
 model Customer {
-  id            String   @id @default(cuid())
-  lineUserId    String   @unique  // For LINE Messaging API
+  id            String    @id @default(cuid())
+  lineUserId    String    @unique
   displayName   String
   pictureUrl    String?
   language      String?
   statusMessage String?
-  lastActiveAt  DateTime @default(now())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  // Relations
-  bookings Booking[]
+  lastActiveAt  DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
 
   @@index([lineUserId])
   @@index([lastActiveAt])
 }
 
-// ============================================
-// BUSINESS CONFIGURATION
-// ============================================
-
 model Service {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   businessId  String
-  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-
   name        String
   description String?
-  duration    Int      // minutes
+  duration    Int
   price       Float?
-  order       Int      @default(0)
-  isActive    Boolean  @default(true)
-
-  // Relations
-  bookings Booking[]
+  order       Int       @default(0)
+  isActive    Boolean   @default(true)
+  bookings    Booking[]
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
   @@index([businessId])
   @@index([businessId, order])
@@ -131,20 +95,17 @@ model Service {
 }
 
 model Staff {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   businessId   String
-  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-
   name         String
   specialty    String?
   description  String?
-  photoUrl     String?  // Cloudflare R2 URL
-  availability Json     // { useBusinessHours: boolean, custom: {...} }
-  order        Int      @default(0)
-  isActive     Boolean  @default(true)
-
-  // Relations
-  bookings Booking[]
+  photoUrl     String?
+  availability Json
+  order        Int       @default(0)
+  isActive     Boolean   @default(true)
+  bookings     Booking[]
+  business     Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
   @@index([businessId])
   @@index([businessId, order])
@@ -154,12 +115,11 @@ model Staff {
 model Page {
   id         String   @id @default(cuid())
   businessId String
-  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-
-  type       String   // 'preset-services' | 'preset-staff' | 'preset-datetime' | 'custom'
+  type       String
   title      String
   order      Int
-  components Json     // Array of form components
+  components Json
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
   @@index([businessId, order])
 }
@@ -167,53 +127,37 @@ model Page {
 model ClosedDate {
   id            String   @id @default(cuid())
   businessId    String
-  business      Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-
-  startDateTime DateTime // Support both full-day and partial-day closures
+  startDateTime DateTime
   endDateTime   DateTime
+  business      Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
   @@index([businessId, startDateTime])
 }
 
-// ============================================
-// BOOKINGS
-// ============================================
-
 model Booking {
-  id               String   @id @default(cuid())
-  businessId       String
-  business         Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-
-  customerId       String
-  customer         Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-
-  serviceId        String?
-  service          Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
-
-  staffId          String?
-  staff            Staff?   @relation(fields: [staffId], references: [id], onDelete: SetNull)
-
-  dateTime         DateTime
-  duration         Int      // minutes
-  status           String   // 'pending' | 'confirmed' | 'cancelled' | 'completed'
-  responses        Json     // Custom field responses from form
-
-  // LINE Messaging flags
-  reminderSent     Boolean  @default(false)
-  confirmationSent Boolean  @default(false)
-
-  // Booking management fields
-  notes              String?   // Owner's internal notes
-  noShow             Boolean   @default(false)
+  id                 String           @id @default(cuid())
+  businessId         String
+  customerId         String
+  serviceId          String?
+  staffId            String?
+  dateTime           DateTime
+  duration           Int
+  status             String
+  responses          Json
+  reminderSent       Boolean          @default(false)
+  confirmationSent   Boolean          @default(false)
+  notes              String?
+  noShow             Boolean          @default(false)
   cancelledAt        DateTime?
-  cancelledBy        String?   // 'owner' | 'customer'
+  cancelledBy        String?
   cancellationReason String?
-
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  // Relations
-  messages BookingMessage[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  business           Business         @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  customer           Customer         @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  service            Service?         @relation(fields: [serviceId], references: [id])
+  staff              Staff?           @relation(fields: [staffId], references: [id])
+  messages           BookingMessage[]
 
   @@index([businessId, dateTime])
   @@index([customerId])
@@ -225,33 +169,26 @@ model Booking {
 model BookingMessage {
   id             String   @id @default(cuid())
   bookingId      String
-  booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-
-  messageType    String   // 'confirmation' | 'reminder' | 'cancellation' | 'update'
+  messageType    String
   sentAt         DateTime @default(now())
-  deliveryStatus String   // 'sent' | 'failed' | 'delivered'
-  messageContent Json     // Message payload
+  deliveryStatus String
+  messageContent Json
+  booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@index([bookingId])
   @@index([bookingId, messageType])
 }
 
-// ============================================
-// TEMPLATES (REUSABLE CONFIGURATIONS)
-// ============================================
-
 model ServiceTemplate {
   id          String        @id @default(cuid())
   ownerId     String
-  owner       BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
   name        String
   description String?
   duration    Int
   price       Float?
-
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  owner       BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   @@index([ownerId])
 }
@@ -259,14 +196,12 @@ model ServiceTemplate {
 model PageTemplate {
   id         String        @id @default(cuid())
   ownerId    String
-  owner      BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
-  type       String        // 'custom' only
+  type       String
   title      String
-  components Json          // Form field configuration
-
+  components Json
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
+  owner      BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   @@index([ownerId])
 }

@@ -35,7 +35,7 @@ export async function GET(request, { params }) {
         enableReminders: true,
         reminderHoursBefore: true,
         lineChannelAccessToken: true,
-        lineTokenExpiresAt: true,
+        lineBotBasicId: true,
       },
     });
 
@@ -48,7 +48,7 @@ export async function GET(request, { params }) {
       enableReminders: business.enableReminders,
       reminderHoursBefore: business.reminderHoursBefore,
       lineConnected: !!business.lineChannelAccessToken,
-      lineTokenExpiresAt: business.lineTokenExpiresAt,
+      lineBotBasicId: business.lineBotBasicId,
     });
   } catch (error) {
     console.error('Get messaging settings error:', error);
@@ -117,6 +117,36 @@ export async function PATCH(request, { params }) {
       updateData.reminderHoursBefore = hours;
     }
 
+    if (body.lineBotBasicId !== undefined) {
+      // Validate Bot Basic ID format if provided
+      if (body.lineBotBasicId) {
+        if (!body.lineBotBasicId.startsWith('@')) {
+          return NextResponse.json(
+            { error: 'Bot Basic ID must start with @' },
+            { status: 400 }
+          );
+        }
+        if (!/^@[a-zA-Z0-9]+$/.test(body.lineBotBasicId)) {
+          return NextResponse.json(
+            { error: 'Bot Basic ID must contain only letters and numbers after @' },
+            { status: 400 }
+          );
+        }
+      }
+      updateData.lineBotBasicId = body.lineBotBasicId;
+    }
+
+    if (body.lineChannelAccessToken !== undefined) {
+      // Save manual channel access token
+      // Note: For manually entered tokens, we don't have refresh token or expiration
+      updateData.lineChannelAccessToken = body.lineChannelAccessToken;
+      // Clear OAuth-related fields since this is a manual token
+      if (body.lineChannelAccessToken) {
+        updateData.lineRefreshToken = null;
+        updateData.lineTokenExpiresAt = null;
+      }
+    }
+
     const updatedBusiness = await prisma.business.update({
       where: { id: businessId },
       data: updateData,
@@ -124,6 +154,7 @@ export async function PATCH(request, { params }) {
         messageTemplates: true,
         enableReminders: true,
         reminderHoursBefore: true,
+        lineBotBasicId: true,
       },
     });
 
@@ -132,6 +163,7 @@ export async function PATCH(request, { params }) {
       messageTemplates: updatedBusiness.messageTemplates,
       enableReminders: updatedBusiness.enableReminders,
       reminderHoursBefore: updatedBusiness.reminderHoursBefore,
+      lineBotBasicId: updatedBusiness.lineBotBasicId,
     });
   } catch (error) {
     console.error('Update messaging settings error:', error);

@@ -258,7 +258,8 @@ function createBookingConfirmationMessage(booking, business) {
             url: business.logoUrl,
             size: 'full',
             aspectRatio: '20:13',
-            aspectMode: 'cover',
+            aspectMode: 'fit',
+            backgroundColor: '#FFFFFF',
           }
         : undefined,
       body: {
@@ -628,7 +629,8 @@ function createBookingReminderMessage(booking, business) {
             url: business.logoUrl,
             size: 'full',
             aspectRatio: '20:13',
-            aspectMode: 'cover',
+            aspectMode: 'fit',
+            backgroundColor: '#FFFFFF',
           }
         : undefined,
       body: {

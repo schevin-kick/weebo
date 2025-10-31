@@ -53,6 +53,7 @@ export async function GET(request, { params }) {
         email: business.email,
         address: business.address,
         website: business.website,
+        lineBotBasicId: business.lineBotBasicId,
         services: business.services,
         staff: business.staff,
         pages: business.pages,

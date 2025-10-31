@@ -104,9 +104,25 @@ function minutesToTime(minutes) {
 }
 
 /**
+ * Check if a time slot conflicts with existing bookings
+ */
+function checkSlotConflict(slotStart, slotEnd, bookings) {
+  if (!bookings || bookings.length === 0) return false;
+
+  return bookings.some((booking) => {
+    const bookingStart = new Date(booking.dateTime);
+    const bookingEnd = new Date(bookingStart.getTime() + booking.duration * 60000);
+
+    // Check if slot overlaps with booking
+    // Overlap occurs if: (slot_start < booking_end) AND (slot_end > booking_start)
+    return slotStart < bookingEnd && slotEnd > bookingStart;
+  });
+}
+
+/**
  * Generate available time slots for a date
  */
-export function generateTimeSlots(date, serviceDuration, businessHours, staff = null) {
+export function generateTimeSlots(date, serviceDuration, businessHours, staff = null, existingBookings = []) {
   const availableHours = getAvailableHours(date, businessHours, staff);
 
   if (!availableHours.open || !availableHours.close) {
@@ -133,9 +149,20 @@ export function generateTimeSlots(date, serviceDuration, businessHours, staff = 
       continue;
     }
 
+    const slotTime = minutesToTime(minutes);
+
+    // Create Date objects for slot start and end times
+    const slotStart = new Date(date);
+    slotStart.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
+
+    const slotEnd = new Date(slotStart.getTime() + serviceDuration * 60000);
+
+    // Check if this slot conflicts with any existing bookings
+    const hasConflict = checkSlotConflict(slotStart, slotEnd, existingBookings);
+
     slots.push({
-      time: minutesToTime(minutes),
-      available: true, // In future, this could check existing bookings
+      time: slotTime,
+      available: !hasConflict,
     });
   }
 

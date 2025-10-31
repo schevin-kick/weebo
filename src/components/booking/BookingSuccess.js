@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, Sparkles, X, UserPlus, Bell } from 'lucide-react';
 
-export default function BookingSuccess({ bookingSummary }) {
+export default function BookingSuccess({ bookingSummary, botBasicId }) {
   const [showConfetti, setShowConfetti] = useState(true);
   const [friendshipStatus, setFriendshipStatus] = useState(null); // null | 'friend' | 'not_friend'
   const [checkingFriendship, setCheckingFriendship] = useState(true);
@@ -42,12 +42,11 @@ export default function BookingSuccess({ bookingSummary }) {
   }
 
   function handleAddFriend() {
-    if (typeof window !== 'undefined' && window.liff) {
+    if (typeof window !== 'undefined' && window.liff && botBasicId) {
       const liff = window.liff;
       // Open bot profile in LINE app
-      // Note: Replace YOUR_BOT_ID with your actual Messaging API channel's Basic ID
       liff.openWindow({
-        url: 'https://line.me/R/ti/p/@YOUR_BOT_ID', // TODO: Replace with actual bot ID from LINE console
+        url: `https://line.me/R/ti/p/${botBasicId}`,
         external: false,
       });
     }
@@ -145,8 +144,8 @@ export default function BookingSuccess({ bookingSummary }) {
             </div>
           )}
 
-          {/* Add Friend Prompt - Only show if not already a friend */}
-          {!checkingFriendship && friendshipStatus === 'not_friend' && (
+          {/* Add Friend Prompt - Only show if not already a friend and bot ID is configured */}
+          {!checkingFriendship && friendshipStatus === 'not_friend' && botBasicId && (
             <div className="mb-6">
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-5">
                 <div className="flex items-start gap-4">

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { Check, Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { Check, Calendar as CalendarIcon, Clock, Loader2 } from 'lucide-react';
 import {
   generateTimeSlots,
   isDateAvailable,
@@ -21,16 +22,57 @@ export default function PresetDateTimePage({
   staff,
   defaultAppointmentDuration = 60,
 }) {
+  const searchParams = useSearchParams();
+  const businessId = searchParams.get('business_id');
+
   const [selectedDate, setSelectedDate] = useState(
     selectedDateTime?.date ? new Date(selectedDateTime.date + 'T00:00:00') : null
   );
   const [selectedTime, setSelectedTime] = useState(selectedDateTime?.time || null);
+  const [existingBookings, setExistingBookings] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
   // Get the selected staff member object if applicable
   const staffMember = useMemo(() => {
     if (!selectedStaff || selectedStaff === 'any') return null;
     return staff.find((s) => s.id === selectedStaff);
   }, [selectedStaff, staff]);
+
+  // Fetch existing bookings when date changes
+  useEffect(() => {
+    async function fetchBookings() {
+      if (!selectedDate || !businessId) return;
+
+      setLoadingSlots(true);
+      try {
+        const dateString = selectedDate.toISOString().split('T')[0];
+        const url = new URL('/api/bookings/availability', window.location.origin);
+        url.searchParams.set('businessId', businessId);
+        url.searchParams.set('date', dateString);
+
+        // If staff is selected, filter by staff
+        if (selectedStaff && selectedStaff !== 'any') {
+          url.searchParams.set('staffId', selectedStaff);
+        }
+
+        const response = await fetch(url);
+        if (response.ok) {
+          const data = await response.json();
+          setExistingBookings(data.bookings || []);
+        } else {
+          console.error('Failed to fetch bookings:', response.statusText);
+          setExistingBookings([]);
+        }
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+        setExistingBookings([]);
+      } finally {
+        setLoadingSlots(false);
+      }
+    }
+
+    fetchBookings();
+  }, [selectedDate, businessId, selectedStaff]);
 
   // Check if a date should be disabled
   const tileDisabled = ({ date }) => {
@@ -59,9 +101,10 @@ export default function PresetDateTimePage({
       selectedDate,
       duration,
       businessHours,
-      staffMember
+      staffMember,
+      existingBookings
     );
-  }, [selectedDate, selectedService, defaultAppointmentDuration, businessHours, staffMember]);
+  }, [selectedDate, selectedService, defaultAppointmentDuration, businessHours, staffMember, existingBookings]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -142,7 +185,12 @@ export default function PresetDateTimePage({
             <span>Select Time</span>
           </div>
 
-          {availableTimeSlots.length === 0 ? (
+          {loadingSlots ? (
+            <div className="text-center py-8 bg-slate-50 rounded-xl">
+              <Loader2 className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-3" />
+              <p className="text-slate-600 font-medium">Loading available times...</p>
+            </div>
+          ) : availableTimeSlots.length === 0 ? (
             <div className="text-center py-8 bg-slate-50 rounded-xl">
               <p className="text-slate-600">
                 No available time slots for this date. Please select another date.
