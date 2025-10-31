@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { sendBookingConfirmation } from '@/lib/lineMessaging';
 
 /**
  * POST /api/bookings
@@ -200,12 +201,8 @@ export async function POST(request) {
         confirmationSent: false,
       },
       include: {
-        business: {
-          select: {
-            businessName: true,
-            logoUrl: true,
-          },
-        },
+        business: true,
+        customer: true,
         service: {
           select: {
             name: true,
@@ -222,9 +219,42 @@ export async function POST(request) {
       },
     });
 
-    // TODO: Send LINE confirmation message if not appointment-only
+    // Send LINE confirmation message for confirmed bookings
+    let messageResult = null;
+    if (booking.status === 'confirmed') {
+      try {
+        messageResult = await sendBookingConfirmation(booking, business);
 
-    return NextResponse.json({ booking }, { status: 201 });
+        // Log message result
+        if (messageResult && messageResult.status === 'sent') {
+          await prisma.booking.update({
+            where: { id: booking.id },
+            data: { confirmationSent: true },
+          });
+
+          await prisma.bookingMessage.create({
+            data: {
+              bookingId: booking.id,
+              messageType: 'confirmation',
+              deliveryStatus: 'sent',
+              messageContent: { status: 'sent' },
+            },
+          });
+
+          console.log('[Booking API] Confirmation message sent successfully');
+        } else {
+          console.warn('[Booking API] Confirmation message not sent:', messageResult);
+        }
+      } catch (messageError) {
+        console.error('[Booking API] Error sending confirmation message:', messageError);
+        // Don't fail the request if message fails
+      }
+    }
+
+    return NextResponse.json({
+      booking,
+      messageSent: messageResult?.status === 'sent',
+    }, { status: 201 });
   } catch (error) {
     console.error('Create booking error:', error);
     console.error('Error details:', {

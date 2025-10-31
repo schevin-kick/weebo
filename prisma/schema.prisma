@@ -56,6 +56,16 @@ model Business {
   qrCodeUrl              String?  // R2 URL for QR code image
   lineDeepLink           String   @unique // LIFF URL with business_id
 
+  // LINE OAuth Messaging API
+  lineChannelAccessToken String?  // Business owner's LINE Messaging API token
+  lineRefreshToken       String?  // Refresh token for token renewal
+  lineTokenExpiresAt     DateTime? // Token expiration timestamp
+
+  // Message Customization
+  messageTemplates       Json     @default("{\"confirmation\":{\"header\":\"Your booking is confirmed!\",\"body\":\"We look forward to seeing you!\"},\"cancellation\":{\"header\":\"Booking Cancelled\",\"body\":\"Your booking has been cancelled. We hope to see you again soon!\"},\"reminder\":{\"header\":\"Reminder: Upcoming Appointment\",\"body\":\"Don't forget your appointment tomorrow!\"}}")
+  enableReminders        Boolean  @default(true)
+  reminderHoursBefore    Int      @default(24)
+
   // Status
   isActive               Boolean  @default(true)
 

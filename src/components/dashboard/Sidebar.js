@@ -7,6 +7,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useNotificationBadge } from '@/hooks/useNotificationBadge';
 import {
   LayoutDashboard,
   Calendar,
@@ -15,6 +16,7 @@ import {
   Settings,
   CalendarX,
   BarChart3,
+  MessageSquare,
   X,
 } from 'lucide-react';
 
@@ -50,6 +52,11 @@ const navItems = [
     icon: Settings,
   },
   {
+    name: 'Messaging',
+    href: '/messaging',
+    icon: MessageSquare,
+  },
+  {
     name: 'Holiday Hours',
     href: '/holiday-hours',
     icon: CalendarX,
@@ -58,6 +65,7 @@ const navItems = [
 
 export default function Sidebar({ businessId, isOpen, onClose }) {
   const pathname = usePathname();
+  const { showBadge: showMessagingBadge } = useNotificationBadge('messaging', businessId);
 
   const isActive = (href) => {
     const fullPath = `/dashboard/${businessId}${href}`;
@@ -120,6 +128,7 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
           {navItems.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
+            const showBadge = item.name === 'Messaging' && showMessagingBadge;
 
             return (
               <Link
@@ -127,7 +136,7 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
                 href={`/dashboard/${businessId}${item.href}`}
                 onClick={onClose}
                 className={`
-                  flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
+                  flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative
                   ${
                     active
                       ? 'bg-orange-50 text-orange-600 font-medium'
@@ -137,6 +146,11 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
               >
                 <Icon className="w-5 h-5 flex-shrink-0" />
                 <span>{item.name}</span>
+
+                {/* Notification Badge */}
+                {showBadge && (
+                  <span className="ml-auto w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                )}
               </Link>
             );
           })}

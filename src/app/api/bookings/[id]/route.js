@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { sendBookingCancellation } from '@/lib/lineMessaging';
 
 /**
  * GET /api/bookings/[id]
@@ -73,6 +74,9 @@ export async function PATCH(request, { params }) {
       where: { id: bookingId },
       include: {
         customer: true,
+        business: true,
+        service: true,
+        staff: true,
       },
     });
 
@@ -87,19 +91,33 @@ export async function PATCH(request, { params }) {
       }
     }
 
+    // Prepare update data
+    const updateData = {
+      status: status || existing.status,
+    };
+
+    // If canceling, add cancellation metadata
+    if (status === 'cancelled') {
+      updateData.cancelledAt = new Date();
+      updateData.cancelledBy = customerLineUserId ? 'customer' : 'owner';
+      if (data.cancellationReason) {
+        updateData.cancellationReason = data.cancellationReason;
+      }
+    }
+
     // Update booking
     const booking = await prisma.booking.update({
       where: { id: bookingId },
-      data: {
-        status: status || existing.status,
-      },
+      data: updateData,
       include: {
-        business: {
+        business: true,
+        customer: true,
+        service: {
           select: {
-            businessName: true,
+            name: true,
           },
         },
-        service: {
+        staff: {
           select: {
             name: true,
           },
@@ -107,9 +125,41 @@ export async function PATCH(request, { params }) {
       },
     });
 
-    // TODO: Send LINE notification about status change
+    // Send LINE notification about cancellation
+    let messageResult = null;
+    if (status === 'cancelled') {
+      try {
+        messageResult = await sendBookingCancellation(
+          booking,
+          existing.business,
+          data.cancellationReason || null
+        );
 
-    return NextResponse.json({ booking });
+        // Log message result
+        if (messageResult && messageResult.status === 'sent') {
+          await prisma.bookingMessage.create({
+            data: {
+              bookingId: booking.id,
+              messageType: 'cancellation',
+              deliveryStatus: 'sent',
+              messageContent: { status: 'sent' },
+            },
+          });
+
+          console.log('[Booking API] Cancellation message sent successfully');
+        } else {
+          console.warn('[Booking API] Cancellation message not sent:', messageResult);
+        }
+      } catch (messageError) {
+        console.error('[Booking API] Error sending cancellation message:', messageError);
+        // Don't fail the request if message fails
+      }
+    }
+
+    return NextResponse.json({
+      booking,
+      messageSent: messageResult?.status === 'sent',
+    });
   } catch (error) {
     console.error('Update booking error:', error);
     return NextResponse.json(

@@ -123,18 +123,54 @@ export async function getLINEProfile(accessToken) {
 
 /**
  * Generate LINE Login URL
+ * @param {string} state - State parameter for CSRF protection
+ * @param {boolean} requestBotScope - Whether to request bot scope for Messaging API
  * @returns {string} LINE OAuth URL
  */
-export function getLINELoginUrl() {
+export function getLINELoginUrl(state = null, requestBotScope = false) {
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: process.env.LINE_LOGIN_CHANNEL_ID,
     redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/line`,
-    state: Math.random().toString(36).substring(7),
-    scope: 'profile openid email',
+    state: state || Math.random().toString(36).substring(7),
+    scope: requestBotScope ? 'profile openid email bot' : 'profile openid email',
   });
 
+  // Force user to add bot as friend when requesting bot scope
+  if (requestBotScope) {
+    params.append('bot_prompt', 'aggressive');
+  }
+
   return `https://access.line.me/oauth2/v2.1/authorize?${params.toString()}`;
+}
+
+/**
+ * Refresh LINE access token using refresh token
+ * @param {string} refreshToken - LINE refresh token
+ * @returns {Promise<object>} New token response { access_token, refresh_token, expires_in }
+ */
+export async function refreshLINEToken(refreshToken) {
+  const tokenUrl = 'https://api.line.me/oauth2/v2.1/token';
+
+  const params = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken,
+    client_id: process.env.LINE_LOGIN_CHANNEL_ID,
+    client_secret: process.env.LINE_LOGIN_CHANNEL_SECRET,
+  });
+
+  const response = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString(),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`Failed to refresh LINE token: ${error.error_description || error.error}`);
+  }
+
+  return response.json();
 }
 
 export default {
@@ -146,4 +182,5 @@ export default {
   exchangeLINECode,
   getLINEProfile,
   getLINELoginUrl,
+  refreshLINEToken,
 };
