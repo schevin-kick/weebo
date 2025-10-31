@@ -23,7 +23,18 @@ export default function PresetDateTimePage({
   defaultAppointmentDuration = 60,
 }) {
   const searchParams = useSearchParams();
-  const businessId = searchParams.get('business_id');
+
+  // Extract business_id from either direct param or liff.state
+  let businessId = searchParams.get('business_id');
+  if (!businessId) {
+    const liffState = searchParams.get('liff.state');
+    if (liffState) {
+      const match = liffState.match(/business_id=([^&]+)/);
+      if (match) {
+        businessId = match[1];
+      }
+    }
+  }
 
   const [selectedDate, setSelectedDate] = useState(
     selectedDateTime?.date ? new Date(selectedDateTime.date + 'T00:00:00') : null

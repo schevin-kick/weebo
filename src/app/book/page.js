@@ -22,7 +22,19 @@ import {
 
 export default function BookingPage() {
   const searchParams = useSearchParams();
-  const businessId = searchParams.get('business_id');
+
+  // Extract business_id from either direct param or liff.state
+  let businessId = searchParams.get('business_id');
+  if (!businessId) {
+    const liffState = searchParams.get('liff.state');
+    if (liffState) {
+      // Parse business_id from liff.state (e.g., "?business_id=xyz")
+      const match = liffState.match(/business_id=([^&]+)/);
+      if (match) {
+        businessId = match[1];
+      }
+    }
+  }
 
   const [isHydrated, setIsHydrated] = useState(false);
   const [loading, setLoading] = useState(true);

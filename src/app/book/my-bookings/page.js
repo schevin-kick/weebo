@@ -214,8 +214,12 @@ function BookingCard({ booking, onCancel, showCancel }) {
               />
             </div>
           ) : (
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center text-white text-xl flex-shrink-0">
-              🦊
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-amber-100 rounded-lg flex items-center justify-center flex-shrink-0 border border-slate-200">
+              <img
+                src="/logo.png"
+                alt={booking.business.businessName}
+                className="w-8 h-8 object-contain opacity-60"
+              />
             </div>
           )}
           <div>
