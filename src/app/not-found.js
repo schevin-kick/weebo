@@ -9,12 +9,12 @@ export default function NotFound() {
       <div className="max-w-2xl w-full text-center">
         {/* Sad Kitsune Image */}
         <div className="mb-8 flex justify-center">
-          <div className="relative w-64 h-64">
+          <div className="relative w-64 h-80 rounded-3xl overflow-hidden">
             <Image
               src="/sad-kitsune.jpeg"
               alt="Sad Kitsune"
               fill
-              className="object-contain"
+              className="object-cover"
               priority
             />
           </div>
@@ -47,14 +47,6 @@ export default function NotFound() {
             </button>
           </div>
         </div>
-
-        {/* Additional Help */}
-        <p className="mt-8 text-sm text-slate-600">
-          Need help?{' '}
-          <Link href="/contact" className="text-orange-600 hover:text-orange-700 font-medium underline">
-            Contact Support
-          </Link>
-        </p>
       </div>
     </div>
   );

@@ -14,12 +14,12 @@ export default function Error({ error, reset }) {
       <div className="max-w-2xl w-full text-center">
         {/* Sad Kitsune Image */}
         <div className="mb-8 flex justify-center">
-          <div className="relative w-64 h-64">
+          <div className="relative w-64 h-80 rounded-3xl overflow-hidden">
             <Image
               src="/sad-kitsune.jpeg"
               alt="Sad Kitsune"
               fill
-              className="object-contain"
+              className="object-cover"
               priority
             />
           </div>
