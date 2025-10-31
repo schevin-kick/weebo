@@ -12,11 +12,6 @@ import { validateCSRFToken } from '@/lib/csrf';
 
 export async function GET(request) {
   try {
-    const session = await getSession();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { searchParams } = new URL(request.url);
     const businessId = searchParams.get('businessId');
 
@@ -24,16 +19,29 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Business ID required' }, { status: 400 });
     }
 
-    // Verify business ownership
-    const business = await prisma.business.findFirst({
-      where: {
-        id: businessId,
-        ownerId: session.id,
-      },
-    });
+    const session = await getSession();
 
-    if (!business) {
-      return NextResponse.json({ error: 'Business not found' }, { status: 404 });
+    // If authenticated, verify ownership
+    if (session) {
+      const business = await prisma.business.findFirst({
+        where: {
+          id: businessId,
+          ownerId: session.id,
+        },
+      });
+
+      if (!business) {
+        return NextResponse.json({ error: 'Business not found' }, { status: 404 });
+      }
+    } else {
+      // Public access - just verify business exists
+      const business = await prisma.business.findUnique({
+        where: { id: businessId },
+      });
+
+      if (!business) {
+        return NextResponse.json({ error: 'Business not found' }, { status: 404 });
+      }
     }
 
     // Get closed dates sorted by date (upcoming first)

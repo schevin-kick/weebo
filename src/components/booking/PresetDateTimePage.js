@@ -41,6 +41,7 @@ export default function PresetDateTimePage({
   );
   const [selectedTime, setSelectedTime] = useState(selectedDateTime?.time || null);
   const [existingBookings, setExistingBookings] = useState([]);
+  const [closedDates, setClosedDates] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
   // Get the selected staff member object if applicable
@@ -48,6 +49,25 @@ export default function PresetDateTimePage({
     if (!selectedStaff || selectedStaff === 'any') return null;
     return staff.find((s) => s.id === selectedStaff);
   }, [selectedStaff, staff]);
+
+  // Fetch closed dates on mount
+  useEffect(() => {
+    async function fetchClosedDates() {
+      if (!businessId) return;
+
+      try {
+        const response = await fetch(`/api/closed-dates?businessId=${businessId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setClosedDates(data.closedDates || []);
+        }
+      } catch (error) {
+        console.error('Error fetching closed dates:', error);
+      }
+    }
+
+    fetchClosedDates();
+  }, [businessId]);
 
   // Fetch existing bookings when date changes
   useEffect(() => {
@@ -93,6 +113,24 @@ export default function PresetDateTimePage({
     // Disable past dates
     if (date < today) return true;
 
+    // Check if date is fully closed (entire day is within a closed period)
+    for (const closedPeriod of closedDates) {
+      const periodStart = new Date(closedPeriod.startDateTime);
+      const periodEnd = new Date(closedPeriod.endDateTime);
+
+      // Create date boundaries for the full day
+      const dateStart = new Date(date);
+      dateStart.setHours(0, 0, 0, 0);
+      const dateEnd = new Date(date);
+      dateEnd.setHours(23, 59, 59, 999);
+
+      // Only disable if the ENTIRE day is within the closed period
+      // This means the closed period must start at or before midnight and end at or after 23:59
+      if (periodStart <= dateStart && periodEnd >= dateEnd) {
+        return true; // Entire day is closed
+      }
+    }
+
     // Check availability based on business/staff hours
     if (staffMember) {
       return !isDateAvailableForStaff(date, staffMember, businessHours);
@@ -113,9 +151,10 @@ export default function PresetDateTimePage({
       duration,
       businessHours,
       staffMember,
-      existingBookings
+      existingBookings,
+      closedDates
     );
-  }, [selectedDate, selectedService, defaultAppointmentDuration, businessHours, staffMember, existingBookings]);
+  }, [selectedDate, selectedService, defaultAppointmentDuration, businessHours, staffMember, existingBookings, closedDates]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);

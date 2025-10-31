@@ -120,9 +120,25 @@ function checkSlotConflict(slotStart, slotEnd, bookings) {
 }
 
 /**
+ * Check if a time slot falls within a closed period
+ */
+function checkSlotInClosedPeriod(slotStart, slotEnd, closedDates) {
+  if (!closedDates || closedDates.length === 0) return false;
+
+  return closedDates.some((closedPeriod) => {
+    const periodStart = new Date(closedPeriod.startDateTime);
+    const periodEnd = new Date(closedPeriod.endDateTime);
+
+    // Check if slot overlaps with closed period
+    // Overlap occurs if: (slot_start < period_end) AND (slot_end > period_start)
+    return slotStart < periodEnd && slotEnd > periodStart;
+  });
+}
+
+/**
  * Generate available time slots for a date
  */
-export function generateTimeSlots(date, serviceDuration, businessHours, staff = null, existingBookings = []) {
+export function generateTimeSlots(date, serviceDuration, businessHours, staff = null, existingBookings = [], closedDates = []) {
   const availableHours = getAvailableHours(date, businessHours, staff);
 
   if (!availableHours.open || !availableHours.close) {
@@ -160,9 +176,12 @@ export function generateTimeSlots(date, serviceDuration, businessHours, staff = 
     // Check if this slot conflicts with any existing bookings
     const hasConflict = checkSlotConflict(slotStart, slotEnd, existingBookings);
 
+    // Check if this slot falls within a closed period
+    const isInClosedPeriod = checkSlotInClosedPeriod(slotStart, slotEnd, closedDates);
+
     slots.push({
       time: slotTime,
-      available: !hasConflict,
+      available: !hasConflict && !isInClosedPeriod,
     });
   }
 
