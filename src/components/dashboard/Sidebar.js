@@ -18,6 +18,7 @@ import {
   CalendarX,
   BarChart3,
   MessageSquare,
+  CreditCard,
   X,
 } from 'lucide-react';
 
@@ -51,6 +52,11 @@ const navItems = [
     name: 'Settings',
     href: '/settings',
     icon: Settings,
+  },
+  {
+    name: 'Billing',
+    href: '/billing',
+    icon: CreditCard,
   },
   {
     name: 'Messaging',
@@ -131,10 +137,15 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
             const Icon = item.icon;
             const showBadge = item.name === 'Messaging' && showMessagingBadge;
 
+            // Billing is account-wide, not business-specific
+            const href = item.name === 'Billing'
+              ? '/dashboard/billing'
+              : `/dashboard/${businessId}${item.href}`;
+
             return (
               <Link
                 key={item.name}
-                href={`/dashboard/${businessId}${item.href}`}
+                href={href}
                 onClick={onClose}
                 className={`
                   flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative

@@ -168,25 +168,47 @@ export default function BusinessDashboard() {
 
           {/* Business List */}
           {businesses.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
-              <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Store className="w-10 h-10 text-orange-500" />
+            <>
+              {/* Trial Notice */}
+              <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-blue-900 mb-1">
+                      14-Day Free Trial Included
+                    </h3>
+                    <p className="text-blue-700 text-sm">
+                      Creating your first business will start your <strong>14-day free trial</strong> of Kitsune.
+                      Full access to all features, no credit card required. After the trial, continue for just 210 TWD/month.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                No businesses yet
-              </h3>
-              <p className="text-slate-600 mb-6 max-w-md mx-auto">
-                Create your first booking system to get started. You can manage
-                multiple businesses from this dashboard.
-              </p>
-              <button
-                onClick={() => router.push('/setup/new')}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-amber-600 transition-all"
-              >
-                <Plus className="w-5 h-5" />
-                Create Your First Business
-              </button>
-            </div>
+
+              <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
+                <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Store className="w-10 h-10 text-orange-500" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                  No businesses yet
+                </h3>
+                <p className="text-slate-600 mb-6 max-w-md mx-auto">
+                  Create your first booking system to get started. You can manage
+                  multiple businesses from this dashboard.
+                </p>
+                <button
+                  onClick={() => router.push('/setup/new')}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-amber-600 transition-all"
+                >
+                  <Plus className="w-5 h-5" />
+                  Create Your First Business
+                </button>
+              </div>
+            </>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {businesses.map((business) => (

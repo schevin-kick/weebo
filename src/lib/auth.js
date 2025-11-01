@@ -10,10 +10,19 @@ const SESSION_SECRET = new TextEncoder().encode(
 /**
  * Create a session token for authenticated user
  * @param {object} user - User data { id, lineUserId, displayName, pictureUrl, email }
+ * @param {object} subscription - Optional subscription data for caching
  * @returns {Promise<string>} JWT token
  */
-export async function createSession(user) {
-  const token = await new SignJWT({ user })
+export async function createSession(user, subscription = null) {
+  const payload = { user };
+
+  // Include subscription data for session-level caching
+  if (subscription) {
+    payload.subscription = subscription;
+    payload.subscriptionCheckedAt = new Date().toISOString();
+  }
+
+  const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('30d') // 30 days expiration

@@ -8,19 +8,31 @@ datasource db {
 }
 
 model BusinessOwner {
-  id               String            @id @default(cuid())
-  lineUserId       String            @unique
-  displayName      String
-  pictureUrl       String?
-  email            String?           @unique
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  businesses       Business[]
-  pageTemplates    PageTemplate[]
-  serviceTemplates ServiceTemplate[]
+  id                    String            @id @default(cuid())
+  lineUserId            String            @unique
+  displayName           String
+  pictureUrl            String?
+  email                 String?           @unique
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  // Subscription fields
+  stripeCustomerId      String?           @unique
+  stripeSubscriptionId  String?           @unique
+  subscriptionStatus    String?           // 'trialing', 'active', 'past_due', 'canceled', 'unpaid'
+  trialStartsAt         DateTime?
+  trialEndsAt           DateTime?
+  currentPeriodEnd      DateTime?
+  canceledAt            DateTime?
+
+  businesses            Business[]
+  pageTemplates         PageTemplate[]
+  serviceTemplates      ServiceTemplate[]
 
   @@index([lineUserId])
   @@index([email])
+  @@index([stripeCustomerId])
+  @@index([subscriptionStatus])
 }
 
 model Business {

@@ -116,6 +116,13 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    // Check subscription status before allowing business updates
+    const { requireSubscription } = await import('@/middleware/subscriptionCheck');
+    const subscriptionCheck = await requireSubscription(request);
+    if (subscriptionCheck) {
+      return subscriptionCheck; // Returns 403 if no subscription access
+    }
+
     // Update business in transaction
     const result = await prisma.$transaction(async (tx) => {
       // Update business

@@ -131,6 +131,22 @@ export async function POST(request) {
 
     const data = await request.json();
 
+    // Check if this is the first business (allow creation to start trial)
+    // For 2nd+ businesses, require active subscription
+    const existingBusinessCount = await prisma.business.count({
+      where: { ownerId: session.id },
+    });
+
+    if (existingBusinessCount > 0) {
+      // Not first business - check subscription
+      const { requireSubscription } = await import('@/middleware/subscriptionCheck');
+      const subscriptionCheck = await requireSubscription(request);
+      if (subscriptionCheck) {
+        return subscriptionCheck; // Returns 403 if no subscription access
+      }
+    }
+    // First business is always allowed (will start trial after creation)
+
     // Generate unique business ID
     const businessId = `biz_${Date.now()}_${Math.random().toString(36).substring(7)}`;
     const lineDeepLink = `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_ID}?business_id=${businessId}`;
@@ -206,6 +222,20 @@ export async function POST(request) {
           console.error('QR code generation failed:', error);
           // Don't fail the request, QR can be generated later
         });
+    }
+
+    // Check if this is the user's first business - start trial if so
+    const businessCount = await prisma.business.count({
+      where: { ownerId: session.id },
+    });
+
+    if (businessCount === 1) {
+      // First business! Start 14-day trial
+      const { startTrial } = await import('@/lib/subscriptionHelpers');
+      await startTrial(session.id).catch((error) => {
+        console.error('Failed to start trial:', error);
+        // Don't fail the request - trial can be started manually if needed
+      });
     }
 
     return NextResponse.json({ business }, { status: 201 });

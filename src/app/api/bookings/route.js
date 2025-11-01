@@ -39,13 +39,21 @@ export async function POST(request) {
       );
     }
 
-    // Get business with settings
+    // Get business with settings and owner subscription status
     const business = await prisma.business.findUnique({
       where: { id: businessId, isActive: true },
       include: {
         services: true,
         staff: true,
         closedDates: true,
+        owner: {
+          select: {
+            id: true,
+            subscriptionStatus: true,
+            trialStartsAt: true,
+            trialEndsAt: true,
+          },
+        },
       },
     });
 
@@ -53,6 +61,20 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'Business not found' },
         { status: 404 }
+      );
+    }
+
+    // Check business owner's subscription status
+    const { checkSubscriptionAccess } = await import('@/lib/subscriptionHelpers');
+    const { hasAccess } = await checkSubscriptionAccess(business.ownerId);
+
+    if (!hasAccess) {
+      return NextResponse.json(
+        {
+          error: 'Booking unavailable',
+          message: 'This business is currently unavailable for bookings. Please contact the business owner.'
+        },
+        { status: 403 }
       );
     }
 

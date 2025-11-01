@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import useStepValidation from '@/hooks/useStepValidation';
 import { useToast } from '@/contexts/ToastContext';
+import { fetchWithCSRF } from '@/hooks/useCSRF';
 import WizardStepper from '@/components/wizard/WizardStepper';
 import StepNavigation from '@/components/wizard/StepNavigation';
 import BusinessInfoStep from '@/components/wizard/BusinessInfoStep';
@@ -168,14 +169,14 @@ export default function BusinessWizardPage() {
       let response;
       if (businessId === 'new') {
         // Create new business
-        response = await fetch('/api/businesses', {
+        response = await fetchWithCSRF('/api/businesses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
       } else {
         // Update existing business
-        response = await fetch(`/api/businesses/${businessId}`, {
+        response = await fetchWithCSRF(`/api/businesses/${businessId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
