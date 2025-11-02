@@ -34,12 +34,17 @@ export async function createSession(user, subscription = null) {
 /**
  * Verify and decode session token
  * @param {string} token - JWT token
- * @returns {Promise<object|null>} User data or null if invalid
+ * @returns {Promise<object|null>} Full payload including user, subscription data, or null if invalid
  */
 export async function verifySession(token) {
   try {
     const { payload } = await jwtVerify(token, SESSION_SECRET);
-    return payload.user;
+    // Return full payload including subscription cache data
+    return {
+      ...payload.user,
+      subscription: payload.subscription,
+      subscriptionCheckedAt: payload.subscriptionCheckedAt,
+    };
   } catch (error) {
     return null;
   }

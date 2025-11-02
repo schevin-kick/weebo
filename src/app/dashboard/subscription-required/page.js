@@ -230,12 +230,12 @@ export default function SubscriptionRequiredPage() {
               </button>
             )}
 
-            <a
+            {/* <a
               href="/dashboard/billing"
               className="block text-center text-sm text-slate-600 hover:text-slate-900"
             >
               View billing details
-            </a>
+            </a> */}
 
             <a
               href="/api/auth/logout"

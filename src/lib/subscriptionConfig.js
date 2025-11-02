@@ -43,7 +43,8 @@ export async function getSubscriptionConfig() {
     if (redis) {
       const cached = await redis.get(PRICE_CACHE_KEY);
       if (cached) {
-        return JSON.parse(cached);
+        // Upstash Redis might return already-parsed object or JSON string
+        return typeof cached === 'string' ? JSON.parse(cached) : cached;
       }
     }
 
@@ -60,7 +61,7 @@ export async function getSubscriptionConfig() {
 
     // Cache for 1 hour
     if (redis) {
-      await redis.set(PRICE_CACHE_KEY, JSON.stringify(config), 'EX', CACHE_TTL);
+      await redis.set(PRICE_CACHE_KEY, JSON.stringify(config), { ex: CACHE_TTL });
     }
 
     console.log('[SubscriptionConfig] Loaded from Stripe:', config);

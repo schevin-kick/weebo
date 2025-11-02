@@ -187,11 +187,17 @@ export default function BusinessWizardPage() {
 
       const result = await response.json();
       const savedBusinessId = result.business.id;
+      const isFirstBusiness = result.isFirstBusiness;
       toast.success('Business saved successfully!', 5000);
 
-      // Redirect directly to the business dashboard
+      // Redirect to dashboard with query params if this is the first business
+      // This triggers cache bypass in SubscriptionCheck to show trial banner immediately
       setTimeout(() => {
-        router.push(`/dashboard/${savedBusinessId}`);
+        if (isFirstBusiness) {
+          router.push(`/dashboard/${savedBusinessId}?from=setup&first=true`);
+        } else {
+          router.push(`/dashboard/${savedBusinessId}`);
+        }
       }, 1500);
 
     } catch (error) {

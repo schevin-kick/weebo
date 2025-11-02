@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { exchangeLINECode, getLINEProfile, createSession, setSessionCookie } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { calculateAccess } from '@/lib/subscriptionHelpers';
 
 /**
  * GET /api/auth/callback/line
@@ -41,16 +42,33 @@ export async function GET(request) {
         pictureUrl: lineProfile.pictureUrl,
         email: lineProfile.email || null,
       },
+      // Fetch subscription fields for session caching
+      select: {
+        id: true,
+        lineUserId: true,
+        displayName: true,
+        pictureUrl: true,
+        email: true,
+        subscriptionStatus: true,
+        trialStartsAt: true,
+        trialEndsAt: true,
+        currentPeriodEnd: true,
+        canceledAt: true,
+      },
     });
 
-    // Create session token
+    // Calculate subscription access for session caching
+    const subscriptionData = calculateAccess(owner);
+    console.log(`[Auth] Login successful for user ${owner.id} - subscription status: ${subscriptionData.status}`);
+
+    // Create session token WITH subscription data for Tier 1 caching
     const sessionToken = await createSession({
       id: owner.id,
       lineUserId: owner.lineUserId,
       displayName: owner.displayName,
       pictureUrl: owner.pictureUrl,
       email: owner.email,
-    });
+    }, subscriptionData);
 
     // Set session cookie
     await setSessionCookie(sessionToken);

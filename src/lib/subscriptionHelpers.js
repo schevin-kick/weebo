@@ -10,7 +10,7 @@ import stripe from './stripe';
 import { getTrialDays } from './subscriptionConfig';
 
 const REDIS_CACHE_TTL = 600; // 10 minutes
-const SESSION_CACHE_TTL = 3600000; // 1 hour in milliseconds
+const SESSION_CACHE_TTL = 300000; // 5 minutes in milliseconds
 
 /**
  * Start a free trial for a business owner
@@ -84,6 +84,19 @@ export function calculateAccess(owner) {
     };
   }
 
+  // Incomplete subscription - payment processing or requires authentication
+  // Allow access temporarily while payment is being confirmed
+  if (owner.subscriptionStatus === 'incomplete') {
+    return {
+      hasAccess: true,
+      status: 'incomplete',
+      trialEndsAt: null,
+      daysLeft: null,
+      needsPayment: false, // Payment is in progress
+      currentPeriodEnd: owner.currentPeriodEnd,
+    };
+  }
+
   // Trialing - check if expired
   if (owner.subscriptionStatus === 'trialing') {
     const now = new Date();
@@ -112,8 +125,19 @@ export function calculateAccess(owner) {
     };
   }
 
+  // Incomplete expired - payment never completed within the time window
+  if (owner.subscriptionStatus === 'incomplete_expired') {
+    return {
+      hasAccess: false,
+      status: 'incomplete_expired',
+      trialEndsAt: owner.trialEndsAt,
+      daysLeft: 0,
+      needsPayment: true,
+    };
+  }
+
   // Past due or other inactive status
-  if (['past_due', 'unpaid', 'canceled'].includes(owner.subscriptionStatus)) {
+  if (['past_due', 'unpaid', 'canceled', 'paused'].includes(owner.subscriptionStatus)) {
     return {
       hasAccess: false,
       status: owner.subscriptionStatus,
@@ -135,24 +159,69 @@ export function calculateAccess(owner) {
 
 /**
  * Check subscription access with 3-tier caching
- * Tier 1: Session cache (fastest, 1 hour)
+ * Tier 1: Session cache (fastest, 5 minutes)
  * Tier 2: Redis cache (fast, 10 minutes)
  * Tier 3: Database (fallback)
  *
  * @param {string} businessOwnerId - BusinessOwner ID
  * @param {object} session - User session (optional, for Tier 1 cache)
+ * @param {object} options - Options: { bypassCache: boolean }
  * @returns {Promise<object>} Access information
  */
-export async function checkSubscriptionAccess(businessOwnerId, session = null) {
+export async function checkSubscriptionAccess(businessOwnerId, session = null, options = {}) {
+  const { bypassCache = false } = options;
+
+  // If bypass requested, skip caches and go straight to database
+  if (bypassCache) {
+    console.log(`[Subscription] Cache BYPASSED (forced fresh fetch) for user ${businessOwnerId}`);
+
+    // Query database directly (Tier 3)
+    const owner = await prisma.businessOwner.findUnique({
+      where: { id: businessOwnerId },
+      select: {
+        id: true,
+        subscriptionStatus: true,
+        trialStartsAt: true,
+        trialEndsAt: true,
+        currentPeriodEnd: true,
+        canceledAt: true,
+      },
+    });
+
+    const result = calculateAccess(owner);
+    console.log(`[Subscription] ✓ Database query complete (bypassed cache) for user ${businessOwnerId} - status: ${result.status}`);
+
+    // Still write to Redis for subsequent requests
+    if (redisEnabled && redis) {
+      try {
+        await redis.set(
+          `subscription:${businessOwnerId}`,
+          JSON.stringify(result),
+          { ex: REDIS_CACHE_TTL }
+        );
+        console.log(`[Subscription] ✓ Cached to Redis (Tier 2) for user ${businessOwnerId} - TTL: ${REDIS_CACHE_TTL}s`);
+      } catch (error) {
+        console.error('[Subscription] ✗ Redis cache write ERROR:', error);
+      }
+    }
+
+    return result;
+  }
+
   // Tier 1: Session cache check
   if (session?.subscription && session?.subscriptionCheckedAt) {
     const age = Date.now() - new Date(session.subscriptionCheckedAt).getTime();
+    const ageMinutes = Math.floor(age / 60000);
+
     if (age < SESSION_CACHE_TTL) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[Subscription] Cache HIT (session) for user ${businessOwnerId}`);
-      }
+      console.log(`[Subscription] ✓ Cache HIT (Tier 1: Session) for user ${businessOwnerId} - age: ${ageMinutes}m - status: ${session.subscription.status}`);
       return session.subscription;
+    } else {
+      console.log(`[Subscription] ✗ Session cache EXPIRED for user ${businessOwnerId} - age: ${ageMinutes}m (TTL: 5m)`);
     }
+  } else {
+    const reason = !session ? 'no session' : !session.subscription ? 'no subscription data' : 'no timestamp';
+    console.log(`[Subscription] ✗ Session cache MISS for user ${businessOwnerId} - reason: ${reason}`);
   }
 
   // Tier 2: Redis cache check
@@ -160,20 +229,21 @@ export async function checkSubscriptionAccess(businessOwnerId, session = null) {
     try {
       const cached = await redis.get(`subscription:${businessOwnerId}`);
       if (cached) {
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`[Subscription] Cache HIT (Redis) for user ${businessOwnerId}`);
-        }
-        return typeof cached === 'string' ? JSON.parse(cached) : cached;
+        const result = typeof cached === 'string' ? JSON.parse(cached) : cached;
+        console.log(`[Subscription] ✓ Cache HIT (Tier 2: Redis) for user ${businessOwnerId} - status: ${result.status}`);
+        return result;
+      } else {
+        console.log(`[Subscription] ✗ Redis cache MISS for user ${businessOwnerId}`);
       }
     } catch (error) {
-      console.error('[Subscription] Redis cache read error:', error);
+      console.error('[Subscription] ✗ Redis cache read ERROR:', error);
     }
+  } else {
+    console.log(`[Subscription] ⊘ Redis DISABLED - skipping Tier 2 cache`);
   }
 
   // Tier 3: Database fallback
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[Subscription] Cache MISS - querying DB for user ${businessOwnerId}`);
-  }
+  console.log(`[Subscription] → Querying database (Tier 3) for user ${businessOwnerId}`);
 
   const owner = await prisma.businessOwner.findUnique({
     where: { id: businessOwnerId },
@@ -188,6 +258,7 @@ export async function checkSubscriptionAccess(businessOwnerId, session = null) {
   });
 
   const result = calculateAccess(owner);
+  console.log(`[Subscription] ✓ Database query complete for user ${businessOwnerId} - status: ${result.status}`);
 
   // Cache result in Redis
   if (redisEnabled && redis) {
@@ -197,8 +268,9 @@ export async function checkSubscriptionAccess(businessOwnerId, session = null) {
         JSON.stringify(result),
         { ex: REDIS_CACHE_TTL }
       );
+      console.log(`[Subscription] ✓ Cached to Redis (Tier 2) for user ${businessOwnerId} - TTL: ${REDIS_CACHE_TTL}s`);
     } catch (error) {
-      console.error('[Subscription] Redis cache write error:', error);
+      console.error('[Subscription] ✗ Redis cache write ERROR:', error);
     }
   }
 
@@ -263,16 +335,24 @@ export async function syncStripeSubscription(businessOwnerId) {
 /**
  * Invalidate subscription cache
  * Call this after any subscription changes
+ * Note: This only invalidates Tier 2 (Redis) cache. Tier 1 (Session) cache
+ * will expire naturally within 1 hour or when user gets a new session token.
  * @param {string} businessOwnerId - BusinessOwner ID
  */
 export async function invalidateSubscriptionCache(businessOwnerId) {
   if (redisEnabled && redis) {
     try {
-      await redis.del(`subscription:${businessOwnerId}`);
-      console.log(`[Subscription] Cache invalidated for user ${businessOwnerId}`);
+      const deleted = await redis.del(`subscription:${businessOwnerId}`);
+      if (deleted) {
+        console.log(`[Subscription] ✓ Cache invalidated (Tier 2: Redis) for user ${businessOwnerId}`);
+      } else {
+        console.log(`[Subscription] ⊘ No cache to invalidate for user ${businessOwnerId} (key didn't exist)`);
+      }
     } catch (error) {
-      console.error('[Subscription] Failed to invalidate cache:', error);
+      console.error('[Subscription] ✗ Failed to invalidate cache:', error);
     }
+  } else {
+    console.log(`[Subscription] ⊘ Redis DISABLED - skipping cache invalidation for user ${businessOwnerId}`);
   }
 }
 

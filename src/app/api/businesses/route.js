@@ -229,16 +229,34 @@ export async function POST(request) {
       where: { ownerId: session.id },
     });
 
-    if (businessCount === 1) {
+    const isFirstBusiness = businessCount === 1;
+
+    if (isFirstBusiness) {
       // First business! Start 14-day trial
-      const { startTrial } = await import('@/lib/subscriptionHelpers');
-      await startTrial(session.id).catch((error) => {
+      const { startTrial, calculateAccess } = await import('@/lib/subscriptionHelpers');
+      const updatedOwner = await startTrial(session.id).catch((error) => {
         console.error('Failed to start trial:', error);
         // Don't fail the request - trial can be started manually if needed
+        return null;
       });
+
+      // Update session cookie with new subscription data to invalidate session cache
+      if (updatedOwner) {
+        const { createSession, setSessionCookie } = await import('@/lib/auth');
+        const subscriptionData = calculateAccess(updatedOwner);
+        const newSessionToken = await createSession({
+          id: session.id,
+          lineUserId: session.lineUserId,
+          displayName: session.displayName,
+          pictureUrl: session.pictureUrl,
+          email: session.email,
+        }, subscriptionData);
+        await setSessionCookie(newSessionToken);
+        console.log(`[Subscription] Updated session cookie with trial data for user ${session.id}`);
+      }
     }
 
-    return NextResponse.json({ business }, { status: 201 });
+    return NextResponse.json({ business, isFirstBusiness }, { status: 201 });
   } catch (error) {
     console.error('Create business error:', error);
     console.error('Error details:', error.message);
