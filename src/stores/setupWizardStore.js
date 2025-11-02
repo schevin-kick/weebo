@@ -623,6 +623,7 @@ const useSetupWizardStore = create(
       reset: () =>
         set({
           businessName: '',
+          logoUrl: '',
           businessHours: initialBusinessHours,
           defaultAppointmentDuration: 60,
           appointmentOnly: false,

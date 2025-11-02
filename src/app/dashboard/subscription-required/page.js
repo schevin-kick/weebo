@@ -14,27 +14,30 @@ import {
   AlertTriangle,
   LogOut,
 } from 'lucide-react';
-import { getFormattedPrice, getTrialText } from '@/lib/subscriptionConfig';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 
 export default function SubscriptionRequiredPage() {
-  const [subscription, setSubscription] = useState(null);
+  const { subscription, loading: subscriptionLoading, refetch } = useSubscription();
+  const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    loadSubscription();
+    loadConfig();
   }, []);
 
-  async function loadSubscription() {
+  async function loadConfig() {
     try {
-      const response = await fetch('/api/subscription/status');
-      if (!response.ok) throw new Error('Failed to load subscription');
+      // Only fetch config - subscription comes from context
+      const configRes = await fetch('/api/subscription/config');
 
-      const data = await response.json();
-      setSubscription(data);
+      if (!configRes.ok) throw new Error('Failed to load configuration');
+
+      const configData = await configRes.json();
+      setConfig(configData);
     } catch (err) {
-      console.error('Load subscription error:', err);
+      console.error('Load config error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -87,7 +90,7 @@ export default function SubscriptionRequiredPage() {
     }
   }
 
-  if (loading) {
+  if (loading || subscriptionLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
@@ -178,11 +181,15 @@ export default function SubscriptionRequiredPage() {
           {/* Pricing */}
           <div className="text-center mb-6">
             <div className="text-3xl font-bold text-orange-600 mb-1">
-              {getFormattedPrice()}
+              {config
+                ? `${config.priceAmount} ${config.priceCurrency}`
+                : 'Loading...'}
               <span className="text-lg text-slate-600 font-normal"> / month</span>
             </div>
-            {!isPastDue && (
-              <p className="text-sm text-slate-600">{getTrialText()}</p>
+            {!isPastDue && config && (
+              <p className="text-sm text-slate-600">
+                {config.trialDays}-day free trial included
+              </p>
             )}
           </div>
 

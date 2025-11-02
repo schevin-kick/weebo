@@ -13,12 +13,12 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-11-20.acacia',
-      appInfo: {
-        name: 'Kitsune Booking',
-        version: '1.0.0',
-      },
-    })
+    apiVersion: '2024-11-20.acacia',
+    appInfo: {
+      name: 'Kitsune',
+      version: '1.0.0',
+    },
+  })
   : null;
 
 export default stripe;

@@ -17,12 +17,13 @@ import {
   ArrowLeft,
   LogOut,
 } from 'lucide-react';
-import { getFormattedPrice, getTrialText } from '@/lib/subscriptionConfig';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 
 export default function BillingPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [subscription, setSubscription] = useState(null);
+  const { subscription, loading: subscriptionLoading, refetch } = useSubscription();
+  const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -32,18 +33,20 @@ export default function BillingPage() {
   const checkoutCanceled = searchParams.get('canceled') === 'true';
 
   useEffect(() => {
-    loadSubscription();
+    loadConfig();
   }, []);
 
-  async function loadSubscription() {
+  async function loadConfig() {
     try {
-      const response = await fetch('/api/subscription/status');
-      if (!response.ok) throw new Error('Failed to load subscription');
+      // Only fetch config - subscription comes from context
+      const configRes = await fetch('/api/subscription/config');
 
-      const data = await response.json();
-      setSubscription(data);
+      if (!configRes.ok) throw new Error('Failed to load configuration');
+
+      const configData = await configRes.json();
+      setConfig(configData);
     } catch (err) {
-      console.error('Load subscription error:', err);
+      console.error('Load config error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -96,7 +99,7 @@ export default function BillingPage() {
     }
   }
 
-  if (loading) {
+  if (loading || subscriptionLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
@@ -328,10 +331,16 @@ export default function BillingPage() {
 
           <div className="mb-4">
             <div className="text-3xl font-bold text-orange-600 mb-1">
-              {getFormattedPrice()}
+              {config
+                ? `${config.priceAmount} ${config.priceCurrency}`
+                : 'Loading...'}
               <span className="text-lg text-slate-600 font-normal"> / month</span>
             </div>
-            <p className="text-sm text-slate-600">{getTrialText()}</p>
+            <p className="text-sm text-slate-600">
+              {config
+                ? `${config.trialDays}-day free trial included`
+                : 'Loading...'}
+            </p>
           </div>
 
           <div className="space-y-2">

@@ -10,12 +10,32 @@ export default function BusinessDashboard() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [businesses, setBusinesses] = useState([]);
+  const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     checkAuth();
+    loadConfig();
   }, []);
+
+  async function loadConfig() {
+    try {
+      const res = await fetch('/api/subscription/config');
+      if (res.ok) {
+        const data = await res.json();
+        setConfig(data);
+      }
+    } catch (err) {
+      console.error('Failed to load config:', err);
+      // Use defaults if fetch fails
+      setConfig({
+        priceAmount: 200,
+        priceCurrency: 'TWD',
+        trialDays: 14,
+      });
+    }
+  }
 
   async function checkAuth() {
     try {
@@ -112,7 +132,7 @@ export default function BusinessDashboard() {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                    Kitsune Booking
+                    Kitsune
                   </h1>
                   <p className="text-sm text-slate-600">Business Dashboard</p>
                 </div>
@@ -179,11 +199,13 @@ export default function BusinessDashboard() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-blue-900 mb-1">
-                      14-Day Free Trial Included
+                      {config ? `${config.trialDays}-Day` : '14-Day'} Free Trial Included
                     </h3>
                     <p className="text-blue-700 text-sm">
-                      Creating your first business will start your <strong>14-day free trial</strong> of Kitsune.
-                      Full access to all features, no credit card required. After the trial, continue for just 210 TWD/month.
+                      Creating your first business will start your{' '}
+                      <strong>{config ? `${config.trialDays}-day` : '14-day'} free trial</strong> of Kitsune.
+                      Full access to all features, no credit card required. After the trial, continue for just{' '}
+                      {config ? `${config.priceAmount} ${config.priceCurrency}` : '210 TWD'}/month.
                     </p>
                   </div>
                 </div>

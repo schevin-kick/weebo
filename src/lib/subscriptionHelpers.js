@@ -20,7 +20,7 @@ const SESSION_CACHE_TTL = 3600000; // 1 hour in milliseconds
  */
 export async function startTrial(businessOwnerId) {
   const now = new Date();
-  const trialDays = getTrialDays();
+  const trialDays = await getTrialDays();
   const trialEndsAt = new Date(now.getTime() + trialDays * 24 * 60 * 60 * 1000);
 
   const owner = await prisma.businessOwner.update({

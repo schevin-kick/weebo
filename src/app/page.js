@@ -83,7 +83,7 @@ export default function Home() {
           <div className="text-center">
             <KitsuneLogo size="large" />
             <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mt-8 mb-2">
-              Kitsune Booking
+              Kitsune
             </h1>
             <p className="text-slate-500">
               Loading...
@@ -107,7 +107,7 @@ export default function Home() {
         <div className="text-center">
           <KitsuneLogo size="large" />
           <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mt-8 mb-2">
-            Kitsune Booking
+            Kitsune
           </h1>
           <p className="text-slate-500">
             Taking you to your dashboard...

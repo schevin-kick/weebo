@@ -51,16 +51,6 @@ export default function BusinessInfoStep() {
   const setDefaultAppointmentDuration = useSetupWizardStore((state) => state.setDefaultAppointmentDuration);
   const setRequiresApproval = useSetupWizardStore((state) => state.setRequiresApproval);
 
-  // Debug validation
-  console.log('Step 1 Validation:', {
-    businessName,
-    businessNameLength: businessName?.length,
-    defaultAppointmentDuration,
-    contactInfo,
-    businessHours,
-    isValid,
-  });
-
   return (
     <div className="max-w-3xl mx-auto">
       <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">

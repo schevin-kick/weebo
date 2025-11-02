@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Setup Wizard - Kitsune Booking',
+  title: 'Setup Wizard - Kitsune',
   description: 'Set up your LINE booking bot in minutes',
 };
 

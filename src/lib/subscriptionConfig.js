@@ -1,41 +1,112 @@
 /**
  * Subscription Configuration
- * Centralized configuration for subscription pricing and trial periods
- * Reads from environment variables to support multi-country deployments
+ * Fetches pricing and trial configuration from Stripe API
+ * Single source of truth - all config comes from Stripe Dashboard
  */
 
-export const SUBSCRIPTION_CONFIG = {
-  priceAmount: process.env.SUBSCRIPTION_PRICE_AMOUNT || '200',
-  priceCurrency: process.env.SUBSCRIPTION_PRICE_CURRENCY || 'TWD',
-  trialDays: parseInt(process.env.SUBSCRIPTION_TRIAL_DAYS || '14', 10),
-};
+import stripe from './stripe';
+import redis from './redis';
+
+const PRICE_CACHE_KEY = 'stripe:price:config';
+const CACHE_TTL = 60 * 60; // 1 hour
+
+/**
+ * Get subscription configuration from Stripe API
+ * Cached in Redis for performance (1 hour TTL)
+ * @returns {Promise<Object>} Subscription config
+ */
+export async function getSubscriptionConfig() {
+  if (!stripe) {
+    console.warn('[SubscriptionConfig] Stripe not configured, using defaults');
+    return {
+      priceAmount: 200,
+      priceCurrency: 'TWD',
+      trialDays: 14,
+      interval: 'month',
+      priceId: null,
+    };
+  }
+
+  if (!process.env.STRIPE_PRICE_ID) {
+    console.warn('[SubscriptionConfig] STRIPE_PRICE_ID not set, using defaults');
+    return {
+      priceAmount: 200,
+      priceCurrency: 'TWD',
+      trialDays: 14,
+      interval: 'month',
+      priceId: null,
+    };
+  }
+
+  try {
+    // Try cache first
+    if (redis) {
+      const cached = await redis.get(PRICE_CACHE_KEY);
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    }
+
+    // Fetch from Stripe
+    const price = await stripe.prices.retrieve(process.env.STRIPE_PRICE_ID);
+
+    const config = {
+      priceAmount: price.unit_amount / 100, // Convert cents to dollars
+      priceCurrency: price.currency.toUpperCase(),
+      trialDays: price.recurring?.trial_period_days || 14,
+      interval: price.recurring?.interval || 'month',
+      priceId: price.id,
+    };
+
+    // Cache for 1 hour
+    if (redis) {
+      await redis.set(PRICE_CACHE_KEY, JSON.stringify(config), 'EX', CACHE_TTL);
+    }
+
+    console.log('[SubscriptionConfig] Loaded from Stripe:', config);
+    return config;
+  } catch (error) {
+    console.error('[SubscriptionConfig] Error fetching from Stripe:', error);
+    // Fallback to defaults if Stripe fetch fails
+    return {
+      priceAmount: 200,
+      priceCurrency: 'TWD',
+      trialDays: 14,
+      interval: 'month',
+      priceId: process.env.STRIPE_PRICE_ID,
+    };
+  }
+}
 
 /**
  * Format price for display
- * @returns {string} Formatted price (e.g., "200 TWD")
+ * @returns {Promise<string>} Formatted price (e.g., "200 TWD")
  */
-export function getFormattedPrice() {
-  return `${SUBSCRIPTION_CONFIG.priceAmount} ${SUBSCRIPTION_CONFIG.priceCurrency}`;
+export async function getFormattedPrice() {
+  const config = await getSubscriptionConfig();
+  return `${config.priceAmount} ${config.priceCurrency}`;
 }
 
 /**
  * Get trial duration text
- * @returns {string} Trial text (e.g., "14-day free trial included")
+ * @returns {Promise<string>} Trial text (e.g., "14-day free trial included")
  */
-export function getTrialText() {
-  return `${SUBSCRIPTION_CONFIG.trialDays}-day free trial included`;
+export async function getTrialText() {
+  const config = await getSubscriptionConfig();
+  return `${config.trialDays}-day free trial included`;
 }
 
 /**
  * Get trial duration in days
- * @returns {number} Number of trial days
+ * @returns {Promise<number>} Number of trial days
  */
-export function getTrialDays() {
-  return SUBSCRIPTION_CONFIG.trialDays;
+export async function getTrialDays() {
+  const config = await getSubscriptionConfig();
+  return config.trialDays;
 }
 
 export default {
-  SUBSCRIPTION_CONFIG,
+  getSubscriptionConfig,
   getFormattedPrice,
   getTrialText,
   getTrialDays,

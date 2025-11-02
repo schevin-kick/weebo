@@ -2,6 +2,7 @@
  * Subscription Check Component
  * Wraps dashboard pages to check subscription status
  * Shows trial banner if trialing, redirects if no access
+ * Provides subscription data via context to avoid duplicate API calls
  */
 
 'use client';
@@ -9,6 +10,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import TrialBanner from './TrialBanner';
+import SubscriptionContext from '@/contexts/SubscriptionContext';
 
 const ALLOWED_PATHS_WITHOUT_SUBSCRIPTION = [
   '/dashboard/billing',
@@ -86,12 +88,12 @@ export default function SubscriptionCheck({ children }) {
   }
 
   return (
-    <>
+    <SubscriptionContext.Provider value={{ subscription, loading, error, refetch: checkSubscription }}>
       {/* Show trial banner if in trial */}
       <TrialBanner subscription={subscription} />
 
       {/* Render children */}
       {children}
-    </>
+    </SubscriptionContext.Provider>
   );
 }

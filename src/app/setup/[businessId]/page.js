@@ -244,7 +244,7 @@ export default function BusinessWizardPage() {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                    Kitsune Booking
+                    Kitsune
                   </h1>
                   <p className="text-sm text-slate-600">
                     {businessId === 'new' ? 'Create New Business' : 'Edit Business'}

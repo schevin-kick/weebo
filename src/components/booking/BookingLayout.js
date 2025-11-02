@@ -23,7 +23,7 @@ export default function BookingLayout({ businessName, logoUrl, children, stepper
               )}
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                  {businessName || 'Kitsune Booking'}
+                  {businessName || 'Kitsune'}
                 </h1>
                 <p className="text-xs text-slate-600">Book Your Appointment</p>
               </div>

@@ -232,7 +232,7 @@ export default function BookingSuccess({ bookingSummary, botBasicId, businessAdd
         {/* Footer Note */}
         <div className="text-center mt-6">
           <p className="text-sm text-slate-600">
-            Powered by <span className="font-semibold text-orange-600">Kitsune Booking</span>
+            Powered by <span className="font-semibold text-orange-600">Kitsune</span>
           </p>
         </div>
       </div>

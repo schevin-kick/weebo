@@ -149,10 +149,9 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
                 onClick={onClose}
                 className={`
                   flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative
-                  ${
-                    active
-                      ? 'bg-orange-50 text-orange-600 font-medium'
-                      : 'text-slate-700 hover:bg-slate-50'
+                  ${active
+                    ? 'bg-orange-50 text-orange-600 font-medium'
+                    : 'text-slate-700 hover:bg-slate-50'
                   }
                 `}
               >
@@ -177,7 +176,7 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
                 alt="Kitsune"
                 className="w-5 h-5 rounded object-cover"
               />
-              <span>Kitsune Booking</span>
+              <span>Kitsune</span>
             </div>
             <p className="mt-1">v{version}</p>
           </div>

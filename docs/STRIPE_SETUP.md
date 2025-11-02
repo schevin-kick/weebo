@@ -14,21 +14,29 @@ Kitsune uses Stripe for subscription management with the following flow:
 
 ### Pricing Configuration
 
-The subscription price, currency, and trial duration are fully configurable via environment variables, making it easy to deploy Kitsune in different countries:
+**Single Source of Truth: Stripe Dashboard**
 
-```bash
-SUBSCRIPTION_PRICE_AMOUNT=200      # Price amount (e.g., 200, 9.99, 1500)
-SUBSCRIPTION_PRICE_CURRENCY=TWD    # ISO currency code (TWD, USD, EUR, JPY, etc.)
-SUBSCRIPTION_TRIAL_DAYS=14         # Trial duration in days
-```
+Pricing configuration is fetched directly from the Stripe API using the price ID. This means:
+
+✅ **Change prices in Stripe Dashboard** → Instantly reflected in your app
+✅ **No redeployment needed** for price changes
+✅ **No environment variables to sync** (only `STRIPE_PRICE_ID` required)
+✅ **Guaranteed consistency** between what you charge and what you display
+
+The app automatically fetches:
+- Price amount (e.g., 200, 9.99, 1500)
+- Currency (TWD, USD, EUR, JPY, etc.)
+- Trial period days (if configured in Stripe)
+
+Results are cached in Redis for 1 hour for optimal performance.
 
 **Examples for different markets:**
-- **Taiwan**: `200 TWD`, 14-day trial
-- **USA**: `9.99 USD`, 7-day trial
-- **Japan**: `1500 JPY`, 30-day trial
-- **Europe**: `8.99 EUR`, 14-day trial
+- **Taiwan**: Create price of `200 TWD/month` with 14-day trial in Stripe Dashboard
+- **USA**: Create price of `9.99 USD/month` with 7-day trial in Stripe Dashboard
+- **Japan**: Create price of `1500 JPY/month` with 30-day trial in Stripe Dashboard
+- **Europe**: Create price of `8.99 EUR/month` with 14-day trial in Stripe Dashboard
 
-**Important**: The `STRIPE_PRICE_ID` must match the currency you create in Stripe Dashboard. If you change currency, you must create a new price in Stripe.
+**To change pricing**: Simply update the price in your Stripe Dashboard. No code changes or redeployment required.
 
 ---
 
@@ -150,14 +158,11 @@ STRIPE_PRICE_ID=price_xxxxxxxxxxxxx
 # Webhook secret (from Stripe CLI - see Step 5)
 STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx
 
-# Subscription Configuration (for multi-country support)
-SUBSCRIPTION_PRICE_AMOUNT=200
-SUBSCRIPTION_PRICE_CURRENCY=TWD
-SUBSCRIPTION_TRIAL_DAYS=14
-
 # App URL
 NEXTAUTH_URL=http://localhost:3000
 ```
+
+**Note**: Price, currency, and trial days are automatically fetched from Stripe using the `STRIPE_PRICE_ID`. No need to set them manually.
 
 ### Production (Environment Variables on Hosting Platform)
 
@@ -169,13 +174,10 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxxxxxxxxxxxx
 STRIPE_PRICE_ID=price_xxxxxxxxxxxxx  # LIVE price ID
 STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx  # From Step 6
 
-# Subscription Configuration (adjust for your target market)
-SUBSCRIPTION_PRICE_AMOUNT=200
-SUBSCRIPTION_PRICE_CURRENCY=TWD
-SUBSCRIPTION_TRIAL_DAYS=14
-
 NEXTAUTH_URL=https://yourdomain.com
 ```
+
+**Note**: Price, currency, and trial days are automatically fetched from Stripe using the `STRIPE_PRICE_ID`. No need to set them manually.
 
 ---
 
@@ -370,11 +372,13 @@ model BusinessOwner {
 
 ### Backend
 - [/src/lib/stripe.js](../src/lib/stripe.js) - Stripe SDK client
+- [/src/lib/subscriptionConfig.js](../src/lib/subscriptionConfig.js) - Fetch pricing from Stripe API (single source of truth)
 - [/src/lib/subscriptionHelpers.js](../src/lib/subscriptionHelpers.js) - Trial & access logic
 - [/src/app/api/stripe/create-checkout-session/route.js](../src/app/api/stripe/create-checkout-session/route.js) - Checkout
 - [/src/app/api/stripe/webhook/route.js](../src/app/api/stripe/webhook/route.js) - Webhook handler
 - [/src/app/api/stripe/portal/route.js](../src/app/api/stripe/portal/route.js) - Customer Portal
 - [/src/app/api/subscription/status/route.js](../src/app/api/subscription/status/route.js) - Status endpoint
+- [/src/app/api/subscription/config/route.js](../src/app/api/subscription/config/route.js) - Pricing config endpoint
 
 ### Frontend
 - [/src/components/TrialBanner.js](../src/components/TrialBanner.js) - Trial countdown

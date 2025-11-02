@@ -31,6 +31,7 @@ export default function BrochurePage() {
   const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.1 });
   const [activeNotification, setActiveNotification] = useState(0);
   const [modalImage, setModalImage] = useState(null);
+  const [config, setConfig] = useState(null);
 
   // Floating notifications data
   const notifications = [
@@ -64,6 +65,28 @@ export default function BrochurePage() {
     }
   ];
 
+  // Load pricing config
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        const res = await fetch('/api/subscription/config');
+        if (res.ok) {
+          const data = await res.json();
+          setConfig(data);
+        }
+      } catch (err) {
+        console.error('Failed to load config:', err);
+        // Use defaults if fetch fails
+        setConfig({
+          priceAmount: 200,
+          priceCurrency: 'TWD',
+          trialDays: 14,
+        });
+      }
+    }
+    loadConfig();
+  }, []);
+
   // Cycle through notifications
   useEffect(() => {
     const interval = setInterval(() => {
@@ -88,7 +111,7 @@ export default function BrochurePage() {
             className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6"
           >
             <TypewriterText
-              text="Kitsune Booking"
+              text="Kitsune"
               speed={80}
               className="block bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 bg-clip-text text-transparent"
               onComplete={() => setShowSubheading(true)}
@@ -677,7 +700,8 @@ export default function BrochurePage() {
               </div>
 
               <p className="text-slate-400 mt-8">
-                No credit card required • 5-minute setup • Free 14-day trial
+                No credit card required • 5-minute setup • Free{' '}
+                {config ? config.trialDays : 14}-day trial
               </p>
             </div>
           </motion.div>
@@ -691,7 +715,7 @@ export default function BrochurePage() {
             <div className="md:col-span-1">
               <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-orange-400" />
-                Kitsune Booking
+                Kitsune
               </h3>
               <p className="text-slate-400 text-sm mb-4">
                 The intelligent booking platform for modern businesses in Asia.
@@ -722,7 +746,7 @@ export default function BrochurePage() {
             </div>
           </div>
           <div className="border-t border-white/10 pt-8 text-center text-slate-400 text-sm">
-            <p>&copy; 2025 Kitsune Booking. All rights reserved. Made with ❤️ for Asian businesses.</p>
+            <p>&copy; 2025 Kitsune. All rights reserved. Made with ❤️ for Asian businesses.</p>
           </div>
         </div>
       </footer>
@@ -742,7 +766,7 @@ export default function BrochurePage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            "name": "Kitsune Booking",
+            "name": "Kitsune ",
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web",
             "offers": {
@@ -756,7 +780,7 @@ export default function BrochurePage() {
               "ratingValue": "4.8",
               "ratingCount": "127"
             },
-            "description": "Transform your business with Kitsune Booking - the intelligent appointment scheduling platform built for Asia. Seamless LINE integration, 5-minute setup, powerful analytics.",
+            "description": "Transform your business with Kitsune - the intelligent appointment scheduling platform built for Asia. Seamless LINE integration, 5-minute setup, powerful analytics.",
             "featureList": [
               "LINE Integration",
               "5-Minute Setup",
