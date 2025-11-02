@@ -14,6 +14,7 @@ import {
   useUpdateBookingNotes,
   useMarkNoShow,
 } from '@/hooks/useDashboardMutations';
+import { fetchWithCSRF } from '@/hooks/useCSRF';
 import useBookingsFilterStore from '@/stores/bookingsFilterStore';
 import StatusBadge from '@/components/dashboard/StatusBadge';
 import BookingDetailsModal from '@/components/dashboard/BookingDetailsModal';
@@ -151,7 +152,7 @@ export default function BookingsView({ businessId }) {
 
   const handleCancel = async (bookingId, reason) => {
     try {
-      const response = await fetch(`/api/bookings/${bookingId}/status`, {
+      const response = await fetchWithCSRF(`/api/bookings/${bookingId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'cancelled', cancellationReason: reason }),

@@ -55,8 +55,6 @@ model Business {
   website                String?
   enableReminders        Boolean       @default(true)
   lineChannelAccessToken String?
-  lineRefreshToken       String?
-  lineTokenExpiresAt     DateTime?
   messageTemplates       Json          @default("{\"reminder\": {\"body\": \"Don't forget your appointment tomorrow!\", \"header\": \"Reminder: Upcoming Appointment\"}, \"cancellation\": {\"body\": \"Your booking has been cancelled. We hope to see you again soon!\", \"header\": \"Booking Cancelled\"}, \"confirmation\": {\"body\": \"We look forward to seeing you!\", \"header\": \"Your booking is confirmed!\"}}")
   reminderHoursBefore    Int           @default(24)
   lineBotBasicId         String?

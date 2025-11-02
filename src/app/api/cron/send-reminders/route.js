@@ -40,8 +40,6 @@ export async function GET(request) {
         logoUrl: true,
         lineDeepLink: true,
         lineChannelAccessToken: true,
-        lineRefreshToken: true,
-        lineTokenExpiresAt: true,
         messageTemplates: true,
       },
     });

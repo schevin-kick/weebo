@@ -16,6 +16,7 @@ import {
   useUpdateBookingNotes,
   useMarkNoShow,
 } from '@/hooks/useDashboardMutations';
+import { fetchWithCSRF } from '@/hooks/useCSRF';
 import useCalendarViewStore from '@/stores/calendarViewStore';
 import BookingDetailsModal from '@/components/dashboard/BookingDetailsModal';
 import SkeletonCalendar from '@/components/loading/SkeletonCalendar';
@@ -173,9 +174,7 @@ export default function CalendarView({ businessId }) {
 
   const handleCancel = async (bookingId, reason) => {
     try {
-      // For cancellation, we'll need to extend the mutation hook
-      // For now, use direct fetch
-      const response = await fetch(`/api/bookings/${bookingId}/status`, {
+      const response = await fetchWithCSRF(`/api/bookings/${bookingId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'cancelled', cancellationReason: reason }),

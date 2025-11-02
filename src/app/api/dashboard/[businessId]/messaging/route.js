@@ -137,14 +137,8 @@ export async function PATCH(request, { params }) {
     }
 
     if (body.lineChannelAccessToken !== undefined) {
-      // Save manual channel access token
-      // Note: For manually entered tokens, we don't have refresh token or expiration
+      // Save manual channel access token (long-lived, does not expire)
       updateData.lineChannelAccessToken = body.lineChannelAccessToken;
-      // Clear OAuth-related fields since this is a manual token
-      if (body.lineChannelAccessToken) {
-        updateData.lineRefreshToken = null;
-        updateData.lineTokenExpiresAt = null;
-      }
     }
 
     const updatedBusiness = await prisma.business.update({
