@@ -50,13 +50,14 @@ export async function POST(request) {
       email: owner.email,
     }, subscriptionData);
 
-    await setSessionCookie(newSessionToken);
+    const newCsrfToken = await setSessionCookie(newSessionToken);
 
     console.log(`[Auth] Refreshed session for user ${owner.id} - subscription status: ${subscriptionData.status}`);
 
     return NextResponse.json({
       success: true,
       subscription: subscriptionData,
+      newCsrfToken,
     });
   } catch (error) {
     console.error('[Auth] Session refresh error:', error);

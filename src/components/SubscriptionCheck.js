@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import TrialBanner from './TrialBanner';
 import SubscriptionContext from '@/contexts/SubscriptionContext';
+import { updateCSRFToken } from '@/hooks/useCSRF';
 
 const ALLOWED_PATHS_WITHOUT_SUBSCRIPTION = [
   '/dashboard/billing',
@@ -89,6 +90,12 @@ export default function SubscriptionCheck({ children }) {
       }
 
       const data = await response.json();
+
+      // Update CSRF token if a new one was returned (session regenerated)
+      if (data.newCsrfToken) {
+        updateCSRFToken(data.newCsrfToken);
+      }
+
       setSubscription(data);
 
       // Refresh session cookie when returning from Stripe or first business creation
@@ -102,6 +109,10 @@ export default function SubscriptionCheck({ children }) {
           .then(result => {
             if (result.success) {
               console.log(`[SubscriptionCheck] Session cookie refreshed with status: ${result.subscription.status}`);
+              // Update CSRF token if returned
+              if (result.newCsrfToken) {
+                updateCSRFToken(result.newCsrfToken);
+              }
             }
           })
           .catch(err => console.error('[SubscriptionCheck] Failed to refresh session:', err));

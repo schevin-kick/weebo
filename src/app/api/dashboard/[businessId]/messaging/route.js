@@ -41,6 +41,7 @@ export async function GET(request, { params }) {
         webhookUrl: true,
         webhookAcknowledged: true,
         lineWebhookVerified: true,
+        heroBackgroundColor: true,
       },
     });
 
@@ -59,6 +60,7 @@ export async function GET(request, { params }) {
       webhookUrl: business.webhookUrl,
       webhookAcknowledged: business.webhookAcknowledged,
       lineWebhookVerified: business.lineWebhookVerified,
+      heroBackgroundColor: business.heroBackgroundColor || '#FFFFFF',
     });
   } catch (error) {
     console.error('Get messaging settings error:', error);
@@ -165,6 +167,17 @@ export async function PATCH(request, { params }) {
       updateData.webhookAcknowledged = body.webhookAcknowledged;
     }
 
+    if (body.heroBackgroundColor !== undefined) {
+      // Validate hex color format
+      if (body.heroBackgroundColor && !/^#[0-9A-Fa-f]{6}$/.test(body.heroBackgroundColor)) {
+        return NextResponse.json(
+          { error: 'Invalid color format. Must be hex format like #FFFFFF' },
+          { status: 400 }
+        );
+      }
+      updateData.heroBackgroundColor = body.heroBackgroundColor || '#FFFFFF';
+    }
+
     const updatedBusiness = await prisma.business.update({
       where: { id: businessId },
       data: updateData,
@@ -176,6 +189,7 @@ export async function PATCH(request, { params }) {
         messagingMode: true,
         webhookConfigured: true,
         webhookUrl: true,
+        heroBackgroundColor: true,
       },
     });
 
@@ -188,6 +202,7 @@ export async function PATCH(request, { params }) {
       messagingMode: updatedBusiness.messagingMode,
       webhookConfigured: updatedBusiness.webhookConfigured,
       webhookUrl: updatedBusiness.webhookUrl,
+      heroBackgroundColor: updatedBusiness.heroBackgroundColor || '#FFFFFF',
     });
   } catch (error) {
     console.error('Update messaging settings error:', error);

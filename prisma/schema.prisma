@@ -63,6 +63,7 @@ model Business {
   webhookUrl             String?
   lineWebhookVerified    Boolean               @default(false)
   webhookAcknowledged    Boolean               @default(false)
+  heroBackgroundColor    String?               @default("#FFFFFF")
   bookings               Booking[]
   owner                  BusinessOwner         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   closedDates            ClosedDate[]

@@ -335,7 +335,7 @@ function createBookingConfirmationMessage(booking, business) {
             size: 'full',
             aspectRatio: '20:13',
             aspectMode: 'fit',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: business.heroBackgroundColor || '#FFFFFF',
           }
         : undefined,
       body: {
@@ -531,6 +531,16 @@ function createBookingCancellationMessage(booking, business, reason = null) {
     altText: 'Your booking has been cancelled',
     contents: {
       type: 'bubble',
+      hero: business.logoUrl
+        ? {
+            type: 'image',
+            url: business.logoUrl,
+            size: 'full',
+            aspectRatio: '20:13',
+            aspectMode: 'fit',
+            backgroundColor: business.heroBackgroundColor || '#FFFFFF',
+          }
+        : undefined,
       body: {
         type: 'box',
         layout: 'vertical',
@@ -782,7 +792,7 @@ function createBookingReminderMessage(booking, business) {
             size: 'full',
             aspectRatio: '20:13',
             aspectMode: 'fit',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: business.heroBackgroundColor || '#FFFFFF',
           }
         : undefined,
       body: {

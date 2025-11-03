@@ -68,7 +68,10 @@ export default function LINEMessagePreview({
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden max-w-[280px]">
                   {/* Hero Image (if business has logo) */}
                   {business?.logoUrl && (
-                    <div className="w-full h-32 bg-white flex items-center justify-center">
+                    <div
+                      className="w-full h-32 flex items-center justify-center"
+                      style={{ backgroundColor: business?.heroBackgroundColor || '#FFFFFF' }}
+                    >
                       <img
                         src={business.logoUrl}
                         alt="Business Logo"

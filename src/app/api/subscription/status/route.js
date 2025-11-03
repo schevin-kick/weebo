@@ -54,6 +54,7 @@ export async function GET(request) {
 
     // If session cache expired or bypass was requested, update session cookie with fresh data
     // This ensures subsequent requests can use fresh session cache for 5 more minutes
+    let newCsrfToken = null;
     if (sessionCacheExpired || bypassCache) {
       try {
         const newSessionToken = await createSession({
@@ -63,7 +64,7 @@ export async function GET(request) {
           pictureUrl: session.pictureUrl,
           email: session.email,
         }, subscriptionInfo);
-        await setSessionCookie(newSessionToken);
+        newCsrfToken = await setSessionCookie(newSessionToken);
         console.log(`[Subscription] ✓ Session cookie refreshed for user ${session.id} - status: ${subscriptionInfo.status}`);
       } catch (error) {
         console.error('[Subscription] Failed to refresh session cookie:', error);
@@ -71,7 +72,14 @@ export async function GET(request) {
       }
     }
 
-    return NextResponse.json(subscriptionInfo);
+    // Include new CSRF token in response if session was regenerated
+    const response = { ...subscriptionInfo };
+    if (newCsrfToken) {
+      response.newCsrfToken = newCsrfToken;
+      console.log(`[Subscription] ✓ Returning new CSRF token to client for user ${session.id}`);
+    }
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error('[Subscription] Status check error:', error);
     return NextResponse.json(

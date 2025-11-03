@@ -230,6 +230,7 @@ export async function POST(request) {
     });
 
     const isFirstBusiness = businessCount === 1;
+    let newCsrfToken = null;
 
     if (isFirstBusiness) {
       // First business! Start 14-day trial
@@ -251,12 +252,18 @@ export async function POST(request) {
           pictureUrl: session.pictureUrl,
           email: session.email,
         }, subscriptionData);
-        await setSessionCookie(newSessionToken);
+        newCsrfToken = await setSessionCookie(newSessionToken);
         console.log(`[Subscription] Updated session cookie with trial data for user ${session.id}`);
       }
     }
 
-    return NextResponse.json({ business, isFirstBusiness }, { status: 201 });
+    const response = { business, isFirstBusiness };
+    if (newCsrfToken) {
+      response.newCsrfToken = newCsrfToken;
+      console.log(`[Business] Returning new CSRF token to client for user ${session.id}`);
+    }
+
+    return NextResponse.json(response, { status: 201 });
   } catch (error) {
     console.error('Create business error:', error);
     console.error('Error details:', error.message);
