@@ -1,16 +1,7 @@
 'use client';
 
 import { Clock, Sun, Moon } from 'lucide-react';
-
-const DAYS = [
-  { key: 'mon', label: 'Monday' },
-  { key: 'tue', label: 'Tuesday' },
-  { key: 'wed', label: 'Wednesday' },
-  { key: 'thu', label: 'Thursday' },
-  { key: 'fri', label: 'Friday' },
-  { key: 'sat', label: 'Saturday' },
-  { key: 'sun', label: 'Sunday' },
-];
+import { useTranslations } from 'next-intl';
 
 export default function BusinessHoursPicker({
   mode,
@@ -20,12 +11,26 @@ export default function BusinessHoursPicker({
   onSameDailyChange,
   onCustomDayChange,
 }) {
+  const t = useTranslations('settings.businessInfo.businessHours');
+  const tDays = useTranslations('shared.businessHours.days');
+  const tCommon = useTranslations('shared.businessHours');
+
+  const DAYS = [
+    { key: 'mon', label: tDays('monday') },
+    { key: 'tue', label: tDays('tuesday') },
+    { key: 'wed', label: tDays('wednesday') },
+    { key: 'thu', label: tDays('thursday') },
+    { key: 'fri', label: tDays('friday') },
+    { key: 'sat', label: tDays('saturday') },
+    { key: 'sun', label: tDays('sunday') },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Mode selector */}
       <div className="space-y-3">
         <label className="block text-sm font-medium text-slate-700">
-          Business Hours
+          {t('label')}
         </label>
 
         {/* 24/7 Option */}
@@ -41,10 +46,10 @@ export default function BusinessHoursPicker({
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-orange-500" />
-              <span className="font-medium text-slate-900">24/7</span>
+              <span className="font-medium text-slate-900">{t('allDay')}</span>
             </div>
             <p className="text-sm text-slate-600 mt-1">
-              Available anytime - customers pick time, you confirm
+              {t('allDayDesc')}
             </p>
           </div>
         </label>
@@ -62,10 +67,10 @@ export default function BusinessHoursPicker({
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <Sun className="w-5 h-5 text-orange-500" />
-              <span className="font-medium text-slate-900">Same hours every day</span>
+              <span className="font-medium text-slate-900">{t('sameHours')}</span>
             </div>
             <p className="text-sm text-slate-600 mt-1">
-              Set one time range for all days
+              {t('sameHoursDesc')}
             </p>
           </div>
         </label>
@@ -83,10 +88,10 @@ export default function BusinessHoursPicker({
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <Moon className="w-5 h-5 text-orange-500" />
-              <span className="font-medium text-slate-900">Custom hours per day</span>
+              <span className="font-medium text-slate-900">{t('customHours')}</span>
             </div>
             <p className="text-sm text-slate-600 mt-1">
-              Different hours for each day of the week
+              {t('customHoursDesc')}
             </p>
           </div>
         </label>
@@ -98,7 +103,7 @@ export default function BusinessHoursPicker({
           <div className="flex items-center gap-4">
             <div className="flex-1">
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Opening Time
+                {tCommon('openTime')}
               </label>
               <input
                 type="time"
@@ -109,7 +114,7 @@ export default function BusinessHoursPicker({
             </div>
             <div className="flex-1">
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Closing Time
+                {tCommon('closeTime')}
               </label>
               <input
                 type="time"
@@ -177,7 +182,7 @@ export default function BusinessHoursPicker({
                   </div>
                 </>
               ) : (
-                <div className="flex-1 text-sm text-slate-400 italic">Closed</div>
+                <div className="flex-1 text-sm text-slate-400 italic">{tCommon('closed')}</div>
               )}
             </div>
           ))}

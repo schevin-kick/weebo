@@ -11,6 +11,7 @@ import {
   Plus,
   Sparkles,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import {
   DndContext,
@@ -40,13 +41,6 @@ const PAGE_TYPE_ICONS = {
   'preset-datetime': { icon: Calendar, color: 'bg-indigo-500' },
 };
 
-const PAGE_TYPE_LABELS = {
-  custom: 'Custom Form',
-  'preset-services': 'Services',
-  'preset-staff': 'Staff Selection',
-  'preset-datetime': 'Date & Time',
-};
-
 function SortablePageCard({
   page,
   isActive,
@@ -57,6 +51,8 @@ function SortablePageCard({
   canMoveDown,
   onRequestDelete,
 }) {
+  const t = useTranslations('settings.pageBuilder.pageManager');
+
   const isDateTimePage = page.type === 'preset-datetime';
   const isDraggable = !isDateTimePage;
 
@@ -75,7 +71,16 @@ function SortablePageCard({
   };
 
   const { icon: Icon, color } = PAGE_TYPE_ICONS[page.type];
-  const label = PAGE_TYPE_LABELS[page.type];
+
+  const getPageTypeLabel = (type) => {
+    if (type === 'custom') return t('pageTypes.custom');
+    if (type === 'preset-services') return t('pageTypes.services');
+    if (type === 'preset-staff') return t('pageTypes.staff');
+    if (type === 'preset-datetime') return t('pageTypes.dateTime');
+    return type;
+  };
+
+  const label = getPageTypeLabel(page.type);
   const isPreset = page.type.startsWith('preset-');
 
   return (
@@ -112,12 +117,12 @@ function SortablePageCard({
             </div>
             {isDateTimePage && (
               <span className="flex-shrink-0 px-1.5 py-0.5 bg-orange-100 text-orange-700 text-[10px] font-semibold rounded">
-                Required
+                {t('required')}
               </span>
             )}
           </div>
           <div className="text-xs text-slate-500 truncate">
-            {isPreset ? label : `${page.components.length} fields`}
+            {isPreset ? label : t('fields', { count: page.components.length })}
           </div>
         </div>
       </div>
@@ -137,7 +142,7 @@ function SortablePageCard({
                 ? 'text-slate-300 bg-slate-50 cursor-not-allowed'
                 : 'text-slate-700 bg-slate-100 hover:text-orange-600 hover:bg-orange-100 hover:scale-110'
             }`}
-            title="Move up"
+            title={t('moveUp')}
           >
             <ChevronUp className="w-4 h-4" />
           </button>
@@ -152,7 +157,7 @@ function SortablePageCard({
                 ? 'text-slate-300 bg-slate-50 cursor-not-allowed'
                 : 'text-slate-700 bg-slate-100 hover:text-orange-600 hover:bg-orange-100 hover:scale-110'
             }`}
-            title="Move down"
+            title={t('moveDown')}
           >
             <ChevronDown className="w-4 h-4" />
           </button>
@@ -168,7 +173,7 @@ function SortablePageCard({
               onRequestDelete(page);
             }}
             className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-            title="Delete page"
+            title={t('deletePage')}
           >
             <Trash2 className="w-3 h-3" />
           </button>
@@ -179,6 +184,7 @@ function SortablePageCard({
 }
 
 export default function PageManagerSidebar() {
+  const t = useTranslations('settings.pageBuilder.pageManager');
   const pages = useSetupWizardStore((state) => state.pages);
   const currentEditingPageId = useSetupWizardStore((state) => state.currentEditingPageId);
   const addPage = useSetupWizardStore((state) => state.addPage);
@@ -218,7 +224,7 @@ export default function PageManagerSidebar() {
     const newPage = {
       id: generateId(),
       type: 'custom',
-      title: `Page ${customPagesCount + 1}`,
+      title: `${t('pageTypes.custom')} ${customPagesCount + 1}`,
       components: [],
     };
 
@@ -284,9 +290,9 @@ export default function PageManagerSidebar() {
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="mb-4">
-        <h3 className="font-semibold text-slate-900 mb-1">Pages</h3>
+        <h3 className="font-semibold text-slate-900 mb-1">{t('title')}</h3>
         <p className="text-xs text-slate-600">
-          Build your booking flow
+          {t('subtitle')}
         </p>
       </div>
 
@@ -315,10 +321,10 @@ export default function PageManagerSidebar() {
 
         <div className="relative flex items-center justify-center gap-2">
           <Plus className={`w-5 h-5 transition-transform duration-300 ${canAddCustomPage ? 'group-hover:rotate-90' : ''}`} />
-          <span>Add Custom Page</span>
+          <span>{t('addCustomPage')}</span>
         </div>
         <div className="relative text-xs mt-1 opacity-90">
-          {customPagesCount}/10 custom pages
+          {t('customPagesCount', { count: customPagesCount })}
         </div>
       </button>
 
@@ -336,9 +342,9 @@ export default function PageManagerSidebar() {
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Sparkles className="w-6 h-6 text-orange-500" />
               </div>
-              <p className="text-sm text-slate-600 mb-2">No pages yet</p>
+              <p className="text-sm text-slate-600 mb-2">{t('emptyTitle')}</p>
               <p className="text-xs text-slate-500">
-                Add a custom page or preset page to get started
+                {t('emptyDescription')}
               </p>
             </div>
           ) : (
@@ -383,8 +389,11 @@ export default function PageManagerSidebar() {
                   </div>
                   <div className="text-xs text-slate-500 truncate">
                     {activePage.type.startsWith('preset-')
-                      ? PAGE_TYPE_LABELS[activePage.type]
-                      : `${activePage.components.length} fields`}
+                      ? (activePage.type === 'preset-services' ? t('pageTypes.services') :
+                         activePage.type === 'preset-staff' ? t('pageTypes.staff') :
+                         activePage.type === 'preset-datetime' ? t('pageTypes.dateTime') :
+                         t('pageTypes.custom'))
+                      : t('fields', { count: activePage.components.length })}
                   </div>
                 </div>
               </div>
@@ -398,8 +407,7 @@ export default function PageManagerSidebar() {
         <div className="mt-4 pt-4 border-t border-slate-200">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-xs text-blue-900">
             <p>
-              <strong>{sortedPages.length}</strong> page{sortedPages.length !== 1 ? 's' : ''} in
-              your flow
+              <strong>{t('pagesInFlow', { count: sortedPages.length })}</strong>
             </p>
           </div>
         </div>
@@ -414,10 +422,10 @@ export default function PageManagerSidebar() {
             deletePage(deleteConfirm.id);
           }
         }}
-        title="Delete Page"
-        message={`Are you sure you want to delete "${deleteConfirm?.title}"? This action cannot be undone.`}
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t('deleteDialog.title')}
+        message={t('deleteDialog.message', { title: deleteConfirm?.title })}
+        confirmText={t('deleteDialog.confirmButton')}
+        cancelText={t('deleteDialog.cancelButton')}
         variant="danger"
       />
     </div>

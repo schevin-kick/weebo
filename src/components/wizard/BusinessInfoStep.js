@@ -1,6 +1,7 @@
 'use client';
 
 import { Store, Info, Clock } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import BusinessHoursPicker from '@/components/shared/BusinessHoursPicker';
 import DurationPicker from '@/components/shared/DurationPicker';
@@ -8,6 +9,7 @@ import ImageUpload from '@/components/shared/ImageUpload';
 import AddressAutocomplete from '@/components/shared/AddressAutocomplete';
 
 export default function BusinessInfoStep() {
+  const t = useTranslations('settings.businessInfo');
   const businessName = useSetupWizardStore((state) => state.businessName);
   const logoUrl = useSetupWizardStore((state) => state.logoUrl);
   const businessHours = useSetupWizardStore((state) => state.businessHours);
@@ -61,9 +63,9 @@ export default function BusinessInfoStep() {
               <Store className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">Business Information</h2>
+              <h2 className="text-2xl font-bold text-white">{t('title')}</h2>
               <p className="text-orange-50 text-sm mt-1">
-                Tell us about your business
+                {t('subtitle')}
               </p>
             </div>
           </div>
@@ -77,19 +79,19 @@ export default function BusinessInfoStep() {
               htmlFor="business-name"
               className="block text-sm font-medium text-slate-700 mb-2"
             >
-              Business Name <span className="text-orange-500">*</span>
+              {t('businessName.label')} <span className="text-orange-500">*</span>
             </label>
             <input
               id="business-name"
               type="text"
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
-              placeholder="e.g., Sakura Hair Salon"
+              placeholder={t('businessName.placeholder')}
               className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg"
             />
             {businessName && businessName.length < 3 && (
               <p className="text-sm text-orange-600 mt-2">
-                Business name must be at least 3 characters
+                {t('businessName.error')}
               </p>
             )}
           </div>
@@ -100,7 +102,7 @@ export default function BusinessInfoStep() {
               imageUrl={logoUrl}
               onChange={setLogoUrl}
               folder="logos"
-              label="Business Logo (optional)"
+              label={t('businessLogo.label')}
               aspectRatio="square"
               size="sm"
             />
@@ -125,10 +127,10 @@ export default function BusinessInfoStep() {
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Default Appointment Duration <span className="text-orange-500">*</span>
+                    {t('defaultDuration.label')} <span className="text-orange-500">*</span>
                   </label>
                   <p className="text-xs text-slate-500 mb-3">
-                    Used when no service is selected or services aren&apos;t configured. Individual services can override this duration.
+                    {t('defaultDuration.description')}
                   </p>
                   <DurationPicker
                     value={defaultAppointmentDuration}
@@ -136,7 +138,7 @@ export default function BusinessInfoStep() {
                   />
                   {defaultAppointmentDuration && defaultAppointmentDuration < 5 && (
                     <p className="text-sm text-orange-600 mt-2">
-                      Duration must be at least 5 minutes
+                      {t('defaultDuration.error')}
                     </p>
                   )}
                 </div>
@@ -155,11 +157,10 @@ export default function BusinessInfoStep() {
               />
               <div className="flex-1">
                 <div className="font-medium text-slate-900">
-                  Require manual approval for bookings
+                  {t('requireApproval.label')}
                 </div>
                 <p className="text-sm text-slate-600 mt-1">
-                  When enabled, all new bookings will be marked as "pending" and require your approval before being confirmed.
-                  When disabled, bookings are automatically confirmed.
+                  {t('requireApproval.description')}
                 </p>
               </div>
             </label>
@@ -170,10 +171,10 @@ export default function BusinessInfoStep() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Contact Information
+                  {t('contactInfo.label')}
                 </label>
                 <p className="text-xs text-slate-500 mb-4">
-                  Address is required. Other contact fields are optional.
+                  {t('contactInfo.description')}
                 </p>
               </div>
 
@@ -181,18 +182,18 @@ export default function BusinessInfoStep() {
                 {/* Address - Required with Autocomplete */}
                 <div>
                   <label htmlFor="address" className="block text-sm font-medium text-slate-700 mb-1">
-                    Physical Address <span className="text-orange-500">*</span>
+                    {t('contactInfo.address.label')} <span className="text-orange-500">*</span>
                   </label>
                   <AddressAutocomplete
                     id="address"
                     value={contactInfo.address}
                     onChange={(value) => updateContactInfo({ address: value })}
-                    placeholder="Start typing to search for address..."
+                    placeholder={t('contactInfo.address.placeholder')}
                     required
                   />
                   {!contactInfo.address && (
                     <p className="text-xs text-orange-600 mt-1">
-                      Address is required
+                      {t('contactInfo.address.error')}
                     </p>
                   )}
                 </div>
@@ -200,42 +201,42 @@ export default function BusinessInfoStep() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
-                      Phone Number
+                      {t('contactInfo.phone.label')}
                     </label>
                     <input
                       id="phone"
                       type="tel"
                       value={contactInfo.phone}
                       onChange={(e) => updateContactInfo({ phone: e.target.value })}
-                      placeholder="+66 12 345 6789"
+                      placeholder={t('contactInfo.phone.placeholder')}
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
 
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
-                      Email Address
+                      {t('contactInfo.email.label')}
                     </label>
                     <input
                       id="email"
                       type="email"
                       value={contactInfo.email}
                       onChange={(e) => updateContactInfo({ email: e.target.value })}
-                      placeholder="hello@business.com"
+                      placeholder={t('contactInfo.email.placeholder')}
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
 
                   <div className="md:col-span-2">
                     <label htmlFor="website" className="block text-sm font-medium text-slate-700 mb-1">
-                      Website or Social Media
+                      {t('contactInfo.website.label')}
                     </label>
                     <input
                       id="website"
                       type="url"
                       value={contactInfo.website}
                       onChange={(e) => updateContactInfo({ website: e.target.value })}
-                      placeholder="https://facebook.com/yourbusiness"
+                      placeholder={t('contactInfo.website.placeholder')}
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   </div>

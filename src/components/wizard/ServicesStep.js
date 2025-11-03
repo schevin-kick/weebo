@@ -2,10 +2,13 @@
 
 import { useState } from 'react';
 import { Scissors, Plus, Edit2, Trash2, Clock, DollarSign } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import ServiceModal from '@/components/modals/ServiceModal';
 
 function ServiceCard({ service, onEdit, onDelete }) {
+  const t = useTranslations('settings.services');
+
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-5 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
@@ -17,7 +20,7 @@ function ServiceCard({ service, onEdit, onDelete }) {
           <div className="flex items-center gap-4 mt-3">
             <div className="flex items-center gap-1.5 text-sm text-slate-600">
               <Clock className="w-4 h-4" />
-              <span>{service.duration} min</span>
+              <span>{service.duration} {t('durationUnit')}</span>
             </div>
             {service.price && (
               <div className="flex items-center gap-1.5 text-sm text-slate-600">
@@ -47,6 +50,7 @@ function ServiceCard({ service, onEdit, onDelete }) {
 }
 
 export default function ServicesStep() {
+  const t = useTranslations('settings.services');
   const services = useSetupWizardStore((state) => state.services);
   const addService = useSetupWizardStore((state) => state.addService);
   const updateService = useSetupWizardStore((state) => state.updateService);
@@ -89,14 +93,14 @@ export default function ServicesStep() {
                 <Scissors className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Services</h2>
+                <h2 className="text-2xl font-bold text-white">{t('title')}</h2>
                 <p className="text-orange-50 text-sm mt-1">
-                  Add services with different durations, prices, or descriptions (optional)
+                  {t('subtitle')}
                 </p>
               </div>
             </div>
             <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-              <span className="text-white font-semibold">{services.length} service{services.length !== 1 ? 's' : ''}</span>
+              <span className="text-white font-semibold">{t('count', { count: services.length })}</span>
             </div>
           </div>
         </div>
@@ -110,10 +114,10 @@ export default function ServicesStep() {
                 <Scissors className="w-8 h-8 text-orange-500" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                No services yet
+                {t('emptyTitle')}
               </h3>
               <p className="text-slate-600 mb-6 max-w-md mx-auto">
-                Services are optional. Add them if you offer multiple options with different durations, prices, or descriptions. Your default appointment duration will be used when no service is selected.
+                {t('emptyDescription')}
               </p>
             </div>
           )}
@@ -138,7 +142,7 @@ export default function ServicesStep() {
             className="w-full border-2 border-dashed border-slate-300 rounded-xl px-6 py-4 text-slate-600 hover:border-orange-400 hover:bg-orange-50 hover:text-orange-600 transition-all flex items-center justify-center gap-2 font-medium"
           >
             <Plus className="w-5 h-5" />
-            Add Service
+            {t('addButton')}
           </button>
         </div>
       </div>

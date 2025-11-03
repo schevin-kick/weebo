@@ -14,107 +14,110 @@ import {
   Hash,
   Info,
 } from 'lucide-react';
-
-const PRESET_FIELDS = [
-  {
-    fieldType: 'name',
-    name: 'Name',
-    icon: Type,
-    color: 'bg-blue-500',
-  },
-  {
-    fieldType: 'email',
-    name: 'Email',
-    icon: Mail,
-    color: 'bg-green-500',
-  },
-  {
-    fieldType: 'phone',
-    name: 'Phone',
-    icon: Phone,
-    color: 'bg-purple-500',
-  },
-  {
-    fieldType: 'notes',
-    name: 'Notes',
-    icon: FileText,
-    color: 'bg-amber-500',
-  },
-  {
-    fieldType: 'address',
-    name: 'Address',
-    icon: MapPin,
-    color: 'bg-red-500',
-  },
-  {
-    fieldType: 'dob',
-    name: 'Date of Birth',
-    icon: Calendar,
-    color: 'bg-indigo-500',
-  },
-];
-
-const CUSTOM_FIELD_TYPES = [
-  {
-    inputType: 'info-text',
-    name: 'Info Text',
-    description: 'Display information',
-    icon: Info,
-    color: 'bg-sky-500',
-  },
-  {
-    inputType: 'text',
-    name: 'Text Input',
-    description: 'Single line text',
-    icon: Type,
-    color: 'bg-slate-500',
-  },
-  {
-    inputType: 'select',
-    name: 'Select Dropdown',
-    description: 'Choose from options',
-    icon: List,
-    color: 'bg-cyan-500',
-  },
-  {
-    inputType: 'textarea',
-    name: 'Text Area',
-    description: 'Multi-line text',
-    icon: AlignLeft,
-    color: 'bg-teal-500',
-  },
-  {
-    inputType: 'radio',
-    name: 'Radio Buttons',
-    description: 'Select one option',
-    icon: Circle,
-    color: 'bg-violet-500',
-  },
-  {
-    inputType: 'checkbox',
-    name: 'Checkboxes',
-    description: 'Select multiple',
-    icon: CheckSquare,
-    color: 'bg-fuchsia-500',
-  },
-  {
-    inputType: 'number',
-    name: 'Number Input',
-    description: 'Numeric value',
-    icon: Hash,
-    color: 'bg-emerald-500',
-  },
-];
+import { useTranslations } from 'next-intl';
 
 export default function ComponentPalette({ onAddPresetField, onAddCustomField }) {
+  const t = useTranslations('settings.pageBuilder.componentPalette');
+
+  const PRESET_FIELDS = [
+    {
+      fieldType: 'name',
+      name: t('fieldTypes.name'),
+      icon: Type,
+      color: 'bg-blue-500',
+    },
+    {
+      fieldType: 'email',
+      name: t('fieldTypes.email'),
+      icon: Mail,
+      color: 'bg-green-500',
+    },
+    {
+      fieldType: 'phone',
+      name: t('fieldTypes.phone'),
+      icon: Phone,
+      color: 'bg-purple-500',
+    },
+    {
+      fieldType: 'notes',
+      name: t('fieldTypes.notes'),
+      icon: FileText,
+      color: 'bg-amber-500',
+    },
+    {
+      fieldType: 'address',
+      name: t('fieldTypes.address'),
+      icon: MapPin,
+      color: 'bg-red-500',
+    },
+    {
+      fieldType: 'dob',
+      name: t('fieldTypes.dob'),
+      icon: Calendar,
+      color: 'bg-indigo-500',
+    },
+  ];
+
+  const CUSTOM_FIELD_TYPES = [
+    {
+      inputType: 'info-text',
+      name: t('fieldTypes.infoText.name'),
+      description: t('fieldTypes.infoText.description'),
+      icon: Info,
+      color: 'bg-sky-500',
+    },
+    {
+      inputType: 'text',
+      name: t('fieldTypes.text.name'),
+      description: t('fieldTypes.text.description'),
+      icon: Type,
+      color: 'bg-slate-500',
+    },
+    {
+      inputType: 'select',
+      name: t('fieldTypes.select.name'),
+      description: t('fieldTypes.select.description'),
+      icon: List,
+      color: 'bg-cyan-500',
+    },
+    {
+      inputType: 'textarea',
+      name: t('fieldTypes.textarea.name'),
+      description: t('fieldTypes.textarea.description'),
+      icon: AlignLeft,
+      color: 'bg-teal-500',
+    },
+    {
+      inputType: 'radio',
+      name: t('fieldTypes.radio.name'),
+      description: t('fieldTypes.radio.description'),
+      icon: Circle,
+      color: 'bg-violet-500',
+    },
+    {
+      inputType: 'checkbox',
+      name: t('fieldTypes.checkbox.name'),
+      description: t('fieldTypes.checkbox.description'),
+      icon: CheckSquare,
+      color: 'bg-fuchsia-500',
+    },
+    {
+      inputType: 'number',
+      name: t('fieldTypes.number.name'),
+      description: t('fieldTypes.number.description'),
+      icon: Hash,
+      color: 'bg-emerald-500',
+    },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Preset Fields Section */}
       <div>
         <div className="mb-3">
-          <h3 className="font-semibold text-slate-900 text-sm">Quick Add Fields</h3>
+          <h3 className="font-semibold text-slate-900 text-sm">{t('quickAdd.title')}</h3>
           <p className="text-xs text-slate-600 mt-0.5">
-            Common fields with built-in validation
+            {t('quickAdd.subtitle')}
           </p>
         </div>
 
@@ -157,9 +160,9 @@ export default function ComponentPalette({ onAddPresetField, onAddCustomField })
       {/* Custom Fields Section */}
       <div>
         <div className="mb-3">
-          <h3 className="font-semibold text-slate-900 text-sm">Custom Fields</h3>
+          <h3 className="font-semibold text-slate-900 text-sm">{t('customFields.title')}</h3>
           <p className="text-xs text-slate-600 mt-0.5">
-            Build your own form inputs
+            {t('customFields.subtitle')}
           </p>
         </div>
 
@@ -208,11 +211,11 @@ export default function ComponentPalette({ onAddPresetField, onAddCustomField })
 
       {/* Info */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-900">
-        <p className="font-medium mb-1">How it works</p>
+        <p className="font-medium mb-1">{t('howItWorks.title')}</p>
         <ul className="text-blue-700 space-y-1">
-          <li>• Quick Add: Instant preset fields</li>
-          <li>• Custom: Configure your own</li>
-          <li>• Reorder: Drag fields up/down</li>
+          <li>• {t('howItWorks.quickAdd')}</li>
+          <li>• {t('howItWorks.custom')}</li>
+          <li>• {t('howItWorks.reorder')}</li>
         </ul>
       </div>
     </div>

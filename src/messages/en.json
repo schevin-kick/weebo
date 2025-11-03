@@ -40,7 +40,9 @@
       "day": "day",
       "week": "week",
       "month": "month",
-      "year": "year"
+      "year": "year",
+      "hour": "h",
+      "minute": "m"
     },
     "status": {
       "pending": "Pending",
@@ -479,6 +481,126 @@
         "noShowFailed": "Failed to mark as no-show",
         "completedMarked": "Marked as completed",
         "completedFailed": "Failed to mark as completed"
+      },
+      "modal": {
+        "title": "Booking Details",
+        "customer": "Customer",
+        "lineUser": "LINE User",
+        "bookingInfo": "Booking Information",
+        "dateTime": "Date & Time",
+        "service": "Service",
+        "staff": "Staff",
+        "duration": "Duration",
+        "customerResponses": "Customer Responses",
+        "response": "Response",
+        "cancelled": "Cancelled",
+        "cancelledBy": "Cancelled by",
+        "businessOwner": "Business Owner",
+        "customer": "Customer",
+        "date": "Date",
+        "reason": "Reason",
+        "noShow": "Customer did not show up",
+        "internalNotes": "Internal Notes",
+        "notesPlaceholder": "Add notes about this booking (visible only to you)",
+        "saveNotes": "Save Notes",
+        "saving": "Saving...",
+        "confirmBooking": "Confirm Booking",
+        "confirming": "Confirming...",
+        "cancelBooking": "Cancel Booking",
+        "cancelling": "Cancelling...",
+        "markNoShow": "Mark as No-Show",
+        "marking": "Marking...",
+        "markCompleted": "Mark as Completed",
+        "close": "Close",
+        "cancelDialog": {
+          "title": "Cancel Booking",
+          "confirmText": "Cancel Booking",
+          "cancelText": "Keep Booking",
+          "reasonLabel": "Cancellation Reason (optional)",
+          "reasonPlaceholder": "This will be sent to the customer via LINE"
+        }
+      }
+    },
+    "bookings": {
+      "title": "Bookings",
+      "subtitle": "{total} total bookings • Showing {showing}",
+      "refreshTitle": "Refresh bookings",
+      "searchPlaceholder": "Search by customer name...",
+      "filters": {
+        "allStatus": "All Status"
+      },
+      "table": {
+        "headers": {
+          "dateTime": "Date & Time",
+          "customer": "Customer",
+          "service": "Service",
+          "staff": "Staff",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "unknownCustomer": "Unknown",
+        "noService": "-",
+        "anyStaff": "Any",
+        "viewButton": "View",
+        "noBookings": "No bookings found"
+      },
+      "pagination": {
+        "page": "Page {current} of {total}",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "messages": {
+        "confirmed": "Booking confirmed and customer notified!",
+        "confirmFailed": "Failed to confirm booking",
+        "cancelled": "Booking cancelled and customer notified",
+        "cancelFailed": "Failed to cancel booking",
+        "notesSaved": "Notes saved",
+        "notesFailed": "Failed to save notes",
+        "noShowMarked": "Marked as no-show",
+        "noShowFailed": "Failed to mark as no-show",
+        "completedMarked": "Marked as completed",
+        "completedFailed": "Failed to mark as completed"
+      }
+    },
+    "qrCode": {
+      "title": "QR Code Generator",
+      "subtitle": "Generate and share your booking QR code",
+      "refreshTitle": "Refresh",
+      "actions": {
+        "download": "Download",
+        "print": "Print",
+        "copyLink": "Copy Link",
+        "copied": "Copied!"
+      },
+      "bookingLink": "Booking Link:",
+      "customize": {
+        "title": "Customize QR Code",
+        "size": "Size: {size}px",
+        "sizeSmall": "Small",
+        "sizeLarge": "Large",
+        "color": "Color",
+        "showLogo": "Show business logo in center",
+        "logoNote": "Logo will be overlaid on the QR code with white background",
+        "downloadFormat": "Download Format",
+        "formatPNG": "PNG (Recommended)",
+        "formatJPG": "JPG"
+      },
+      "usageTips": {
+        "title": "Usage Tips",
+        "tip1": "Print and display at your business location",
+        "tip2": "Share on social media or marketing materials",
+        "tip3": "Include in email signatures or newsletters",
+        "tip4": "Test the QR code before printing large batches"
+      },
+      "print": {
+        "title": "Print QR Code - {businessName}",
+        "scanToBook": "Scan to book an appointment"
+      },
+      "messages": {
+        "downloaded": "QR code downloaded",
+        "printOpened": "Opening print dialog",
+        "linkCopied": "Link copied to clipboard",
+        "generateFailed": "Failed to generate QR code"
       }
     }
   },
@@ -502,6 +624,441 @@
     "reminder": {
       "header": "Reminder: Upcoming Appointment",
       "body": "Don't forget your appointment tomorrow!"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your business configuration",
+    "refreshButton": "Refresh",
+    "previewButton": "Preview",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "unsavedWarning": "You have unsaved changes. Click \"Save Changes\" to persist your modifications.",
+    "saveAllChanges": "Save All Changes",
+    "tabs": {
+      "businessInfo": "Business Info",
+      "services": "Services",
+      "staff": "Staff",
+      "bookingForm": "Booking Form"
+    },
+    "businessInfo": {
+      "title": "Business Information",
+      "subtitle": "Tell us about your business",
+      "businessName": {
+        "label": "Business Name",
+        "placeholder": "e.g., Sakura Hair Salon",
+        "error": "Business name must be at least 3 characters"
+      },
+      "businessLogo": {
+        "label": "Business Logo (optional)"
+      },
+      "businessHours": {
+        "label": "Business Hours",
+        "allDay": "24/7",
+        "allDayDesc": "Available anytime - customers pick time, you confirm",
+        "sameHours": "Same hours every day",
+        "sameHoursDesc": "Set one time range for all days",
+        "customHours": "Custom hours per day",
+        "customHoursDesc": "Different hours for each day of the week"
+      },
+      "defaultDuration": {
+        "label": "Default Appointment Duration",
+        "description": "Used when no service is selected or services aren't configured. Individual services can override this duration.",
+        "error": "Duration must be at least 5 minutes"
+      },
+      "requireApproval": {
+        "label": "Require manual approval for bookings",
+        "description": "When enabled, all new bookings will be marked as \"pending\" and require your approval before being confirmed. When disabled, bookings are automatically confirmed."
+      },
+      "contactInfo": {
+        "label": "Contact Information",
+        "description": "Address is required. Other contact fields are optional.",
+        "address": {
+          "label": "Physical Address",
+          "placeholder": "Start typing to search for address...",
+          "error": "Address is required"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "placeholder": "+66 12 345 6789"
+        },
+        "email": {
+          "label": "Email Address",
+          "placeholder": "hello@business.com"
+        },
+        "website": {
+          "label": "Website or Social Media",
+          "placeholder": "https://facebook.com/yourbusiness"
+        }
+      }
+    },
+    "services": {
+      "title": "Services",
+      "subtitle": "Add services with different durations, prices, or descriptions (optional)",
+      "count": "{count, plural, one {# service} other {# services}}",
+      "emptyTitle": "No services yet",
+      "emptyDescription": "Services are optional. Add them if you offer multiple options with different durations, prices, or descriptions. Your default appointment duration will be used when no service is selected.",
+      "addButton": "Add Service",
+      "durationUnit": "min"
+    },
+    "staff": {
+      "title": "Staff",
+      "subtitle": "Add your team members (optional)",
+      "count": "{count, plural, one {# staff member} other {# staff}}",
+      "emptyTitle": "No staff members yet",
+      "emptyDescription": "Add your team members. This is optional - if you're a solo operator, you can skip this step.",
+      "addButton": "Add Staff Member",
+      "availability": {
+        "businessHours": "Follows business hours",
+        "notSet": "Not set",
+        "noAvailability": "No availability set",
+        "allWeek": "Available all week",
+        "daysPerWeek": "{count} days/week"
+      }
+    },
+    "pageBuilder": {
+      "title": "Build Your Pages",
+      "subtitle": "Create the booking flow for your customers",
+      "selectPageWarning": "Please select a custom page first",
+      "presetPageError": "Cannot add fields to preset pages",
+      "fieldAdded": "Added {field} field",
+      "infoTextAdded": "Added Info Text component",
+      "infoTextPlaceholder": "Enter your information text here...",
+      "presetFields": {
+        "name": "Your Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "notes": "Additional Notes",
+        "address": "Your Address",
+        "dob": "Date of Birth"
+      },
+      "pageManager": {
+        "title": "Pages",
+        "subtitle": "Build your booking flow",
+        "addCustomPage": "Add Custom Page",
+        "customPagesCount": "{count}/10 custom pages",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "deletePage": "Delete page",
+        "required": "Required",
+        "fields": "{count, plural, one {# field} other {# fields}}",
+        "pagesInFlow": "{count, plural, one {# page} other {# pages}} in your flow",
+        "emptyTitle": "No pages yet",
+        "emptyDescription": "Add a custom page or preset page to get started",
+        "deleteDialog": {
+          "title": "Delete Page",
+          "message": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+          "confirmButton": "Delete",
+          "cancelButton": "Cancel"
+        },
+        "pageTypes": {
+          "custom": "Custom Form",
+          "services": "Services",
+          "staff": "Staff Selection",
+          "dateTime": "Date & Time"
+        }
+      },
+      "presetPages": {
+        "title": "Add Preset Pages",
+        "subtitle": "These special pages handle common booking flows",
+        "required": "Required",
+        "services": {
+          "name": "Services Page",
+          "description": "Display your services for customers to choose from"
+        },
+        "staff": {
+          "name": "Staff Selection",
+          "description": "Let customers choose their preferred staff member"
+        },
+        "dateTime": {
+          "name": "Date & Time Picker",
+          "description": "Date and time selection for appointments"
+        },
+        "infoTitle": "About Preset Pages",
+        "infoDescription": "Date & Time is required for all bookings and will always appear last. Other preset pages can be positioned anywhere in your flow by reordering them in the page list."
+      },
+      "componentPalette": {
+        "quickAdd": {
+          "title": "Quick Add Fields",
+          "subtitle": "Common fields with built-in validation"
+        },
+        "customFields": {
+          "title": "Custom Fields",
+          "subtitle": "Build your own form inputs"
+        },
+        "fieldTypes": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "notes": "Notes",
+          "address": "Address",
+          "dob": "Date of Birth",
+          "infoText": {
+            "name": "Info Text",
+            "description": "Display information"
+          },
+          "text": {
+            "name": "Text Input",
+            "description": "Single line text"
+          },
+          "select": {
+            "name": "Select Dropdown",
+            "description": "Choose from options"
+          },
+          "textarea": {
+            "name": "Text Area",
+            "description": "Multi-line text"
+          },
+          "radio": {
+            "name": "Radio Buttons",
+            "description": "Select one option"
+          },
+          "checkbox": {
+            "name": "Checkboxes",
+            "description": "Select multiple"
+          },
+          "number": {
+            "name": "Number Input",
+            "description": "Numeric value"
+          }
+        },
+        "howItWorks": {
+          "title": "How it works",
+          "quickAdd": "Quick Add: Instant preset fields",
+          "custom": "Custom: Configure your own",
+          "reorder": "Reorder: Drag fields up/down"
+        }
+      },
+      "canvas": {
+        "selectPage": "Select a page from the sidebar to edit",
+        "pageTitle": "Page Title",
+        "enterPageTitle": "Enter page title",
+        "save": "Save",
+        "cancel": "Cancel",
+        "editPageTitle": "Edit page title",
+        "presetPageInfo": "This is a preset page with automatic functionality",
+        "fields": "{count, plural, one {# field} other {# fields}}",
+        "presetPageTitle": "Preset Page",
+        "presetPageDescription": {
+          "services": "This page automatically displays your services from your business configuration. Customers can choose which service they want to book.",
+          "staff": "This page automatically displays your staff members from your business configuration. Customers can choose their preferred staff member.",
+          "dateTime": "This page automatically displays a date and time picker from your business configuration. This is the final step where customers select their appointment time."
+        },
+        "emptyCustomPage": {
+          "title": "Empty Page",
+          "description": "Add fields from the Component Palette on the right to build your custom form."
+        },
+        "componentDisplay": {
+          "infoText": "Info Text",
+          "noContent": "No content",
+          "required": "Required",
+          "optional": "Optional",
+          "validated": "Validated",
+          "noValidation": "No validation"
+        },
+        "componentActions": {
+          "moveUp": "Move up",
+          "moveDown": "Move down",
+          "configure": "Configure",
+          "delete": "Delete component"
+        },
+        "deleteComponentDialog": {
+          "title": "Delete Component",
+          "message": "Are you sure you want to delete this component? This action cannot be undone.",
+          "confirmButton": "Delete",
+          "cancelButton": "Cancel"
+        }
+      },
+      "configPanel": {
+        "title": "Configure Component",
+        "close": "Close",
+        "save": "Save Configuration",
+        "cancel": "Cancel",
+        "required": "required",
+        "titles": {
+          "presetField": "Configure {field} Field",
+          "infoText": "Configure Info Text",
+          "customField": "Configure Custom Field"
+        },
+        "infoText": {
+          "title": "Info Text Component",
+          "description": "Display informational text to customers. No input required.",
+          "contentLabel": "Content",
+          "contentPlaceholder": "Enter the information you want to display to customers...",
+          "contentHelper": "This text will be displayed to customers in the booking flow",
+          "styleLabel": "Display Style",
+          "styleHelper": "Choose how the information should be visually presented",
+          "styles": {
+            "info": "Info",
+            "warning": "Warning",
+            "success": "Success",
+            "plain": "Plain"
+          }
+        },
+        "presetField": {
+          "title": "{field} Field",
+          "description": "This is a preset field with built-in formatting and behavior.",
+          "labelLabel": "Field Label",
+          "labelPlaceholder": "e.g., \"Your {field}\"",
+          "labelHelper": "The text shown to customers above this field",
+          "requiredLabel": "Required Field",
+          "requiredHelper": "Customers must fill this field",
+          "validationLabel": "Enable Validation",
+          "validationHelper": "Validate email format"
+        },
+        "customField": {
+          "title": "Custom Field Configuration",
+          "description": "Configure your custom form field",
+          "labelLabel": "Field Label",
+          "labelPlaceholder": "e.g., Party Size",
+          "labelHelper": "The text shown to customers above this field",
+          "requiredLabel": "Required Field",
+          "requiredHelper": "Customers must fill this field",
+          "placeholderLabel": "Placeholder Text",
+          "placeholderPlaceholder": "e.g., Enter your preference...",
+          "placeholderHelper": "Optional hint text shown in the input",
+          "optionsLabel": "Options",
+          "optionsHelper": "Enter each option on a new line. Empty options will be removed.",
+          "optionPlaceholder": "Option {index}",
+          "addOption": "+ Add Option",
+          "removeOption": "Remove option",
+          "minValueLabel": "Min Value (optional)",
+          "minValuePlaceholder": "No minimum",
+          "maxValueLabel": "Max Value (optional)",
+          "maxValuePlaceholder": "No maximum"
+        },
+        "errors": {
+          "contentRequired": "Content is required for info text components",
+          "labelRequired": "Field Label is required",
+          "optionsRequired": "At least one non-empty option is required for this field type"
+        }
+      }
+    }
+  },
+  "setup": {
+    "logo": "Kitsune",
+    "subtitle": "Business Dashboard",
+    "logoutButton": "Logout",
+    "welcomeMessage": "Welcome back, {name}!",
+    "description": "Manage your booking systems and create new businesses.",
+    "createNewBusiness": "Create New Business",
+    "trialNotice": {
+      "title": "{count}-Day Free Trial Included",
+      "description": "Creating your first business will start your {count}-day free trial of Kitsune. Full access to all features, no credit card required. After the trial, continue for just {price} {currency}/month."
+    },
+    "noBusiness": {
+      "title": "No businesses yet",
+      "description": "Create your first booking system to get started. You can manage multiple businesses from this dashboard.",
+      "button": "Create Your First Business"
+    },
+    "businessCard": {
+      "servicesCount": "{count, plural, one {# service} other {# services}}",
+      "staffCount": "{count, plural, one {# staff} other {# staff}}",
+      "pendingBadge": "{count} pending bookings",
+      "manageButton": "Manage",
+      "downloadQR": "Download QR Code"
+    }
+  },
+  "modals": {
+    "service": {
+      "editTitle": "Edit Service",
+      "addTitle": "Add Service",
+      "name": {
+        "label": "Service Name",
+        "placeholder": "e.g., Haircut, Massage, Math Tutoring",
+        "error": "Service name must be at least 3 characters"
+      },
+      "duration": {
+        "label": "Duration",
+        "error": "Duration must be at least 5 minutes"
+      },
+      "description": {
+        "label": "Description",
+        "optional": "(optional)",
+        "placeholder": "Brief description of the service...",
+        "characterCount": "{count}/100 characters",
+        "error": "Description must be at most 100 characters"
+      },
+      "price": {
+        "label": "Price",
+        "placeholder": "0.00"
+      },
+      "updateButton": "Update Service",
+      "addButton": "Add Service",
+      "saving": "Saving...",
+      "cancelButton": "Cancel",
+      "discardDialog": {
+        "title": "Discard Changes?",
+        "message": "You have unsaved changes. Are you sure you want to close without saving?",
+        "discardButton": "Discard",
+        "keepEditingButton": "Keep Editing"
+      }
+    },
+    "staff": {
+      "editTitle": "Edit Staff Member",
+      "addTitle": "Add Staff Member",
+      "photo": {
+        "label": "Photo",
+        "optional": "(optional)",
+        "helperText": "Click to upload photo (Max 1MB)"
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "e.g., Sarah Johnson",
+        "error": "Staff name must be at least 3 characters"
+      },
+      "specialty": {
+        "label": "Specialty",
+        "optional": "(optional)",
+        "placeholder": "e.g., Senior Stylist, Massage Therapist"
+      },
+      "description": {
+        "label": "Description",
+        "optional": "(optional)",
+        "placeholder": "Brief bio or description...",
+        "characterCount": "{count}/200 characters",
+        "error": "Description must be at most 200 characters"
+      },
+      "availability": {
+        "label": "Staff Availability",
+        "businessHours": "Same as business hours",
+        "businessHoursDesc": "Staff follows the business operating hours",
+        "custom": "Custom availability",
+        "customDesc": "Set specific hours for this staff member"
+      },
+      "updateButton": "Update Staff Member",
+      "addButton": "Add Staff Member",
+      "saving": "Saving...",
+      "cancelButton": "Cancel",
+      "discardDialog": {
+        "title": "Discard Changes?",
+        "message": "You have unsaved changes. Are you sure you want to close without saving?",
+        "discardButton": "Discard",
+        "keepEditingButton": "Keep Editing"
+      }
+    }
+  },
+  "shared": {
+    "businessHours": {
+      "openTime": "Open Time",
+      "closeTime": "Close Time",
+      "closed": "Closed",
+      "days": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+      }
+    },
+    "duration": {
+      "usePresets": "Use presets",
+      "enterCustom": "Enter custom duration",
+      "enterMinutes": "Enter minutes",
+      "minutes": "minutes",
+      "minSuffix": "min"
     }
   },
   "legal": {

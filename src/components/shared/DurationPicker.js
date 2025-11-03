@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 const PRESET_DURATIONS = [15, 30, 45, 60, 90, 120];
 
 export default function DurationPicker({ value, onChange }) {
+  const t = useTranslations('shared.duration');
+
   const [customMode, setCustomMode] = useState(
     !PRESET_DURATIONS.includes(value) && value > 0
   );
@@ -37,7 +40,7 @@ export default function DurationPicker({ value, onChange }) {
               }
             `}
           >
-            {duration} min
+            {duration} {t('minSuffix')}
           </button>
         ))}
       </div>
@@ -49,7 +52,7 @@ export default function DurationPicker({ value, onChange }) {
           onClick={() => setCustomMode(!customMode)}
           className="text-sm text-orange-600 hover:text-orange-700 font-medium"
         >
-          {customMode ? 'Use presets' : 'Enter custom duration'}
+          {customMode ? t('usePresets') : t('enterCustom')}
         </button>
       </div>
 
@@ -62,10 +65,10 @@ export default function DurationPicker({ value, onChange }) {
             max="480"
             value={value || ''}
             onChange={handleCustomChange}
-            placeholder="Enter minutes"
+            placeholder={t('enterMinutes')}
             className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           />
-          <span className="text-sm text-slate-600">minutes</span>
+          <span className="text-sm text-slate-600">{t('minutes')}</span>
         </div>
       )}
     </div>

@@ -2,33 +2,11 @@
 
 import { useEffect } from 'react';
 import { List, Users, Calendar } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 
-const PRESET_PAGES = [
-  {
-    type: 'services',
-    name: 'Services Page',
-    description: 'Display your services for customers to choose from',
-    icon: List,
-    color: 'bg-orange-500',
-  },
-  {
-    type: 'staff',
-    name: 'Staff Selection',
-    description: 'Let customers choose their preferred staff member',
-    icon: Users,
-    color: 'bg-pink-500',
-  },
-  {
-    type: 'dateTime',
-    name: 'Date & Time Picker',
-    description: 'Date and time selection for appointments',
-    icon: Calendar,
-    color: 'bg-indigo-500',
-  },
-];
-
 export default function PresetPageSelector() {
+  const t = useTranslations('settings.pageBuilder.presetPages');
   const presetPagesConfig = useSetupWizardStore((state) => state.presetPagesConfig);
   const togglePresetPage = useSetupWizardStore((state) => state.togglePresetPage);
   const ensureDateTimePage = useSetupWizardStore((state) => state.ensureDateTimePage);
@@ -44,13 +22,37 @@ export default function PresetPageSelector() {
     ensureStaffPage();    // Auto-add if staff exist
   }, [ensureDateTimePage, ensureServicesPage, ensureStaffPage, services, staff]);
 
+  const PRESET_PAGES = [
+    {
+      type: 'services',
+      name: t('services.name'),
+      description: t('services.description'),
+      icon: List,
+      color: 'bg-orange-500',
+    },
+    {
+      type: 'staff',
+      name: t('staff.name'),
+      description: t('staff.description'),
+      icon: Users,
+      color: 'bg-pink-500',
+    },
+    {
+      type: 'dateTime',
+      name: t('dateTime.name'),
+      description: t('dateTime.description'),
+      icon: Calendar,
+      color: 'bg-indigo-500',
+    },
+  ];
+
   return (
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h3 className="font-semibold text-slate-900 mb-1">Add Preset Pages</h3>
+        <h3 className="font-semibold text-slate-900 mb-1">{t('title')}</h3>
         <p className="text-sm text-slate-600">
-          These special pages handle common booking flows
+          {t('subtitle')}
         </p>
       </div>
 
@@ -96,7 +98,7 @@ export default function PresetPageSelector() {
                     </div>
                     {isRequired && (
                       <span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded">
-                        Required
+                        {t('required')}
                       </span>
                     )}
                   </div>
@@ -140,10 +142,9 @@ export default function PresetPageSelector() {
 
       {/* Info note */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-900">
-        <p className="font-medium mb-1">About Preset Pages</p>
+        <p className="font-medium mb-1">{t('infoTitle')}</p>
         <p className="text-blue-700 text-xs">
-          Date & Time is required for all bookings and will always appear last. Other preset
-          pages can be positioned anywhere in your flow by reordering them in the page list.
+          {t('infoDescription')}
         </p>
       </div>
     </div>

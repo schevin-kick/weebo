@@ -11,8 +11,10 @@ import { Download, Printer, Copy, Check, RefreshCw } from 'lucide-react';
 import { useBusiness } from '@/hooks/useDashboardData';
 import Skeleton from '@/components/loading/Skeleton';
 import { useToast } from '@/contexts/ToastContext';
+import { useTranslations } from 'next-intl';
 
 export default function QRCodeView({ businessId }) {
+  const t = useTranslations('dashboard.qrCode');
   const toast = useToast();
   const canvasRef = useRef(null);
 
@@ -130,7 +132,7 @@ export default function QRCodeView({ businessId }) {
       }
     } catch (error) {
       console.error('Error generating QR code:', error);
-      toast.error('Failed to generate QR code');
+      toast.error(t('messages.generateFailed'));
     }
   }
 
@@ -142,7 +144,7 @@ export default function QRCodeView({ businessId }) {
     link.href = qrDataUrl;
     link.click();
 
-    toast.success('QR code downloaded');
+    toast.success(t('messages.downloaded'));
   };
 
   const handlePrint = () => {
@@ -150,7 +152,7 @@ export default function QRCodeView({ businessId }) {
     printWindow.document.write(`
       <html>
         <head>
-          <title>Print QR Code - ${business.businessName}</title>
+          <title>${t('print.title', { businessName: business.businessName })}</title>
           <style>
             body {
               display: flex;
@@ -185,7 +187,7 @@ export default function QRCodeView({ businessId }) {
         </head>
         <body>
           <h1>${business.businessName}</h1>
-          <p>Scan to book an appointment</p>
+          <p>${t('print.scanToBook')}</p>
           <img src="${qrDataUrl}" alt="QR Code" />
           <p style="margin-top: 20px; font-size: 0.875rem;">${business.lineDeepLink}</p>
         </body>
@@ -198,7 +200,7 @@ export default function QRCodeView({ businessId }) {
       printWindow.close();
     }, 250);
 
-    toast.success('Opening print dialog');
+    toast.success(t('messages.printOpened'));
   };
 
   const handleCopyLink = () => {
@@ -206,7 +208,7 @@ export default function QRCodeView({ businessId }) {
 
     navigator.clipboard.writeText(business.lineDeepLink);
     setLinkCopied(true);
-    toast.success('Link copied to clipboard');
+    toast.success(t('messages.linkCopied'));
 
     setTimeout(() => setLinkCopied(false), 2000);
   };
@@ -220,8 +222,8 @@ export default function QRCodeView({ businessId }) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">QR Code Generator</h1>
-          <p className="text-slate-600">Generate and share your booking QR code</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="flex items-center justify-center">
@@ -242,13 +244,13 @@ export default function QRCodeView({ businessId }) {
       {/* Page Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">QR Code Generator</h1>
-          <p className="text-slate-600">Generate and share your booking QR code</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <button
           onClick={handleRefresh}
           className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-          title="Refresh"
+          title={t('refreshTitle')}
         >
           <RefreshCw className="w-5 h-5" />
         </button>
@@ -268,7 +270,7 @@ export default function QRCodeView({ businessId }) {
               className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
             >
               <Download className="w-4 h-4" />
-              Download
+              {t('actions.download')}
             </button>
 
             <button
@@ -276,7 +278,7 @@ export default function QRCodeView({ businessId }) {
               className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors font-medium"
             >
               <Printer className="w-4 h-4" />
-              Print
+              {t('actions.print')}
             </button>
 
             <button
@@ -286,12 +288,12 @@ export default function QRCodeView({ businessId }) {
               {linkCopied ? (
                 <>
                   <Check className="w-4 h-4 text-green-600" />
-                  <span className="text-green-600">Copied!</span>
+                  <span className="text-green-600">{t('actions.copied')}</span>
                 </>
               ) : (
                 <>
                   <Copy className="w-4 h-4" />
-                  Copy Link
+                  {t('actions.copyLink')}
                 </>
               )}
             </button>
@@ -301,7 +303,7 @@ export default function QRCodeView({ businessId }) {
           {business?.lineDeepLink && (
             <div className="mt-4 w-full max-w-md">
               <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                <p className="text-xs text-slate-600 mb-1">Booking Link:</p>
+                <p className="text-xs text-slate-600 mb-1">{t('bookingLink')}</p>
                 <p className="text-sm text-slate-900 break-all font-mono">
                   {business.lineDeepLink}
                 </p>
@@ -313,12 +315,12 @@ export default function QRCodeView({ businessId }) {
         {/* Customization Panel */}
         <div className="space-y-6">
           <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Customize QR Code</h3>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">{t('customize.title')}</h3>
 
             {/* Size */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Size: {qrSize}px
+                {t('customize.size', { size: qrSize })}
               </label>
               <input
                 type="range"
@@ -330,15 +332,15 @@ export default function QRCodeView({ businessId }) {
                 className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
               />
               <div className="flex justify-between text-xs text-slate-500 mt-1">
-                <span>Small</span>
-                <span>Large</span>
+                <span>{t('customize.sizeSmall')}</span>
+                <span>{t('customize.sizeLarge')}</span>
               </div>
             </div>
 
             {/* Color */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Color
+                {t('customize.color')}
               </label>
               <div className="flex items-center gap-3">
                 <input
@@ -368,12 +370,12 @@ export default function QRCodeView({ businessId }) {
                     className="w-4 h-4 text-orange-500 rounded focus:ring-orange-500"
                   />
                   <span className="text-sm font-medium text-slate-700">
-                    Show business logo in center
+                    {t('customize.showLogo')}
                   </span>
                 </label>
                 {showLogo && (
                   <p className="text-xs text-slate-500 mt-1 ml-6">
-                    Logo will be overlaid on the QR code with white background
+                    {t('customize.logoNote')}
                   </p>
                 )}
               </div>
@@ -382,38 +384,38 @@ export default function QRCodeView({ businessId }) {
             {/* Download Format */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Download Format
+                {t('customize.downloadFormat')}
               </label>
               <select
                 value={downloadFormat}
                 onChange={(e) => setDownloadFormat(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               >
-                <option value="png">PNG (Recommended)</option>
-                <option value="jpg">JPG</option>
+                <option value="png">{t('customize.formatPNG')}</option>
+                <option value="jpg">{t('customize.formatJPG')}</option>
               </select>
             </div>
           </div>
 
           {/* Usage Tips */}
           <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
-            <h3 className="text-lg font-semibold text-blue-900 mb-3">Usage Tips</h3>
+            <h3 className="text-lg font-semibold text-blue-900 mb-3">{t('usageTips.title')}</h3>
             <ul className="space-y-2 text-sm text-blue-800">
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 mt-0.5">•</span>
-                <span>Print and display at your business location</span>
+                <span>{t('usageTips.tip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 mt-0.5">•</span>
-                <span>Share on social media or marketing materials</span>
+                <span>{t('usageTips.tip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 mt-0.5">•</span>
-                <span>Include in email signatures or newsletters</span>
+                <span>{t('usageTips.tip3')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 mt-0.5">•</span>
-                <span>Test the QR code before printing large batches</span>
+                <span>{t('usageTips.tip4')}</span>
               </li>
             </ul>
           </div>

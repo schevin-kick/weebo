@@ -10,7 +10,9 @@ import { X, User, Calendar, FileText, AlertCircle } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import ConfirmDialog from './ConfirmDialog';
 import ModalPortal from '@/components/portal/ModalPortal';
-import { formatDateTime, formatDuration, isPast } from '@/lib/dateUtils';
+import { isPast } from '@/lib/dateUtils';
+import { formatDateTime, formatDuration } from '@/lib/localizedDateUtils';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function BookingDetailsModal({
   booking,
@@ -22,6 +24,9 @@ export default function BookingDetailsModal({
   onMarkNoShow,
   onMarkCompleted,
 }) {
+  const t = useTranslations('dashboard.calendar.modal');
+  const tTime = useTranslations('common.time');
+  const locale = useLocale();
   const [notes, setNotes] = useState(booking?.notes || '');
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancellationReason, setCancellationReason] = useState('');
@@ -117,7 +122,7 @@ export default function BookingDetailsModal({
             {/* Header */}
             <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">Booking Details</h2>
+                <h2 className="text-xl font-bold text-slate-900">{t('title')}</h2>
                 <StatusBadge status={booking.status} />
               </div>
               <button
@@ -134,7 +139,7 @@ export default function BookingDetailsModal({
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <User className="w-5 h-5 text-slate-400" />
-                  <h3 className="font-semibold text-slate-900">Customer</h3>
+                  <h3 className="font-semibold text-slate-900">{t('customer')}</h3>
                 </div>
                 <div className="flex items-center gap-3 ml-7">
                   {booking.customer?.pictureUrl && (
@@ -148,7 +153,7 @@ export default function BookingDetailsModal({
                     <p className="font-medium text-slate-900">
                       {booking.customer?.displayName || 'Unknown'}
                     </p>
-                    <p className="text-sm text-slate-500">LINE User</p>
+                    <p className="text-sm text-slate-500">{t('lineUser')}</p>
                   </div>
                 </div>
               </div>
@@ -157,18 +162,18 @@ export default function BookingDetailsModal({
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Calendar className="w-5 h-5 text-slate-400" />
-                  <h3 className="font-semibold text-slate-900">Booking Information</h3>
+                  <h3 className="font-semibold text-slate-900">{t('bookingInfo')}</h3>
                 </div>
                 <div className="ml-7 space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Date & Time</span>
+                    <span className="text-slate-600">{t('dateTime')}</span>
                     <span className="font-medium text-slate-900">
-                      {formatDateTime(booking.dateTime)}
+                      {formatDateTime(booking.dateTime, locale)}
                     </span>
                   </div>
                   {booking.service && (
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Service</span>
+                      <span className="text-slate-600">{t('service')}</span>
                       <span className="font-medium text-slate-900">
                         {booking.service.name}
                       </span>
@@ -176,16 +181,16 @@ export default function BookingDetailsModal({
                   )}
                   {booking.staff && (
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Staff</span>
+                      <span className="text-slate-600">{t('staff')}</span>
                       <span className="font-medium text-slate-900">
                         {booking.staff.name}
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Duration</span>
+                    <span className="text-slate-600">{t('duration')}</span>
                     <span className="font-medium text-slate-900">
-                      {formatDuration(booking.duration)}
+                      {formatDuration(booking.duration, tTime)}
                     </span>
                   </div>
                 </div>
@@ -196,7 +201,7 @@ export default function BookingDetailsModal({
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <FileText className="w-5 h-5 text-slate-400" />
-                    <h3 className="font-semibold text-slate-900">Customer Responses</h3>
+                    <h3 className="font-semibold text-slate-900">{t('customerResponses')}</h3>
                   </div>
                   <div className="ml-7 space-y-2">
                     {Object.entries(booking.responses).map(([key, value]) => {
@@ -206,7 +211,7 @@ export default function BookingDetailsModal({
 
                       // Get human-readable label if available
                       const label = isUUID ? getComponentLabel(key) : null;
-                      const displayLabel = label || (isUUID ? 'Response' : key);
+                      const displayLabel = label || (isUUID ? t('response') : key);
 
                       return (
                         <div key={key} className="flex justify-between gap-4">
@@ -228,20 +233,20 @@ export default function BookingDetailsModal({
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <AlertCircle className="w-5 h-5 text-red-600" />
-                    <h3 className="font-semibold text-red-900">Cancelled</h3>
+                    <h3 className="font-semibold text-red-900">{t('cancelled')}</h3>
                   </div>
                   <div className="ml-7 space-y-1">
                     <p className="text-sm text-red-700">
-                      Cancelled by: {booking.cancelledBy === 'owner' ? 'Business Owner' : 'Customer'}
+                      {t('cancelledBy')}: {booking.cancelledBy === 'owner' ? t('businessOwner') : t('customer')}
                     </p>
                     {booking.cancelledAt && (
                       <p className="text-sm text-red-700">
-                        Date: {formatDateTime(booking.cancelledAt)}
+                        {t('date')}: {formatDateTime(booking.cancelledAt, locale)}
                       </p>
                     )}
                     {booking.cancellationReason && (
                       <p className="text-sm text-red-700">
-                        Reason: {booking.cancellationReason}
+                        {t('reason')}: {booking.cancellationReason}
                       </p>
                     )}
                   </div>
@@ -253,7 +258,7 @@ export default function BookingDetailsModal({
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                   <div className="flex items-center gap-2">
                     <AlertCircle className="w-5 h-5 text-orange-600" />
-                    <p className="font-semibold text-orange-900">Customer did not show up</p>
+                    <p className="font-semibold text-orange-900">{t('noShow')}</p>
                   </div>
                 </div>
               )}
@@ -262,13 +267,13 @@ export default function BookingDetailsModal({
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <FileText className="w-5 h-5 text-slate-400" />
-                  <h3 className="font-semibold text-slate-900">Internal Notes</h3>
+                  <h3 className="font-semibold text-slate-900">{t('internalNotes')}</h3>
                 </div>
                 <div className="ml-7">
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Add notes about this booking (visible only to you)"
+                    placeholder={t('notesPlaceholder')}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
                     rows={3}
                   />
@@ -278,7 +283,7 @@ export default function BookingDetailsModal({
                       disabled={isSaving}
                       className="mt-2 px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 disabled:opacity-50"
                     >
-                      {isSaving ? 'Saving...' : 'Save Notes'}
+                      {isSaving ? t('saving') : t('saveNotes')}
                     </button>
                   )}
                 </div>
@@ -296,7 +301,7 @@ export default function BookingDetailsModal({
                   {isConfirming && (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   )}
-                  {isConfirming ? 'Confirming...' : 'Confirm Booking'}
+                  {isConfirming ? t('confirming') : t('confirmBooking')}
                 </button>
               )}
               {canCancel && (
@@ -308,7 +313,7 @@ export default function BookingDetailsModal({
                   {isCancelling && (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   )}
-                  {isCancelling ? 'Cancelling...' : 'Cancel Booking'}
+                  {isCancelling ? t('cancelling') : t('cancelBooking')}
                 </button>
               )}
               {canMarkNoShow && !booking.noShow && (
@@ -320,7 +325,7 @@ export default function BookingDetailsModal({
                   {isMarkingNoShow && (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   )}
-                  {isMarkingNoShow ? 'Marking...' : 'Mark as No-Show'}
+                  {isMarkingNoShow ? t('marking') : t('markNoShow')}
                 </button>
               )}
               {canMarkCompleted && booking.status !== 'completed' && (
@@ -332,14 +337,14 @@ export default function BookingDetailsModal({
                   {isMarkingCompleted && (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   )}
-                  {isMarkingCompleted ? 'Marking...' : 'Mark as Completed'}
+                  {isMarkingCompleted ? t('marking') : t('markCompleted')}
                 </button>
               )}
               <button
                 onClick={onClose}
                 className="ml-auto px-4 py-2 text-slate-700 hover:bg-slate-200 rounded-lg font-medium"
               >
-                Close
+                {t('close')}
               </button>
             </div>
           </div>
@@ -356,20 +361,20 @@ export default function BookingDetailsModal({
           }
         }}
         onConfirm={handleCancel}
-        title="Cancel Booking"
-        confirmText="Cancel Booking"
-        cancelText="Keep Booking"
+        title={t('cancelDialog.title')}
+        confirmText={t('cancelDialog.confirmText')}
+        cancelText={t('cancelDialog.cancelText')}
         confirmColor="red"
         isLoading={isCancelling}
       >
         <div className="mt-4">
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Cancellation Reason (optional)
+            {t('cancelDialog.reasonLabel')}
           </label>
           <textarea
             value={cancellationReason}
             onChange={(e) => setCancellationReason(e.target.value)}
-            placeholder="This will be sent to the customer via LINE"
+            placeholder={t('cancelDialog.reasonPlaceholder')}
             className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
             rows={3}
           />

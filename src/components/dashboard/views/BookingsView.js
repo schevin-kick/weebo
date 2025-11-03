@@ -19,10 +19,15 @@ import useBookingsFilterStore from '@/stores/bookingsFilterStore';
 import StatusBadge from '@/components/dashboard/StatusBadge';
 import BookingDetailsModal from '@/components/dashboard/BookingDetailsModal';
 import SkeletonTable from '@/components/loading/SkeletonTable';
-import { formatDateTime, formatDuration } from '@/lib/dateUtils';
+import { formatDateTime, formatDuration } from '@/lib/localizedDateUtils';
 import { useToast } from '@/contexts/ToastContext';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function BookingsView({ businessId }) {
+  const t = useTranslations('dashboard.bookings');
+  const tStatus = useTranslations('common.status');
+  const tTime = useTranslations('common.time');
+  const locale = useLocale();
   const toast = useToast();
   const searchParams = useSearchParams();
 
@@ -142,11 +147,11 @@ export default function BookingsView({ businessId }) {
   const handleConfirm = async (bookingId) => {
     try {
       await updateStatus(bookingId, 'confirmed', businessId);
-      toast.success('Booking confirmed and customer notified!');
+      toast.success(t('messages.confirmed'));
       setShowModal(false);
     } catch (error) {
       console.error('Error confirming booking:', error);
-      toast.error('Failed to confirm booking');
+      toast.error(t('messages.confirmFailed'));
     }
   };
 
@@ -160,44 +165,44 @@ export default function BookingsView({ businessId }) {
 
       if (!response.ok) throw new Error('Failed to cancel booking');
 
-      toast.success('Booking cancelled and customer notified');
+      toast.success(t('messages.cancelled'));
       setShowModal(false);
       mutateBookings();
     } catch (error) {
       console.error('Error cancelling booking:', error);
-      toast.error('Failed to cancel booking');
+      toast.error(t('messages.cancelFailed'));
     }
   };
 
   const handleUpdateNotes = async (bookingId, notes) => {
     try {
       await updateNotes(bookingId, notes, businessId);
-      toast.success('Notes saved');
+      toast.success(t('messages.notesSaved'));
     } catch (error) {
       console.error('Error updating notes:', error);
-      toast.error('Failed to save notes');
+      toast.error(t('messages.notesFailed'));
     }
   };
 
   const handleMarkNoShow = async (bookingId) => {
     try {
       await markNoShow(bookingId, businessId);
-      toast.success('Marked as no-show');
+      toast.success(t('messages.noShowMarked'));
       setShowModal(false);
     } catch (error) {
       console.error('Error marking no-show:', error);
-      toast.error('Failed to mark as no-show');
+      toast.error(t('messages.noShowFailed'));
     }
   };
 
   const handleMarkCompleted = async (bookingId) => {
     try {
       await updateStatus(bookingId, 'completed', businessId);
-      toast.success('Marked as completed');
+      toast.success(t('messages.completedMarked'));
       setShowModal(false);
     } catch (error) {
       console.error('Error marking completed:', error);
-      toast.error('Failed to mark as completed');
+      toast.error(t('messages.completedFailed'));
     }
   };
 
@@ -206,8 +211,8 @@ export default function BookingsView({ businessId }) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Bookings</h1>
-          <p className="text-slate-600">Manage all appointments and reservations</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle', { total: 0, showing: 0 })}</p>
         </div>
         <SkeletonTable rows={10} columns={5} />
       </div>
@@ -219,15 +224,15 @@ export default function BookingsView({ businessId }) {
       {/* Page Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Bookings</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
           <p className="text-slate-600">
-            {totalCount} total bookings • Showing {filteredBookings.length}
+            {t('subtitle', { total: totalCount, showing: filteredBookings.length })}
           </p>
         </div>
         <button
           onClick={handleRefresh}
           className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-          title="Refresh bookings"
+          title={t('refreshTitle')}
         >
           <RefreshCw className="w-5 h-5" />
         </button>
@@ -242,7 +247,7 @@ export default function BookingsView({ businessId }) {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search by customer name..."
+                placeholder={t('searchPlaceholder')}
                 value={localSearchQuery}
                 onChange={(e) => setLocalSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -262,11 +267,11 @@ export default function BookingsView({ businessId }) {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
+              <option value="all">{t('filters.allStatus')}</option>
+              <option value="pending">{tStatus('pending')}</option>
+              <option value="confirmed">{tStatus('confirmed')}</option>
+              <option value="completed">{tStatus('completed')}</option>
+              <option value="cancelled">{tStatus('cancelled')}</option>
             </select>
           </div>
         </div>
@@ -286,7 +291,7 @@ export default function BookingsView({ businessId }) {
                     className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
                   >
                     <div className="flex items-center gap-1">
-                      Date & Time
+                      {t('table.headers.dateTime')}
                       {sortBy === 'dateTime' &&
                         (sortOrder === 'asc' ? (
                           <ChevronUp className="w-4 h-4" />
@@ -300,7 +305,7 @@ export default function BookingsView({ businessId }) {
                     className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
                   >
                     <div className="flex items-center gap-1">
-                      Customer
+                      {t('table.headers.customer')}
                       {sortBy === 'customer' &&
                         (sortOrder === 'asc' ? (
                           <ChevronUp className="w-4 h-4" />
@@ -310,17 +315,17 @@ export default function BookingsView({ businessId }) {
                     </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                    Service
+                    {t('table.headers.service')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">
-                    Staff
+                    {t('table.headers.staff')}
                   </th>
                   <th
                     onClick={() => handleSort('status')}
                     className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
                   >
                     <div className="flex items-center gap-1">
-                      Status
+                      {t('table.headers.status')}
                       {sortBy === 'status' &&
                         (sortOrder === 'asc' ? (
                           <ChevronUp className="w-4 h-4" />
@@ -330,7 +335,7 @@ export default function BookingsView({ businessId }) {
                     </div>
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-slate-700 uppercase tracking-wider">
-                    Actions
+                    {t('table.headers.actions')}
                   </th>
                 </tr>
               </thead>
@@ -338,7 +343,7 @@ export default function BookingsView({ businessId }) {
                 {filteredBookings.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
-                      No bookings found
+                      {t('table.noBookings')}
                     </td>
                   </tr>
                 ) : (
@@ -346,10 +351,10 @@ export default function BookingsView({ businessId }) {
                   <tr key={booking.id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-slate-900">
-                        {formatDateTime(booking.dateTime)}
+                        {formatDateTime(booking.dateTime, locale)}
                       </div>
                       <div className="text-xs text-slate-500">
-                        {formatDuration(booking.duration)}
+                        {formatDuration(booking.duration, tTime)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -362,15 +367,15 @@ export default function BookingsView({ businessId }) {
                           />
                         )}
                         <div className="text-sm text-slate-900">
-                          {booking.customer?.displayName || 'Unknown'}
+                          {booking.customer?.displayName || t('table.unknownCustomer')}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                      {booking.service?.name || '-'}
+                      {booking.service?.name || t('table.noService')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                      {booking.staff?.name || 'Any'}
+                      {booking.staff?.name || t('table.anyStaff')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <StatusBadge status={booking.status} />
@@ -381,7 +386,7 @@ export default function BookingsView({ businessId }) {
                         className="text-orange-600 hover:text-orange-700 font-medium inline-flex items-center gap-1"
                       >
                         <Eye className="w-4 h-4" />
-                        View
+                        {t('table.viewButton')}
                       </button>
                     </td>
                   </tr>
@@ -396,7 +401,7 @@ export default function BookingsView({ businessId }) {
         {!isLoading && !isSearching && totalPages > 1 && (
           <div className="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
             <div className="text-sm text-slate-600">
-              Page {currentPage} of {totalPages}
+              {t('pagination.page', { current: currentPage, total: totalPages })}
             </div>
             <div className="flex gap-2">
               <button
@@ -404,14 +409,14 @@ export default function BookingsView({ businessId }) {
                 disabled={currentPage === 1}
                 className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Previous
+                {t('pagination.previous')}
               </button>
               <button
                 onClick={() => setCurrentPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Next
+                {t('pagination.next')}
               </button>
             </div>
           </div>

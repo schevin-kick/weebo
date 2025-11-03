@@ -15,28 +15,22 @@ import {
   Edit3,
 } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 
 const PRESET_FIELD_ICONS = {
-  name: { icon: Type, color: 'bg-blue-500', label: 'Name' },
-  email: { icon: Mail, color: 'bg-green-500', label: 'Email' },
-  phone: { icon: Phone, color: 'bg-purple-500', label: 'Phone' },
-  notes: { icon: FileText, color: 'bg-amber-500', label: 'Notes' },
-  address: { icon: MapPin, color: 'bg-red-500', label: 'Address' },
-  dob: { icon: CalendarIcon, color: 'bg-indigo-500', label: 'Date of Birth' },
-};
-
-const CUSTOM_FIELD_LABELS = {
-  text: 'Text Input',
-  select: 'Select Dropdown',
-  textarea: 'Text Area',
-  radio: 'Radio Buttons',
-  checkbox: 'Checkboxes',
-  number: 'Number Input',
+  name: { icon: Type, color: 'bg-blue-500' },
+  email: { icon: Mail, color: 'bg-green-500' },
+  phone: { icon: Phone, color: 'bg-purple-500' },
+  notes: { icon: FileText, color: 'bg-amber-500' },
+  address: { icon: MapPin, color: 'bg-red-500' },
+  dob: { icon: CalendarIcon, color: 'bg-indigo-500' },
 };
 
 export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
+  const t = useTranslations('settings.pageBuilder.canvas');
+  const tFields = useTranslations('settings.pageBuilder.componentPalette.fieldTypes');
   const [editingTitlePageId, setEditingTitlePageId] = useState(null);
   const [titleValue, setTitleValue] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -52,7 +46,7 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
   if (!page) {
     return (
       <div className="bg-white border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center">
-        <p className="text-slate-600">Select a page from the sidebar to edit</p>
+        <p className="text-slate-600">{t('selectPage')}</p>
       </div>
     );
   }
@@ -83,7 +77,7 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
         {editingTitlePageId === page.id ? (
           <div className="space-y-3">
             <label className="block text-sm font-medium text-slate-700">
-              Page Title
+              {t('pageTitle')}
             </label>
             <input
               type="text"
@@ -94,7 +88,7 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                 if (e.key === 'Escape') handleCancelEditTitle();
               }}
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              placeholder="Enter page title"
+              placeholder={t('enterPageTitle')}
               autoFocus
             />
             <div className="flex gap-2">
@@ -102,13 +96,13 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                 onClick={handleSaveTitle}
                 className="px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors"
               >
-                Save
+                {t('save')}
               </button>
               <button
                 onClick={handleCancelEditTitle}
                 className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-100 transition-colors"
               >
-                Cancel
+                {t('cancel')}
               </button>
             </div>
           </div>
@@ -118,17 +112,15 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
               <h3 className="text-lg font-bold text-slate-900">{page.title}</h3>
               <p className="text-sm text-slate-600 mt-0.5">
                 {isPreset
-                  ? 'This is a preset page with automatic functionality'
-                  : `${page.components.length} field${
-                      page.components.length !== 1 ? 's' : ''
-                    }`}
+                  ? t('presetPageInfo')
+                  : t('fields', { count: page.components.length })}
               </p>
             </div>
             {!isPreset && (
               <button
                 onClick={handleStartEditTitle}
                 className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                title="Edit page title"
+                title={t('editPageTitle')}
               >
                 <Edit3 className="w-4 h-4" />
               </button>
@@ -141,14 +133,12 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
       {isPreset && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
           <p className="text-sm text-blue-900 font-medium mb-1">
-            Preset Page
+            {t('presetPageTitle')}
           </p>
           <p className="text-sm text-blue-700">
-            This page automatically displays{' '}
-            {page.type === 'preset-services' && 'your services'}
-            {page.type === 'preset-staff' && 'your staff members'}
-            {page.type === 'preset-datetime' && 'a date and time picker'} from your
-            configuration. No additional setup needed!
+            {page.type === 'preset-services' && t('presetPageDescription.services')}
+            {page.type === 'preset-staff' && t('presetPageDescription.staff')}
+            {page.type === 'preset-datetime' && t('presetPageDescription.dateTime')}
           </p>
         </div>
       )}
@@ -162,11 +152,10 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                 <Sparkles className="w-8 h-8 text-orange-500" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                Add Form Fields
+                {t('emptyCustomPage.title')}
               </h3>
               <p className="text-slate-600 max-w-sm mx-auto">
-                Drag preset fields or create custom fields from the palette on the
-                right to build your form.
+                {t('emptyCustomPage.description')}
               </p>
             </div>
           ) : (
@@ -198,10 +187,10 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                         {isInfoText ? (
                           <>
                             <div className="font-semibold text-slate-900">
-                              Info Text
+                              {t('componentDisplay.infoText')}
                             </div>
                             <div className="text-sm text-slate-600 truncate">
-                              {component.content || 'No content'}
+                              {component.content || t('componentDisplay.noContent')}
                             </div>
                           </>
                         ) : (
@@ -211,15 +200,15 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                             </div>
                             <div className="text-sm text-slate-600">
                               {isPresetField
-                                ? `${icon?.label}${
+                                ? `${tFields(component.fieldType)}${
                                     component.fieldType === 'email'
-                                      ? ` • ${component.validation ? 'Validated' : 'No validation'}`
+                                      ? ` • ${component.validation ? t('componentDisplay.validated') : t('componentDisplay.noValidation')}`
                                       : ''
-                                  } • ${component.required ? 'Required' : 'Optional'}`
+                                  } • ${component.required ? t('componentDisplay.required') : t('componentDisplay.optional')}`
                                 : `${
-                                    CUSTOM_FIELD_LABELS[component.inputType]
+                                    tFields(`${component.inputType}.name`)
                                   } • ${
-                                    component.required ? 'Required' : 'Optional'
+                                    component.required ? t('componentDisplay.required') : t('componentDisplay.optional')
                                   }`}
                             </div>
                           </>
@@ -238,7 +227,7 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                                 ? 'text-slate-300 cursor-not-allowed'
                                 : 'text-slate-600 hover:text-orange-600 hover:bg-orange-50'
                             } transition-colors`}
-                            title="Move up"
+                            title={t('componentActions.moveUp')}
                           >
                             <ChevronUp className="w-4 h-4" />
                           </button>
@@ -250,7 +239,7 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                                 ? 'text-slate-300 cursor-not-allowed'
                                 : 'text-slate-600 hover:text-orange-600 hover:bg-orange-50'
                             } transition-colors`}
-                            title="Move down"
+                            title={t('componentActions.moveDown')}
                           >
                             <ChevronDown className="w-4 h-4" />
                           </button>
@@ -260,7 +249,7 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                         <button
                           onClick={() => onConfigureComponent(component.id)}
                           className="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Configure"
+                          title={t('componentActions.configure')}
                         >
                           <Settings className="w-5 h-5" />
                         </button>
@@ -268,11 +257,11 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
                         {/* Delete button */}
                         <button
                           onClick={() => {
-                            const componentName = isInfoText ? 'this info text' : component.label;
+                            const componentName = isInfoText ? t('componentDisplay.infoText') : component.label;
                             setDeleteConfirm({ id: component.id, name: componentName });
                           }}
                           className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Delete"
+                          title={t('componentActions.delete')}
                         >
                           <Trash2 className="w-5 h-5" />
                         </button>
@@ -295,10 +284,10 @@ export default function FormBuilderCanvas({ pageId, onConfigureComponent }) {
             deleteComponent(pageId, deleteConfirm.id);
           }
         }}
-        title="Delete Component"
-        message={`Are you sure you want to delete ${deleteConfirm?.name}? This action cannot be undone.`}
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t('deleteComponentDialog.title')}
+        message={t('deleteComponentDialog.message')}
+        confirmText={t('deleteComponentDialog.confirmButton')}
+        cancelText={t('deleteComponentDialog.cancelButton')}
         variant="danger"
       />
     </div>

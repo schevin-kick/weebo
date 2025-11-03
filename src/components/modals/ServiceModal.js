@@ -8,11 +8,13 @@
 import { useState, useEffect } from 'react';
 import { X, Clock, DollarSign } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import ModalPortal from '@/components/portal/ModalPortal';
 import ConfirmDialog from '@/components/dashboard/ConfirmDialog';
 import DurationPicker from '@/components/shared/DurationPicker';
 
 export default function ServiceModal({ isOpen, onClose, service, onSave }) {
+  const t = useTranslations('modals.service');
   const [formData, setFormData] = useState(
     service || {
       name: '',
@@ -65,15 +67,15 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
     const newErrors = {};
 
     if (!formData.name || formData.name.length < 3) {
-      newErrors.name = 'Service name must be at least 3 characters';
+      newErrors.name = t('name.error');
     }
 
     if (!formData.duration || formData.duration < 5) {
-      newErrors.duration = 'Duration must be at least 5 minutes';
+      newErrors.duration = t('duration.error');
     }
 
     if (formData.description && formData.description.length > 100) {
-      newErrors.description = 'Description must be at most 100 characters';
+      newErrors.description = t('description.error');
     }
 
     setErrors(newErrors);
@@ -154,7 +156,7 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
             {/* Header */}
             <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
               <h2 className="text-xl font-bold text-slate-900">
-                {service ? 'Edit Service' : 'Add Service'}
+                {service ? t('editTitle') : t('addTitle')}
               </h2>
               <button
                 onClick={handleClose}
@@ -171,13 +173,13 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
                 {/* Service Name */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Service Name <span className="text-orange-500">*</span>
+                    {t('name.label')} <span className="text-orange-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g., Haircut, Massage, Math Tutoring"
+                    placeholder={t('name.placeholder')}
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                   {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name}</p>}
@@ -186,7 +188,7 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
                 {/* Duration */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Duration <span className="text-orange-500">*</span>
+                    {t('duration.label')} <span className="text-orange-500">*</span>
                   </label>
                   <DurationPicker
                     value={formData.duration}
@@ -200,12 +202,12 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
                 {/* Description */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Description <span className="text-slate-400 text-xs">(optional)</span>
+                    {t('description.label')} <span className="text-slate-400 text-xs">{t('description.optional')}</span>
                   </label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Brief description of the service..."
+                    placeholder={t('description.placeholder')}
                     rows={3}
                     maxLength={100}
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
@@ -215,7 +217,7 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
                       <p className="text-sm text-red-600">{errors.description}</p>
                     )}
                     <p className="text-xs text-slate-500 ml-auto">
-                      {formData.description.length}/100 characters
+                      {t('description.characterCount', { count: formData.description.length })}
                     </p>
                   </div>
                 </div>
@@ -223,7 +225,7 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
                 {/* Price */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Price <span className="text-slate-400 text-xs">(optional)</span>
+                    {t('price.label')} <span className="text-slate-400 text-xs">{t('description.optional')}</span>
                   </label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -233,7 +235,7 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
                       min="0"
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      placeholder="0.00"
+                      placeholder={t('price.placeholder')}
                       className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     />
                   </div>
@@ -251,14 +253,14 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
                 {isSaving && (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 )}
-                {isSaving ? 'Saving...' : service ? 'Update Service' : 'Add Service'}
+                {isSaving ? t('saving') : service ? t('updateButton') : t('addButton')}
               </button>
               <button
                 type="button"
                 onClick={onClose}
                 className="px-6 py-2 border border-slate-300 rounded-lg font-medium text-slate-700 hover:bg-slate-100 transition-colors"
               >
-                Cancel
+                {t('cancelButton')}
               </button>
             </div>
               </motion.div>
@@ -273,13 +275,13 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }) {
               setShowCloseConfirm(false);
               onClose();
             }}
-            title="Discard Changes?"
-            confirmText="Discard"
-            cancelText="Keep Editing"
+            title={t('discardDialog.title')}
+            confirmText={t('discardDialog.discardButton')}
+            cancelText={t('discardDialog.keepEditingButton')}
             confirmColor="red"
           >
             <p className="text-slate-600 mt-2">
-              You have unsaved changes. Are you sure you want to close without saving?
+              {t('discardDialog.message')}
             </p>
           </ConfirmDialog>
         </ModalPortal>

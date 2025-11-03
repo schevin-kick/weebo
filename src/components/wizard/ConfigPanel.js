@@ -2,23 +2,26 @@
 
 import { X } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import { useToast } from '@/contexts/ToastContext';
 
-const PRESET_FIELD_LABELS = {
-  name: 'Name',
-  email: 'Email',
-  phone: 'Phone',
-  notes: 'Notes',
-  address: 'Address',
-  dob: 'Date of Birth',
-};
-
-export default function ConfigPanel({ pageId, componentId, onClose }) {
+export default function ConfigPanel({
+  pageId,
+  componentId,
+  pendingComponent,
+  isNewComponent = false,
+  onSaveNew,
+  onClose
+}) {
+  const t = useTranslations('settings.pageBuilder.configPanel');
+  const tFields = useTranslations('settings.pageBuilder.componentPalette.fieldTypes');
   const page = useSetupWizardStore((state) => state.pages.find((p) => p.id === pageId));
-  const component = page?.components.find((c) => c.id === componentId);
   const updateComponent = useSetupWizardStore((state) => state.updateComponent);
   const toast = useToast();
+
+  // For new components, use pendingComponent; for existing, find in page
+  const component = isNewComponent ? pendingComponent : page?.components.find((c) => c.id === componentId);
 
   const [config, setConfig] = useState({});
 
@@ -28,7 +31,10 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
     }
   }, [component]);
 
-  if (!component || !page) return null;
+  // For new components, we don't need the page to exist yet
+  // For existing components, we need both component and page
+  if (!component) return null;
+  if (!isNewComponent && !page) return null;
 
   const handleSave = () => {
     // Validate required fields before saving
@@ -38,7 +44,7 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
     // Validate info-text content
     if (isInfoText) {
       if (!config.content || config.content.trim() === '') {
-        toast.error('Content is required for info text components');
+        toast.error(t('errors.contentRequired'));
         return;
       }
     }
@@ -46,7 +52,7 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
     // Validate custom field label
     if (isCustomField) {
       if (!config.label || config.label.trim() === '') {
-        toast.error('Field Label is required');
+        toast.error(t('errors.labelRequired'));
         return;
       }
 
@@ -58,7 +64,7 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
           config.options.some(opt => opt && opt.trim() !== '');
 
         if (!hasValidOptions) {
-          toast.error('At least one non-empty option is required for this field type');
+          toast.error(t('errors.optionsRequired'));
           return;
         }
 
@@ -67,8 +73,15 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
       }
     }
 
-    updateComponent(pageId, componentId, config);
-    onClose();
+    // Handle new component vs existing component
+    if (isNewComponent) {
+      // For new components, call onSaveNew with the complete component data
+      onSaveNew(config);
+    } else {
+      // For existing components, update as before
+      updateComponent(pageId, componentId, config);
+      onClose();
+    }
   };
 
   const renderConfigForm = () => {
@@ -81,39 +94,39 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
         <div className="space-y-4">
           <div className="bg-sky-50 border border-sky-200 rounded-lg p-3">
             <p className="text-sm text-sky-900 font-medium">
-              Info Text Component
+              {t('infoText.title')}
             </p>
             <p className="text-sm text-sky-700 mt-1">
-              Display informational text to customers. No input required.
+              {t('infoText.description')}
             </p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Content <span className="text-red-500">*</span>
+              {t('infoText.contentLabel')} <span className="text-red-500">*</span>
             </label>
             <textarea
               value={config.content || ''}
               onChange={(e) => setConfig({ ...config, content: e.target.value })}
-              placeholder="Enter the information you want to display to customers..."
+              placeholder={t('infoText.contentPlaceholder')}
               rows={6}
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
             />
             <p className="text-xs text-slate-500 mt-1">
-              This text will be displayed to customers in the booking flow
+              {t('infoText.contentHelper')}
             </p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Display Style
+              {t('infoText.styleLabel')}
             </label>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { value: 'info', label: 'Info', color: 'bg-blue-50 border-blue-200 text-blue-900' },
-                { value: 'warning', label: 'Warning', color: 'bg-amber-50 border-amber-200 text-amber-900' },
-                { value: 'success', label: 'Success', color: 'bg-green-50 border-green-200 text-green-900' },
-                { value: 'plain', label: 'Plain', color: 'bg-slate-50 border-slate-200 text-slate-900' },
+                { value: 'info', color: 'bg-blue-50 border-blue-200 text-blue-900' },
+                { value: 'warning', color: 'bg-amber-50 border-amber-200 text-amber-900' },
+                { value: 'success', color: 'bg-green-50 border-green-200 text-green-900' },
+                { value: 'plain', color: 'bg-slate-50 border-slate-200 text-slate-900' },
               ].map((style) => (
                 <button
                   key={style.value}
@@ -124,12 +137,12 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
                     : style.color
                     }`}
                 >
-                  {style.label}
+                  {t(`infoText.styles.${style.value}`)}
                 </button>
               ))}
             </div>
             <p className="text-xs text-slate-500 mt-2">
-              Choose how the information should be visually presented
+              {t('infoText.styleHelper')}
             </p>
           </div>
         </div>
@@ -138,30 +151,32 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
 
     if (isPreset) {
       // Preset field configuration
+      const fieldLabel = config.fieldType ? tFields(config.fieldType) : '';
+
       return (
         <div className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-sm text-blue-900 font-medium">
-              {PRESET_FIELD_LABELS[config.fieldType]} Field
+              {t('presetField.title', { field: fieldLabel })}
             </p>
             <p className="text-sm text-blue-700 mt-1">
-              This is a preset field with built-in formatting and behavior.
+              {t('presetField.description')}
             </p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Field Label
+              {t('presetField.labelLabel')}
             </label>
             <input
               type="text"
               value={config.label || ''}
               onChange={(e) => setConfig({ ...config, label: e.target.value })}
-              placeholder={`e.g., "Your ${PRESET_FIELD_LABELS[config.fieldType]}"`}
+              placeholder={t('presetField.labelPlaceholder', { field: fieldLabel })}
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
             <p className="text-xs text-slate-500 mt-1">
-              The text shown to customers above this field
+              {t('presetField.labelHelper')}
             </p>
           </div>
 
@@ -169,9 +184,9 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
           {config.fieldType === 'email' && (
             <div className="flex items-center justify-between gap-4 p-4 bg-slate-50 rounded-lg">
               <div className="flex-1">
-                <div className="font-medium text-slate-900">Enable Validation</div>
+                <div className="font-medium text-slate-900">{t('presetField.validationLabel')}</div>
                 <div className="text-sm text-slate-600">
-                  Validate email format
+                  {t('presetField.validationHelper')}
                 </div>
               </div>
               <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
@@ -188,9 +203,9 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
 
           <div className="flex items-center justify-between gap-4 p-4 bg-slate-50 rounded-lg">
             <div className="flex-1">
-              <div className="font-medium text-slate-900">Required Field</div>
+              <div className="font-medium text-slate-900">{t('presetField.requiredLabel')}</div>
               <div className="text-sm text-slate-600">
-                Customers must fill this field
+                {t('presetField.requiredHelper')}
               </div>
             </div>
             <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
@@ -214,24 +229,24 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Field Label <span className="text-red-500">*</span>
+              {t('customField.labelLabel')} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={config.label || ''}
               onChange={(e) => setConfig({ ...config, label: e.target.value })}
-              placeholder="e.g., Party Size"
+              placeholder={t('customField.labelPlaceholder')}
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
             <p className="text-xs text-slate-500 mt-1">
-              The text shown to customers above this field
+              {t('customField.labelHelper')}
             </p>
           </div>
 
           {needsOptions && (
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Options <span className="text-red-500">*</span>
+                {t('customField.optionsLabel')} <span className="text-red-500">*</span>
               </label>
               <div className="space-y-2">
                 {options.map((option, index) => (
@@ -244,7 +259,7 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
                         newOptions[index] = e.target.value;
                         setConfig({ ...config, options: newOptions });
                       }}
-                      placeholder={`Option ${index + 1}`}
+                      placeholder={t('customField.optionPlaceholder', { index: index + 1 })}
                       className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                     {options.length > 1 && (
@@ -254,7 +269,7 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
                           setConfig({ ...config, options: newOptions });
                         }}
                         className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Remove option"
+                        title={t('customField.removeOption')}
                       >
                         <X className="w-5 h-5" />
                       </button>
@@ -269,7 +284,7 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
                 }}
                 className="mt-2 w-full px-4 py-2 border-2 border-dashed border-slate-300 text-slate-600 rounded-lg hover:border-orange-400 hover:text-orange-600 transition-colors font-medium text-sm"
               >
-                + Add Option
+                {t('customField.addOption')}
               </button>
             </div>
           )}
@@ -278,7 +293,7 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Min Value (optional)
+                  {t('customField.minValueLabel')}
                 </label>
                 <input
                   type="number"
@@ -289,13 +304,13 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
                       min: e.target.value === '' ? undefined : parseInt(e.target.value),
                     })
                   }
-                  placeholder="No minimum"
+                  placeholder={t('customField.minValuePlaceholder')}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Max Value (optional)
+                  {t('customField.maxValueLabel')}
                 </label>
                 <input
                   type="number"
@@ -306,7 +321,7 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
                       max: e.target.value === '' ? undefined : parseInt(e.target.value),
                     })
                   }
-                  placeholder="No maximum"
+                  placeholder={t('customField.maxValuePlaceholder')}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
@@ -315,9 +330,9 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
 
           <div className="flex items-center justify-between gap-4 p-4 bg-slate-50 rounded-lg">
             <div className="flex-1">
-              <div className="font-medium text-slate-900">Required Field</div>
+              <div className="font-medium text-slate-900">{t('customField.requiredLabel')}</div>
               <div className="text-sm text-slate-600">
-                Customers must fill this field
+                {t('customField.requiredHelper')}
               </div>
             </div>
             <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
@@ -337,12 +352,13 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
 
   const getTitle = () => {
     if (component.type === 'preset-field') {
-      return `Configure ${PRESET_FIELD_LABELS[component.fieldType]} Field`;
+      const fieldLabel = component.fieldType ? tFields(component.fieldType) : '';
+      return t('titles.presetField', { field: fieldLabel });
     }
     if (component.type === 'info-text') {
-      return 'Configure Info Text';
+      return t('titles.infoText');
     }
-    return 'Configure Custom Field';
+    return t('titles.customField');
   };
 
   return (
@@ -368,13 +384,13 @@ export default function ConfigPanel({ pageId, componentId, onClose }) {
             onClick={onClose}
             className="px-6 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-100 transition-colors"
           >
-            Cancel
+            {t('cancel')}
           </button>
           <button
             onClick={handleSave}
             className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-colors shadow-lg shadow-orange-500/30"
           >
-            Save Configuration
+            {t('save')}
           </button>
         </div>
       </div>

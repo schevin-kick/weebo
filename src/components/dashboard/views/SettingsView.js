@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { RefreshCw, Save, Building2, Briefcase, Users, Layout, Eye } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useBusiness } from '@/hooks/useDashboardData';
 import { useUpdateBusinessSettings } from '@/hooks/useDashboardMutations';
 import useSetupWizardStore from '@/stores/setupWizardStore';
@@ -23,16 +24,17 @@ import ServicesStep from '@/components/wizard/ServicesStep';
 import StaffStep from '@/components/wizard/StaffStep';
 import PageBuilderStep from '@/components/wizard/PageBuilderStep';
 
-const tabs = [
-  { id: 'business', name: 'Business Info', icon: Building2 },
-  { id: 'services', name: 'Services', icon: Briefcase },
-  { id: 'staff', name: 'Staff', icon: Users },
-  { id: 'pages', name: 'Booking Form', icon: Layout },
-];
-
 export default function SettingsView({ businessId }) {
   const router = useRouter();
   const toast = useToast();
+  const t = useTranslations('settings');
+
+  const tabs = [
+    { id: 'business', name: t('tabs.businessInfo'), icon: Building2 },
+    { id: 'services', name: t('tabs.services'), icon: Briefcase },
+    { id: 'staff', name: t('tabs.staff'), icon: Users },
+    { id: 'pages', name: t('tabs.bookingForm'), icon: Layout },
+  ];
 
   // Fetch business data
   const { business, isLoading, mutate } = useBusiness(businessId);
@@ -166,14 +168,14 @@ export default function SettingsView({ businessId }) {
 
       await updateBusinessSettings(businessId, payload);
 
-      toast.success('Settings saved successfully');
+      toast.success(t('saveChanges'));
       setIsDirty(false);
 
       // Revalidate business data
       mutate();
     } catch (error) {
       console.error('Save settings error:', error);
-      toast.error('Failed to save settings');
+      toast.error(t('saving'));
     } finally {
       setIsSaving(false);
     }
@@ -189,8 +191,8 @@ export default function SettingsView({ businessId }) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Settings</h1>
-          <p className="text-slate-600">Manage your business configuration</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <div className="space-y-4">
           <Skeleton className="h-12" rounded="lg" />
@@ -205,14 +207,14 @@ export default function SettingsView({ businessId }) {
       {/* Page Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Settings</h1>
-          <p className="text-slate-600">Manage your business configuration</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <div className="flex gap-3">
           <button
             onClick={handleRefresh}
             className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-            title="Refresh"
+            title={t('refreshButton')}
           >
             <RefreshCw className="w-5 h-5" />
           </button>
@@ -221,7 +223,7 @@ export default function SettingsView({ businessId }) {
             className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg font-medium"
           >
             <Eye className="w-4 h-4" />
-            Preview
+            {t('previewButton')}
           </button>
           <button
             onClick={handleSave}
@@ -229,7 +231,7 @@ export default function SettingsView({ businessId }) {
             className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save className="w-4 h-4" />
-            {isSaving ? 'Saving...' : 'Save Changes'}
+            {isSaving ? t('saving') : t('saveChanges')}
           </button>
         </div>
       </div>
@@ -238,7 +240,7 @@ export default function SettingsView({ businessId }) {
       {isDirty && (
         <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
           <p className="text-sm text-amber-800">
-            You have unsaved changes. Click "Save Changes" to persist your modifications.
+            {t('unsavedWarning')}
           </p>
         </div>
       )}
@@ -289,7 +291,7 @@ export default function SettingsView({ businessId }) {
           className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
         >
           <Save className="w-5 h-5" />
-          {isSaving ? 'Saving...' : 'Save All Changes'}
+          {isSaving ? t('saving') : t('saveAllChanges')}
         </button>
       </div>
 

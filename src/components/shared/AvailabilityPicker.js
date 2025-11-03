@@ -1,22 +1,26 @@
 'use client';
 
 import { Calendar, Clock } from 'lucide-react';
-
-const DAYS = [
-  { key: 'mon', label: 'Monday' },
-  { key: 'tue', label: 'Tuesday' },
-  { key: 'wed', label: 'Wednesday' },
-  { key: 'thu', label: 'Thursday' },
-  { key: 'fri', label: 'Friday' },
-  { key: 'sat', label: 'Saturday' },
-  { key: 'sun', label: 'Sunday' },
-];
+import { useTranslations } from 'next-intl';
 
 export default function AvailabilityPicker({
   availability,
   businessHours,
   onChange,
 }) {
+  const t = useTranslations('modals.staff.availability');
+  const tDays = useTranslations('shared.businessHours.days');
+  const tCommon = useTranslations('shared.businessHours');
+
+  const DAYS = [
+    { key: 'mon', label: tDays('monday') },
+    { key: 'tue', label: tDays('tuesday') },
+    { key: 'wed', label: tDays('wednesday') },
+    { key: 'thu', label: tDays('thursday') },
+    { key: 'fri', label: tDays('friday') },
+    { key: 'sat', label: tDays('saturday') },
+    { key: 'sun', label: tDays('sunday') },
+  ];
   const useBusinessHours = availability?.useBusinessHours !== false;
 
   const handleToggleBusinessHours = (value) => {
@@ -57,7 +61,7 @@ export default function AvailabilityPicker({
       {/* Toggle between business hours and custom */}
       <div className="space-y-3">
         <label className="block text-sm font-medium text-slate-700">
-          Staff Availability
+          {t('label')}
         </label>
 
         {/* Use business hours */}
@@ -72,10 +76,10 @@ export default function AvailabilityPicker({
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-orange-500" />
-              <span className="font-medium text-slate-900">Same as business hours</span>
+              <span className="font-medium text-slate-900">{t('businessHours')}</span>
             </div>
             <p className="text-sm text-slate-600 mt-1">
-              Staff follows the business operating hours
+              {t('businessHoursDesc')}
             </p>
           </div>
         </label>
@@ -92,10 +96,10 @@ export default function AvailabilityPicker({
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-orange-500" />
-              <span className="font-medium text-slate-900">Custom availability</span>
+              <span className="font-medium text-slate-900">{t('custom')}</span>
             </div>
             <p className="text-sm text-slate-600 mt-1">
-              Set specific hours for this staff member
+              {t('customDesc')}
             </p>
           </div>
         </label>
@@ -159,7 +163,7 @@ export default function AvailabilityPicker({
                   </div>
                 </>
               ) : (
-                <div className="flex-1 text-sm text-slate-400 italic">Off</div>
+                <div className="flex-1 text-sm text-slate-400 italic">{tCommon('closed')}</div>
               )}
             </div>
           ))}

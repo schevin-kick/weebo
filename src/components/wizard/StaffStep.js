@@ -2,24 +2,27 @@
 
 import { useState } from 'react';
 import { Users, Plus, Edit2, Trash2, Calendar, Briefcase } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import StaffAvatar from '@/components/shared/StaffAvatar';
 import StaffModal from '@/components/modals/StaffModal';
 
 function StaffCard({ staffMember, onEdit, onDelete }) {
+  const t = useTranslations('settings.staff.availability');
+
   const getAvailabilitySummary = (availability) => {
     if (availability?.useBusinessHours !== false) {
-      return 'Follows business hours';
+      return t('businessHours');
     }
-    if (!availability?.custom) return 'Not set';
+    if (!availability?.custom) return t('notSet');
 
     const activeDays = Object.entries(availability.custom)
       .filter(([_, hours]) => !hours.closed)
       .map(([day, _]) => day);
 
-    if (activeDays.length === 0) return 'No availability set';
-    if (activeDays.length === 7) return 'Available all week';
-    return `${activeDays.length} days/week`;
+    if (activeDays.length === 0) return t('noAvailability');
+    if (activeDays.length === 7) return t('allWeek');
+    return t('daysPerWeek', { count: activeDays.length });
   };
 
   return (
@@ -71,6 +74,7 @@ function StaffCard({ staffMember, onEdit, onDelete }) {
 }
 
 export default function StaffStep() {
+  const t = useTranslations('settings.staff');
   const staff = useSetupWizardStore((state) => state.staff);
   const addStaff = useSetupWizardStore((state) => state.addStaff);
   const updateStaff = useSetupWizardStore((state) => state.updateStaff);
@@ -113,14 +117,14 @@ export default function StaffStep() {
                 <Users className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Staff</h2>
+                <h2 className="text-2xl font-bold text-white">{t('title')}</h2>
                 <p className="text-orange-50 text-sm mt-1">
-                  Add your team members (optional)
+                  {t('subtitle')}
                 </p>
               </div>
             </div>
             <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-              <span className="text-white font-semibold">{staff.length} staff{staff.length !== 1 ? '' : ' member'}</span>
+              <span className="text-white font-semibold">{t('count', { count: staff.length })}</span>
             </div>
           </div>
         </div>
@@ -134,10 +138,10 @@ export default function StaffStep() {
                 <Users className="w-8 h-8 text-orange-500" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                No staff members yet
+                {t('emptyTitle')}
               </h3>
               <p className="text-slate-600 mb-6 max-w-md mx-auto">
-                Add your team members. This is optional - if you're a solo operator, you can skip this step.
+                {t('emptyDescription')}
               </p>
             </div>
           )}
@@ -162,7 +166,7 @@ export default function StaffStep() {
             className="w-full border-2 border-dashed border-slate-300 rounded-xl px-6 py-4 text-slate-600 hover:border-orange-400 hover:bg-orange-50 hover:text-orange-600 transition-all flex items-center justify-center gap-2 font-medium"
           >
             <Plus className="w-5 h-5" />
-            Add Staff Member
+            {t('addButton')}
           </button>
         </div>
       </div>

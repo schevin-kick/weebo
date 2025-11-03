@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Smartphone } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import { useToast } from '@/contexts/ToastContext';
 import PageManagerSidebar from './PageManagerSidebar';
@@ -11,18 +12,20 @@ import ComponentPalette from './ComponentPalette';
 import ConfigPanel from './ConfigPanel';
 import { generateId } from '@/utils/fieldNameHelper';
 
-const PRESET_FIELD_LABELS = {
-  name: 'Your Name',
-  email: 'Email Address',
-  phone: 'Phone Number',
-  notes: 'Additional Notes',
-  address: 'Your Address',
-  dob: 'Date of Birth',
-};
-
 export default function PageBuilderStep() {
+  const t = useTranslations('settings.pageBuilder');
   const [configComponentId, setConfigComponentId] = useState(null);
+  const [pendingComponent, setPendingComponent] = useState(null);
   const toast = useToast();
+
+  const PRESET_FIELD_LABELS = {
+    name: t('presetFields.name'),
+    email: t('presetFields.email'),
+    phone: t('presetFields.phone'),
+    notes: t('presetFields.notes'),
+    address: t('presetFields.address'),
+    dob: t('presetFields.dob'),
+  };
 
   const currentEditingPageId = useSetupWizardStore((state) => state.currentEditingPageId);
   const addComponentToPage = useSetupWizardStore((state) => state.addComponentToPage);
@@ -33,12 +36,12 @@ export default function PageBuilderStep() {
 
   const handleAddPresetField = (fieldType) => {
     if (!currentEditingPageId) {
-      toast.warning('Please select a custom page first');
+      toast.warning(t('selectPageWarning'));
       return;
     }
 
     if (currentPage?.type.startsWith('preset-')) {
-      toast.error('Cannot add fields to preset pages');
+      toast.error(t('presetPageError'));
       return;
     }
 
@@ -52,35 +55,36 @@ export default function PageBuilderStep() {
     };
 
     addComponentToPage(currentEditingPageId, newComponent);
-    toast.success(`Added ${PRESET_FIELD_LABELS[fieldType]} field`);
+    toast.success(t('fieldAdded', { field: PRESET_FIELD_LABELS[fieldType] }));
   };
 
   const handleAddCustomField = (inputType) => {
     if (!currentEditingPageId) {
-      toast.warning('Please select a custom page first');
+      toast.warning(t('selectPageWarning'));
       return;
     }
 
     if (currentPage?.type.startsWith('preset-')) {
-      toast.error('Cannot add fields to preset pages');
+      toast.error(t('presetPageError'));
       return;
     }
 
-    // Handle info-text component differently
+    // Handle info-text component
     if (inputType === 'info-text') {
       const newComponent = {
         id: generateId(),
         type: 'info-text',
-        content: 'Enter your information text here...',
+        content: t('infoTextPlaceholder'),
         style: 'info', // 'info', 'warning', 'success', 'plain'
       };
 
-      addComponentToPage(currentEditingPageId, newComponent);
+      // Store as pending component instead of adding immediately
+      setPendingComponent(newComponent);
       setConfigComponentId(newComponent.id);
-      toast.success('Added Info Text component');
       return;
     }
 
+    // Create new custom field component
     const newComponent = {
       id: generateId(),
       type: 'custom-field',
@@ -91,13 +95,38 @@ export default function PageBuilderStep() {
       options: inputType === 'select' || inputType === 'radio' || inputType === 'checkbox' ? [''] : undefined,
     };
 
-    addComponentToPage(currentEditingPageId, newComponent);
+    // Store as pending component instead of adding immediately
+    setPendingComponent(newComponent);
     // Auto-open config for custom fields
     setConfigComponentId(newComponent.id);
   };
 
   const handleConfigureComponent = (componentId) => {
     setConfigComponentId(componentId);
+  };
+
+  const handleSaveNewComponent = (componentData) => {
+    if (!pendingComponent || !currentEditingPageId) return;
+
+    // Add the configured component to the page
+    addComponentToPage(currentEditingPageId, componentData);
+
+    // Show success toast based on component type
+    if (componentData.type === 'info-text') {
+      toast.success(t('infoTextAdded'));
+    } else {
+      toast.success(t('fieldAdded', { field: componentData.label || t('componentPalette.fieldTypes.text.name') }));
+    }
+
+    // Clear pending state and close modal
+    setPendingComponent(null);
+    setConfigComponentId(null);
+  };
+
+  const handleCloseConfig = () => {
+    // Clear both pending component and config modal
+    setPendingComponent(null);
+    setConfigComponentId(null);
   };
 
   return (
@@ -127,10 +156,10 @@ export default function PageBuilderStep() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-slate-900">
-                    Build Your Pages
+                    {t('title')}
                   </h2>
                   <p className="text-sm text-slate-600 mt-1">
-                    Create the booking flow for your customers
+                    {t('subtitle')}
                   </p>
                 </div>
               </div>
@@ -160,7 +189,10 @@ export default function PageBuilderStep() {
         <ConfigPanel
           pageId={currentEditingPageId}
           componentId={configComponentId}
-          onClose={() => setConfigComponentId(null)}
+          pendingComponent={pendingComponent}
+          isNewComponent={!!pendingComponent}
+          onSaveNew={handleSaveNewComponent}
+          onClose={handleCloseConfig}
         />
       )}
     </div>

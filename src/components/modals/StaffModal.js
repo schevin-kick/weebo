@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import ModalPortal from '@/components/portal/ModalPortal';
 import ConfirmDialog from '@/components/dashboard/ConfirmDialog';
 import StaffAvatar from '@/components/shared/StaffAvatar';
@@ -15,6 +16,7 @@ import AvailabilityPicker from '@/components/shared/AvailabilityPicker';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 
 export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
+  const t = useTranslations('modals.staff');
   const businessHours = useSetupWizardStore((state) => state.businessHours);
 
   const [formData, setFormData] = useState(
@@ -73,11 +75,11 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
     const newErrors = {};
 
     if (!formData.name || formData.name.length < 3) {
-      newErrors.name = 'Staff name must be at least 3 characters';
+      newErrors.name = t('name.error');
     }
 
     if (formData.description && formData.description.length > 200) {
-      newErrors.description = 'Description must be at most 200 characters';
+      newErrors.description = t('description.error');
     }
 
     setErrors(newErrors);
@@ -155,7 +157,7 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
             {/* Header */}
             <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
               <h2 className="text-xl font-bold text-slate-900">
-                {staffMember ? 'Edit Staff Member' : 'Add Staff Member'}
+                {staffMember ? t('editTitle') : t('addTitle')}
               </h2>
               <button
                 onClick={handleClose}
@@ -174,7 +176,7 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
                   {/* Avatar */}
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Photo <span className="text-slate-400 text-xs">(optional)</span>
+                      {t('photo.label')} <span className="text-slate-400 text-xs">{t('photo.optional')}</span>
                     </label>
                     <StaffAvatar
                       photo={formData.photo}
@@ -184,7 +186,7 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
                       onChange={(photo) => setFormData({ ...formData, photo })}
                     />
                     <p className="text-xs text-slate-500 mt-2">
-                      Click to upload photo (Max 1MB)
+                      {t('photo.helperText')}
                     </p>
                   </div>
 
@@ -192,13 +194,13 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
                   <div className="flex-1 space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Name <span className="text-orange-500">*</span>
+                        {t('name.label')} <span className="text-orange-500">*</span>
                       </label>
                       <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="e.g., Sarah Johnson"
+                        placeholder={t('name.placeholder')}
                         className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                       />
                       {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name}</p>}
@@ -206,13 +208,13 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
 
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Specialty <span className="text-slate-400 text-xs">(optional)</span>
+                        {t('specialty.label')} <span className="text-slate-400 text-xs">{t('specialty.optional')}</span>
                       </label>
                       <input
                         type="text"
                         value={formData.specialty}
                         onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
-                        placeholder="e.g., Senior Stylist, Massage Therapist"
+                        placeholder={t('specialty.placeholder')}
                         className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                       />
                     </div>
@@ -222,12 +224,12 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
                 {/* Description */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Description <span className="text-slate-400 text-xs">(optional)</span>
+                    {t('description.label')} <span className="text-slate-400 text-xs">{t('description.optional')}</span>
                   </label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Brief bio or description..."
+                    placeholder={t('description.placeholder')}
                     rows={3}
                     maxLength={200}
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
@@ -237,7 +239,7 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
                       <p className="text-sm text-red-600">{errors.description}</p>
                     )}
                     <p className="text-xs text-slate-500 ml-auto">
-                      {formData.description.length}/200 characters
+                      {t('description.characterCount', { count: formData.description.length })}
                     </p>
                   </div>
                 </div>
@@ -263,14 +265,14 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
                 {isSaving && (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 )}
-                {isSaving ? 'Saving...' : staffMember ? 'Update Staff Member' : 'Add Staff Member'}
+                {isSaving ? t('saving') : staffMember ? t('updateButton') : t('addButton')}
               </button>
               <button
                 type="button"
                 onClick={onClose}
                 className="px-6 py-2 border border-slate-300 rounded-lg font-medium text-slate-700 hover:bg-slate-100 transition-colors"
               >
-                Cancel
+                {t('cancelButton')}
               </button>
             </div>
               </motion.div>
@@ -285,13 +287,13 @@ export default function StaffModal({ isOpen, onClose, staffMember, onSave }) {
               setShowCloseConfirm(false);
               onClose();
             }}
-            title="Discard Changes?"
-            confirmText="Discard"
-            cancelText="Keep Editing"
+            title={t('discardDialog.title')}
+            confirmText={t('discardDialog.discardButton')}
+            cancelText={t('discardDialog.keepEditingButton')}
             confirmColor="red"
           >
             <p className="text-slate-600 mt-2">
-              You have unsaved changes. Are you sure you want to close without saving?
+              {t('discardDialog.message')}
             </p>
           </ConfirmDialog>
         </ModalPortal>
