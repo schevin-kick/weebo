@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import FallingSakura from '@/components/background/FallingSakura';
 import KitsuneLogo from '@/components/loading/KitsuneLogo';
 import { getLastSelectedBusiness } from '@/lib/localStorage';
@@ -24,6 +25,7 @@ const BrochurePage = dynamic(() => import('./brochure/page'), {
 
 export default function Home() {
   const router = useRouter();
+  const t = useTranslations('homePage');
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export default function Home() {
               Kitsune
             </h1>
             <p className="text-slate-500">
-              Loading...
+              {t('loading')}
             </p>
           </div>
         </div>
@@ -110,7 +112,7 @@ export default function Home() {
             Kitsune
           </h1>
           <p className="text-slate-500">
-            Taking you to your dashboard...
+            {t('redirecting')}
           </p>
         </div>
       </div>

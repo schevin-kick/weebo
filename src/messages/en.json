@@ -1,4 +1,8 @@
 {
+  "homePage": {
+    "loading": "Loading...",
+    "redirecting": "Taking you to your dashboard..."
+  },
   "common": {
     "buttons": {
       "startFreeTrial": "Start Free Trial",
@@ -271,17 +275,211 @@
       "invalidPhone": "Please enter a valid phone number"
     }
   },
+  "trialBanner": {
+    "freeTrial": "Free trial",
+    "daysRemaining": "{count, plural, one {# day} other {# days}} remaining",
+    "trialEndsIn": "Trial ends in",
+    "trialEndsInUrgent": "Trial ends in {count, plural, one {# day} other {# days}}!",
+    "subscribePrompt": "Subscribe now to keep your business running smoothly.",
+    "subscribeNow": "Subscribe Now",
+    "viewBilling": "View Billing"
+  },
   "dashboard": {
     "welcome": "Welcome back",
     "selectBusiness": "Select a Business",
     "noBusiness": "No businesses found",
     "createBusiness": "Create New Business",
+    "sidebar": {
+      "logo": "Kitsune",
+      "title": "Dashboard",
+      "navigation": {
+        "home": "Home",
+        "analytics": "Analytics",
+        "calendar": "Calendar",
+        "bookings": "Bookings",
+        "qrCode": "QR Code",
+        "settings": "Settings",
+        "billing": "Billing",
+        "messaging": "Messaging",
+        "notifications": "Notifications",
+        "holidayHours": "Holiday Hours"
+      }
+    },
+    "header": {
+      "logout": "Logout"
+    },
+    "businessPicker": {
+      "yourBusinesses": "Your Businesses",
+      "searchPlaceholder": "Search by name or address...",
+      "showingCount": "Showing {showing} of {total} {count, plural, one {business} other {businesses}}",
+      "noBusinessesFound": "No businesses found",
+      "noBusinessesYet": "No businesses yet",
+      "createNew": "Create New Business",
+      "servicesCount": "{count, plural, one {# service} other {# services}}",
+      "staffCount": "{count, plural, one {# staff} other {# staff}}"
+    },
     "home": {
       "title": "Dashboard",
-      "recentBookings": "Recent Bookings",
-      "upcomingBookings": "Upcoming Bookings",
-      "todayStats": "Today's Statistics",
-      "quickActions": "Quick Actions"
+      "welcomeMessage": "Welcome back! Here's what's happening today.",
+      "refreshData": "Refresh data",
+      "metrics": {
+        "totalBookings": "Total Bookings",
+        "totalBookingsSubtitle": "All time",
+        "pending": "Pending",
+        "pendingSubtitle": "Need approval",
+        "today": "Today",
+        "todaySubtitle": "Scheduled appointments",
+        "thisWeek": "This Week",
+        "thisWeekSubtitle": "Total appointments"
+      },
+      "todaysSchedule": {
+        "title": "Today's Schedule",
+        "viewCalendar": "View Calendar",
+        "noAppointments": "No appointments scheduled for today",
+        "unknownCustomer": "Unknown Customer"
+      },
+      "topCustomers": {
+        "title": "Top Customers",
+        "noBookings": "No bookings yet",
+        "bookingCount": "{count} booking{count, plural, one {} other {s}}"
+      },
+      "quickActions": {
+        "qrCode": {
+          "title": "QR Code",
+          "subtitle": "Generate & share"
+        },
+        "calendar": {
+          "title": "Calendar",
+          "subtitle": "View all appointments"
+        },
+        "allBookings": {
+          "title": "All Bookings",
+          "subtitle": "Manage bookings"
+        }
+      }
+    },
+    "analytics": {
+      "title": "Analytics",
+      "subtitle": "Track performance and gain insights into your business",
+      "exportCSV": "Export CSV",
+      "noDataToExport": "No data to export",
+      "overview": {
+        "totalBookings": "Total Bookings",
+        "completionRate": "{rate}% completion rate",
+        "revenue": "Revenue",
+        "avgRevenue": "Avg: {amount}",
+        "customers": "Customers",
+        "uniqueCustomers": "Unique customers",
+        "noShows": "No-Shows",
+        "noShowRate": "{rate}% rate"
+      },
+      "bookingTrends": {
+        "title": "Booking Trends",
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      },
+      "statusBreakdown": {
+        "title": "Status Breakdown"
+      },
+      "revenueByService": {
+        "title": "Revenue by Service"
+      },
+      "revenueByStaff": {
+        "title": "Revenue by Staff"
+      },
+      "servicePerformance": {
+        "title": "Service Performance",
+        "service": "Service",
+        "bookings": "Bookings",
+        "completion": "Completion",
+        "revenue": "Revenue",
+        "noData": "No service data available"
+      },
+      "staffPerformance": {
+        "title": "Staff Performance",
+        "staff": "Staff",
+        "bookings": "Bookings",
+        "noShow": "No-Show",
+        "revenue": "Revenue",
+        "noData": "No staff data available"
+      },
+      "charts": {
+        "bookingsTrend": {
+          "noData": "No data available for the selected period",
+          "totalBookings": "Total Bookings",
+          "completed": "Completed"
+        },
+        "statusDistribution": {
+          "noData": "No data available",
+          "noBookings": "No bookings in selected period",
+          "bookingsCount": "{count} bookings ({percent}%)",
+          "pending": "Pending",
+          "confirmed": "Confirmed",
+          "completed": "Completed",
+          "cancelled": "Cancelled"
+        },
+        "revenue": {
+          "noData": "No revenue data available",
+          "revenue": "Revenue",
+          "bookings": "Bookings"
+        }
+      },
+      "dateRange": {
+        "title": "Date Range",
+        "last7Days": "Last 7 Days",
+        "last30Days": "Last 30 Days",
+        "last3Months": "Last 3 Months",
+        "last6Months": "Last 6 Months",
+        "lastYear": "Last Year",
+        "customRange": "Custom Range",
+        "startDate": "Start Date",
+        "endDate": "End Date"
+      }
+    },
+    "calendar": {
+      "title": "Calendar",
+      "subtitle": "Manage your appointments and bookings",
+      "refreshTitle": "Refresh calendar",
+      "toolbar": {
+        "today": "Today",
+        "back": "Back",
+        "next": "Next",
+        "month": "Month",
+        "week": "Week",
+        "day": "Day",
+        "agenda": "Agenda"
+      },
+      "filters": {
+        "title": "Filters",
+        "staff": "Staff",
+        "allStaff": "All Staff",
+        "service": "Service",
+        "allServices": "All Services",
+        "status": "Status"
+      },
+      "statuses": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "cancelled": "Cancelled",
+        "completed": "Completed"
+      },
+      "fallbacks": {
+        "unknownCustomer": "Unknown",
+        "unknownService": "Service"
+      },
+      "messages": {
+        "confirmed": "Booking confirmed and customer notified!",
+        "confirmFailed": "Failed to confirm booking",
+        "cancelled": "Booking cancelled and customer notified",
+        "cancelFailed": "Failed to cancel booking",
+        "notesSaved": "Notes saved",
+        "notesFailed": "Failed to save notes",
+        "noShowMarked": "Marked as no-show",
+        "noShowFailed": "Failed to mark as no-show",
+        "completedMarked": "Marked as completed",
+        "completedFailed": "Failed to mark as completed"
+      }
     }
   },
   "errors": {

@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useTranslations, useLocale } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -19,10 +20,13 @@ import {
 } from 'recharts';
 
 export default function BookingsTrendChart({ data, groupBy = 'day' }) {
+  const t = useTranslations('dashboard.analytics.charts.bookingsTrend');
+  const locale = useLocale();
+
   if (!data || data.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 text-slate-500">
-        No data available for the selected period
+        {t('noData')}
       </div>
     );
   }
@@ -30,12 +34,15 @@ export default function BookingsTrendChart({ data, groupBy = 'day' }) {
   // Format date for display
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
+    // Map next-intl locale to valid Intl locale
+    const intlLocale = locale === 'zh-tw' ? 'zh-TW' : locale;
+
     if (groupBy === 'day') {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return date.toLocaleDateString(intlLocale, { month: 'short', day: 'numeric' });
     } else if (groupBy === 'week') {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return date.toLocaleDateString(intlLocale, { month: 'short', day: 'numeric' });
     } else if (groupBy === 'month') {
-      return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      return date.toLocaleDateString(intlLocale, { month: 'short', year: 'numeric' });
     }
     return dateStr;
   };
@@ -86,7 +93,7 @@ export default function BookingsTrendChart({ data, groupBy = 'day' }) {
           stroke="#f97316"
           strokeWidth={2}
           fill="url(#colorTotal)"
-          name="Total Bookings"
+          name={t('totalBookings')}
         />
         <Area
           type="monotone"
@@ -94,7 +101,7 @@ export default function BookingsTrendChart({ data, groupBy = 'day' }) {
           stroke="#10b981"
           strokeWidth={2}
           fill="url(#colorCompleted)"
-          name="Completed"
+          name={t('completed')}
         />
       </AreaChart>
     </ResponsiveContainer>

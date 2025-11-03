@@ -6,6 +6,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Menu, LogOut } from 'lucide-react';
 import Sidebar from './Sidebar';
 import BusinessPicker from './BusinessPicker';
@@ -17,6 +18,7 @@ export default function DashboardLayout({
   businesses,
   currentBusinessId,
 }) {
+  const t = useTranslations('dashboard.header');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
@@ -81,7 +83,7 @@ export default function DashboardLayout({
                       <button
                         onClick={handleLogout}
                         className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Logout"
+                        title={t('logout')}
                       >
                         <LogOut className="w-5 h-5" />
                       </button>

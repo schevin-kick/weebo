@@ -8,8 +8,10 @@
 
 import { AlertTriangle, Info } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function TrialBanner({ subscription }) {
+  const t = useTranslations('trialBanner');
   // Only show for trialing users
   if (subscription?.status !== 'trialing') {
     return null;
@@ -41,15 +43,13 @@ export default function TrialBanner({ subscription }) {
           >
             {isUrgent ? (
               <>
-                Trial ends in{' '}
-                <span className="font-bold">{daysLeft} {daysLeft === 1 ? 'day' : 'days'}</span>!
-                Subscribe now to keep your business running smoothly.
+                {t('trialEndsInUrgent', { count: daysLeft })}{' '}
+                {t('subscribePrompt')}
               </>
             ) : (
               <>
-                Free trial:{' '}
-                <span className="font-semibold">{daysLeft} {daysLeft === 1 ? 'day' : 'days'}</span>{' '}
-                remaining
+                {t('freeTrial')}:{' '}
+                <span className="font-semibold">{t('daysRemaining', { count: daysLeft })}</span>
               </>
             )}
           </p>
@@ -67,7 +67,7 @@ export default function TrialBanner({ subscription }) {
             }
           `}
         >
-          {isUrgent ? 'Subscribe Now' : 'View Billing'}
+          {isUrgent ? t('subscribeNow') : t('viewBilling')}
         </Link>
       </div>
     </div>

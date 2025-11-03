@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 const STATUS_COLORS = {
@@ -14,18 +15,12 @@ const STATUS_COLORS = {
   cancelled: '#ef4444',
 };
 
-const STATUS_LABELS = {
-  pending: 'Pending',
-  confirmed: 'Confirmed',
-  completed: 'Completed',
-  cancelled: 'Cancelled',
-};
-
 export default function StatusDistributionChart({ data }) {
+  const t = useTranslations('dashboard.analytics.charts.statusDistribution');
   if (!data) {
     return (
       <div className="flex items-center justify-center h-64 text-slate-500">
-        No data available
+        {t('noData')}
       </div>
     );
   }
@@ -33,7 +28,7 @@ export default function StatusDistributionChart({ data }) {
   // Convert status object to array for chart
   const chartData = Object.entries(data)
     .map(([status, count]) => ({
-      name: STATUS_LABELS[status] || status,
+      name: t(status),
       value: count,
       color: STATUS_COLORS[status] || '#94a3b8',
     }))
@@ -42,7 +37,7 @@ export default function StatusDistributionChart({ data }) {
   if (chartData.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 text-slate-500">
-        No bookings in selected period
+        {t('noBookings')}
       </div>
     );
   }
@@ -57,7 +52,7 @@ export default function StatusDistributionChart({ data }) {
         <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-lg">
           <p className="font-semibold text-slate-900">{data.name}</p>
           <p className="text-sm text-slate-600">
-            {data.value} bookings ({percentage}%)
+            {t('bookingsCount', { count: data.value, percent: percentage })}
           </p>
         </div>
       );

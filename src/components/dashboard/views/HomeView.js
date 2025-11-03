@@ -7,6 +7,7 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import {
   Calendar,
   Clock,
@@ -30,7 +31,7 @@ import Skeleton from '@/components/loading/Skeleton';
 import { formatTime } from '@/lib/dateUtils';
 
 export default function HomeView({ businessId }) {
-  const router = useRouter();
+  const t = useTranslations('dashboard.home');
 
   // Fetch data using SWR hooks
   const { metrics, isLoading: metricsLoading } = useDashboardMetrics(businessId);
@@ -49,15 +50,15 @@ export default function HomeView({ businessId }) {
       {/* Page Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Dashboard</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
           <p className="text-slate-600">
-            Welcome back! Here's what's happening today.
+            {t('welcomeMessage')}
           </p>
         </div>
         <button
           onClick={handleRefresh}
           className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-          title="Refresh data"
+          title={t('refreshData')}
         >
           <RefreshCw className="w-5 h-5" />
         </button>
@@ -72,30 +73,30 @@ export default function HomeView({ businessId }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             icon={CheckCircle}
-            title="Total Bookings"
+            title={t('metrics.totalBookings')}
             value={metrics.totalBookings}
-            subtitle="All time"
+            subtitle={t('metrics.totalBookingsSubtitle')}
             color="orange"
           />
           <StatCard
             icon={AlertCircle}
-            title="Pending"
+            title={t('metrics.pending')}
             value={metrics.pendingBookings}
-            subtitle="Need approval"
+            subtitle={t('metrics.pendingSubtitle')}
             color="yellow"
           />
           <StatCard
             icon={Clock}
-            title="Today"
+            title={t('metrics.today')}
             value={metrics.todayBookings}
-            subtitle="Scheduled appointments"
+            subtitle={t('metrics.todaySubtitle')}
             color="green"
           />
           <StatCard
             icon={Calendar}
-            title="This Week"
+            title={t('metrics.thisWeek')}
             value={metrics.weekBookings}
-            subtitle="Total appointments"
+            subtitle={t('metrics.thisWeekSubtitle')}
             color="blue"
           />
         </div>
@@ -108,12 +109,12 @@ export default function HomeView({ businessId }) {
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
             <div className="p-6 border-b border-slate-200">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-slate-900">Today's Schedule</h2>
+                <h2 className="text-xl font-bold text-slate-900">{t('todaysSchedule.title')}</h2>
                 <Link
                   href={`/dashboard/${businessId}/calendar`}
                   className="text-sm text-orange-600 hover:text-orange-700 font-medium flex items-center gap-1"
                 >
-                  View Calendar
+                  {t('todaysSchedule.viewCalendar')}
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -135,7 +136,7 @@ export default function HomeView({ businessId }) {
               ) : todaySchedule.length === 0 ? (
                 <div className="text-center py-12">
                   <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-500">No appointments scheduled for today</p>
+                  <p className="text-slate-500">{t('todaysSchedule.noAppointments')}</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -159,7 +160,7 @@ export default function HomeView({ businessId }) {
                           <StatusBadge status={booking.status} />
                         </div>
                         <p className="text-sm text-slate-600 truncate">
-                          {booking.customer?.displayName || 'Unknown Customer'}
+                          {booking.customer?.displayName || t('todaysSchedule.unknownCustomer')}
                           {booking.service && ` • ${booking.service.name}`}
                           {booking.staff && ` • ${booking.staff.name}`}
                         </p>
@@ -186,7 +187,7 @@ export default function HomeView({ businessId }) {
             <div className="p-6 border-b border-slate-200">
               <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                 <Users className="w-5 h-5 text-orange-600" />
-                Top Customers
+                {t('topCustomers.title')}
               </h2>
             </div>
 
@@ -207,7 +208,7 @@ export default function HomeView({ businessId }) {
               ) : topCustomers.length === 0 ? (
                 <div className="text-center py-8">
                   <Users className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-500 text-sm">No bookings yet</p>
+                  <p className="text-slate-500 text-sm">{t('topCustomers.noBookings')}</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -236,10 +237,10 @@ export default function HomeView({ businessId }) {
 
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-slate-900 truncate">
-                          {item.customer?.displayName || 'Unknown'}
+                          {item.customer?.displayName || t('todaysSchedule.unknownCustomer')}
                         </p>
                         <p className="text-xs text-slate-500">
-                          {item.bookingCount} booking{item.bookingCount !== 1 ? 's' : ''}
+                          {t('topCustomers.bookingCount', { count: item.bookingCount })}
                         </p>
                       </div>
                     </div>
@@ -263,9 +264,9 @@ export default function HomeView({ businessId }) {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 group-hover:text-orange-600 transition-colors">
-                QR Code
+                {t('quickActions.qrCode.title')}
               </h3>
-              <p className="text-sm text-slate-500">Generate & share</p>
+              <p className="text-sm text-slate-500">{t('quickActions.qrCode.subtitle')}</p>
             </div>
           </div>
         </Link>
@@ -280,9 +281,9 @@ export default function HomeView({ businessId }) {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 group-hover:text-green-600 transition-colors">
-                Calendar
+                {t('quickActions.calendar.title')}
               </h3>
-              <p className="text-sm text-slate-500">View all appointments</p>
+              <p className="text-sm text-slate-500">{t('quickActions.calendar.subtitle')}</p>
             </div>
           </div>
         </Link>
@@ -297,9 +298,9 @@ export default function HomeView({ businessId }) {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                All Bookings
+                {t('quickActions.allBookings.title')}
               </h3>
-              <p className="text-sm text-slate-500">Manage bookings</p>
+              <p className="text-sm text-slate-500">{t('quickActions.allBookings.subtitle')}</p>
             </div>
           </div>
         </Link>

@@ -7,6 +7,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useNotificationBadge } from '@/hooks/useNotificationBadge';
 import { version } from '../../../package.json';
 import {
@@ -23,60 +24,61 @@ import {
   X,
 } from 'lucide-react';
 
-const navItems = [
-  {
-    name: 'Home',
-    href: '',
-    icon: LayoutDashboard,
-  },
-  {
-    name: 'Analytics',
-    href: '/analytics',
-    icon: BarChart3,
-  },
-  {
-    name: 'Calendar',
-    href: '/calendar',
-    icon: Calendar,
-  },
-  {
-    name: 'Bookings',
-    href: '/bookings',
-    icon: List,
-  },
-  {
-    name: 'QR Code',
-    href: '/qr-code',
-    icon: QrCode,
-  },
-  {
-    name: 'Settings',
-    href: '/settings',
-    icon: Settings,
-  },
-  {
-    name: 'Billing',
-    href: '/billing',
-    icon: CreditCard,
-  },
-  {
-    name: 'Messaging',
-    href: '/messaging',
-    icon: MessageSquare,
-  },
-  {
-    name: 'Notifications',
-    href: '/notifications',
-    icon: Bell,
-  },
-  {
-    name: 'Holiday Hours',
-    href: '/holiday-hours',
-    icon: CalendarX,
-  },
-];
-
 export default function Sidebar({ businessId, isOpen, onClose }) {
+  const t = useTranslations('dashboard.sidebar');
+
+  const navItems = [
+    {
+      name: t('navigation.home'),
+      href: '',
+      icon: LayoutDashboard,
+    },
+    {
+      name: t('navigation.analytics'),
+      href: '/analytics',
+      icon: BarChart3,
+    },
+    {
+      name: t('navigation.calendar'),
+      href: '/calendar',
+      icon: Calendar,
+    },
+    {
+      name: t('navigation.bookings'),
+      href: '/bookings',
+      icon: List,
+    },
+    {
+      name: t('navigation.qrCode'),
+      href: '/qr-code',
+      icon: QrCode,
+    },
+    {
+      name: t('navigation.settings'),
+      href: '/settings',
+      icon: Settings,
+    },
+    {
+      name: t('navigation.billing'),
+      href: '/billing',
+      icon: CreditCard,
+    },
+    {
+      name: t('navigation.messaging'),
+      href: '/messaging',
+      icon: MessageSquare,
+    },
+    {
+      name: t('navigation.notifications'),
+      href: '/notifications',
+      icon: Bell,
+    },
+    {
+      name: t('navigation.holidayHours'),
+      href: '/holiday-hours',
+      icon: CalendarX,
+    },
+  ];
   const pathname = usePathname();
   const { showBadge: showMessagingBadge } = useNotificationBadge('messaging', businessId);
   const { showBadge: showNotificationsBadge } = useNotificationBadge('notifications', businessId);
@@ -126,15 +128,15 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
             <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center overflow-hidden">
               <img
                 src="/logo.png"
-                alt="Kitsune"
+                alt={t('logo')}
                 className="w-full h-full object-cover"
               />
             </div>
             <div>
               <h1 className="text-lg font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                Kitsune
+                {t('logo')}
               </h1>
-              <p className="text-xs text-slate-500">Dashboard</p>
+              <p className="text-xs text-slate-500">{t('title')}</p>
             </div>
           </div>
         </div>
@@ -184,10 +186,10 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
             <div className="flex items-center justify-center gap-2 mb-1">
               <img
                 src="/logo.png"
-                alt="Kitsune"
+                alt={t('logo')}
                 className="w-5 h-5 rounded object-cover"
               />
-              <span>Kitsune</span>
+              <span>{t('logo')}</span>
             </div>
             <p className="mt-1">v{version}</p>
           </div>

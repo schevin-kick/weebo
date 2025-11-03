@@ -6,18 +6,20 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Calendar } from 'lucide-react';
 
-const PRESET_RANGES = [
-  { label: 'Last 7 Days', value: 7 },
-  { label: 'Last 30 Days', value: 30 },
-  { label: 'Last 3 Months', value: 90 },
-  { label: 'Last 6 Months', value: 180 },
-  { label: 'Last Year', value: 365 },
-];
-
 export default function DateRangePicker({ startDate, endDate, onChange }) {
+  const t = useTranslations('dashboard.analytics.dateRange');
   const [isCustom, setIsCustom] = useState(false);
+
+  const PRESET_RANGES = [
+    { label: t('last7Days'), value: 7 },
+    { label: t('last30Days'), value: 30 },
+    { label: t('last3Months'), value: 90 },
+    { label: t('last6Months'), value: 180 },
+    { label: t('lastYear'), value: 365 },
+  ];
 
   const handlePresetChange = (days) => {
     const end = new Date();
@@ -58,7 +60,7 @@ export default function DateRangePicker({ startDate, endDate, onChange }) {
     <div className="bg-white rounded-lg border border-slate-200 p-4">
       <div className="flex items-center gap-2 mb-3">
         <Calendar className="w-5 h-5 text-slate-600" />
-        <h3 className="font-semibold text-slate-900">Date Range</h3>
+        <h3 className="font-semibold text-slate-900">{t('title')}</h3>
       </div>
 
       {/* Preset Ranges */}
@@ -87,7 +89,7 @@ export default function DateRangePicker({ startDate, endDate, onChange }) {
             : 'border-slate-200 text-slate-700 hover:border-orange-300 hover:bg-orange-50'
         }`}
       >
-        Custom Range
+        {t('customRange')}
       </button>
 
       {/* Custom Date Inputs */}
@@ -95,7 +97,7 @@ export default function DateRangePicker({ startDate, endDate, onChange }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-200">
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1">
-              Start Date
+              {t('startDate')}
             </label>
             <input
               type="date"
@@ -106,7 +108,7 @@ export default function DateRangePicker({ startDate, endDate, onChange }) {
           </div>
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1">
-              End Date
+              {t('endDate')}
             </label>
             <input
               type="date"

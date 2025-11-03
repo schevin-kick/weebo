@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useTranslations } from 'next-intl';
 import {
   BarChart,
   Bar,
@@ -20,10 +21,11 @@ import {
 const COLORS = ['#f97316', '#3b82f6', '#10b981', '#eab308', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 
 export default function RevenueBarChart({ data, dataKey, labelKey, title }) {
+  const t = useTranslations('dashboard.analytics.charts.revenue');
   if (!data || data.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 text-slate-500">
-        No revenue data available
+        {t('noData')}
       </div>
     );
   }
@@ -51,10 +53,10 @@ export default function RevenueBarChart({ data, dataKey, labelKey, title }) {
         <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-lg">
           <p className="font-semibold text-slate-900 mb-1">{data[labelKey]}</p>
           <p className="text-sm text-slate-600">
-            Revenue: {formatCurrency(data.revenue)}
+            {t('revenue')}: {formatCurrency(data.revenue)}
           </p>
           <p className="text-sm text-slate-600">
-            Bookings: {data.bookingCount}
+            {t('bookings')}: {data.bookingCount}
           </p>
         </div>
       );

@@ -7,9 +7,11 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { ChevronDown, Store, Plus, Search, Loader2 } from 'lucide-react';
 
 export default function BusinessPicker({ businesses, currentBusinessId }) {
+  const t = useTranslations('dashboard.businessPicker');
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -137,7 +139,7 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
         <div className="absolute top-full right-0 mt-2 w-96 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50 left-0">
           <div className="px-4 py-3 border-b border-slate-200">
             <p className="text-xs font-semibold text-slate-500 uppercase mb-3">
-              Your Businesses
+              {t('yourBusinesses')}
             </p>
             {/* Search input - always visible */}
             <div className="relative mb-3">
@@ -145,7 +147,7 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                placeholder="Search by name or address..."
+                placeholder={t('searchPlaceholder')}
                 className="w-full px-3 py-2 pl-9 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 autoComplete="off"
               />
@@ -157,7 +159,7 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
             {/* Count indicator - show when more than displayed */}
             {totalBusinesses > displayedBusinesses.length && (
               <p className="text-xs text-slate-500">
-                Showing {showingCount} of {totalBusinesses} {totalBusinesses === 1 ? 'business' : 'businesses'}
+                {t('showingCount', { showing: showingCount, total: totalBusinesses, count: totalBusinesses })}
               </p>
             )}
           </div>
@@ -183,7 +185,7 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
               <div className="px-3 py-8 text-center">
                 <Store className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                 <p className="text-sm text-slate-500">
-                  {searchQuery.trim().length > 0 ? 'No businesses found' : 'No businesses yet'}
+                  {searchQuery.trim().length > 0 ? t('noBusinessesFound') : t('noBusinessesYet')}
                 </p>
               </div>
             ) : (
@@ -220,8 +222,8 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
                     </p>
                   )}
                   <p className="text-sm text-slate-500">
-                    {business._count?.services || 0} services,{' '}
-                    {business._count?.staff || 0} staff
+                    {t('servicesCount', { count: business._count?.services || 0 })},{' '}
+                    {t('staffCount', { count: business._count?.staff || 0 })}
                   </p>
                 </div>
                 {business.id === currentBusinessId && (
@@ -238,7 +240,7 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
               className="w-full flex items-center gap-2 px-3 py-2 text-orange-600 hover:bg-orange-50 transition-colors font-medium"
             >
               <Plus className="w-4 h-4" />
-              Create New Business
+              {t('createNew')}
             </button>
           </div>
         </div>

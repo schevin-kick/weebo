@@ -6,6 +6,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   TrendingUp,
   DollarSign,
@@ -32,6 +33,7 @@ import SkeletonCard from '@/components/loading/SkeletonCard';
 import Skeleton from '@/components/loading/Skeleton';
 
 export default function AnalyticsView({ businessId }) {
+  const t = useTranslations('dashboard.analytics');
   // Default to last 30 days
   const [dateRange, setDateRange] = useState({
     startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
@@ -86,7 +88,7 @@ export default function AnalyticsView({ businessId }) {
   const exportToCSV = () => {
     // Simple CSV export for service performance
     if (!servicePerformance || servicePerformance.length === 0) {
-      alert('No data to export');
+      alert(t('noDataToExport'));
       return;
     }
 
@@ -127,9 +129,9 @@ export default function AnalyticsView({ businessId }) {
       {/* Page Header */}
       <div className="mb-8 flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Analytics</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
           <p className="text-slate-600">
-            Track performance and gain insights into your business
+            {t('subtitle')}
           </p>
         </div>
         <button
@@ -137,7 +139,7 @@ export default function AnalyticsView({ businessId }) {
           className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
         >
           <Download className="w-4 h-4" />
-          Export CSV
+          {t('exportCSV')}
         </button>
       </div>
 
@@ -159,30 +161,30 @@ export default function AnalyticsView({ businessId }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             icon={Activity}
-            title="Total Bookings"
+            title={t('overview.totalBookings')}
             value={overview.totalBookings}
-            subtitle={`${overview.conversionRate}% completion rate`}
+            subtitle={t('overview.completionRate', { rate: overview.conversionRate })}
             color="orange"
           />
           <StatCard
             icon={DollarSign}
-            title="Revenue"
+            title={t('overview.revenue')}
             value={formatCurrency(overview.totalRevenue)}
-            subtitle={`Avg: ${formatCurrency(overview.avgBookingValue)}`}
+            subtitle={t('overview.avgRevenue', { amount: formatCurrency(overview.avgBookingValue) })}
             color="green"
           />
           <StatCard
             icon={Users}
-            title="Customers"
+            title={t('overview.customers')}
             value={overview.uniqueCustomers}
-            subtitle="Unique customers"
+            subtitle={t('overview.uniqueCustomers')}
             color="blue"
           />
           <StatCard
             icon={AlertCircle}
-            title="No-Shows"
+            title={t('overview.noShows')}
             value={overview.noShowCount}
-            subtitle={`${overview.noShowRate}% rate`}
+            subtitle={t('overview.noShowRate', { rate: overview.noShowRate })}
             color="yellow"
           />
         </div>
@@ -196,7 +198,7 @@ export default function AnalyticsView({ businessId }) {
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-orange-600" />
-                <h2 className="text-xl font-bold text-slate-900">Booking Trends</h2>
+                <h2 className="text-xl font-bold text-slate-900">{t('bookingTrends.title')}</h2>
               </div>
               <div className="flex gap-2">
                 {['day', 'week', 'month'].map((option) => (
@@ -209,7 +211,7 @@ export default function AnalyticsView({ businessId }) {
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                     }`}
                   >
-                    {option.charAt(0).toUpperCase() + option.slice(1)}
+                    {t(`bookingTrends.${option}`)}
                   </button>
                 ))}
               </div>
@@ -229,7 +231,7 @@ export default function AnalyticsView({ businessId }) {
           <div className="p-6 border-b border-slate-200">
             <div className="flex items-center gap-2">
               <PieChartIcon className="w-5 h-5 text-orange-600" />
-              <h2 className="text-xl font-bold text-slate-900">Status Breakdown</h2>
+              <h2 className="text-xl font-bold text-slate-900">{t('statusBreakdown.title')}</h2>
             </div>
           </div>
           <div className="p-6">
@@ -249,7 +251,7 @@ export default function AnalyticsView({ businessId }) {
           <div className="p-6 border-b border-slate-200">
             <div className="flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-green-600" />
-              <h2 className="text-xl font-bold text-slate-900">Revenue by Service</h2>
+              <h2 className="text-xl font-bold text-slate-900">{t('revenueByService.title')}</h2>
             </div>
           </div>
           <div className="p-6">
@@ -260,7 +262,7 @@ export default function AnalyticsView({ businessId }) {
                 data={revenueData?.revenueByService}
                 dataKey="revenue"
                 labelKey="serviceName"
-                title="Revenue by Service"
+                title={t('revenueByService.title')}
               />
             )}
           </div>
@@ -271,7 +273,7 @@ export default function AnalyticsView({ businessId }) {
           <div className="p-6 border-b border-slate-200">
             <div className="flex items-center gap-2">
               <Users className="w-5 h-5 text-blue-600" />
-              <h2 className="text-xl font-bold text-slate-900">Revenue by Staff</h2>
+              <h2 className="text-xl font-bold text-slate-900">{t('revenueByStaff.title')}</h2>
             </div>
           </div>
           <div className="p-6">
@@ -282,7 +284,7 @@ export default function AnalyticsView({ businessId }) {
                 data={revenueData?.revenueByStaff}
                 dataKey="revenue"
                 labelKey="staffName"
-                title="Revenue by Staff"
+                title={t('revenueByStaff.title')}
               />
             )}
           </div>
@@ -294,7 +296,7 @@ export default function AnalyticsView({ businessId }) {
         {/* Service Performance Table */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
           <div className="p-6 border-b border-slate-200">
-            <h2 className="text-xl font-bold text-slate-900">Service Performance</h2>
+            <h2 className="text-xl font-bold text-slate-900">{t('servicePerformance.title')}</h2>
           </div>
           <div className="overflow-x-auto">
             {serviceLoading ? (
@@ -306,16 +308,16 @@ export default function AnalyticsView({ businessId }) {
                 <thead className="bg-slate-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                      Service
+                      {t('servicePerformance.service')}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase">
-                      Bookings
+                      {t('servicePerformance.bookings')}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase">
-                      Completion
+                      {t('servicePerformance.completion')}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase">
-                      Revenue
+                      {t('servicePerformance.revenue')}
                     </th>
                   </tr>
                 </thead>
@@ -350,7 +352,7 @@ export default function AnalyticsView({ businessId }) {
               </table>
             ) : (
               <div className="p-6 text-center text-slate-500">
-                No service data available
+                {t('servicePerformance.noData')}
               </div>
             )}
           </div>
@@ -359,7 +361,7 @@ export default function AnalyticsView({ businessId }) {
         {/* Staff Performance Table */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
           <div className="p-6 border-b border-slate-200">
-            <h2 className="text-xl font-bold text-slate-900">Staff Performance</h2>
+            <h2 className="text-xl font-bold text-slate-900">{t('staffPerformance.title')}</h2>
           </div>
           <div className="overflow-x-auto">
             {staffLoading ? (
@@ -371,16 +373,16 @@ export default function AnalyticsView({ businessId }) {
                 <thead className="bg-slate-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                      Staff
+                      {t('staffPerformance.staff')}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase">
-                      Bookings
+                      {t('staffPerformance.bookings')}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase">
-                      No-Show
+                      {t('staffPerformance.noShow')}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase">
-                      Revenue
+                      {t('staffPerformance.revenue')}
                     </th>
                   </tr>
                 </thead>
@@ -430,7 +432,7 @@ export default function AnalyticsView({ businessId }) {
               </table>
             ) : (
               <div className="p-6 text-center text-slate-500">
-                No staff data available
+                {t('staffPerformance.noData')}
               </div>
             )}
           </div>

@@ -1,4 +1,8 @@
 {
+  "homePage": {
+    "loading": "載入中...",
+    "redirecting": "正在前往您的儀表板..."
+  },
   "common": {
     "buttons": {
       "startFreeTrial": "開始免費試用",
@@ -271,17 +275,211 @@
       "invalidPhone": "請輸入有效的電話號碼"
     }
   },
+  "trialBanner": {
+    "freeTrial": "免費試用",
+    "daysRemaining": "剩餘 {count} 天",
+    "trialEndsIn": "試用期剩餘",
+    "trialEndsInUrgent": "試用期剩餘 {count} 天！",
+    "subscribePrompt": "立即訂閱以保持您的企業順利運作。",
+    "subscribeNow": "立即訂閱",
+    "viewBilling": "查看帳單"
+  },
   "dashboard": {
     "welcome": "歡迎回來",
     "selectBusiness": "選擇企業",
     "noBusiness": "找不到企業",
     "createBusiness": "建立新企業",
+    "sidebar": {
+      "logo": "Kitsune",
+      "title": "儀表板",
+      "navigation": {
+        "home": "首頁",
+        "analytics": "數據分析",
+        "calendar": "行事曆",
+        "bookings": "預約管理",
+        "qrCode": "QR Code",
+        "settings": "設定",
+        "billing": "帳單",
+        "messaging": "訊息",
+        "notifications": "通知",
+        "holidayHours": "營業時間"
+      }
+    },
+    "header": {
+      "logout": "登出"
+    },
+    "businessPicker": {
+      "yourBusinesses": "您的企業",
+      "searchPlaceholder": "搜尋名稱或地址...",
+      "showingCount": "顯示 {showing} / {total} 個企業",
+      "noBusinessesFound": "找不到企業",
+      "noBusinessesYet": "尚無企業",
+      "createNew": "建立新企業",
+      "servicesCount": "{count} 項服務",
+      "staffCount": "{count} 位員工"
+    },
     "home": {
       "title": "儀表板",
-      "recentBookings": "最近預約",
-      "upcomingBookings": "即將到來的預約",
-      "todayStats": "今日統計",
-      "quickActions": "快速操作"
+      "welcomeMessage": "歡迎回來！這是今天的最新動態。",
+      "refreshData": "重新整理資料",
+      "metrics": {
+        "totalBookings": "總預約數",
+        "totalBookingsSubtitle": "全部時間",
+        "pending": "待處理",
+        "pendingSubtitle": "需要審核",
+        "today": "今天",
+        "todaySubtitle": "已排程預約",
+        "thisWeek": "本週",
+        "thisWeekSubtitle": "總預約數"
+      },
+      "todaysSchedule": {
+        "title": "今日行程",
+        "viewCalendar": "查看行事曆",
+        "noAppointments": "今天沒有排程預約",
+        "unknownCustomer": "未知客戶"
+      },
+      "topCustomers": {
+        "title": "熱門客戶",
+        "noBookings": "尚無預約",
+        "bookingCount": "{count} 次預約"
+      },
+      "quickActions": {
+        "qrCode": {
+          "title": "QR Code",
+          "subtitle": "產生並分享"
+        },
+        "calendar": {
+          "title": "行事曆",
+          "subtitle": "查看所有預約"
+        },
+        "allBookings": {
+          "title": "所有預約",
+          "subtitle": "管理預約"
+        }
+      }
+    },
+    "analytics": {
+      "title": "數據分析",
+      "subtitle": "追蹤表現並深入了解您的業務",
+      "exportCSV": "匯出 CSV",
+      "noDataToExport": "沒有資料可匯出",
+      "overview": {
+        "totalBookings": "總預約數",
+        "completionRate": "{rate}% 完成率",
+        "revenue": "營收",
+        "avgRevenue": "平均：{amount}",
+        "customers": "客戶",
+        "uniqueCustomers": "不重複客戶",
+        "noShows": "未出席",
+        "noShowRate": "{rate}% 比率"
+      },
+      "bookingTrends": {
+        "title": "預約趨勢",
+        "day": "日",
+        "week": "週",
+        "month": "月"
+      },
+      "statusBreakdown": {
+        "title": "狀態分布"
+      },
+      "revenueByService": {
+        "title": "服務營收"
+      },
+      "revenueByStaff": {
+        "title": "員工營收"
+      },
+      "servicePerformance": {
+        "title": "服務表現",
+        "service": "服務",
+        "bookings": "預約數",
+        "completion": "完成率",
+        "revenue": "營收",
+        "noData": "無服務資料"
+      },
+      "staffPerformance": {
+        "title": "員工表現",
+        "staff": "員工",
+        "bookings": "預約數",
+        "noShow": "未出席",
+        "revenue": "營收",
+        "noData": "無員工資料"
+      },
+      "charts": {
+        "bookingsTrend": {
+          "noData": "所選期間無可用資料",
+          "totalBookings": "總預約數",
+          "completed": "已完成"
+        },
+        "statusDistribution": {
+          "noData": "無可用資料",
+          "noBookings": "所選期間無預約",
+          "bookingsCount": "{count} 個預約 ({percent}%)",
+          "pending": "待處理",
+          "confirmed": "已確認",
+          "completed": "已完成",
+          "cancelled": "已取消"
+        },
+        "revenue": {
+          "noData": "無營收資料",
+          "revenue": "營收",
+          "bookings": "預約數"
+        }
+      },
+      "dateRange": {
+        "title": "日期範圍",
+        "last7Days": "最近 7 天",
+        "last30Days": "最近 30 天",
+        "last3Months": "最近 3 個月",
+        "last6Months": "最近 6 個月",
+        "lastYear": "最近一年",
+        "customRange": "自訂範圍",
+        "startDate": "開始日期",
+        "endDate": "結束日期"
+      }
+    },
+    "calendar": {
+      "title": "行事曆",
+      "subtitle": "管理您的預約和約會",
+      "refreshTitle": "重新整理行事曆",
+      "toolbar": {
+        "today": "今天",
+        "back": "上一頁",
+        "next": "下一頁",
+        "month": "月",
+        "week": "週",
+        "day": "日",
+        "agenda": "議程"
+      },
+      "filters": {
+        "title": "篩選",
+        "staff": "人員",
+        "allStaff": "所有人員",
+        "service": "服務",
+        "allServices": "所有服務",
+        "status": "狀態"
+      },
+      "statuses": {
+        "pending": "待處理",
+        "confirmed": "已確認",
+        "cancelled": "已取消",
+        "completed": "已完成"
+      },
+      "fallbacks": {
+        "unknownCustomer": "未知",
+        "unknownService": "服務"
+      },
+      "messages": {
+        "confirmed": "預約已確認並已通知客戶！",
+        "confirmFailed": "確認預約失敗",
+        "cancelled": "預約已取消並已通知客戶",
+        "cancelFailed": "取消預約失敗",
+        "notesSaved": "備註已儲存",
+        "notesFailed": "儲存備註失敗",
+        "noShowMarked": "已標記為未出席",
+        "noShowFailed": "標記為未出席失敗",
+        "completedMarked": "已標記為已完成",
+        "completedFailed": "標記為已完成失敗"
+      }
     }
   },
   "errors": {

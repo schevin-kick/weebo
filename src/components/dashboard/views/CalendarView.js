@@ -9,6 +9,7 @@ import { useState, useMemo } from 'react';
 import { Calendar as BigCalendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import enUS from 'date-fns/locale/en-US';
+import zhTW from 'date-fns/locale/zh-TW';
 import { Filter, Users, Briefcase, AlertCircle, RefreshCw } from 'lucide-react';
 import { useCalendarBookings, useBusinessSettings } from '@/hooks/useDashboardData';
 import {
@@ -21,11 +22,15 @@ import useCalendarViewStore from '@/stores/calendarViewStore';
 import BookingDetailsModal from '@/components/dashboard/BookingDetailsModal';
 import SkeletonCalendar from '@/components/loading/SkeletonCalendar';
 import { useToast } from '@/contexts/ToastContext';
+import { useTranslations, useLocale } from 'next-intl';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-// Setup date-fns localizer
+// Setup date-fns localizer with multiple locales
 const locales = {
   'en-US': enUS,
+  'en': enUS,
+  'zh-TW': zhTW,
+  'zh-tw': zhTW,
 };
 
 const localizer = dateFnsLocalizer({
@@ -38,6 +43,8 @@ const localizer = dateFnsLocalizer({
 
 export default function CalendarView({ businessId }) {
   const toast = useToast();
+  const t = useTranslations('dashboard.calendar');
+  const locale = useLocale();
 
   // Calendar view store
   const {
@@ -107,12 +114,12 @@ export default function CalendarView({ businessId }) {
   const events = useMemo(() => {
     return filteredBookings.map((booking) => ({
       id: booking.id,
-      title: `${booking.customer?.displayName || 'Unknown'} - ${booking.service?.name || 'Service'}`,
+      title: `${booking.customer?.displayName || t('fallbacks.unknownCustomer')} - ${booking.service?.name || t('fallbacks.unknownService')}`,
       start: new Date(booking.dateTime),
       end: new Date(new Date(booking.dateTime).getTime() + (booking.duration || 60) * 60000),
       resource: booking,
     }));
-  }, [filteredBookings]);
+  }, [filteredBookings, t]);
 
   // Event styling
   const eventStyleGetter = (event) => {
@@ -164,11 +171,11 @@ export default function CalendarView({ businessId }) {
   const handleConfirm = async (bookingId) => {
     try {
       await updateStatus(bookingId, 'confirmed', businessId);
-      toast.success('Booking confirmed and customer notified!');
+      toast.success(t('messages.confirmed'));
       setShowModal(false);
     } catch (error) {
       console.error('Error confirming booking:', error);
-      toast.error('Failed to confirm booking');
+      toast.error(t('messages.confirmFailed'));
     }
   };
 
@@ -182,44 +189,44 @@ export default function CalendarView({ businessId }) {
 
       if (!response.ok) throw new Error('Failed to cancel booking');
 
-      toast.success('Booking cancelled and customer notified');
+      toast.success(t('messages.cancelled'));
       setShowModal(false);
       mutateBookings(); // Refresh bookings
     } catch (error) {
       console.error('Error cancelling booking:', error);
-      toast.error('Failed to cancel booking');
+      toast.error(t('messages.cancelFailed'));
     }
   };
 
   const handleUpdateNotes = async (bookingId, notes) => {
     try {
       await updateNotes(bookingId, notes, businessId);
-      toast.success('Notes saved');
+      toast.success(t('messages.notesSaved'));
     } catch (error) {
       console.error('Error updating notes:', error);
-      toast.error('Failed to save notes');
+      toast.error(t('messages.notesFailed'));
     }
   };
 
   const handleMarkNoShow = async (bookingId) => {
     try {
       await markNoShow(bookingId, businessId);
-      toast.success('Marked as no-show');
+      toast.success(t('messages.noShowMarked'));
       setShowModal(false);
     } catch (error) {
       console.error('Error marking no-show:', error);
-      toast.error('Failed to mark as no-show');
+      toast.error(t('messages.noShowFailed'));
     }
   };
 
   const handleMarkCompleted = async (bookingId) => {
     try {
       await updateStatus(bookingId, 'completed', businessId);
-      toast.success('Marked as completed');
+      toast.success(t('messages.completedMarked'));
       setShowModal(false);
     } catch (error) {
       console.error('Error marking completed:', error);
-      toast.error('Failed to mark as completed');
+      toast.error(t('messages.completedFailed'));
     }
   };
 
@@ -232,8 +239,8 @@ export default function CalendarView({ businessId }) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Calendar</h1>
-          <p className="text-slate-600">Manage your appointments and bookings</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <SkeletonCalendar />
       </div>
@@ -245,13 +252,13 @@ export default function CalendarView({ businessId }) {
       {/* Page Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Calendar</h1>
-          <p className="text-slate-600">Manage your appointments and bookings</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <button
           onClick={handleRefresh}
           className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-          title="Refresh calendar"
+          title={t('refreshTitle')}
         >
           <RefreshCw className="w-5 h-5" />
         </button>
@@ -261,7 +268,7 @@ export default function CalendarView({ businessId }) {
       <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Filter className="w-5 h-5 text-slate-400" />
-          <h3 className="font-semibold text-slate-900">Filters</h3>
+          <h3 className="font-semibold text-slate-900">{t('filters.title')}</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -269,14 +276,14 @@ export default function CalendarView({ businessId }) {
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               <Users className="w-4 h-4 inline mr-1" />
-              Staff
+              {t('filters.staff')}
             </label>
             <select
               value={filterByStaff}
               onChange={(e) => setFilterByStaff(e.target.value)}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             >
-              <option value="all">All Staff</option>
+              <option value="all">{t('filters.allStaff')}</option>
               {staff.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -289,14 +296,14 @@ export default function CalendarView({ businessId }) {
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               <Briefcase className="w-4 h-4 inline mr-1" />
-              Service
+              {t('filters.service')}
             </label>
             <select
               value={filterByService}
               onChange={(e) => setFilterByService(e.target.value)}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             >
-              <option value="all">All Services</option>
+              <option value="all">{t('filters.allServices')}</option>
               {services.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -309,7 +316,7 @@ export default function CalendarView({ businessId }) {
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               <AlertCircle className="w-4 h-4 inline mr-1" />
-              Status
+              {t('filters.status')}
             </label>
             <div className="flex flex-wrap gap-2">
               {Object.entries(selectedStatuses).map(([status, checked]) => (
@@ -325,7 +332,7 @@ export default function CalendarView({ businessId }) {
                     }
                     className="rounded text-orange-500 focus:ring-orange-500"
                   />
-                  <span className="text-sm text-slate-700 capitalize">{status}</span>
+                  <span className="text-sm text-slate-700">{t(`statuses.${status}`)}</span>
                 </label>
               ))}
             </div>
@@ -348,6 +355,16 @@ export default function CalendarView({ businessId }) {
           step={30}
           timeslots={2}
           scrollToTime={new Date()}
+          culture={locale}
+          messages={{
+            today: t('toolbar.today'),
+            previous: t('toolbar.back'),
+            next: t('toolbar.next'),
+            month: t('toolbar.month'),
+            week: t('toolbar.week'),
+            day: t('toolbar.day'),
+            agenda: t('toolbar.agenda'),
+          }}
         />
       </div>
 
