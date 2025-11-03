@@ -82,9 +82,9 @@ export async function POST(request, { params }) {
           where: {
             businessId,
             createdAt: {
-              gte: new Date(Date.now() - 15 * 60 * 1000)
+              gte: new Date(Date.now() - 1 * 60 * 1000)
             },
-            status: 'confirmed' // Only match confirmed bookings
+            status: { in: ['pending', 'confirmed'] } // Match both pending and confirmed bookings
           },
           orderBy: { createdAt: 'desc' },
           include: {
@@ -124,13 +124,17 @@ export async function POST(request, { params }) {
             customerId: recentBooking.customerId
           });
 
-          // Send booking confirmation message
-          try {
-            const { sendBookingConfirmation } = await import('@/lib/lineMessaging');
-            await sendBookingConfirmation(recentBooking, business);
-            console.log('[LINE Webhook] Booking confirmation sent');
-          } catch (error) {
-            console.error('[LINE Webhook] Failed to send booking confirmation:', error);
+          // Send booking confirmation message only for confirmed bookings
+          if (recentBooking.status === 'confirmed') {
+            try {
+              const { sendBookingConfirmation } = await import('@/lib/lineMessaging');
+              await sendBookingConfirmation(recentBooking, business);
+              console.log('[LINE Webhook] Booking confirmation sent');
+            } catch (error) {
+              console.error('[LINE Webhook] Failed to send booking confirmation:', error);
+            }
+          } else {
+            console.log('[LINE Webhook] Booking is pending, skipping confirmation message');
           }
         } else {
           console.log('[LINE Webhook] No recent booking found to link');

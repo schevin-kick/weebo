@@ -37,9 +37,16 @@ export default function PresetDateTimePage({
     }
   }
 
-  const [selectedDate, setSelectedDate] = useState(
-    selectedDateTime?.date ? new Date(selectedDateTime.date + 'T00:00:00') : null
-  );
+  const [selectedDate, setSelectedDate] = useState(() => {
+    // If there's a pre-selected date, use it
+    if (selectedDateTime?.date) {
+      return new Date(selectedDateTime.date + 'T00:00:00');
+    }
+    // Otherwise, default to today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
+  });
   const [selectedTime, setSelectedTime] = useState(selectedDateTime?.time || null);
   const [existingBookings, setExistingBookings] = useState([]);
   const [closedDates, setClosedDates] = useState([]);
