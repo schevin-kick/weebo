@@ -1,0 +1,838 @@
+{
+  "common": {
+    "buttons": {
+      "startFreeTrial": "開始免費試用",
+      "signIn": "登入",
+      "getStarted": "開始使用",
+      "getStartedFree": "免費開始",
+      "next": "下一步",
+      "previous": "上一步",
+      "back": "返回",
+      "continue": "繼續",
+      "confirm": "確認",
+      "cancel": "取消",
+      "save": "儲存",
+      "delete": "刪除",
+      "edit": "編輯",
+      "close": "關閉",
+      "submit": "提交",
+      "loading": "載入中..."
+    },
+    "navigation": {
+      "dashboard": "儀表板",
+      "calendar": "行事曆",
+      "bookings": "預約管理",
+      "settings": "設定",
+      "messaging": "訊息",
+      "analytics": "數據分析",
+      "qrCode": "QR Code",
+      "holidayHours": "營業時間",
+      "billing": "帳單"
+    },
+    "time": {
+      "days": "天",
+      "hours": "小時",
+      "minutes": "分鐘",
+      "day": "天",
+      "week": "週",
+      "month": "月",
+      "year": "年"
+    },
+    "status": {
+      "pending": "待處理",
+      "confirmed": "已確認",
+      "cancelled": "已取消",
+      "completed": "已完成",
+      "failed": "失敗"
+    }
+  },
+  "brochure": {
+    "hero": {
+      "title": "Kitsune",
+      "subtitle": "專為亞洲打造的智能預約平台。整合 LINE、簡單易用、強大分析。",
+      "valueProps": {
+        "quickSetup": "5 分鐘設定",
+        "freeTrial": "免費試用",
+        "lineNative": "LINE 原生整合",
+        "analytics": "即時數據分析"
+      }
+    },
+    "stats": {
+      "lineUsers": "亞洲 LINE 用戶",
+      "setupTime": "設定時間",
+      "availability": "全天候服務"
+    },
+    "lineIntegration": {
+      "title": "LINE 強力驅動",
+      "description": "在客戶最常用的平台上觸及他們。LINE 是亞洲第一的通訊平台，在日本、泰國和台灣擁有超過 9500 萬活躍用戶。",
+      "benefits": {
+        "instantConfirmations": "透過 LINE 聊天即時確認預約",
+        "autoReminders": "自動提醒減少 80% 的爽約率",
+        "alwaysAvailable": "客戶 24/7 隨時預約，無需電話",
+        "beautifulCards": "精美的 LINE 卡片展示您的服務"
+      }
+    },
+    "features": {
+      "title": "一應俱全",
+      "subtitle": "為希望擁有強大功能而不失簡單的企業主打造",
+      "quickSetup": {
+        "title": "5 分鐘設定",
+        "description": "使用我們的引導式設定精靈，幾分鐘內即可上線。無需技術技能。"
+      },
+      "qrCodes": {
+        "title": "品牌化 QR Code",
+        "description": "生成帶有您 Logo 的精美 QR Code。立即列印或分享。"
+      },
+      "analytics": {
+        "title": "強大的數據分析",
+        "description": "透過即時儀表板追蹤預約、營收和客戶趨勢。"
+      },
+      "scheduling": {
+        "title": "智能排程",
+        "description": "輕鬆管理員工可用性、營業時間和假期。"
+      },
+      "customForms": {
+        "title": "自訂表單",
+        "description": "使用拖放式表單建構器收集您需要的任何資訊。"
+      },
+      "autoReminders": {
+        "title": "自動提醒",
+        "description": "透過 LINE 自動預約提醒減少爽約。"
+      }
+    },
+    "analyticsPreview": {
+      "title": "重要的數據分析",
+      "description": "一目了然地查看您的業務表現。追蹤預約、識別最佳客戶並做出數據驅動的決策。",
+      "features": {
+        "realtimeDashboard": "即時預約儀表板",
+        "customerInsights": "客戶洞察與排名",
+        "revenueTracking": "營收追蹤",
+        "staffPerformance": "員工績效指標"
+      },
+      "stats": {
+        "totalBookings": "總預約數",
+        "thisWeek": "本週",
+        "revenue": "營收"
+      }
+    },
+    "qrCodeFeature": {
+      "title": "掃描。預約。完成。",
+      "description": "幾秒鐘內生成精美的品牌化 QR Code。客戶掃描、加入您的 LINE 機器人並立即預約。無需下載應用程式。",
+      "steps": {
+        "customize": {
+          "title": "自訂您的 QR Code",
+          "description": "添加您的 Logo 和品牌顏色"
+        },
+        "share": {
+          "title": "列印或分享",
+          "description": "在您的地點展示或在線上發布"
+        },
+        "accept": {
+          "title": "開始接受預約",
+          "description": "客戶透過 LINE 立即預約"
+        }
+      }
+    },
+    "screenshots": {
+      "title": "Kitsune 實際運作",
+      "subtitle": "探索旨在讓預約管理輕鬆無憂的直覺介面",
+      "dashboard": {
+        "title": "強大的儀表板",
+        "description": "即時洞察您的業務表現。追蹤預約、監控營收、識別頂級客戶，並透過即時分析做出數據驅動的決策。"
+      },
+      "calendar": {
+        "title": "智能行事曆管理",
+        "description": "輕鬆可視化您的日程安排。多視圖行事曆支援日、週、月和議程視圖。按員工、服務或狀態過濾。顏色編碼的預約幫助您保持井然有序。"
+      },
+      "lineIntegration": {
+        "title": "無縫 LINE 整合",
+        "description": "您的客戶直接透過 LINE（亞洲最受歡迎的通訊應用程式）預約。自動確認、提醒和更新讓每個人都保持知情，無需額外努力。"
+      },
+      "qrAndForms": {
+        "title": "精美的 QR Code 和自訂表單",
+        "description": "幾秒鐘內生成品牌化 QR Code。使用您的 Logo 和顏色自訂，然後下載或列印。使用拖放式簡單性建構自訂預約表單。客戶掃描並立即預約 - 無需下載應用程式。"
+      }
+    },
+    "finalCta": {
+      "title": "準備好轉變您的預約方式了嗎？",
+      "description": "加入數百家使用 Kitsune 簡化預約流程並取悅客戶的企業。",
+      "noCreditCard": "無需信用卡",
+      "quickSetup": "5 分鐘設定",
+      "freeTrial": "免費試用 {trialDays} 天"
+    },
+    "footer": {
+      "tagline": "為亞洲現代企業打造的智能預約平台。LINE 驅動的排程，簡單易用。",
+      "resources": "資源",
+      "features": "功能",
+      "pricing": "價格",
+      "screenshots": "截圖",
+      "legal": "法律",
+      "privacy": "隱私政策",
+      "terms": "服務條款",
+      "contact": "聯絡我們",
+      "copyright": "© 2025 Kitsune. 版權所有。用 ❤️ 為亞洲企業製作。"
+    }
+  },
+  "contact": {
+    "title": "聯絡我們",
+    "subtitle": "有問題或需要協助？我們很樂意聽取您的意見。",
+    "form": {
+      "name": "姓名",
+      "namePlaceholder": "您的姓名",
+      "email": "電子郵件",
+      "emailPlaceholder": "your@email.com",
+      "message": "訊息",
+      "messagePlaceholder": "告訴我們如何協助您...",
+      "charactersRemaining": "還剩 {count} 個字元",
+      "submit": "發送訊息",
+      "submitting": "發送中..."
+    },
+    "validation": {
+      "nameRequired": "請輸入您的姓名",
+      "emailRequired": "請輸入您的電子郵件",
+      "emailInvalid": "請輸入有效的電子郵件地址",
+      "messageRequired": "請輸入訊息",
+      "messageTooLong": "訊息不得超過 400 個字元"
+    },
+    "success": {
+      "title": "訊息已發送！",
+      "description": "感謝您聯絡我們。我們會盡快回覆您。"
+    },
+    "error": {
+      "title": "糟糕！",
+      "description": "發生錯誤。請稍後再試。",
+      "rateLimit": "請求過於頻繁。請稍後幾分鐘再試。"
+    }
+  },
+  "booking": {
+    "steps": {
+      "selectService": "選擇服務",
+      "selectStaff": "選擇人員",
+      "selectDateTime": "選擇日期和時間",
+      "customFields": "附加資訊",
+      "review": "審核並確認"
+    },
+    "service": {
+      "title": "選擇服務",
+      "description": "選擇您想要預約的服務",
+      "duration": "時長",
+      "price": "價格",
+      "noServices": "目前沒有可用的服務"
+    },
+    "staff": {
+      "title": "選擇您的專員",
+      "description": "選擇您想要預約的人員",
+      "anyStaff": "任何可用人員",
+      "noStaff": "沒有可用人員"
+    },
+    "dateTime": {
+      "title": "選擇時間",
+      "description": "選擇您偏好的日期和時間",
+      "selectDate": "選擇日期",
+      "selectTime": "選擇時間",
+      "noAvailability": "所選日期無可用時段",
+      "loading": "載入可用時段中..."
+    },
+    "customFields": {
+      "title": "附加資訊",
+      "description": "請提供以下詳細資訊",
+      "required": "必填"
+    },
+    "review": {
+      "title": "審核您的預約",
+      "description": "請確認您的預約詳細資訊",
+      "service": "服務",
+      "staff": "人員",
+      "dateTime": "日期和時間",
+      "duration": "時長",
+      "price": "價格",
+      "additionalInfo": "附加資訊",
+      "confirmBooking": "確認預約"
+    },
+    "success": {
+      "title": "預約已確認！",
+      "description": "您的預約已成功建立。您將透過 LINE 收到確認訊息。",
+      "bookingId": "預約編號",
+      "viewBookings": "查看我的預約",
+      "bookAgain": "再次預約"
+    },
+    "error": {
+      "title": "預約失敗",
+      "description": "我們無法完成您的預約。請重試。",
+      "tryAgain": "重試",
+      "contactSupport": "聯絡支援"
+    },
+    "validation": {
+      "selectService": "請選擇服務",
+      "selectStaff": "請選擇人員",
+      "selectDateTime": "請選擇日期和時間",
+      "requiredField": "此欄位為必填",
+      "invalidEmail": "請輸入有效的電子郵件地址",
+      "invalidPhone": "請輸入有效的電話號碼"
+    }
+  },
+  "dashboard": {
+    "welcome": "歡迎回來",
+    "selectBusiness": "選擇企業",
+    "noBusiness": "找不到企業",
+    "createBusiness": "建立新企業",
+    "home": {
+      "title": "儀表板",
+      "recentBookings": "最近預約",
+      "upcomingBookings": "即將到來的預約",
+      "todayStats": "今日統計",
+      "quickActions": "快速操作"
+    }
+  },
+  "errors": {
+    "generic": "發生錯誤。請重試。",
+    "networkError": "網路錯誤。請檢查您的連線。",
+    "unauthorized": "您無權執行此操作。",
+    "notFound": "找不到請求的資源。",
+    "serverError": "伺服器錯誤。請稍後重試。",
+    "validation": "請檢查您的輸入並重試。"
+  },
+  "messages": {
+    "confirmation": {
+      "header": "您的預約已確認！",
+      "body": "我們期待見到您！"
+    },
+    "cancellation": {
+      "header": "預約已取消",
+      "body": "您的預約已被取消。我們希望很快再見到您！"
+    },
+    "reminder": {
+      "header": "提醒：即將到來的預約",
+      "body": "別忘了您明天的預約！"
+    }
+  },
+  "legal": {
+    "nav": {
+      "privacy": "隱私政策",
+      "terms": "服務條款"
+    },
+    "common": {
+      "lastUpdated": "最後更新",
+      "effectiveDate": "生效日期",
+      "tableOfContents": "目錄",
+      "backToTop": "返回頂部"
+    },
+    "privacy": {
+      "title": "隱私政策",
+      "subtitle": "您的隱私對我們非常重要。本隱私政策說明本公司如何收集、使用、披露和保護您在使用我們基於 LINE 的預約平台時的資訊。",
+      "jurisdiction": "本隱私政策適用於台灣地區使用者，並遵守中華民國個人資料保護法（個資法）及相關法規。個人資料保護委員會（PDPC）預計於 2025 年 8 月正式啟動執法。",
+      "sections": {
+        "dataCollection": {
+          "title": "一、我們收集的資訊",
+          "intro": "我們收集您直接提供給我們的資訊、使用我們服務時自動獲得的資訊，以及來自第三方來源的資訊。",
+          "personalInfo": {
+            "title": "個人資料",
+            "items": [
+              "姓名和聯絡資訊",
+              "LINE 用戶 ID 和個人資料",
+              "企業註冊資訊（針對企業帳戶）",
+              "預約和約會詳細資訊",
+              "付款和帳單資訊",
+              "與我們的通訊記錄"
+            ]
+          },
+          "automaticInfo": {
+            "title": "自動收集的資訊",
+            "items": [
+              "裝置資訊（類型、作業系統、瀏覽器）",
+              "IP 位址和地理位置資料",
+              "使用資料和分析",
+              "Cookie 和類似追蹤技術",
+              "QR Code 掃描資料和時間戳記"
+            ]
+          },
+          "thirdParty": {
+            "title": "第三方資訊",
+            "items": [
+              "LINE 株式會社（用戶個人資料、訊息資料）",
+              "付款處理商（交易資料）",
+              "分析服務提供商（使用統計資料）"
+            ]
+          }
+        },
+        "howWeUse": {
+          "title": "二、我們如何使用您的資訊",
+          "intro": "我們將收集的資訊用於以下目的：",
+          "items": [
+            "提供、營運和維護我們的預約平台",
+            "透過 LINE 機器人處理約會和預約",
+            "透過 LINE 訊息發送預約確認和提醒",
+            "處理付款和管理訂閱",
+            "提供客戶支援並回應詢問",
+            "分析使用模式並改進我們的服務",
+            "發送管理資訊和服務更新",
+            "偵測、預防和解決技術問題或詐欺",
+            "遵守法律義務"
+          ]
+        },
+        "dataSharing": {
+          "title": "三、我們如何分享您的資訊",
+          "intro": "我們可能會與以下第三方分享您的資訊：",
+          "serviceProviders": {
+            "title": "服務提供商",
+            "description": "我們與協助我們營運平台的可信任服務提供商分享資料：",
+            "items": [
+              "LINE 株式會社 - 訊息和機器人服務",
+              "Neon PostgreSQL - 資料庫託管",
+              "Cloudflare R2 - 檔案儲存（Logo、QR Code）",
+              "Vercel - 託管和基礎設施",
+              "Stripe - 付款處理",
+              "分析服務提供商 - 服務改進"
+            ]
+          },
+          "businessTransfers": {
+            "title": "業務轉讓",
+            "description": "如果本公司涉及合併、收購或資產出售，您的資訊可能會作為該交易的一部分被轉移。"
+          },
+          "legalRequirements": {
+            "title": "法律要求",
+            "description": "如果法律、法院命令或政府要求，或為保護我們的權利、財產或安全，我們可能會披露您的資訊。"
+          },
+          "withConsent": {
+            "title": "經您同意",
+            "description": "經您明確同意，我們可能會為其他目的分享您的資訊。"
+          },
+          "noSale": {
+            "title": "我們不出售您的個人資料",
+            "description": "本公司不會為了金錢利益向第三方出售您的個人資料。"
+          }
+        },
+        "yourRights": {
+          "title": "四、您的隱私權利",
+          "intro": "根據中華民國個人資料保護法，您對您的個人資料享有以下權利：",
+          "rights": [
+            {
+              "title": "查詢或請求閱覽權",
+              "description": "您有權查詢或請求閱覽我們持有的您的個人資料。"
+            },
+            {
+              "title": "請求製給複製本權",
+              "description": "您可以要求我們提供您個人資料的副本。"
+            },
+            {
+              "title": "請求補充或更正權",
+              "description": "您有權要求補充或更正不正確的個人資料。"
+            },
+            {
+              "title": "請求停止收集、處理或利用權",
+              "description": "您可以要求停止收集、處理或利用您的個人資料，但須符合特定例外情況。"
+            },
+            {
+              "title": "請求刪除權",
+              "description": "您可以要求刪除您的個人資料，但須符合特定例外情況。"
+            }
+          ],
+          "exercise": {
+            "title": "如何行使您的權利",
+            "description": "若要行使這些權利，您可以透過企業儀表板設定或使用 LINE 機器人與我們聯絡。根據個資法第 13 條，我們將在收到您的請求後 15 日內回覆。"
+          }
+        },
+        "dataSecurity": {
+          "title": "五、資料安全",
+          "description": "我們實施適當的技術和組織安全措施，以保護您的個人資料免遭未經授權的存取、披露、變更或破壞。這些措施包括：",
+          "items": [
+            "資料傳輸和靜態加密",
+            "定期安全評估和稽核",
+            "存取控制和身份驗證措施",
+            "員工資料保護培訓",
+            "事件回應和違規通知程序"
+          ],
+          "disclaimer": "然而，沒有任何透過網際網路傳輸或電子儲存的方法是 100% 安全的。雖然我們努力保護您的資訊，但我們無法保證絕對安全。"
+        },
+        "dataRetention": {
+          "title": "六、資料保留",
+          "description": "我們保留您的個人資料的時間以提供我們的服務和實現本隱私政策中概述的目的所需的時間為限。具體保留期限包括：",
+          "items": [
+            "預約資料：約會日期後保留 3 年作為業務記錄",
+            "企業帳戶資料：在您的有效訂閱期間加 1 年後保留",
+            "LINE 用戶資料：保留至您取消關注機器人或要求刪除為止",
+            "付款記錄：保留 7 年以符合稅務和會計要求",
+            "行銷通訊：保留至您選擇退出或要求刪除為止"
+          ]
+        },
+        "cookies": {
+          "title": "七、Cookie 和追蹤技術",
+          "description": "我們使用 Cookie 和類似的追蹤技術來增強您的體驗。這些包括：",
+          "types": [
+            {
+              "title": "必要 Cookie",
+              "description": "平台正常運作所需（工作階段管理、身份驗證）。"
+            },
+            {
+              "title": "分析 Cookie",
+              "description": "幫助我們了解使用者如何與我們的平台互動以改進服務。"
+            },
+            {
+              "title": "地理位置資料",
+              "description": "我們使用 Vercel Geo 偵測自動偵測您的地區並提供本地化內容。"
+            },
+            {
+              "title": "偏好 Cookie",
+              "description": "記住您的語言和顯示偏好。"
+            }
+          ],
+          "control": "您可以透過瀏覽器設定控制 Cookie。請注意，停用某些 Cookie 可能會限制平台功能。"
+        },
+        "international": {
+          "title": "八、國際資料傳輸",
+          "description": "您的資訊可能會被傳輸到您居住國家以外的國家並在該國家進行處理。這些國家可能有不同的資料保護法。根據個資法第 21 條，跨境傳輸個人資料至未有適當保護措施的國家時，我們將採取適當的保護措施，例如：",
+          "items": [
+            "與服務提供商簽訂標準契約條款",
+            "確保服務提供商維持適當的安全措施",
+            "遵守適用的跨境資料傳輸法規",
+            "在必要時取得您的明確同意"
+          ]
+        },
+        "childrenPrivacy": {
+          "title": "九、兒童隱私",
+          "description": "我們的服務不適用於 18 歲以下的個人。我們不會故意收集兒童的個人資料。如果您發現兒童向我們提供了個人資料，請與我們聯絡，我們將採取步驟刪除此類資訊。"
+        },
+        "thirdPartyLinks": {
+          "title": "十、第三方服務",
+          "description": "我們的平台與第三方服務整合，特別是 LINE 株式會社。您使用 LINE 和與 LINE 機器人的互動受 LINE 自己的隱私政策和服務條款的約束。我們不對第三方服務的隱私慣例負責。"
+        },
+        "changes": {
+          "title": "十一、本隱私政策的變更",
+          "description": "我們可能會不時更新本隱私政策，以反映我們實踐中的變化或出於法律、營運或監管原因。我們將透過在我們的平台上發布更新的政策並更新「最後更新」日期來通知您重大變更。在變更後繼續使用我們的服務即表示接受更新的政策。"
+        },
+        "contact": {
+          "title": "十二、聯絡我們",
+          "description": "如果您對本隱私政策有疑問、希望行使您的隱私權利，或對我們如何處理您的個人資料有疑慮，請透過以下方式與我們聯絡：",
+          "methods": [
+            "您的企業儀表板設定",
+            "LINE 機器人訊息介面",
+            "我們平台上提供的聯絡表單"
+          ],
+          "response": "根據個資法規定，我們將在 15 日內回覆您的詢問。"
+        }
+      }
+    },
+    "terms": {
+      "title": "服務條款",
+      "subtitle": "在使用我們基於 LINE 的預約平台之前，請仔細閱讀這些服務條款。透過存取或使用我們的服務，您同意受這些條款的約束。",
+      "acceptance": "透過建立帳戶或使用我們的平台，您確認您已閱讀、理解並同意受這些服務條款和我們的隱私政策約束。",
+      "sections": {
+        "definitions": {
+          "title": "一、定義",
+          "items": {
+            "service": "「服務」或「平台」指 Kitsune 基於 LINE 的預約系統，包括網頁儀表板、LINE 機器人和所有相關服務。",
+            "company": "「本公司」、「我們」或「我們的」指 Kitsune 平台的營運者。",
+            "user": "「您」、「您的」或「使用者」指存取我們服務的企業實體或個人。",
+            "customer": "「客戶」或「終端使用者」指透過您的 LINE 機器人進行預約的個人。",
+            "content": "「內容」指所有資訊、資料、文字、軟體、圖形或其他材料。"
+          }
+        },
+        "serviceDescription": {
+          "title": "二、服務說明",
+          "description": "本公司提供基於 LINE 機器人的約會預約平台，使企業能夠：",
+          "features": [
+            "透過 LINE 訊息平台接受預約",
+            "透過網頁儀表板管理約會",
+            "生成品牌化 QR Code 以獲取客戶",
+            "透過 LINE 發送自動確認和提醒",
+            "追蹤分析和客戶資料",
+            "透過整合的付款處理商處理付款",
+            "自訂預約表單和服務項目"
+          ],
+          "availability": "服務以「現狀」和「可用」狀態提供。我們不保證不間斷的存取，並保留在合理通知後修改、暫停或終止服務任何方面的權利。"
+        },
+        "eligibility": {
+          "title": "三、資格和帳戶註冊",
+          "requirements": {
+            "title": "資格要求",
+            "items": [
+              "您必須年滿 18 歲",
+              "您必須有合法權限訂立契約",
+              "您必須經營合法企業",
+              "您必須遵守 LINE 官方帳號服務條款",
+              "您不得位於受制裁的國家或被禁止使用我們的服務"
+            ]
+          },
+          "registration": {
+            "title": "帳戶註冊",
+            "description": "建立帳戶時，您同意：",
+            "items": [
+              "提供準確、最新和完整的資訊",
+              "維護和更新您的帳戶資訊",
+              "維護您帳戶憑證的安全",
+              "對您帳戶下的所有活動承擔責任",
+              "立即通知我們任何未經授權的存取"
+            ]
+          },
+          "termination": "我們保留拒絕服務或終止違反這些條款的帳戶的權利。"
+        },
+        "acceptableUse": {
+          "title": "四、可接受使用政策",
+          "permitted": {
+            "title": "允許的使用",
+            "description": "您只能出於合法目的並根據這些條款使用服務。"
+          },
+          "prohibited": {
+            "title": "禁止的行為",
+            "description": "您同意不會：",
+            "items": [
+              "違反任何適用的法律或法規",
+              "侵犯他人的智慧財產權",
+              "傳輸垃圾訊息、惡意軟體或有害程式碼",
+              "透過 LINE 機器人騷擾、虐待或傷害他人",
+              "冒充任何人或實體",
+              "建立虛假或詐欺性預約",
+              "試圖未經授權存取服務",
+              "將服務用於非法活動",
+              "違反 LINE 的服務條款或訊息 API 條款",
+              "擷取、挖掘資料或收集使用者資訊",
+              "未經授權轉售或再分發服務",
+              "使用服務與本公司競爭"
+            ]
+          },
+          "enforcement": "違反本可接受使用政策可能導致立即終止帳戶和法律訴訟。"
+        },
+        "lineIntegration": {
+          "title": "五、LINE 整合和第三方服務",
+          "lineTerms": {
+            "title": "LINE 合規",
+            "description": "您使用我們的服務需要與 LINE 株式會社的服務整合。您確認並同意：",
+            "items": [
+              "您必須遵守 LINE 官方帳號服務條款",
+              "LINE 有自己的隱私政策和條款管理您對 LINE 的使用",
+              "本公司不對 LINE 的服務可用性或效能負責",
+              "LINE 可能對 API 使用施加速率限制、配額或限制",
+              "LINE 政策或 API 的變更可能會影響服務功能"
+            ]
+          },
+          "limitations": {
+            "title": "服務限制",
+            "items": [
+              "訊息傳遞率受 LINE 基礎設施和政策的限制",
+              "本公司不保證 100% 的訊息傳遞",
+              "LINE 可能會封鎖或過濾某些類型的訊息",
+              "由於 LINE 維護或中斷，服務可能會中斷"
+            ]
+          },
+          "thirdParty": {
+            "title": "其他第三方服務",
+            "description": "我們的服務與付款處理商（Stripe）、託管服務提供商（Vercel）和其他第三方整合。您對這些服務的使用受其各自條款和條件的約束。"
+          }
+        },
+        "payment": {
+          "title": "六、付款條款和訂閱",
+          "pricing": {
+            "title": "訂閱價格",
+            "description": "存取服務需要付費訂閱。價格資訊可在我們的平台上找到，並可能因地區而異（新台幣、美元、日圓）。"
+          },
+          "billing": {
+            "title": "計費",
+            "items": [
+              "訂閱按月或年計費",
+              "付款透過 Stripe 或其他授權的付款處理商處理",
+              "您授權我們向您的付款方式收取經常性費用",
+              "所有費用不包括適用的稅款，您需自行負責",
+              "價格可能在提前 30 天通知後變更"
+            ]
+          },
+          "freeTrial": {
+            "title": "免費試用",
+            "description": "我們可能提供免費試用期。如果您在試用結束前未取消，您的付款方式將被收取訂閱費。試用條款可能會有所不同並可能會變更。"
+          },
+          "refunds": {
+            "title": "退款和取消",
+            "items": [
+              "您可以隨時透過儀表板取消訂閱",
+              "取消在當前計費週期結束時生效",
+              "不提供部分月份或未使用服務的退款",
+              "對於服務中斷或錯誤，我們可能會酌情提供退款"
+            ]
+          }
+        },
+        "intellectualProperty": {
+          "title": "七、智慧財產權",
+          "ownership": {
+            "title": "本公司所有權",
+            "description": "本公司保留對服務的所有權利、所有權和利益，包括：",
+            "items": [
+              "平台原始碼和軟體",
+              "商標、Logo 和品牌",
+              "文件和使用者介面",
+              "專有演算法和技術"
+            ]
+          },
+          "userContent": {
+            "title": "您的內容",
+            "description": "您保留您上傳到服務的內容的所有權（企業 Logo、服務說明、預約表單等）。透過使用服務，您授予我們有限的授權，僅為提供服務而使用、儲存和顯示您的內容。"
+          },
+          "lineTrademarks": {
+            "title": "LINE 商標",
+            "description": "LINE、LINE 官方帳號和相關商標是 LINE 株式會社的財產。使用 LINE 商標必須遵守 LINE 的品牌指南。"
+          },
+          "feedback": {
+            "title": "回饋",
+            "description": "如果您提供有關服務的回饋或建議，我們可以使用該回饋，而不對您承擔任何義務。"
+          }
+        },
+        "dataOwnership": {
+          "title": "八、資料所有權和隱私",
+          "customerData": {
+            "title": "客戶資料",
+            "description": "您保留客戶預約資料和個人資料的所有權。本公司代表您作為資料處理者。您負責：",
+            "items": [
+              "從客戶處獲得適當的同意",
+              "遵守適用的隱私法",
+              "維護您自己的隱私政策",
+              "回應客戶資料請求",
+              "確保個人資料的合法處理"
+            ]
+          },
+          "companyData": {
+            "title": "匯總資料",
+            "description": "我們可能會收集和使用匯總的匿名資料用於分析、服務改進和業務目的。此資料不會識別個別企業或客戶。"
+          },
+          "dataPortability": {
+            "title": "資料可攜性",
+            "description": "應要求，我們將以常用格式提供您的資料。帳戶終止後，我們將根據我們的資料保留政策刪除您的資料，除非法律要求我們保留。"
+          }
+        },
+        "warranties": {
+          "title": "九、保證和免責聲明",
+          "disclaimer": {
+            "title": "無保證",
+            "description": "服務以「現狀」和「可用」狀態提供，不提供任何明示或默示的保證，包括但不限於：",
+            "items": [
+              "適銷性或適合特定目的的保證",
+              "不侵權的保證",
+              "不間斷或無錯誤服務的保證",
+              "有關準確性、可靠性或完整性的保證"
+            ]
+          },
+          "lineDisclaimer": {
+            "title": "LINE 服務免責聲明",
+            "description": "我們不保證 LINE API 可用性、訊息傳遞率或 LINE 服務效能。您使用 LINE 服務的風險由您自行承擔。"
+          },
+          "results": {
+            "title": "結果免責聲明",
+            "description": "我們不保證使用服務會產生特定結果、收入增加或業務成果。"
+          }
+        },
+        "limitation": {
+          "title": "十、責任限制",
+          "general": {
+            "title": "限制",
+            "description": "在法律允許的最大範圍內，本公司不對以下事項承擔責任：",
+            "items": [
+              "間接、附帶、特殊、衍生性或懲罰性損害",
+              "利潤、收入、資料或業務機會的損失",
+              "服務中斷或錯誤引起的損害",
+              "第三方服務（包括 LINE）引起的損害",
+              "超過您在索賠前 12 個月內向我們支付金額的損害"
+            ]
+          },
+          "jurisdictions": {
+            "title": "司法管轄區差異",
+            "description": "根據中華民國消費者保護法，某些責任限制可能不適用。在此類司法管轄區，我們的責任限於法律允許的最大範圍。本公司不得排除因故意或重大過失造成的責任。"
+          }
+        },
+        "indemnification": {
+          "title": "十一、賠償",
+          "description": "您同意賠償、辯護並使本公司、其管理人員、董事、員工和代理人免受因以下原因產生的任何索賠、責任、損害、損失或費用（包括法律費用）：",
+          "items": [
+            "您違反這些條款",
+            "您侵犯另一方的權利",
+            "您使用服務",
+            "您的客戶資料或內容",
+            "您違反適用的法律或法規"
+          ]
+        },
+        "termination": {
+          "title": "十二、終止",
+          "byUser": {
+            "title": "您的終止",
+            "description": "您可以隨時透過儀表板取消訂閱來終止您的帳戶。您的資料將根據我們的保留政策刪除。"
+          },
+          "byCompany": {
+            "title": "本公司的終止",
+            "description": "如果出現以下情況，我們可能會立即暫停或終止您的帳戶：",
+            "items": [
+              "您違反這些條款",
+              "付款失敗或訂閱失效",
+              "您從事詐欺或非法活動",
+              "您的帳戶構成安全風險",
+              "法律要求我們這樣做"
+            ]
+          },
+          "effect": {
+            "title": "終止的效果",
+            "description": "終止後：",
+            "items": [
+              "您對服務的存取將立即終止",
+              "未清費用仍應支付",
+              "您的資料將根據我們的保留政策刪除",
+              "這些條款中按性質應存續的部分將保持有效"
+            ]
+          }
+        },
+        "disputeResolution": {
+          "title": "十三、爭議解決和管轄法律",
+          "governingLaw": {
+            "title": "管轄法律",
+            "description": "對於台灣地區使用者，這些條款受中華民國法律管轄，不考慮法律衝突原則。"
+          },
+          "jurisdiction": {
+            "title": "管轄權",
+            "description": "您同意就爭議的解決服從台灣法院的專屬管轄權。"
+          },
+          "arbitration": {
+            "title": "仲裁",
+            "description": "爭議可透過具有約束力的仲裁而非法院解決，但您可以在符合條件的情況下向小額法院主張索賠。"
+          },
+          "classAction": {
+            "title": "集體訴訟豁免",
+            "description": "您同意單獨提出索賠，並放棄參與集體訴訟的任何權利。"
+          }
+        },
+        "general": {
+          "title": "十四、一般條款",
+          "entire": {
+            "title": "完整協議",
+            "description": "這些條款連同我們的隱私政策構成您與本公司就服務的完整協議。"
+          },
+          "amendments": {
+            "title": "修訂",
+            "description": "我們可以隨時透過在我們的平台上發布更新的條款來修改這些條款。重大變更將透過電子郵件或儀表板通知進行通知。變更後繼續使用即表示接受。"
+          },
+          "severability": {
+            "title": "可分割性",
+            "description": "如果這些條款的任何條款被認定為不可執行，則其餘條款將保持有效。"
+          },
+          "waiver": {
+            "title": "豁免",
+            "description": "我們未能執行任何條款並不構成對該條款的豁免。"
+          },
+          "assignment": {
+            "title": "轉讓",
+            "description": "未經我們書面同意，您不得轉讓這些條款。我們可以將這些條款轉讓給任何關聯公司或繼承者。"
+          },
+          "notices": {
+            "title": "通知",
+            "description": "我們可以透過您的儀表板、透過 LINE 機器人或透過與您帳戶關聯的電子郵件地址提供通知。"
+          },
+          "forcemajeure": {
+            "title": "不可抗力",
+            "description": "對於超出我們合理控制範圍的原因造成的延遲或失敗，我們不承擔責任，包括 LINE 服務中斷、自然災害或政府行為。"
+          }
+        },
+        "contact": {
+          "title": "十五、聯絡資訊",
+          "description": "如果您對這些服務條款有疑問，請透過以下方式與我們聯絡：",
+          "methods": [
+            "您的企業儀表板設定",
+            "LINE 機器人訊息介面"
+          ]
+        }
+      }
+    }
+  }
+}

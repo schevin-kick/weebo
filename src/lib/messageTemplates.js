@@ -1,35 +1,67 @@
 /**
  * LINE Message Templates
  * Provides default message templates and template merging logic
+ * with localization support
  */
 
 /**
- * Default message templates (English)
+ * Localized default message templates
  */
-export const DEFAULT_TEMPLATES = {
-  confirmation: {
-    header: 'Your booking is confirmed!',
-    body: 'We look forward to seeing you!',
+const LOCALIZED_TEMPLATES = {
+  en: {
+    confirmation: {
+      header: 'Your booking is confirmed!',
+      body: 'We look forward to seeing you!',
+    },
+    cancellation: {
+      header: 'Booking Cancelled',
+      body: 'Your booking has been cancelled. We hope to see you again soon!',
+    },
+    reminder: {
+      header: 'Reminder: Upcoming Appointment',
+      body: "Don't forget your appointment tomorrow!",
+    },
   },
-  cancellation: {
-    header: 'Booking Cancelled',
-    body: 'Your booking has been cancelled. We hope to see you again soon!',
-  },
-  reminder: {
-    header: 'Reminder: Upcoming Appointment',
-    body: "Don't forget your appointment tomorrow!",
+  'zh-tw': {
+    confirmation: {
+      header: '您的預約已確認！',
+      body: '我們期待見到您！',
+    },
+    cancellation: {
+      header: '預約已取消',
+      body: '您的預約已被取消。我們希望很快再見到您！',
+    },
+    reminder: {
+      header: '提醒：即將到來的預約',
+      body: '別忘了您明天的預約！',
+    },
   },
 };
 
 /**
- * Get message template for a specific type
- * Merges custom templates with defaults
+ * Default templates (English) - kept for backward compatibility
+ */
+export const DEFAULT_TEMPLATES = LOCALIZED_TEMPLATES.en;
+
+/**
+ * Get localized default templates
+ * @param {string} locale - Locale code ('en' or 'zh-tw')
+ * @returns {object} Localized templates
+ */
+export function getLocalizedTemplates(locale = 'en') {
+  return LOCALIZED_TEMPLATES[locale] || LOCALIZED_TEMPLATES.en;
+}
+
+/**
+ * Get message template for a specific type with localization
+ * Merges custom templates with localized defaults
  *
  * @param {object} business - Business object with messageTemplates JSON field
  * @param {string} type - Template type: 'confirmation' | 'cancellation' | 'reminder'
+ * @param {string} locale - Locale code ('en' or 'zh-tw'), defaults to 'en'
  * @returns {object} Template with header and body { header: string, body: string }
  */
-export function getMessageTemplate(business, type) {
+export function getMessageTemplate(business, type, locale = 'en') {
   // Parse custom templates from business
   let customTemplates = {};
   if (business?.messageTemplates) {
@@ -42,12 +74,15 @@ export function getMessageTemplate(business, type) {
     }
   }
 
-  // Get template for this type (custom or default)
-  const template = customTemplates[type] || DEFAULT_TEMPLATES[type] || DEFAULT_TEMPLATES.confirmation;
+  // Get localized default templates
+  const localizedDefaults = getLocalizedTemplates(locale);
+
+  // Get template for this type (custom or localized default)
+  const template = customTemplates[type] || localizedDefaults[type] || localizedDefaults.confirmation;
 
   return {
-    header: template.header || DEFAULT_TEMPLATES[type]?.header || '',
-    body: template.body || DEFAULT_TEMPLATES[type]?.body || '',
+    header: template.header || localizedDefaults[type]?.header || '',
+    body: template.body || localizedDefaults[type]?.body || '',
   };
 }
 
@@ -130,6 +165,8 @@ export function validateTemplates(templates) {
 
 export default {
   DEFAULT_TEMPLATES,
+  LOCALIZED_TEMPLATES,
+  getLocalizedTemplates,
   getMessageTemplate,
   replaceTemplateVariables,
   getAvailableVariables,

@@ -16,6 +16,8 @@ import {
   ArrowRight,
   Star
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import ThreeBackground from '@/components/brochure/ThreeBackground';
 import TypewriterText from '@/components/brochure/TypewriterText';
 import ParallaxSection from '@/components/brochure/ParallaxSection';
@@ -24,8 +26,11 @@ import AnimatedCounter from '@/components/brochure/AnimatedCounter';
 import ScreenshotCard from '@/components/brochure/ScreenshotCard';
 import FloatingNotification from '@/components/brochure/FloatingNotification';
 import ImageModal from '@/components/brochure/ImageModal';
+import LanguageSelector from '@/components/shared/LanguageSelector';
 
 export default function BrochurePage() {
+  const t = useTranslations('brochure');
+  const tCommon = useTranslations('common');
   const [showSubheading, setShowSubheading] = useState(false);
   const [heroRef, heroInView] = useInView({ threshold: 0.1 });
   const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -100,6 +105,11 @@ export default function BrochurePage() {
       {/* Three.js Background */}
       <ThreeBackground />
 
+      {/* Language Selector - Fixed position */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSelector />
+      </div>
+
       {/* Hero Section */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-4 py-20" aria-label="Hero">
         <div className="max-w-6xl mx-auto text-center">
@@ -132,8 +142,7 @@ export default function BrochurePage() {
             transition={{ duration: 1, delay: 0.5 }}
             className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed"
           >
-            The intelligent booking platform built for Asia. Powered by LINE integration,
-            designed for simplicity, packed with analytics.
+            {t('hero.subtitle')}
           </motion.p>
 
           {/* Quick Value Propositions */}
@@ -144,10 +153,10 @@ export default function BrochurePage() {
             className="flex flex-wrap justify-center gap-3 mb-10 px-4"
           >
             {[
-              { icon: Zap, text: '5 Min Setup', gradient: 'from-yellow-400 to-orange-400' },
-              { icon: Star, text: 'Free Trial', gradient: 'from-pink-400 to-rose-400' },
-              { icon: MessageSquare, text: 'LINE Native', gradient: 'from-green-400 to-emerald-400' },
-              { icon: BarChart3, text: 'Real-time Analytics', gradient: 'from-purple-400 to-blue-400' }
+              { icon: Zap, text: t('hero.valueProps.quickSetup'), gradient: 'from-yellow-400 to-orange-400' },
+              { icon: Star, text: t('hero.valueProps.freeTrial'), gradient: 'from-pink-400 to-rose-400' },
+              { icon: MessageSquare, text: t('hero.valueProps.lineNative'), gradient: 'from-green-400 to-emerald-400' },
+              { icon: BarChart3, text: t('hero.valueProps.analytics'), gradient: 'from-purple-400 to-blue-400' }
             ].map((item, index) => (
               <motion.div
                 key={item.text}
@@ -179,7 +188,7 @@ export default function BrochurePage() {
               whileTap={{ scale: 0.95 }}
               className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full text-white font-bold text-lg shadow-2xl hover:shadow-orange-500/50 transition-all flex items-center gap-2"
             >
-              Start Free Trial
+              {tCommon('buttons.startFreeTrial')}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </motion.a>
             <motion.a
@@ -188,7 +197,7 @@ export default function BrochurePage() {
               whileTap={{ scale: 0.95 }}
               className="px-8 py-4 bg-white/10 backdrop-blur-lg border-2 border-white/30 rounded-full text-white font-bold text-lg hover:bg-white/20 transition-all"
             >
-              Sign In
+              {tCommon('buttons.signIn')}
             </motion.a>
           </motion.div>
 
@@ -247,7 +256,7 @@ export default function BrochurePage() {
                 suffix="M+"
                 className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent"
               />
-              <p className="text-slate-300 mt-2 text-lg">LINE Users in Asia</p>
+              <p className="text-slate-300 mt-2 text-lg">{t('stats.lineUsers')}</p>
             </motion.div>
 
             <motion.div
@@ -261,7 +270,7 @@ export default function BrochurePage() {
                 suffix=" min"
                 className="text-5xl font-bold bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent"
               />
-              <p className="text-slate-300 mt-2 text-lg">Setup Time</p>
+              <p className="text-slate-300 mt-2 text-lg">{t('stats.setupTime')}</p>
             </motion.div>
 
             <motion.div
@@ -275,7 +284,7 @@ export default function BrochurePage() {
                 suffix="/7"
                 className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent"
               />
-              <p className="text-slate-300 mt-2 text-lg">Always Available</p>
+              <p className="text-slate-300 mt-2 text-lg">{t('stats.availability')}</p>
             </motion.div>
           </div>
         </div>
@@ -294,12 +303,11 @@ export default function BrochurePage() {
             >
               <h2 className="text-4xl md:text-6xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                  Powered by LINE
+                  {t('lineIntegration.title')}
                 </span>
               </h2>
               <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                Reach customers where they already are. LINE is Asia's #1 messaging platform
-                with over 95 million active users across Japan, Thailand, and Taiwan.
+                {t('lineIntegration.description')}
               </p>
             </motion.div>
 
@@ -335,10 +343,10 @@ export default function BrochurePage() {
                 className="space-y-6"
               >
                 {[
-                  { icon: MessageSquare, text: 'Instant booking confirmations via LINE chat' },
-                  { icon: CheckCircle, text: 'Automated reminders reduce no-shows by 80%' },
-                  { icon: Users, text: 'Customers book 24/7 without phone calls' },
-                  { icon: Star, text: 'Beautiful LINE cards showcase your services' }
+                  { icon: MessageSquare, text: t('lineIntegration.benefits.instantConfirmations') },
+                  { icon: CheckCircle, text: t('lineIntegration.benefits.autoReminders') },
+                  { icon: Users, text: t('lineIntegration.benefits.alwaysAvailable') },
+                  { icon: Star, text: t('lineIntegration.benefits.beautifulCards') }
                 ].map((item, idx) => (
                   <motion.div
                     key={idx}
@@ -372,54 +380,54 @@ export default function BrochurePage() {
           >
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                Everything You Need
+                {t('features.title')}
               </span>
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Built for business owners who want powerful features without the complexity
+              {t('features.subtitle')}
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard
               icon={Zap}
-              title="5-Minute Setup"
-              description="Go live in minutes with our guided setup wizard. No technical skills required."
+              title={t('features.quickSetup.title')}
+              description={t('features.quickSetup.description')}
               gradient="from-orange-500 to-amber-500"
               delay={0.1}
             />
             <FeatureCard
               icon={QrCode}
-              title="Branded QR Codes"
-              description="Generate beautiful QR codes with your logo. Print or share instantly."
+              title={t('features.qrCodes.title')}
+              description={t('features.qrCodes.description')}
               gradient="from-pink-500 to-rose-500"
               delay={0.2}
             />
             <FeatureCard
               icon={BarChart3}
-              title="Powerful Analytics"
-              description="Track bookings, revenue, and customer trends with real-time dashboards."
+              title={t('features.analytics.title')}
+              description={t('features.analytics.description')}
               gradient="from-purple-500 to-indigo-500"
               delay={0.3}
             />
             <FeatureCard
               icon={Calendar}
-              title="Smart Scheduling"
-              description="Manage staff availability, business hours, and holidays effortlessly."
+              title={t('features.scheduling.title')}
+              description={t('features.scheduling.description')}
               gradient="from-blue-500 to-cyan-500"
               delay={0.4}
             />
             <FeatureCard
               icon={Sparkles}
-              title="Custom Forms"
-              description="Collect any information you need with drag-and-drop form builder."
+              title={t('features.customForms.title')}
+              description={t('features.customForms.description')}
               gradient="from-emerald-500 to-green-500"
               delay={0.5}
             />
             <FeatureCard
               icon={Clock}
-              title="Auto Reminders"
-              description="Reduce no-shows with automatic booking reminders via LINE."
+              title={t('features.autoReminders.title')}
+              description={t('features.autoReminders.description')}
               gradient="from-yellow-500 to-orange-500"
               delay={0.6}
             />
@@ -441,19 +449,18 @@ export default function BrochurePage() {
               >
                 <h2 className="text-4xl md:text-5xl font-bold mb-6">
                   <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                    Analytics That Matter
+                    {t('analyticsPreview.title')}
                   </span>
                 </h2>
                 <p className="text-xl text-slate-300 mb-8 leading-relaxed">
-                  See your business performance at a glance. Track bookings, identify
-                  your best customers, and make data-driven decisions.
+                  {t('analyticsPreview.description')}
                 </p>
                 <div className="space-y-4">
                   {[
-                    'Real-time booking dashboard',
-                    'Customer insights & rankings',
-                    'Revenue tracking',
-                    'Staff performance metrics'
+                    t('analyticsPreview.features.realtimeDashboard'),
+                    t('analyticsPreview.features.customerInsights'),
+                    t('analyticsPreview.features.revenueTracking'),
+                    t('analyticsPreview.features.staffPerformance')
                   ].map((feature, idx) => (
                     <motion.div
                       key={idx}
@@ -482,21 +489,21 @@ export default function BrochurePage() {
                   {/* Simple dashboard visualization */}
                   <div className="space-y-6 h-full flex flex-col justify-around">
                     <div className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl p-6 border border-cyan-500/30">
-                      <p className="text-slate-400 text-sm mb-2">Total Bookings</p>
+                      <p className="text-slate-400 text-sm mb-2">{t('analyticsPreview.stats.totalBookings')}</p>
                       <AnimatedCounter
                         end={1247}
                         className="text-4xl font-bold text-white"
                       />
                     </div>
                     <div className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 rounded-xl p-6 border border-pink-500/30">
-                      <p className="text-slate-400 text-sm mb-2">This Week</p>
+                      <p className="text-slate-400 text-sm mb-2">{t('analyticsPreview.stats.thisWeek')}</p>
                       <AnimatedCounter
                         end={89}
                         className="text-4xl font-bold text-white"
                       />
                     </div>
                     <div className="bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-xl p-6 border border-emerald-500/30">
-                      <p className="text-slate-400 text-sm mb-2">Revenue</p>
+                      <p className="text-slate-400 text-sm mb-2">{t('analyticsPreview.stats.revenue')}</p>
                       <AnimatedCounter
                         end={45280}
                         prefix="$"
@@ -549,12 +556,11 @@ export default function BrochurePage() {
               >
                 <h2 className="text-4xl md:text-5xl font-bold mb-6">
                   <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
-                    Scan. Book. Done.
+                    {t('qrCodeFeature.title')}
                   </span>
                 </h2>
                 <p className="text-xl text-slate-300 mb-8 leading-relaxed">
-                  Generate beautiful, branded QR codes in seconds. Customers scan,
-                  add your LINE bot, and book instantly. No app downloads required.
+                  {t('qrCodeFeature.description')}
                 </p>
                 <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
                   <div className="flex items-start gap-4">
@@ -562,8 +568,8 @@ export default function BrochurePage() {
                       1
                     </div>
                     <div>
-                      <p className="text-white font-semibold mb-1">Customize Your QR Code</p>
-                      <p className="text-slate-400">Add your logo and brand colors</p>
+                      <p className="text-white font-semibold mb-1">{t('qrCodeFeature.steps.customize.title')}</p>
+                      <p className="text-slate-400">{t('qrCodeFeature.steps.customize.description')}</p>
                     </div>
                   </div>
                   <div className="h-px bg-white/10 my-4" />
@@ -572,8 +578,8 @@ export default function BrochurePage() {
                       2
                     </div>
                     <div>
-                      <p className="text-white font-semibold mb-1">Print or Share</p>
-                      <p className="text-slate-400">Display at your location or post online</p>
+                      <p className="text-white font-semibold mb-1">{t('qrCodeFeature.steps.share.title')}</p>
+                      <p className="text-slate-400">{t('qrCodeFeature.steps.share.description')}</p>
                     </div>
                   </div>
                   <div className="h-px bg-white/10 my-4" />
@@ -582,8 +588,8 @@ export default function BrochurePage() {
                       3
                     </div>
                     <div>
-                      <p className="text-white font-semibold mb-1">Start Accepting Bookings</p>
-                      <p className="text-slate-400">Customers book via LINE instantly</p>
+                      <p className="text-white font-semibold mb-1">{t('qrCodeFeature.steps.accept.title')}</p>
+                      <p className="text-slate-400">{t('qrCodeFeature.steps.accept.description')}</p>
                     </div>
                   </div>
                 </div>
@@ -605,11 +611,11 @@ export default function BrochurePage() {
           >
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                See Kitsune in Action
+                {t('screenshots.title')}
               </span>
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Explore the intuitive interface designed to make booking management effortless
+              {t('screenshots.subtitle')}
             </p>
           </motion.div>
 
@@ -617,8 +623,8 @@ export default function BrochurePage() {
             <ScreenshotCard
               src="/brochure/booking-modal.webp"
               alt="Kitsune Dashboard with Booking Details"
-              title="Powerful Dashboard"
-              description="Get instant insights into your business performance. Track bookings, monitor revenue, identify top customers, and make data-driven decisions with real-time analytics at your fingertips."
+              title={t('screenshots.dashboard.title')}
+              description={t('screenshots.dashboard.description')}
               delay={0.1}
               onClick={() => setModalImage({ src: '/brochure/booking-modal.png', alt: 'Kitsune Dashboard with Booking Details' })}
             />
@@ -626,8 +632,8 @@ export default function BrochurePage() {
             <ScreenshotCard
               src="/brochure/calendar-view.webp"
               alt="Calendar and Scheduling Interface"
-              title="Smart Calendar Management"
-              description="Visualize your schedule with ease. Multi-view calendar supports day, week, month, and agenda views. Filter by staff, service, or status. Color-coded bookings help you stay organized."
+              title={t('screenshots.calendar.title')}
+              description={t('screenshots.calendar.description')}
               delay={0.2}
               reverse
               onClick={() => setModalImage({ src: '/brochure/calendar-view.png', alt: 'Calendar and Scheduling Interface' })}
@@ -636,8 +642,8 @@ export default function BrochurePage() {
             <ScreenshotCard
               src="/brochure/mobile-form.webp"
               alt="Mobile Booking Form Interface"
-              title="Seamless LINE Integration"
-              description="Your customers book directly through LINE - Asia's favorite messaging app. Automatic confirmations, reminders, and updates keep everyone informed without any extra effort."
+              title={t('screenshots.lineIntegration.title')}
+              description={t('screenshots.lineIntegration.description')}
               delay={0.3}
               onClick={() => setModalImage({ src: '/brochure/mobile-form.png', alt: 'Mobile Booking Form Interface' })}
             />
@@ -645,8 +651,8 @@ export default function BrochurePage() {
             <ScreenshotCard
               src="/brochure/form-builder.webp"
               alt="Custom Booking Form Builder"
-              title="Beautiful QR Codes & Custom Forms"
-              description="Generate branded QR codes in seconds. Customize with your logo and colors, then download or print. Build custom booking forms with drag-and-drop simplicity. Customers scan and book instantly - no app downloads required."
+              title={t('screenshots.qrAndForms.title')}
+              description={t('screenshots.qrAndForms.description')}
               delay={0.4}
               reverse
               onClick={() => setModalImage({ src: '/brochure/form-builder.png', alt: 'Custom Booking Form Builder' })}
@@ -671,12 +677,11 @@ export default function BrochurePage() {
             <div className="relative z-10">
               <h2 className="text-4xl md:text-6xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                  Ready to Transform Your Bookings?
+                  {t('finalCta.title')}
                 </span>
               </h2>
               <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-                Join hundreds of businesses using Kitsune to streamline their booking
-                process and delight their customers.
+                {t('finalCta.description')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -686,7 +691,7 @@ export default function BrochurePage() {
                   whileTap={{ scale: 0.95 }}
                   className="group px-10 py-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full text-white font-bold text-xl shadow-2xl hover:shadow-orange-500/50 transition-all flex items-center gap-3"
                 >
-                  Get Started Free
+                  {tCommon('buttons.getStartedFree')}
                   <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </motion.a>
                 <motion.a
@@ -695,13 +700,12 @@ export default function BrochurePage() {
                   whileTap={{ scale: 0.95 }}
                   className="px-10 py-5 bg-white/10 backdrop-blur-lg border-2 border-white/30 rounded-full text-white font-bold text-xl hover:bg-white/20 transition-all"
                 >
-                  Sign In
+                  {tCommon('buttons.signIn')}
                 </motion.a>
               </div>
 
               <p className="text-slate-400 mt-8">
-                No credit card required • 5-minute setup • Free{' '}
-                {config ? config.trialDays : 14}-day trial
+                {t('finalCta.noCreditCard')} • {t('finalCta.quickSetup')} • {t('finalCta.freeTrial', { trialDays: config ? config.trialDays : 14 })}
               </p>
             </div>
           </motion.div>
@@ -718,35 +722,34 @@ export default function BrochurePage() {
                 Kitsune
               </h3>
               <p className="text-slate-400 text-sm mb-4">
-                The intelligent booking platform for modern businesses in Asia.
-                LINE-powered scheduling made simple.
+                {t('footer.tagline')}
               </p>
               <div className="flex gap-4">
                 <a href="/api/auth/login" className="text-orange-400 hover:text-orange-300 transition-colors">
-                  Sign In
+                  {tCommon('buttons.signIn')}
                 </a>
               </div>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Resources</h4>
+              <h4 className="text-white font-semibold mb-4">{t('footer.resources')}</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#screenshots" className="hover:text-white transition-colors">Screenshots</a></li>
-                <li><a href="/api/auth/login" className="hover:text-white transition-colors">Get Started</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">{t('footer.features')}</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">{t('footer.pricing')}</a></li>
+                <li><a href="#screenshots" className="hover:text-white transition-colors">{t('footer.screenshots')}</a></li>
+                <li><a href="/api/auth/login" className="hover:text-white transition-colors">{tCommon('buttons.getStarted')}</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Legal</h4>
+              <h4 className="text-white font-semibold mb-4">{t('footer.legal')}</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#terms" className="hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#contact" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><Link href="/legal/privacy" className="hover:text-white transition-colors">{t('footer.privacy')}</Link></li>
+                <li><Link href="/legal/terms" className="hover:text-white transition-colors">{t('footer.terms')}</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">{t('footer.contact')}</Link></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-white/10 pt-8 text-center text-slate-400 text-sm">
-            <p>&copy; 2025 Kitsune. All rights reserved. Made with ❤️ for Asian businesses.</p>
+            <p>{t('footer.copyright')}</p>
           </div>
         </div>
       </footer>

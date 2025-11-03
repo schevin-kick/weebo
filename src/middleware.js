@@ -1,27 +1,94 @@
 import { NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
 
 /**
- * Next.js Middleware for global security checks
+ * Next.js Middleware for locale detection and global security checks
  * Runs on every request before reaching the API routes
  */
 
+// Create the next-intl middleware
+const intlMiddleware = createMiddleware(routing);
+
 export function middleware(request) {
-  const response = NextResponse.next();
+  const { pathname } = request.nextUrl;
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+
+  // Skip locale detection for API routes and static files
+  if (
+    pathname.startsWith('/api/') ||
+    pathname.startsWith('/_next/') ||
+    pathname.match(/\.(ico|png|jpg|jpeg|svg|gif|webp|woff|woff2|ttf|otf|eot|mp4|webm|mov|avi)$/)
+  ) {
+    const response = NextResponse.next();
+    const requestId = crypto.randomUUID();
+    response.headers.set('X-Request-ID', requestId);
+
+    // Log API requests
+    if (pathname.startsWith('/api/')) {
+      const timestamp = new Date().toISOString();
+      console.log(`[${timestamp}] ${request.method} ${pathname} - IP: ${ip} - Request ID: ${requestId}`);
+    }
+
+    // Security checks continue for API routes
+    return applySecurityChecks(request, response, ip);
+  }
+
+  // Handle locale detection and routing
+  const locales = routing.locales;
+  const pathnameHasLocale = locales.some(
+    (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
+  );
+
+  // If no locale in path, detect and redirect
+  if (!pathnameHasLocale) {
+    let locale = routing.defaultLocale;
+
+    // Priority 1: Check for saved locale preference in cookie
+    const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
+    if (cookieLocale && locales.includes(cookieLocale)) {
+      locale = cookieLocale;
+    }
+    // Priority 2: Check Vercel Geo IP for Taiwan
+    else if (request.geo?.country === 'TW') {
+      locale = 'zh-tw';
+    }
+    // Priority 3: Check Accept-Language header
+    else {
+      const acceptLanguage = request.headers.get('accept-language') || '';
+      if (acceptLanguage.includes('zh-TW') || acceptLanguage.includes('zh-Hant') || acceptLanguage.includes('zh-HK')) {
+        locale = 'zh-tw';
+      }
+    }
+
+    // Redirect to localized path
+    const newUrl = new URL(`/${locale}${pathname}${request.nextUrl.search}`, request.url);
+    const response = NextResponse.redirect(newUrl);
+
+    // Set cookie to remember preference (1 year)
+    response.cookies.set('NEXT_LOCALE', locale, {
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      path: '/',
+    });
+
+    return response;
+  }
+
+  // Use next-intl middleware for locale handling
+  const response = intlMiddleware(request);
 
   // Add request ID for logging/tracing
   const requestId = crypto.randomUUID();
   response.headers.set('X-Request-ID', requestId);
 
-  // Log API requests (excluding static files)
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    const timestamp = new Date().toISOString();
-    const method = request.method;
-    const path = request.nextUrl.pathname;
-    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+  // Apply security checks
+  return applySecurityChecks(request, response, ip);
+}
 
-    console.log(`[${timestamp}] ${method} ${path} - IP: ${ip} - Request ID: ${requestId}`);
-  }
-
+/**
+ * Apply security checks to the response
+ */
+function applySecurityChecks(request, response, ip) {
   // Block suspicious user agents (basic bot protection)
   const userAgent = request.headers.get('user-agent') || '';
   const suspiciousAgents = [
