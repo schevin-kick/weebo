@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { sendBookingCancellation } from '@/lib/lineMessaging';
+import { sendBookingCancellation, sendBusinessOwnerCancellationNotification } from '@/lib/lineMessaging';
 
 /**
  * GET /api/bookings/[id]
@@ -153,6 +153,33 @@ export async function PATCH(request, { params }) {
       } catch (messageError) {
         console.error('[Booking API] Error sending cancellation message:', messageError);
         // Don't fail the request if message fails
+      }
+
+      // Send notification to business owner (only if customer cancelled)
+      if (booking.cancelledBy === 'customer') {
+        try {
+          // Get business with owner info
+          const businessWithOwner = await prisma.business.findUnique({
+            where: { id: booking.businessId },
+            include: { owner: true },
+          });
+
+          if (businessWithOwner && businessWithOwner.notificationsEnabled !== false) {
+            const ownerNotifResult = await sendBusinessOwnerCancellationNotification(
+              booking,
+              businessWithOwner
+            );
+
+            if (ownerNotifResult && ownerNotifResult.status === 'sent') {
+              console.log('[Booking API] Owner cancellation notification sent successfully');
+            } else {
+              console.warn('[Booking API] Owner cancellation notification not sent:', ownerNotifResult);
+            }
+          }
+        } catch (notifError) {
+          console.error('[Booking API] Owner cancellation notification failed:', notifError);
+          // Don't fail the booking request if notification fails
+        }
       }
     }
 

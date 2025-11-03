@@ -113,7 +113,7 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
       >
-        <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
+        <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
           {currentBusiness.logoUrl ? (
             <img
               src={currentBusiness.logoUrl}
@@ -121,7 +121,7 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <Store className="w-6 h-6 text-white" />
+            <Store className="w-6 h-6 text-slate-400" />
           )}
         </div>
         <span className="font-medium text-slate-900 hidden sm:block">
@@ -194,7 +194,7 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
                   className={`w-full flex items-center gap-4 px-4 py-4 hover:bg-slate-50 transition-colors ${business.id === currentBusinessId ? 'bg-orange-50' : ''
                     }`}
                 >
-                <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
+                <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
                   {business.logoUrl ? (
                     <img
                       src={business.logoUrl}
@@ -202,7 +202,7 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <Store className="w-6 h-6 text-white" />
+                    <Store className="w-6 h-6 text-slate-400" />
                   )}
                 </div>
                 <div className="flex-1 text-left min-w-0">

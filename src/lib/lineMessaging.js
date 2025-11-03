@@ -855,3 +855,493 @@ export async function sendBookingReminder(booking, business) {
   const message = createBookingReminderMessage(booking, business);
   return await sendLineMessage(booking.customer.lineUserId, [message], business);
 }
+
+/**
+ * Create a notification message for business owner about new booking
+ * @param {object} booking - Booking object with all details
+ * @param {object} business - Business object with owner info
+ * @returns {object} LINE Flex Message
+ */
+function createBusinessOwnerNotificationMessage(booking, business) {
+  const appUrl = process.env.NEXTAUTH_URL || 'https://unsatirized-defamingly-humberto.ngrok-free.dev';
+  const viewBookingUrl = `${appUrl}/booking/${booking.id}`;
+
+  const bodyContents = [
+    {
+      type: 'text',
+      text: 'New Appointment Booked!',
+      weight: 'bold',
+      size: 'xl',
+      color: '#f97316',
+      wrap: true,
+    },
+    {
+      type: 'text',
+      text: `A new appointment has been scheduled for ${business.businessName}`,
+      size: 'sm',
+      color: '#666666',
+      wrap: true,
+      margin: 'sm',
+    },
+  ];
+
+  // Customer info
+  bodyContents.push({
+    type: 'box',
+    layout: 'horizontal',
+    margin: 'lg',
+    spacing: 'sm',
+    contents: [
+      {
+        type: 'text',
+        text: 'Customer',
+        color: '#aaaaaa',
+        size: 'sm',
+        flex: 0,
+      },
+      {
+        type: 'text',
+        text: booking.customer?.displayName || 'Unknown',
+        wrap: true,
+        color: '#666666',
+        size: 'sm',
+        weight: 'bold',
+        align: 'end',
+      },
+    ],
+  });
+
+  // Service info
+  if (booking.service) {
+    bodyContents.push({
+      type: 'box',
+      layout: 'horizontal',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'text',
+          text: 'Service',
+          color: '#aaaaaa',
+          size: 'sm',
+          flex: 0,
+        },
+        {
+          type: 'text',
+          text: booking.service.name,
+          wrap: true,
+          color: '#666666',
+          size: 'sm',
+          align: 'end',
+        },
+      ],
+    });
+  }
+
+  // Staff info
+  if (booking.staff) {
+    bodyContents.push({
+      type: 'box',
+      layout: 'horizontal',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'text',
+          text: 'Staff',
+          color: '#aaaaaa',
+          size: 'sm',
+          flex: 0,
+        },
+        {
+          type: 'text',
+          text: booking.staff.name,
+          wrap: true,
+          color: '#666666',
+          size: 'sm',
+          align: 'end',
+        },
+      ],
+    });
+  }
+
+  // Date & Time
+  bodyContents.push({
+    type: 'box',
+    layout: 'horizontal',
+    spacing: 'sm',
+    contents: [
+      {
+        type: 'text',
+        text: 'Date & Time',
+        color: '#aaaaaa',
+        size: 'sm',
+        flex: 0,
+      },
+      {
+        type: 'text',
+        text: formatDateTime(booking.dateTime),
+        wrap: true,
+        color: '#666666',
+        size: 'sm',
+        weight: 'bold',
+        align: 'end',
+      },
+    ],
+  });
+
+  // Duration
+  bodyContents.push({
+    type: 'box',
+    layout: 'horizontal',
+    spacing: 'sm',
+    contents: [
+      {
+        type: 'text',
+        text: 'Duration',
+        color: '#aaaaaa',
+        size: 'sm',
+        flex: 0,
+      },
+      {
+        type: 'text',
+        text: formatDuration(booking.duration),
+        wrap: true,
+        color: '#666666',
+        size: 'sm',
+        align: 'end',
+      },
+    ],
+  });
+
+  // Status
+  bodyContents.push({
+    type: 'box',
+    layout: 'horizontal',
+    spacing: 'sm',
+    contents: [
+      {
+        type: 'text',
+        text: 'Status',
+        color: '#aaaaaa',
+        size: 'sm',
+        flex: 0,
+      },
+      {
+        type: 'text',
+        text: booking.status === 'confirmed' ? 'Confirmed' : 'Pending Approval',
+        wrap: true,
+        color: booking.status === 'confirmed' ? '#22c55e' : '#f59e0b',
+        size: 'sm',
+        weight: 'bold',
+        align: 'end',
+      },
+    ],
+  });
+
+  return {
+    type: 'flex',
+    altText: 'New appointment booked!',
+    contents: {
+      type: 'bubble',
+      hero: business.logoUrl
+        ? {
+            type: 'image',
+            url: business.logoUrl,
+            size: 'full',
+            aspectRatio: '20:13',
+            aspectMode: 'fit',
+            backgroundColor: business.heroBackgroundColor || '#FFFFFF',
+          }
+        : undefined,
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        contents: bodyContents,
+      },
+      footer: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'sm',
+        contents: [
+          {
+            type: 'button',
+            style: 'primary',
+            height: 'sm',
+            action: {
+              type: 'uri',
+              label: 'View Appointment',
+              uri: viewBookingUrl,
+            },
+            color: '#f97316',
+          },
+        ],
+      },
+    },
+  };
+}
+
+/**
+ * Send notification to business owner about new booking
+ * @param {object} booking - Full booking object with relations
+ * @param {object} business - Full business object with owner info
+ * @returns {Promise<object>} Result of send operation
+ */
+export async function sendBusinessOwnerNotification(booking, business) {
+  if (!business.owner?.lineUserId) {
+    console.warn('[LINE] No business owner LINE user ID available');
+    return { status: 'skipped', reason: 'no_owner_line_id' };
+  }
+
+  if (business.notificationsEnabled === false) {
+    console.log('[LINE] Business owner notifications disabled');
+    return { status: 'skipped', reason: 'notifications_disabled' };
+  }
+
+  console.log('[LINE] Sending business owner notification:', {
+    bookingId: booking.id,
+    businessId: business.id,
+    ownerLineUserId: business.owner.lineUserId,
+  });
+
+  const message = createBusinessOwnerNotificationMessage(booking, business);
+
+  // Always use shared bot token for owner notifications (null = use shared bot)
+  return await sendLineMessage(business.owner.lineUserId, [message], null);
+}
+
+/**
+ * Create a notification message for business owner about booking cancellation
+ * @param {object} booking - Booking object with all details
+ * @param {object} business - Business object with owner info
+ * @returns {object} LINE Flex Message
+ */
+function createBusinessOwnerCancellationNotificationMessage(booking, business) {
+  const appUrl = process.env.NEXTAUTH_URL || 'https://unsatirized-defamingly-humberto.ngrok-free.dev';
+  const viewBookingUrl = `${appUrl}/booking/${booking.id}`;
+
+  const bodyContents = [
+    {
+      type: 'text',
+      text: 'Appointment Cancelled',
+      weight: 'bold',
+      size: 'xl',
+      color: '#ef4444',
+      wrap: true,
+    },
+    {
+      type: 'text',
+      text: `A customer has cancelled their appointment at ${business.businessName}`,
+      size: 'sm',
+      color: '#666666',
+      wrap: true,
+      margin: 'sm',
+    },
+  ];
+
+  // Customer info
+  bodyContents.push({
+    type: 'box',
+    layout: 'horizontal',
+    margin: 'lg',
+    spacing: 'sm',
+    contents: [
+      {
+        type: 'text',
+        text: 'Customer',
+        color: '#aaaaaa',
+        size: 'sm',
+        flex: 0,
+      },
+      {
+        type: 'text',
+        text: booking.customer?.displayName || 'Unknown',
+        wrap: true,
+        color: '#666666',
+        size: 'sm',
+        weight: 'bold',
+        align: 'end',
+      },
+    ],
+  });
+
+  // Service info
+  if (booking.service) {
+    bodyContents.push({
+      type: 'box',
+      layout: 'horizontal',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'text',
+          text: 'Service',
+          color: '#aaaaaa',
+          size: 'sm',
+          flex: 0,
+        },
+        {
+          type: 'text',
+          text: booking.service.name,
+          wrap: true,
+          color: '#666666',
+          size: 'sm',
+          align: 'end',
+        },
+      ],
+    });
+  }
+
+  // Staff info
+  if (booking.staff) {
+    bodyContents.push({
+      type: 'box',
+      layout: 'horizontal',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'text',
+          text: 'Staff',
+          color: '#aaaaaa',
+          size: 'sm',
+          flex: 0,
+        },
+        {
+          type: 'text',
+          text: booking.staff.name,
+          wrap: true,
+          color: '#666666',
+          size: 'sm',
+          align: 'end',
+        },
+      ],
+    });
+  }
+
+  // Date & Time
+  bodyContents.push({
+    type: 'box',
+    layout: 'horizontal',
+    spacing: 'sm',
+    contents: [
+      {
+        type: 'text',
+        text: 'Date & Time',
+        color: '#aaaaaa',
+        size: 'sm',
+        flex: 0,
+      },
+      {
+        type: 'text',
+        text: formatDateTime(booking.dateTime),
+        wrap: true,
+        color: '#666666',
+        size: 'sm',
+        align: 'end',
+      },
+    ],
+  });
+
+  // Cancellation reason (if provided)
+  if (booking.cancellationReason) {
+    bodyContents.push({
+      type: 'separator',
+      margin: 'lg',
+    });
+    bodyContents.push({
+      type: 'box',
+      layout: 'vertical',
+      margin: 'lg',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'text',
+          text: 'Reason',
+          color: '#aaaaaa',
+          size: 'sm',
+        },
+        {
+          type: 'text',
+          text: booking.cancellationReason,
+          wrap: true,
+          color: '#666666',
+          size: 'sm',
+          margin: 'xs',
+        },
+      ],
+    });
+  }
+
+  return {
+    type: 'flex',
+    altText: 'Customer cancelled appointment',
+    contents: {
+      type: 'bubble',
+      hero: business.logoUrl
+        ? {
+            type: 'image',
+            url: business.logoUrl,
+            size: 'full',
+            aspectRatio: '20:13',
+            aspectMode: 'fit',
+            backgroundColor: business.heroBackgroundColor || '#FFFFFF',
+          }
+        : undefined,
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        contents: bodyContents,
+      },
+      footer: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'sm',
+        contents: [
+          {
+            type: 'button',
+            style: 'primary',
+            height: 'sm',
+            action: {
+              type: 'uri',
+              label: 'View Details',
+              uri: viewBookingUrl,
+            },
+            color: '#ef4444',
+          },
+        ],
+      },
+    },
+  };
+}
+
+/**
+ * Send notification to business owner about booking cancellation
+ * @param {object} booking - Full booking object with relations
+ * @param {object} business - Full business object with owner info
+ * @returns {Promise<object>} Result of send operation
+ */
+export async function sendBusinessOwnerCancellationNotification(booking, business) {
+  if (!business.owner?.lineUserId) {
+    console.warn('[LINE] No business owner LINE user ID available');
+    return { status: 'skipped', reason: 'no_owner_line_id' };
+  }
+
+  if (business.notificationsEnabled === false) {
+    console.log('[LINE] Business owner notifications disabled');
+    return { status: 'skipped', reason: 'notifications_disabled' };
+  }
+
+  // Only notify if customer cancelled (not owner)
+  if (booking.cancelledBy !== 'customer') {
+    console.log('[LINE] Skipping owner notification - cancelled by owner');
+    return { status: 'skipped', reason: 'owner_cancelled' };
+  }
+
+  console.log('[LINE] Sending business owner cancellation notification:', {
+    bookingId: booking.id,
+    businessId: business.id,
+    ownerLineUserId: business.owner.lineUserId,
+  });
+
+  const message = createBusinessOwnerCancellationNotificationMessage(booking, business);
+
+  // Always use shared bot token for owner notifications (null = use shared bot)
+  return await sendLineMessage(business.owner.lineUserId, [message], null);
+}

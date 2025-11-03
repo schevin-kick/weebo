@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { sendBookingConfirmation } from '@/lib/lineMessaging';
+import { sendBookingConfirmation, sendBusinessOwnerNotification } from '@/lib/lineMessaging';
 import { publicRateLimit, authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
 
 /**
@@ -279,6 +279,30 @@ export async function POST(request) {
       } catch (messageError) {
         console.error('[Booking API] Error sending confirmation message:', messageError);
         // Don't fail the request if message fails
+      }
+    }
+
+    // Send notification to business owner
+    if (booking.status === 'confirmed' || booking.status === 'pending') {
+      try {
+        // Get business with owner info
+        const businessWithOwner = await prisma.business.findUnique({
+          where: { id: businessId },
+          include: { owner: true },
+        });
+
+        if (businessWithOwner && businessWithOwner.notificationsEnabled !== false) {
+          const ownerNotifResult = await sendBusinessOwnerNotification(booking, businessWithOwner);
+
+          if (ownerNotifResult && ownerNotifResult.status === 'sent') {
+            console.log('[Booking API] Owner notification sent successfully');
+          } else {
+            console.warn('[Booking API] Owner notification not sent:', ownerNotifResult);
+          }
+        }
+      } catch (notifError) {
+        console.error('[Booking API] Owner notification failed:', notifError);
+        // Don't fail the booking request if notification fails
       }
     }
 

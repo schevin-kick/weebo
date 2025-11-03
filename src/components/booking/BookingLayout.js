@@ -13,7 +13,7 @@ export default function BookingLayout({ businessName, logoUrl, children, stepper
           <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4">
             <div className="flex items-center gap-3">
               {logoUrl && (
-                <div className="bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center overflow-hidden" style={{ height: '40px', width: 'auto' }}>
+                <div className="flex items-center justify-center overflow-hidden" style={{ height: '40px', width: 'auto' }}>
                   <img
                     src={logoUrl}
                     alt={businessName || 'Business Logo'}

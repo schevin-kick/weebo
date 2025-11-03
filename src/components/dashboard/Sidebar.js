@@ -19,6 +19,7 @@ import {
   BarChart3,
   MessageSquare,
   CreditCard,
+  Bell,
   X,
 } from 'lucide-react';
 
@@ -64,6 +65,11 @@ const navItems = [
     icon: MessageSquare,
   },
   {
+    name: 'Notifications',
+    href: '/notifications',
+    icon: Bell,
+  },
+  {
     name: 'Holiday Hours',
     href: '/holiday-hours',
     icon: CalendarX,
@@ -73,9 +79,12 @@ const navItems = [
 export default function Sidebar({ businessId, isOpen, onClose }) {
   const pathname = usePathname();
   const { showBadge: showMessagingBadge } = useNotificationBadge('messaging', businessId);
+  const { showBadge: showNotificationsBadge } = useNotificationBadge('notifications', businessId);
 
   const isActive = (href) => {
-    const fullPath = `/dashboard/${businessId}${href}`;
+    // Extract locale from pathname (e.g., '/en' from '/en/dashboard/...')
+    const locale = pathname.split('/')[1];
+    const fullPath = `/${locale}/dashboard/${businessId}${href}`;
     if (href === '') {
       return pathname === fullPath;
     }
@@ -135,7 +144,9 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
           {navItems.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
-            const showBadge = item.name === 'Messaging' && showMessagingBadge;
+            const showBadge =
+              (item.name === 'Messaging' && showMessagingBadge) ||
+              (item.name === 'Notifications' && showNotificationsBadge);
 
             // Billing is account-wide, not business-specific
             const href = item.name === 'Billing'

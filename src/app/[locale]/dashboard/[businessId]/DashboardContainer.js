@@ -21,6 +21,7 @@ import BookingsView from '@/components/dashboard/views/BookingsView';
 import QRCodeView from '@/components/dashboard/views/QRCodeView';
 import SettingsView from '@/components/dashboard/views/SettingsView';
 import MessagingView from '@/components/dashboard/views/MessagingView';
+import NotificationsView from '@/components/dashboard/views/NotificationsView';
 import HolidayHoursView from '@/components/dashboard/views/HolidayHoursView';
 
 export default function DashboardContainer({ businessId, view = 'home' }) {
@@ -122,6 +123,8 @@ export default function DashboardContainer({ businessId, view = 'home' }) {
         return <SettingsView businessId={businessId} />;
       case 'messaging':
         return <MessagingView businessId={businessId} />;
+      case 'notifications':
+        return <NotificationsView businessId={businessId} />;
       case 'holiday-hours':
         return <HolidayHoursView businessId={businessId} />;
       default:
