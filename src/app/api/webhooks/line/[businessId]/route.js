@@ -54,32 +54,37 @@ export async function POST(request, { params }) {
           }
         });
 
-        if (existingMapping) {
-          console.log('[LINE Webhook] Existing mapping found - repeat customer');
-          // Just send a welcome back message
-          try {
-            await sendLineMessage(
-              businessBotUserId,
-              [{
-                type: 'text',
-                text: `Welcome back! You'll continue to receive booking updates here.`
-              }],
-              business
-            );
-            console.log('[LINE Webhook] Welcome back message sent');
-          } catch (error) {
-            console.error('[LINE Webhook] Failed to send welcome back message:', error);
-          }
-          continue;
-        }
+        // if (existingMapping) {
+        //   console.log('[LINE Webhook] Existing mapping found - repeat customer');
+        //   // Just send a welcome back message
+        //   try {
+        //     await sendLineMessage(
+        //       businessBotUserId,
+        //       [{
+        //         type: 'text',
+        //         text: `Welcome back! You'll continue to receive booking updates here.`
+        //       }],
+        //       business
+        //     );
+        //     console.log('[LINE Webhook] Welcome back message sent');
+        //   } catch (error) {
+        //     console.error('[LINE Webhook] Failed to send welcome back message:', error);
+        //   }
+        //   continue;
+        // }
 
-        // Find recent booking (last 10 minutes)
+        // Add small delay to ensure database consistency
+        console.log('[LINE Webhook] Waiting 500ms to ensure DB commit...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Find recent booking (last 15 minutes, increased from 10 for better reliability)
         const recentBooking = await prisma.booking.findFirst({
           where: {
             businessId,
             createdAt: {
-              gte: new Date(Date.now() - 10 * 60 * 1000)
-            }
+              gte: new Date(Date.now() - 15 * 60 * 1000)
+            },
+            status: 'confirmed' // Only match confirmed bookings
           },
           orderBy: { createdAt: 'desc' },
           include: {
@@ -89,18 +94,29 @@ export async function POST(request, { params }) {
           }
         });
 
+        console.log('[LINE Webhook] Recent booking search result:', {
+          found: !!recentBooking,
+          bookingId: recentBooking?.id,
+          bookingCreatedAt: recentBooking?.createdAt,
+          customerLiffId: recentBooking?.customer?.lineUserId,
+          businessBotUserId: businessBotUserId,
+          timeSinceBooking: recentBooking ? Date.now() - new Date(recentBooking.createdAt).getTime() : null
+        });
+
         if (recentBooking) {
           console.log('[LINE Webhook] Found recent booking:', recentBooking.id);
 
           // Create mapping for new customer
-          await prisma.customerBotMapping.create({
-            data: {
-              customerId: recentBooking.customerId,
-              businessId: businessId,
-              liffUserId: recentBooking.customer.lineUserId,
-              businessBotUserId: businessBotUserId,
-            }
-          });
+          if (!existingMapping) {
+            await prisma.customerBotMapping.create({
+              data: {
+                customerId: recentBooking.customerId,
+                businessId: businessId,
+                liffUserId: recentBooking.customer.lineUserId,
+                businessBotUserId: businessBotUserId,
+              }
+            });
+          }
 
           console.log('[LINE Webhook] Linked user IDs:', {
             liffUserId: recentBooking.customer.lineUserId,

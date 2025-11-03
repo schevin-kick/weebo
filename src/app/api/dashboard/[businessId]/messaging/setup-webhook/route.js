@@ -120,8 +120,8 @@ export async function POST(request, { params }) {
       webhookUrl,
       verified: webhookVerified,
       message: webhookVerified
-        ? 'Webhook configured and verified successfully!'
-        : 'Webhook configured but verification failed. This is normal - webhooks will still work.'
+        ? 'Webhook configured and verified successfully! Remember to enable the "Use webhook" toggle in your LINE Developers Console → Messaging API settings.'
+        : 'Webhook configured but verification failed. This is normal - webhooks will still work. Remember to enable the "Use webhook" toggle in your LINE Developers Console → Messaging API settings.'
     });
 
   } catch (error) {

@@ -19,7 +19,7 @@ const LINE_CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
  * @param {object} business - Business object (for token management)
  * @returns {Promise<object>} Response from LINE API
  */
-async function sendLineMessage(lineUserId, messages, business = null) {
+export async function sendLineMessage(lineUserId, messages, business = null) {
   let channelAccessToken = LINE_CHANNEL_ACCESS_TOKEN;
   let targetUserId = lineUserId;
   let tokenSource = 'shared';

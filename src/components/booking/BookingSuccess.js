@@ -209,7 +209,7 @@ export default function BookingSuccess({
                       className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-600 transition-all shadow-lg shadow-blue-500/30"
                     >
                       <UserPlus className="w-5 h-5" />
-                      {businessMessagingMode === 'own_bot' ? 'Add Business Bot' : 'Add Friend'}
+                      {businessMessagingMode === 'own_bot' ? `Add ${businessName}` : 'Add Friend'}
                     </button>
                   </div>
                 </div>

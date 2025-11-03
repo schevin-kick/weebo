@@ -277,11 +277,10 @@ export default function MessagingView({ businessId }) {
 
             <div className="space-y-3">
               {/* Option A: Shared Bot */}
-              <label className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                messagingMode === 'shared'
-                  ? 'border-orange-500 bg-orange-50'
-                  : 'border-slate-200 hover:border-slate-300'
-              }`}>
+              <label className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${messagingMode === 'shared'
+                ? 'border-orange-500 bg-orange-50'
+                : 'border-slate-200 hover:border-slate-300'
+                }`}>
                 <input
                   type="radio"
                   name="messagingMode"
@@ -299,11 +298,10 @@ export default function MessagingView({ businessId }) {
               </label>
 
               {/* Option B: Own Bot */}
-              <label className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                messagingMode === 'own_bot'
-                  ? 'border-orange-500 bg-orange-50'
-                  : 'border-slate-200 hover:border-slate-300'
-              }`}>
+              <label className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${messagingMode === 'own_bot'
+                ? 'border-orange-500 bg-orange-50'
+                : 'border-slate-200 hover:border-slate-300'
+                }`}>
                 <input
                   type="radio"
                   name="messagingMode"
@@ -320,56 +318,6 @@ export default function MessagingView({ businessId }) {
                 </div>
               </label>
             </div>
-
-            {/* Show webhook warning for own_bot mode */}
-            {messagingMode === 'own_bot' && !webhookAcknowledged && (
-              <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-medium text-amber-900">Important: Webhook Override</div>
-                    <div className="text-sm text-amber-800 mt-1">
-                      We will override your existing webhook URL to enable messaging.
-                      Any existing webhook integrations will stop working.
-                    </div>
-                    <label className="flex items-center gap-2 mt-3">
-                      <input
-                        type="checkbox"
-                        checked={webhookAcknowledged}
-                        onChange={(e) => setWebhookAcknowledged(e.target.checked)}
-                        className="rounded border-amber-300"
-                      />
-                      <span className="text-sm">I understand and accept the webhook override</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Show webhook setup for own_bot mode */}
-            {messagingMode === 'own_bot' && webhookAcknowledged && (
-              <div className="mt-4">
-                <button
-                  onClick={handleSetupWebhook}
-                  disabled={!channelAccessToken || !lineBotBasicId || isSettingUpWebhook}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSettingUpWebhook ? 'Setting up...' : (webhookConfigured ? 'Reconfigure Webhook' : 'Setup Webhook')}
-                </button>
-
-                {webhookConfigured && webhookUrl && (
-                  <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-green-900">Webhook configured successfully</div>
-                        <div className="text-xs text-green-700 mt-1 font-mono break-all">{webhookUrl}</div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
 
           {/* LINE Integration - Only show for own_bot mode */}
@@ -384,20 +332,18 @@ export default function MessagingView({ businessId }) {
 
               <div className="p-6">
                 {/* Connection Status Badge */}
-                <div className={`flex items-start gap-3 p-4 rounded-lg border mb-4 ${
-                  isLineConnected
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-slate-50 border-slate-200'
-                }`}>
+                <div className={`flex items-start gap-3 p-4 rounded-lg border mb-4 ${isLineConnected
+                  ? 'bg-green-50 border-green-200'
+                  : 'bg-slate-50 border-slate-200'
+                  }`}>
                   {isLineConnected ? (
                     <CheckCircle className="w-5 h-5 flex-shrink-0 text-green-600" />
                   ) : (
                     <AlertCircle className="w-5 h-5 flex-shrink-0 text-slate-400" />
                   )}
                   <div className="flex-1">
-                    <div className={`font-medium ${
-                      isLineConnected ? 'text-green-600' : 'text-slate-600'
-                    }`}>
+                    <div className={`font-medium ${isLineConnected ? 'text-green-600' : 'text-slate-600'
+                      }`}>
                       {isLineConnected ? 'Credentials Saved' : 'Credentials Not Configured'}
                     </div>
                     <p className="text-xs text-slate-500 mt-1">
@@ -463,9 +409,8 @@ export default function MessagingView({ businessId }) {
                     value={lineBotBasicId}
                     onChange={(e) => handleBotIdChange(e.target.value)}
                     placeholder="@abc1234"
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                      botIdError ? 'border-red-300' : 'border-slate-300'
-                    }`}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${botIdError ? 'border-red-300' : 'border-slate-300'
+                      }`}
                   />
                   {botIdError && (
                     <p className="text-xs text-red-600 mt-1">{botIdError}</p>
@@ -479,6 +424,74 @@ export default function MessagingView({ businessId }) {
                   <p className="text-xs text-slate-500 mt-1">
                     Your LINE bot's unique identifier (e.g., @abc1234). This allows customers to add your bot as a friend.
                   </p>
+                </div>
+
+                {/* Webhook Setup Section */}
+                <div className="mt-6 pt-6 border-t border-slate-200">
+                  <h3 className="text-sm font-semibold text-slate-900 mb-3">Webhook Configuration</h3>
+
+                  {/* Webhook warning */}
+                  {!webhookAcknowledged && (
+                    <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <div className="font-medium text-amber-900">Important: Webhook Override</div>
+                          <div className="text-sm text-amber-800 mt-1">
+                            We will override your existing webhook URL to enable messaging.
+                            Any existing webhook integrations will stop working.
+                          </div>
+                          <label className="flex items-center gap-2 mt-3">
+                            <input
+                              type="checkbox"
+                              checked={webhookAcknowledged}
+                              onChange={(e) => setWebhookAcknowledged(e.target.checked)}
+                              className="rounded border-amber-300"
+                            />
+                            <span className="text-sm">I understand and accept the webhook override</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Webhook setup button */}
+                  {webhookAcknowledged && (
+                    <div>
+                      <button
+                        onClick={handleSetupWebhook}
+                        disabled={!channelAccessToken || channelAccessToken === '••••••••' || !lineBotBasicId || isSettingUpWebhook}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isSettingUpWebhook ? 'Setting up...' : (webhookConfigured ? 'Reconfigure Webhook' : 'Setup Webhook')}
+                      </button>
+
+                      {webhookConfigured && webhookUrl && (
+                        <div className="mt-3 space-y-2">
+                          <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <div className="flex items-start gap-2">
+                              <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1">
+                                <div className="text-sm font-medium text-green-900">Webhook configured successfully</div>
+                                <div className="text-xs text-green-700 mt-1 font-mono break-all">{webhookUrl}</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div className="flex items-start gap-2">
+                              <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1">
+                                <div className="text-sm font-medium text-blue-900">Important: Enable webhook in LINE Console</div>
+                                <div className="text-xs text-blue-700 mt-1">
+                                  Go to LINE Developers Console → Messaging API → Enable the "Use webhook" toggle to activate webhook delivery.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -504,11 +517,10 @@ export default function MessagingView({ businessId }) {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                      activeTab === tab.id
-                        ? 'border-orange-500 text-orange-600'
-                        : 'border-transparent text-slate-600 hover:text-slate-900'
-                    }`}
+                    className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.id
+                      ? 'border-orange-500 text-orange-600'
+                      : 'border-transparent text-slate-600 hover:text-slate-900'
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -586,14 +598,12 @@ export default function MessagingView({ businessId }) {
                 </div>
                 <button
                   onClick={() => setEnableReminders(!enableReminders)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    enableReminders ? 'bg-orange-500' : 'bg-slate-300'
-                  }`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${enableReminders ? 'bg-orange-500' : 'bg-slate-300'
+                    }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      enableReminders ? 'translate-x-6' : 'translate-x-1'
-                    }`}
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${enableReminders ? 'translate-x-6' : 'translate-x-1'
+                      }`}
                   />
                 </button>
               </div>
@@ -611,13 +621,15 @@ export default function MessagingView({ businessId }) {
         </div>
 
         {/* Right Column - Live Preview */}
-        <div className="lg:sticky lg:top-6 lg:self-start">
-          <LINEMessagePreview
-            type={activeTab}
-            header={currentTemplate.header}
-            body={currentTemplate.body}
-            business={business}
-          />
+        <div className="h-full">
+          <div className="lg:sticky lg:top-20">
+            <LINEMessagePreview
+              type={activeTab}
+              header={currentTemplate.header}
+              body={currentTemplate.body}
+              business={business}
+            />
+          </div>
         </div>
       </div>
 

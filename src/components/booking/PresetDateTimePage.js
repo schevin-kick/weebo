@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -23,6 +23,7 @@ export default function PresetDateTimePage({
   defaultAppointmentDuration = 60,
 }) {
   const searchParams = useSearchParams();
+  const timeSlotsRef = useRef(null);
 
   // Extract business_id from either direct param or liff.state
   let businessId = searchParams.get('business_id');
@@ -161,6 +162,16 @@ export default function PresetDateTimePage({
     setSelectedTime(null); // Reset time when date changes
 
     // Don't update store yet, wait for time selection
+
+    // Scroll to time slots section after a brief delay to ensure it renders
+    setTimeout(() => {
+      if (timeSlotsRef.current) {
+        timeSlotsRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }, 100);
   };
 
   const handleTimeSelect = (time) => {
@@ -229,7 +240,7 @@ export default function PresetDateTimePage({
 
       {/* Time slots */}
       {selectedDate && (
-        <div className="space-y-3">
+        <div ref={timeSlotsRef} className="space-y-3">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
             <Clock className="w-4 h-4" />
             <span>Select Time</span>
