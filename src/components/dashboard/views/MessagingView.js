@@ -42,6 +42,13 @@ export default function MessagingView({ businessId }) {
   const [channelAccessToken, setChannelAccessToken] = useState('');
   const [showToken, setShowToken] = useState(false);
 
+  // New messaging mode state
+  const [messagingMode, setMessagingMode] = useState('shared');
+  const [webhookAcknowledged, setWebhookAcknowledged] = useState(false);
+  const [webhookConfigured, setWebhookConfigured] = useState(false);
+  const [webhookUrl, setWebhookUrl] = useState('');
+  const [isSettingUpWebhook, setIsSettingUpWebhook] = useState(false);
+
   // Mark as visited when component mounts
   useEffect(() => {
     markAsVisited();
@@ -92,6 +99,12 @@ export default function MessagingView({ businessId }) {
       setLineBotBasicId(business.lineBotBasicId || '');
       // Don't load the actual token for security - just show if it exists
       setChannelAccessToken(business.lineChannelAccessToken ? '••••••••' : '');
+
+      // Load messaging mode settings
+      setMessagingMode(business.messagingMode || 'shared');
+      setWebhookAcknowledged(business.webhookAcknowledged || false);
+      setWebhookConfigured(business.webhookConfigured || false);
+      setWebhookUrl(business.webhookUrl || '');
     }
   }, [business]);
 
@@ -145,6 +158,8 @@ export default function MessagingView({ businessId }) {
         enableReminders,
         reminderHoursBefore,
         lineBotBasicId: lineBotBasicId || null,
+        messagingMode,
+        webhookAcknowledged,
       };
 
       // Only include token if it's been changed (not the masked value)
@@ -169,6 +184,47 @@ export default function MessagingView({ businessId }) {
       toast.error('Failed to save messaging settings');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleSetupWebhook = async () => {
+    if (!channelAccessToken || channelAccessToken === '••••••••') {
+      toast.error('Please enter a valid channel access token first');
+      return;
+    }
+
+    if (!lineBotBasicId) {
+      toast.error('Please enter your bot basic ID first');
+      return;
+    }
+
+    setIsSettingUpWebhook(true);
+
+    try {
+      const response = await fetch(`/api/dashboard/${businessId}/messaging/setup-webhook`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          channelAccessToken,
+          lineBotBasicId
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to setup webhook');
+      }
+
+      setWebhookConfigured(true);
+      setWebhookUrl(data.webhookUrl);
+      toast.success(data.message || 'Webhook configured successfully!');
+      mutate(); // Refresh business data
+    } catch (error) {
+      console.error('Webhook setup error:', error);
+      toast.error(error.message || 'Failed to setup webhook');
+    } finally {
+      setIsSettingUpWebhook(false);
     }
   };
 
@@ -212,115 +268,221 @@ export default function MessagingView({ businessId }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Settings */}
         <div className="space-y-6">
-          {/* LINE Connection Status */}
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div className="p-6 border-b border-slate-200">
-              <h2 className="text-lg font-semibold text-slate-900 mb-1">LINE Integration</h2>
-              <p className="text-sm text-slate-600">
-                Connect your LINE Official Account to send messages
-              </p>
+          {/* Messaging Mode Selector */}
+          <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">Messaging Mode</h2>
+            <p className="text-sm text-slate-600 mb-4">
+              Choose how you want to send messages to customers
+            </p>
+
+            <div className="space-y-3">
+              {/* Option A: Shared Bot */}
+              <label className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                messagingMode === 'shared'
+                  ? 'border-orange-500 bg-orange-50'
+                  : 'border-slate-200 hover:border-slate-300'
+              }`}>
+                <input
+                  type="radio"
+                  name="messagingMode"
+                  value="shared"
+                  checked={messagingMode === 'shared'}
+                  onChange={(e) => setMessagingMode(e.target.value)}
+                  className="mt-1"
+                />
+                <div className="flex-1">
+                  <div className="font-medium text-slate-900">Use Kitsune Bot (Recommended)</div>
+                  <div className="text-sm text-slate-600 mt-1">
+                    Simple setup, no configuration needed. Messages sent from Kitsune's LINE bot.
+                  </div>
+                </div>
+              </label>
+
+              {/* Option B: Own Bot */}
+              <label className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                messagingMode === 'own_bot'
+                  ? 'border-orange-500 bg-orange-50'
+                  : 'border-slate-200 hover:border-slate-300'
+              }`}>
+                <input
+                  type="radio"
+                  name="messagingMode"
+                  value="own_bot"
+                  checked={messagingMode === 'own_bot'}
+                  onChange={(e) => setMessagingMode(e.target.value)}
+                  className="mt-1"
+                />
+                <div className="flex-1">
+                  <div className="font-medium text-slate-900">Use My LINE Bot (Advanced)</div>
+                  <div className="text-sm text-slate-600 mt-1">
+                    Your own branding, unlimited messages. Requires LINE Official Account setup.
+                  </div>
+                </div>
+              </label>
             </div>
 
-            <div className="p-6">
-              {/* Connection Status Badge */}
-              <div className={`flex items-start gap-3 p-4 rounded-lg border mb-4 ${
-                isLineConnected
-                  ? 'bg-green-50 border-green-200'
-                  : 'bg-slate-50 border-slate-200'
-              }`}>
-                {isLineConnected ? (
-                  <CheckCircle className="w-5 h-5 flex-shrink-0 text-green-600" />
-                ) : (
-                  <AlertCircle className="w-5 h-5 flex-shrink-0 text-slate-400" />
+            {/* Show webhook warning for own_bot mode */}
+            {messagingMode === 'own_bot' && !webhookAcknowledged && (
+              <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-medium text-amber-900">Important: Webhook Override</div>
+                    <div className="text-sm text-amber-800 mt-1">
+                      We will override your existing webhook URL to enable messaging.
+                      Any existing webhook integrations will stop working.
+                    </div>
+                    <label className="flex items-center gap-2 mt-3">
+                      <input
+                        type="checkbox"
+                        checked={webhookAcknowledged}
+                        onChange={(e) => setWebhookAcknowledged(e.target.checked)}
+                        className="rounded border-amber-300"
+                      />
+                      <span className="text-sm">I understand and accept the webhook override</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Show webhook setup for own_bot mode */}
+            {messagingMode === 'own_bot' && webhookAcknowledged && (
+              <div className="mt-4">
+                <button
+                  onClick={handleSetupWebhook}
+                  disabled={!channelAccessToken || !lineBotBasicId || isSettingUpWebhook}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSettingUpWebhook ? 'Setting up...' : (webhookConfigured ? 'Reconfigure Webhook' : 'Setup Webhook')}
+                </button>
+
+                {webhookConfigured && webhookUrl && (
+                  <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-green-900">Webhook configured successfully</div>
+                        <div className="text-xs text-green-700 mt-1 font-mono break-all">{webhookUrl}</div>
+                      </div>
+                    </div>
+                  </div>
                 )}
-                <div className="flex-1">
-                  <div className={`font-medium ${
-                    isLineConnected ? 'text-green-600' : 'text-slate-600'
-                  }`}>
-                    {isLineConnected ? 'LINE Messaging API Connected' : 'LINE Messaging API Not Connected'}
+              </div>
+            )}
+          </div>
+
+          {/* LINE Integration - Only show for own_bot mode */}
+          {messagingMode === 'own_bot' && (
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div className="p-6 border-b border-slate-200">
+                <h2 className="text-lg font-semibold text-slate-900 mb-1">LINE Bot Configuration</h2>
+                <p className="text-sm text-slate-600">
+                  Enter your LINE Official Account credentials
+                </p>
+              </div>
+
+              <div className="p-6">
+                {/* Connection Status Badge */}
+                <div className={`flex items-start gap-3 p-4 rounded-lg border mb-4 ${
+                  isLineConnected
+                    ? 'bg-green-50 border-green-200'
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  {isLineConnected ? (
+                    <CheckCircle className="w-5 h-5 flex-shrink-0 text-green-600" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5 flex-shrink-0 text-slate-400" />
+                  )}
+                  <div className="flex-1">
+                    <div className={`font-medium ${
+                      isLineConnected ? 'text-green-600' : 'text-slate-600'
+                    }`}>
+                      {isLineConnected ? 'Credentials Saved' : 'Credentials Not Configured'}
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {isLineConnected
+                        ? 'Your bot credentials are configured'
+                        : 'Add your Channel Access Token and Bot Basic ID below'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Manual Channel Access Token Input */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-slate-700">
+                      <Key className="w-4 h-4 inline mr-1" />
+                      Channel Access Token
+                    </label>
+                    <button
+                      onClick={() => setShowTokenHelpModal(true)}
+                      className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 font-medium"
+                    >
+                      <Info className="w-3.5 h-3.5" />
+                      How do I get this?
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={showToken ? 'text' : 'password'}
+                      value={channelAccessToken}
+                      onChange={(e) => setChannelAccessToken(e.target.value)}
+                      placeholder="Enter your LINE Channel Access Token"
+                      className="w-full px-4 py-2 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent font-mono text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowToken(!showToken)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
+                    >
+                      {showToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    {isLineConnected
-                      ? 'Your bot can send messages to customers'
-                      : 'Add your Channel Access Token below to enable messaging'}
+                    Get this from LINE Developers Console → Your Channel → Messaging API → Channel access token (long-lived)
                   </p>
                 </div>
-              </div>
 
-              {/* Manual Channel Access Token Input */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-slate-700">
-                    <Key className="w-4 h-4 inline mr-1" />
-                    Channel Access Token
-                  </label>
-                  <button
-                    onClick={() => setShowTokenHelpModal(true)}
-                    className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 font-medium"
-                  >
-                    <Info className="w-3.5 h-3.5" />
-                    How do I get this?
-                  </button>
-                </div>
-                <div className="relative">
+                {/* Bot Basic ID Input */}
+                <div className="mt-6 pt-6 border-t border-slate-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-slate-700">
+                      Bot Basic ID
+                    </label>
+                    <button
+                      onClick={() => setShowHelpModal(true)}
+                      className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 font-medium"
+                    >
+                      <Info className="w-3.5 h-3.5" />
+                      How do I find this?
+                    </button>
+                  </div>
                   <input
-                    type={showToken ? 'text' : 'password'}
-                    value={channelAccessToken}
-                    onChange={(e) => setChannelAccessToken(e.target.value)}
-                    placeholder="Enter your LINE Channel Access Token"
-                    className="w-full px-4 py-2 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent font-mono text-sm"
+                    type="text"
+                    value={lineBotBasicId}
+                    onChange={(e) => handleBotIdChange(e.target.value)}
+                    placeholder="@abc1234"
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                      botIdError ? 'border-red-300' : 'border-slate-300'
+                    }`}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowToken(!showToken)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
-                  >
-                    {showToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-                <p className="text-xs text-slate-500 mt-1">
-                  Get this from LINE Developers Console → Your Channel → Messaging API → Channel access token (long-lived)
-                </p>
-              </div>
-
-              {/* Bot Basic ID Input */}
-              <div className="mt-6 pt-6 border-t border-slate-200">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-slate-700">
-                    Bot Basic ID
-                  </label>
-                  <button
-                    onClick={() => setShowHelpModal(true)}
-                    className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 font-medium"
-                  >
-                    <Info className="w-3.5 h-3.5" />
-                    How do I find this?
-                  </button>
-                </div>
-                <input
-                  type="text"
-                  value={lineBotBasicId}
-                  onChange={(e) => handleBotIdChange(e.target.value)}
-                  placeholder="@abc1234"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                    botIdError ? 'border-red-300' : 'border-slate-300'
-                  }`}
-                />
-                {botIdError && (
-                  <p className="text-xs text-red-600 mt-1">{botIdError}</p>
-                )}
-                {!botIdError && lineBotBasicId && (
-                  <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                    <CheckCircle className="w-3 h-3" />
-                    Valid Bot ID format
+                  {botIdError && (
+                    <p className="text-xs text-red-600 mt-1">{botIdError}</p>
+                  )}
+                  {!botIdError && lineBotBasicId && (
+                    <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" />
+                      Valid Bot ID format
+                    </p>
+                  )}
+                  <p className="text-xs text-slate-500 mt-1">
+                    Your LINE bot's unique identifier (e.g., @abc1234). This allows customers to add your bot as a friend.
                   </p>
-                )}
-                <p className="text-xs text-slate-500 mt-1">
-                  Your LINE bot's unique identifier (e.g., @abc1234). This allows customers to add your bot as a friend.
-                </p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Message Template Editor */}
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">

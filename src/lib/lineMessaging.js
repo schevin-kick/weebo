@@ -6,7 +6,9 @@
 import { formatDateTime, formatDuration } from './dateUtils';
 import { getValidChannelAccessToken } from './lineTokenManager';
 import { getMessageTemplate } from './messageTemplates';
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 const LINE_MESSAGING_API_URL = 'https://api.line.me/v2/bot/message/push';
 const LINE_CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
@@ -18,20 +20,60 @@ const LINE_CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
  * @returns {Promise<object>} Response from LINE API
  */
 async function sendLineMessage(lineUserId, messages, business = null) {
-  // Get business-specific token or fallback to app-level token
   let channelAccessToken = LINE_CHANNEL_ACCESS_TOKEN;
+  let targetUserId = lineUserId;
+  let tokenSource = 'shared';
 
   if (business) {
-    const businessToken = await getValidChannelAccessToken(business);
-    if (businessToken) {
-      channelAccessToken = businessToken;
+    // Check messaging mode
+    if (business.messagingMode === 'own_bot' && business.lineChannelAccessToken) {
+      // Business using their own bot - need to map user ID
+      channelAccessToken = business.lineChannelAccessToken;
+      tokenSource = 'own_bot';
+
+      // Look up mapped user ID
+      const mapping = await prisma.customerBotMapping.findFirst({
+        where: {
+          liffUserId: lineUserId,
+          businessId: business.id
+        }
+      });
+
+      if (!mapping) {
+        console.warn('[LINE] User has not added business bot:', {
+          liffUserId: lineUserId,
+          businessId: business.id,
+          messagingMode: business.messagingMode
+        });
+        return {
+          status: 'skipped',
+          reason: 'user_not_friend',
+          message: 'Customer has not added your LINE bot'
+        };
+      }
+
+      targetUserId = mapping.businessBotUserId;
+      console.log('[LINE] Using mapped user ID:', {
+        liffUserId: lineUserId,
+        businessBotUserId: targetUserId
+      });
     }
+    // For shared mode (or no mode set), always use shared bot token
+    // No additional logic needed - falls through to LINE_CHANNEL_ACCESS_TOKEN
   }
 
   if (!channelAccessToken) {
     console.warn('No LINE channel access token available. Skipping message send.');
     return { status: 'skipped', reason: 'no_token' };
   }
+
+  console.log('[LINE] Sending message:', {
+    targetUserId,
+    messageCount: messages.length,
+    tokenSource,
+    businessId: business?.id,
+    messagingMode: business?.messagingMode || 'shared'
+  });
 
   try {
     const response = await fetch(LINE_MESSAGING_API_URL, {
@@ -41,19 +83,30 @@ async function sendLineMessage(lineUserId, messages, business = null) {
         'Authorization': `Bearer ${channelAccessToken}`,
       },
       body: JSON.stringify({
-        to: lineUserId,
+        to: targetUserId,
         messages,
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('[LINE] API error:', {
+        status: response.status,
+        error: errorData,
+        targetUserId,
+        tokenSource
+      });
       throw new Error(`LINE API error: ${errorData.message || response.statusText}`);
     }
 
+    console.log('[LINE] Message sent successfully:', { targetUserId });
     return { status: 'sent' };
   } catch (error) {
-    console.error('Error sending LINE message:', error);
+    console.error('[LINE] Error sending message:', {
+      error: error.message,
+      targetUserId,
+      tokenSource
+    });
     return { status: 'failed', error: error.message };
   }
 }
@@ -326,7 +379,7 @@ function createBookingCancellationMessage(booking, business, reason = null) {
   const bodyContents = [
     {
       type: 'text',
-      text: booking.cancelledBy === 'owner' ? 'Booking Not Approved' : template.header,
+      text: template.header,
       weight: 'bold',
       size: 'xl',
       color: '#ef4444',

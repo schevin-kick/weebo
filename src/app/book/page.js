@@ -41,6 +41,7 @@ export default function BookingPage() {
   const [error, setError] = useState(null);
   const [isReviewPage, setIsReviewPage] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [createdBooking, setCreatedBooking] = useState(null);
 
   // Business config from API
   const [businessConfig, setBusinessConfig] = useState(null);
@@ -241,6 +242,9 @@ export default function BookingPage() {
 
       const result = await response.json();
 
+      // Save the created booking
+      setCreatedBooking(result.booking);
+
       // Mark as completed
       completeBooking();
 
@@ -269,6 +273,9 @@ export default function BookingPage() {
         botBasicId={businessConfig?.lineBotBasicId}
         businessAddress={businessConfig?.address}
         businessPhone={businessConfig?.phone}
+        businessName={businessConfig?.businessName}
+        businessMessagingMode={businessConfig?.messagingMode}
+        bookingId={createdBooking?.id}
       />
     );
   }

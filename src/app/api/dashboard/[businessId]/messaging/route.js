@@ -36,6 +36,11 @@ export async function GET(request, { params }) {
         reminderHoursBefore: true,
         lineChannelAccessToken: true,
         lineBotBasicId: true,
+        messagingMode: true,
+        webhookConfigured: true,
+        webhookUrl: true,
+        webhookAcknowledged: true,
+        lineWebhookVerified: true,
       },
     });
 
@@ -49,6 +54,11 @@ export async function GET(request, { params }) {
       reminderHoursBefore: business.reminderHoursBefore,
       lineConnected: !!business.lineChannelAccessToken,
       lineBotBasicId: business.lineBotBasicId,
+      messagingMode: business.messagingMode || 'shared',
+      webhookConfigured: business.webhookConfigured,
+      webhookUrl: business.webhookUrl,
+      webhookAcknowledged: business.webhookAcknowledged,
+      lineWebhookVerified: business.lineWebhookVerified,
     });
   } catch (error) {
     console.error('Get messaging settings error:', error);
@@ -141,6 +151,20 @@ export async function PATCH(request, { params }) {
       updateData.lineChannelAccessToken = body.lineChannelAccessToken;
     }
 
+    if (body.messagingMode !== undefined) {
+      if (!['shared', 'own_bot'].includes(body.messagingMode)) {
+        return NextResponse.json(
+          { error: 'Invalid messaging mode. Must be "shared" or "own_bot"' },
+          { status: 400 }
+        );
+      }
+      updateData.messagingMode = body.messagingMode;
+    }
+
+    if (body.webhookAcknowledged !== undefined) {
+      updateData.webhookAcknowledged = body.webhookAcknowledged;
+    }
+
     const updatedBusiness = await prisma.business.update({
       where: { id: businessId },
       data: updateData,
@@ -149,6 +173,9 @@ export async function PATCH(request, { params }) {
         enableReminders: true,
         reminderHoursBefore: true,
         lineBotBasicId: true,
+        messagingMode: true,
+        webhookConfigured: true,
+        webhookUrl: true,
       },
     });
 
@@ -158,6 +185,9 @@ export async function PATCH(request, { params }) {
       enableReminders: updatedBusiness.enableReminders,
       reminderHoursBefore: updatedBusiness.reminderHoursBefore,
       lineBotBasicId: updatedBusiness.lineBotBasicId,
+      messagingMode: updatedBusiness.messagingMode,
+      webhookConfigured: updatedBusiness.webhookConfigured,
+      webhookUrl: updatedBusiness.webhookUrl,
     });
   } catch (error) {
     console.error('Update messaging settings error:', error);

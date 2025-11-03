@@ -43,6 +43,11 @@ export async function GET(request, { params }) {
       return NextResponse.json({ business, isOwner: true });
     } else {
       // Public view - hide sensitive data
+      // For shared mode, use Kitsune's shared bot Basic ID
+      const botBasicId = (business.messagingMode === 'shared' || !business.messagingMode)
+        ? process.env.LINE_BOT_BASIC_ID
+        : business.lineBotBasicId;
+
       const publicBusiness = {
         id: business.id,
         businessName: business.businessName,
@@ -55,7 +60,8 @@ export async function GET(request, { params }) {
         email: business.email,
         address: business.address,
         website: business.website,
-        lineBotBasicId: business.lineBotBasicId,
+        lineBotBasicId: botBasicId,
+        messagingMode: business.messagingMode || 'shared',
         services: business.services,
         staff: business.staff,
         pages: business.pages,

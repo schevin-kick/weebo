@@ -68,11 +68,11 @@ export default function LINEMessagePreview({
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden max-w-[280px]">
                   {/* Hero Image (if business has logo) */}
                   {business?.logoUrl && (
-                    <div className="w-full h-32 bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center">
+                    <div className="w-full h-32 bg-white flex items-center justify-center">
                       <img
                         src={business.logoUrl}
                         alt="Business Logo"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     </div>
                   )}

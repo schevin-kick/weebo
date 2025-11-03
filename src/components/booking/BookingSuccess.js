@@ -3,7 +3,15 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, Sparkles, X, UserPlus, Bell, MapPin, Phone } from 'lucide-react';
 
-export default function BookingSuccess({ bookingSummary, botBasicId, businessAddress, businessPhone }) {
+export default function BookingSuccess({
+  bookingSummary,
+  botBasicId,
+  businessAddress,
+  businessPhone,
+  businessName,
+  businessMessagingMode,
+  bookingId
+}) {
   const [showConfetti, setShowConfetti] = useState(true);
   const [friendshipStatus, setFriendshipStatus] = useState(null); // null | 'friend' | 'not_friend'
   const [checkingFriendship, setCheckingFriendship] = useState(true);
@@ -29,7 +37,15 @@ export default function BookingSuccess({ bookingSummary, botBasicId, businessAdd
           return;
         }
 
-        // Get friendship status
+        // For own_bot mode, always show "Add Friend" button
+        // because liff.getFriendship() only checks the LIFF provider's bot, not the business's bot
+        if (businessMessagingMode === 'own_bot') {
+          setFriendshipStatus('not_friend');
+          setCheckingFriendship(false);
+          return;
+        }
+
+        // For shared mode, check friendship status with Kitsune bot
         const friendship = await liff.getFriendship();
         setFriendshipStatus(friendship.friendFlag ? 'friend' : 'not_friend');
       }
@@ -173,7 +189,7 @@ export default function BookingSuccess({ bookingSummary, botBasicId, businessAdd
             </div>
           )} */}
 
-          {/* Add Friend Prompt - Only show if not already a friend and bot ID is configured */}
+          {/* Add Friend Prompt - Different for own_bot vs shared mode */}
           {!checkingFriendship && friendshipStatus === 'not_friend' && botBasicId && (
             <div className="mb-6">
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-5">
@@ -182,16 +198,18 @@ export default function BookingSuccess({ bookingSummary, botBasicId, businessAdd
                     <Bell className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-slate-900 mb-1">Get Booking Reminders</h3>
+                    <h3 className="font-bold text-slate-900 mb-1">Get Booking Updates</h3>
                     <p className="text-sm text-slate-600 mb-3">
-                      Add us as a friend to receive booking confirmations and reminders!
+                      {businessMessagingMode === 'own_bot'
+                        ? `Add ${businessName}'s LINE bot to receive booking confirmations and reminders!`
+                        : 'Add us as a friend to receive booking confirmations and reminders!'}
                     </p>
                     <button
                       onClick={handleAddFriend}
                       className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-600 transition-all shadow-lg shadow-blue-500/30"
                     >
                       <UserPlus className="w-5 h-5" />
-                      Add Friend
+                      {businessMessagingMode === 'own_bot' ? 'Add Business Bot' : 'Add Friend'}
                     </button>
                   </div>
                 </div>
