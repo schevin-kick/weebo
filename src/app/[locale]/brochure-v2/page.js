@@ -32,6 +32,7 @@ import HeroSvgAnimation from '@/components/brochure-v2/HeroSvgAnimation';
 import LineIntegrationSvg from '@/components/brochure-v2/LineIntegrationSvg';
 import LineBackgroundSvg from '@/components/brochure-v2/LineBackgroundSvg';
 import QRCodeMagicSvg from '@/components/brochure-v2/QRCodeMagicSvg';
+import LanguageSelector from '@/components/shared/LanguageSelector';
 import '@/styles/brochure-v2.css';
 
 export default function BrochureV2Page() {
@@ -125,6 +126,11 @@ export default function BrochureV2Page() {
 
       {/* Scroll Progress Bar */}
       <ScrollProgress />
+
+      {/* Language Selector - Fixed position */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSelector variant='light' />
+      </div>
 
       {/* Pulsing gradient blobs */}
       <div className="fixed top-20 right-20 w-96 h-96 bg-orange-300/30 rounded-full blur-3xl animate-pulse pointer-events-none" />

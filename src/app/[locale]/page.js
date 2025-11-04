@@ -13,8 +13,8 @@ import KitsuneLogo from '@/components/loading/KitsuneLogo';
 import { getLastSelectedBusiness } from '@/lib/localStorage';
 import dynamic from 'next/dynamic';
 
-// Dynamically import brochure to reduce initial bundle size
-const BrochurePage = dynamic(() => import('./brochure/page'), {
+// Dynamically import brochure-v2 to reduce initial bundle size
+const BrochurePage = dynamic(() => import('./brochure-v2/page'), {
   ssr: false,
   loading: () => (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
