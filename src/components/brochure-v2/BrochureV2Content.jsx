@@ -31,7 +31,7 @@ import InteractiveCard from '@/components/brochure-v2/InteractiveCard';
 import LightFeatureCard from '@/components/brochure-v2/LightFeatureCard';
 import HeroSvgAnimation from '@/components/brochure-v2/HeroSvgAnimation';
 import LineIntegrationSvg from '@/components/brochure-v2/LineIntegrationSvg';
-import LineBackgroundSvg from '@/components/brochure-v2/LineBackgroundSvg';
+import SphereNetworkBackground from '@/components/brochure-v2/SphereNetworkBackground';
 import QRCodeMagicSvg from '@/components/brochure-v2/QRCodeMagicSvg';
 import LanguageSelector from '@/components/shared/LanguageSelector';
 import '@/styles/brochure-v2.css';
@@ -47,6 +47,9 @@ export default function BrochureV2Content() {
   const qrSectionRef = useRef(null);
   const phoneRef = useRef(null);
 
+  // Global page scroll for background sphere
+  const { scrollYProgress: globalScrollProgress } = useScroll();
+
   // Phone parallax scroll effect
   const { scrollYProgress } = useScroll({
     target: phoneRef,
@@ -56,6 +59,15 @@ export default function BrochureV2Content() {
   const phoneY = useTransform(scrollYProgress, [0, 0.5, 1], [100, 0, -100]);
   const phoneScale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.85, 1, 1, 0.95]);
   const phoneRotate = useTransform(scrollYProgress, [0, 0.5, 1], [-5, 0, 5]);
+
+  // Convert scroll progress MotionValue to regular value for Three.js
+  const [scrollValue, setScrollValue] = useState(0);
+  useEffect(() => {
+    const unsubscribe = globalScrollProgress.on('change', (latest) => {
+      setScrollValue(latest);
+    });
+    return () => unsubscribe();
+  }, [globalScrollProgress]);
 
   // Floating notifications data
   const notifications = [
@@ -121,9 +133,9 @@ export default function BrochureV2Content() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden animate-gradient-bg">
-      {/* Fixed Background Animation */}
-      <div className="fixed inset-0 pointer-events-none opacity-40 z-0">
-        <LineBackgroundSvg />
+      {/* Fixed Background Animation - 3D Network Sphere */}
+      <div className="fixed inset-0 pointer-events-none opacity-70 z-0">
+        <SphereNetworkBackground scrollProgress={scrollValue} />
       </div>
 
       {/* Scroll Progress Bar */}
