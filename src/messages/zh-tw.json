@@ -193,6 +193,24 @@
         "startTrial": "開始免費試用",
         "signIn": "登入",
         "finePrint": "無需信用卡 • 14 天免費試用"
+      },
+      "notifications": {
+        "newBooking": {
+          "title": "已確認新預約",
+          "message": "陳小雅 - 下午 2:30 剪髮造型"
+        },
+        "paymentReceived": {
+          "title": "已收到款項",
+          "message": "$45.00 - Visa 卡尾號 4242"
+        },
+        "lineMessage": {
+          "title": "已發送 LINE 訊息",
+          "message": "確認訊息已發送給客戶"
+        },
+        "analyticsUpdated": {
+          "title": "數據已更新",
+          "message": "儀表板已更新即時數據"
+        }
       }
     },
     "stats": {

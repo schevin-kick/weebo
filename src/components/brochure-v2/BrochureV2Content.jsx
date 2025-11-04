@@ -73,29 +73,29 @@ export default function BrochureV2Content() {
   const notifications = [
     {
       icon: CheckCircle,
-      title: 'New Booking Confirmed',
-      message: 'Sarah Chen - 2:30 PM Haircut & Style',
+      title: t('hero.notifications.newBooking.title'),
+      message: t('hero.notifications.newBooking.message'),
       position: 'top-right',
       gradient: 'from-green-500 to-emerald-500'
     },
     {
       icon: Users,
-      title: 'Payment Received',
-      message: '$45.00 - Visa ending in 4242',
+      title: t('hero.notifications.paymentReceived.title'),
+      message: t('hero.notifications.paymentReceived.message'),
       position: 'bottom-left',
       gradient: 'from-blue-500 to-cyan-500'
     },
     {
       icon: MessageSquare,
-      title: 'LINE Message Sent',
-      message: 'Confirmation sent to customer',
+      title: t('hero.notifications.lineMessage.title'),
+      message: t('hero.notifications.lineMessage.message'),
       position: 'middle-left',
       gradient: 'from-pink-500 to-rose-500'
     },
     {
       icon: BarChart3,
-      title: 'Analytics Updated',
-      message: 'Dashboard refreshed with real-time data',
+      title: t('hero.notifications.analyticsUpdated.title'),
+      message: t('hero.notifications.analyticsUpdated.message'),
       position: 'bottom-right',
       gradient: 'from-purple-500 to-violet-500'
     }

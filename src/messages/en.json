@@ -193,6 +193,24 @@
         "startTrial": "Start Free Trial",
         "signIn": "Sign In",
         "finePrint": "No credit card required • 14-day free trial"
+      },
+      "notifications": {
+        "newBooking": {
+          "title": "New Booking Confirmed",
+          "message": "Sarah Chen - 2:30 PM Haircut & Style"
+        },
+        "paymentReceived": {
+          "title": "Payment Received",
+          "message": "$45.00 - Visa ending in 4242"
+        },
+        "lineMessage": {
+          "title": "LINE Message Sent",
+          "message": "Confirmation sent to customer"
+        },
+        "analyticsUpdated": {
+          "title": "Analytics Updated",
+          "message": "Dashboard refreshed with real-time data"
+        }
       }
     },
     "stats": {
