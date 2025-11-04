@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { sendBookingConfirmation, sendBusinessOwnerNotification } from '@/lib/lineMessaging';
 import { publicRateLimit, authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
+import { detectLocaleFromPathname } from '@/lib/localeUtils';
 
 /**
  * POST /api/bookings
@@ -10,6 +11,9 @@ import { publicRateLimit, authenticatedRateLimit, getIdentifier, checkRateLimit,
  */
 export async function POST(request) {
   try {
+    // Detect locale from request URL (for immediate notifications)
+    const locale = detectLocaleFromPathname(request.nextUrl?.pathname);
+
     // Apply rate limiting (public endpoint - 10 req/min per IP)
     const identifier = getIdentifier(request);
     const rateLimitResult = await checkRateLimit(publicRateLimit, identifier);
@@ -177,11 +181,13 @@ export async function POST(request) {
           displayName: customerDisplayName,
           pictureUrl: customerPictureUrl,
           lastActiveAt: new Date(),
+          language: locale, // Update language preference for future cron jobs
         },
         create: {
           lineUserId: customerLineUserId,
           displayName: customerDisplayName,
           pictureUrl: customerPictureUrl,
+          language: locale, // Store language preference for future cron jobs
         },
       });
     } else {
@@ -191,6 +197,7 @@ export async function POST(request) {
           lineUserId: `test_${Date.now()}`,
           displayName: customerDisplayName || 'Anonymous',
           pictureUrl: customerPictureUrl || null,
+          language: locale,
         },
       });
     }
@@ -254,7 +261,7 @@ export async function POST(request) {
     let messageResult = null;
     if (booking.status === 'confirmed') {
       try {
-        messageResult = await sendBookingConfirmation(booking, business);
+        messageResult = await sendBookingConfirmation(booking, business, locale);
 
         // Log message result
         if (messageResult && messageResult.status === 'sent') {
@@ -292,7 +299,7 @@ export async function POST(request) {
         });
 
         if (businessWithOwner && businessWithOwner.notificationsEnabled !== false) {
-          const ownerNotifResult = await sendBusinessOwnerNotification(booking, businessWithOwner);
+          const ownerNotifResult = await sendBusinessOwnerNotification(booking, businessWithOwner, locale);
 
           if (ownerNotifResult && ownerNotifResult.status === 'sent') {
             console.log('[Booking API] Owner notification sent successfully');

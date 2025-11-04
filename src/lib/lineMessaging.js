@@ -3,9 +3,10 @@
  * Handles sending rich message cards to customers via LINE
  */
 
-import { formatDateTime, formatDuration } from './dateUtils';
+import { formatDateTime as formatDateTimeNonLocalized, formatDuration as formatDurationNonLocalized } from './dateUtils';
+import { formatDateTime, formatDuration } from './localizedDateUtils';
 import { getValidChannelAccessToken } from './lineTokenManager';
-import { getMessageTemplate } from './messageTemplates';
+import { getMessageTemplate, getFieldLabels } from './messageTemplates';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -115,11 +116,13 @@ export async function sendLineMessage(lineUserId, messages, business = null) {
  * Create a rich booking confirmation message
  * @param {object} booking - Booking object with all details
  * @param {object} business - Business object
+ * @param {string} locale - Locale code ('en' or 'zh-tw')
  * @returns {object} LINE Flex Message
  */
-function createBookingConfirmationMessage(booking, business) {
-  // Get custom template
-  const template = getMessageTemplate(business, 'confirmation');
+function createBookingConfirmationMessage(booking, business, locale = 'en') {
+  // Get custom template and field labels
+  const template = getMessageTemplate(business, 'confirmation', locale);
+  const labels = getFieldLabels(locale);
 
   const bodyContents = [
     {
@@ -181,7 +184,7 @@ function createBookingConfirmationMessage(booking, business) {
           contents: [
             {
               type: 'text',
-              text: 'Service',
+              text: labels.service,
               color: '#aaaaaa',
               size: 'sm',
               flex: 1,
@@ -210,7 +213,7 @@ function createBookingConfirmationMessage(booking, business) {
       contents: [
         {
           type: 'text',
-          text: 'Staff',
+          text: labels.staff,
           color: '#aaaaaa',
           size: 'sm',
           flex: 1,
@@ -235,14 +238,14 @@ function createBookingConfirmationMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Date & Time',
+        text: labels.dateTime,
         color: '#aaaaaa',
         size: 'sm',
         flex: 1,
       },
       {
         type: 'text',
-        text: formatDateTime(booking.dateTime),
+        text: formatDateTime(booking.dateTime, locale),
         wrap: true,
         color: '#666666',
         size: 'sm',
@@ -259,14 +262,14 @@ function createBookingConfirmationMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Duration',
+        text: labels.duration,
         color: '#aaaaaa',
         size: 'sm',
         flex: 1,
       },
       {
         type: 'text',
-        text: formatDuration(booking.duration),
+        text: formatDuration(booking.duration, locale),
         wrap: true,
         color: '#666666',
         size: 'sm',
@@ -325,7 +328,7 @@ function createBookingConfirmationMessage(booking, business) {
 
   return {
     type: 'flex',
-    altText: 'Your booking has been confirmed!',
+    altText: template.header,
     contents: {
       type: 'bubble',
       hero: business.logoUrl
@@ -354,7 +357,7 @@ function createBookingConfirmationMessage(booking, business) {
             height: 'sm',
             action: {
               type: 'uri',
-              label: 'View My Bookings',
+              label: labels.viewMyBookings,
               uri: business.lineDeepLink.replace('?business_id=', '/my-bookings?business_id='),
             },
             color: '#f97316',
@@ -370,11 +373,13 @@ function createBookingConfirmationMessage(booking, business) {
  * @param {object} booking - Booking object with all details
  * @param {object} business - Business object
  * @param {string} reason - Optional cancellation reason
+ * @param {string} locale - Locale code ('en' or 'zh-tw')
  * @returns {object} LINE Flex Message
  */
-function createBookingCancellationMessage(booking, business, reason = null) {
-  // Get custom template
-  const template = getMessageTemplate(business, 'cancellation');
+function createBookingCancellationMessage(booking, business, reason = null, locale = 'en') {
+  // Get custom template and field labels
+  const template = getMessageTemplate(business, 'cancellation', locale);
+  const labels = getFieldLabels(locale);
 
   const bodyContents = [
     {
@@ -425,7 +430,7 @@ function createBookingCancellationMessage(booking, business, reason = null) {
       contents: [
         {
           type: 'text',
-          text: 'Reason',
+          text: labels.reason,
           color: '#aaaaaa',
           size: 'sm',
         },
@@ -451,7 +456,7 @@ function createBookingCancellationMessage(booking, business, reason = null) {
       contents: [
         {
           type: 'text',
-          text: 'Service: ' + booking.service.name,
+          text: labels.service + ': ' + booking.service.name,
           color: '#999999',
           size: 'sm',
           wrap: true,
@@ -462,7 +467,7 @@ function createBookingCancellationMessage(booking, business, reason = null) {
 
   bodyContents.push({
     type: 'text',
-    text: 'Date: ' + formatDateTime(booking.dateTime),
+    text: labels.dateTime + ': ' + formatDateTime(booking.dateTime, locale),
     color: '#999999',
     size: 'sm',
     wrap: true,
@@ -479,7 +484,7 @@ function createBookingCancellationMessage(booking, business, reason = null) {
     const contactContents = [
       {
         type: 'text',
-        text: 'Questions? Contact us:',
+        text: labels.questionsContact,
         color: '#aaaaaa',
         size: 'xs',
       },
@@ -528,7 +533,7 @@ function createBookingCancellationMessage(booking, business, reason = null) {
 
   return {
     type: 'flex',
-    altText: 'Your booking has been cancelled',
+    altText: template.header,
     contents: {
       type: 'bubble',
       hero: business.logoUrl
@@ -557,7 +562,7 @@ function createBookingCancellationMessage(booking, business, reason = null) {
             height: 'sm',
             action: {
               type: 'uri',
-              label: 'Book Again',
+              label: labels.bookAgain,
               uri: business.lineDeepLink,
             },
             color: '#f97316',
@@ -572,11 +577,13 @@ function createBookingCancellationMessage(booking, business, reason = null) {
  * Create a rich booking reminder message
  * @param {object} booking - Booking object with all details
  * @param {object} business - Business object
+ * @param {string} locale - Locale code ('en' or 'zh-tw')
  * @returns {object} LINE Flex Message
  */
-function createBookingReminderMessage(booking, business) {
-  // Get custom template
-  const template = getMessageTemplate(business, 'reminder');
+function createBookingReminderMessage(booking, business, locale = 'en') {
+  // Get custom template and field labels
+  const template = getMessageTemplate(business, 'reminder', locale);
+  const labels = getFieldLabels(locale);
 
   const bodyContents = [
     {
@@ -638,7 +645,7 @@ function createBookingReminderMessage(booking, business) {
           contents: [
             {
               type: 'text',
-              text: 'Service',
+              text: labels.service,
               color: '#aaaaaa',
               size: 'sm',
               flex: 1,
@@ -667,7 +674,7 @@ function createBookingReminderMessage(booking, business) {
       contents: [
         {
           type: 'text',
-          text: 'Staff',
+          text: labels.staff,
           color: '#aaaaaa',
           size: 'sm',
           flex: 1,
@@ -692,14 +699,14 @@ function createBookingReminderMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Date & Time',
+        text: labels.dateTime,
         color: '#aaaaaa',
         size: 'sm',
         flex: 1,
       },
       {
         type: 'text',
-        text: formatDateTime(booking.dateTime),
+        text: formatDateTime(booking.dateTime, locale),
         wrap: true,
         color: '#666666',
         size: 'sm',
@@ -716,14 +723,14 @@ function createBookingReminderMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Duration',
+        text: labels.duration,
         color: '#aaaaaa',
         size: 'sm',
         flex: 1,
       },
       {
         type: 'text',
-        text: formatDuration(booking.duration),
+        text: formatDuration(booking.duration, locale),
         wrap: true,
         color: '#666666',
         size: 'sm',
@@ -782,7 +789,7 @@ function createBookingReminderMessage(booking, business) {
 
   return {
     type: 'flex',
-    altText: 'Reminder: Your appointment is coming up!',
+    altText: template.header,
     contents: {
       type: 'bubble',
       hero: business.logoUrl
@@ -811,7 +818,7 @@ function createBookingReminderMessage(booking, business) {
             height: 'sm',
             action: {
               type: 'uri',
-              label: 'View My Bookings',
+              label: labels.viewMyBookings,
               uri: business.lineDeepLink.replace('?business_id=', '/my-bookings?business_id='),
             },
             color: '#f97316',
@@ -826,10 +833,12 @@ function createBookingReminderMessage(booking, business) {
  * Send booking confirmation message to customer
  * @param {object} booking - Full booking object with relations
  * @param {object} business - Full business object
+ * @param {string|null} locale - Optional locale override (from request); if null, uses customer.language from DB
  * @returns {Promise<object>} Result of send operation
  */
-export async function sendBookingConfirmation(booking, business) {
-  const message = createBookingConfirmationMessage(booking, business);
+export async function sendBookingConfirmation(booking, business, locale = null) {
+  const effectiveLocale = locale || booking.customer?.language || 'en';
+  const message = createBookingConfirmationMessage(booking, business, effectiveLocale);
   return await sendLineMessage(booking.customer.lineUserId, [message], business);
 }
 
@@ -838,10 +847,12 @@ export async function sendBookingConfirmation(booking, business) {
  * @param {object} booking - Full booking object with relations
  * @param {object} business - Full business object
  * @param {string} reason - Optional cancellation reason
+ * @param {string|null} locale - Optional locale override (from request); if null, uses customer.language from DB
  * @returns {Promise<object>} Result of send operation
  */
-export async function sendBookingCancellation(booking, business, reason = null) {
-  const message = createBookingCancellationMessage(booking, business, reason);
+export async function sendBookingCancellation(booking, business, reason = null, locale = null) {
+  const effectiveLocale = locale || booking.customer?.language || 'en';
+  const message = createBookingCancellationMessage(booking, business, reason, effectiveLocale);
   return await sendLineMessage(booking.customer.lineUserId, [message], business);
 }
 
@@ -852,7 +863,8 @@ export async function sendBookingCancellation(booking, business, reason = null) 
  * @returns {Promise<object>} Result of send operation
  */
 export async function sendBookingReminder(booking, business) {
-  const message = createBookingReminderMessage(booking, business);
+  const locale = booking.customer?.language || 'en';
+  const message = createBookingReminderMessage(booking, business, locale);
   return await sendLineMessage(booking.customer.lineUserId, [message], business);
 }
 
@@ -860,16 +872,18 @@ export async function sendBookingReminder(booking, business) {
  * Create a notification message for business owner about new booking
  * @param {object} booking - Booking object with all details
  * @param {object} business - Business object with owner info
+ * @param {string} locale - Locale code ('en' or 'zh-tw')
  * @returns {object} LINE Flex Message
  */
-function createBusinessOwnerNotificationMessage(booking, business) {
+function createBusinessOwnerNotificationMessage(booking, business, locale = 'en') {
+  const labels = getFieldLabels(locale);
   const appUrl = process.env.NEXTAUTH_URL || 'https://unsatirized-defamingly-humberto.ngrok-free.dev';
   const viewBookingUrl = `${appUrl}/booking/${booking.id}`;
 
   const bodyContents = [
     {
       type: 'text',
-      text: 'New Appointment Booked!',
+      text: labels.newAppointmentBooked,
       weight: 'bold',
       size: 'xl',
       color: '#f97316',
@@ -877,7 +891,7 @@ function createBusinessOwnerNotificationMessage(booking, business) {
     },
     {
       type: 'text',
-      text: `A new appointment has been scheduled for ${business.businessName}`,
+      text: `${labels.newAppointmentScheduled} ${business.businessName}`,
       size: 'sm',
       color: '#666666',
       wrap: true,
@@ -894,7 +908,7 @@ function createBusinessOwnerNotificationMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Customer',
+        text: labels.customer,
         color: '#aaaaaa',
         size: 'sm',
         flex: 0,
@@ -920,7 +934,7 @@ function createBusinessOwnerNotificationMessage(booking, business) {
       contents: [
         {
           type: 'text',
-          text: 'Service',
+          text: labels.service,
           color: '#aaaaaa',
           size: 'sm',
           flex: 0,
@@ -946,7 +960,7 @@ function createBusinessOwnerNotificationMessage(booking, business) {
       contents: [
         {
           type: 'text',
-          text: 'Staff',
+          text: labels.staff,
           color: '#aaaaaa',
           size: 'sm',
           flex: 0,
@@ -971,14 +985,14 @@ function createBusinessOwnerNotificationMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Date & Time',
+        text: labels.dateTime,
         color: '#aaaaaa',
         size: 'sm',
         flex: 0,
       },
       {
         type: 'text',
-        text: formatDateTime(booking.dateTime),
+        text: formatDateTime(booking.dateTime, locale),
         wrap: true,
         color: '#666666',
         size: 'sm',
@@ -996,14 +1010,14 @@ function createBusinessOwnerNotificationMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Duration',
+        text: labels.duration,
         color: '#aaaaaa',
         size: 'sm',
         flex: 0,
       },
       {
         type: 'text',
-        text: formatDuration(booking.duration),
+        text: formatDuration(booking.duration, locale),
         wrap: true,
         color: '#666666',
         size: 'sm',
@@ -1020,14 +1034,14 @@ function createBusinessOwnerNotificationMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Status',
+        text: labels.status,
         color: '#aaaaaa',
         size: 'sm',
         flex: 0,
       },
       {
         type: 'text',
-        text: booking.status === 'confirmed' ? 'Confirmed' : 'Pending Approval',
+        text: booking.status === 'confirmed' ? labels.confirmed : labels.pendingApproval,
         wrap: true,
         color: booking.status === 'confirmed' ? '#22c55e' : '#f59e0b',
         size: 'sm',
@@ -1039,7 +1053,7 @@ function createBusinessOwnerNotificationMessage(booking, business) {
 
   return {
     type: 'flex',
-    altText: 'New appointment booked!',
+    altText: labels.newAppointmentBooked,
     contents: {
       type: 'bubble',
       hero: business.logoUrl
@@ -1068,7 +1082,7 @@ function createBusinessOwnerNotificationMessage(booking, business) {
             height: 'sm',
             action: {
               type: 'uri',
-              label: 'View Appointment',
+              label: labels.viewAppointment,
               uri: viewBookingUrl,
             },
             color: '#f97316',
@@ -1083,9 +1097,10 @@ function createBusinessOwnerNotificationMessage(booking, business) {
  * Send notification to business owner about new booking
  * @param {object} booking - Full booking object with relations
  * @param {object} business - Full business object with owner info
+ * @param {string|null} locale - Optional locale override (from request); if null, uses customer.language from DB
  * @returns {Promise<object>} Result of send operation
  */
-export async function sendBusinessOwnerNotification(booking, business) {
+export async function sendBusinessOwnerNotification(booking, business, locale = null) {
   if (!business.owner?.lineUserId) {
     console.warn('[LINE] No business owner LINE user ID available');
     return { status: 'skipped', reason: 'no_owner_line_id' };
@@ -1102,7 +1117,8 @@ export async function sendBusinessOwnerNotification(booking, business) {
     ownerLineUserId: business.owner.lineUserId,
   });
 
-  const message = createBusinessOwnerNotificationMessage(booking, business);
+  const effectiveLocale = locale || booking.customer?.language || 'en';
+  const message = createBusinessOwnerNotificationMessage(booking, business, effectiveLocale);
 
   // Always use shared bot token for owner notifications (null = use shared bot)
   return await sendLineMessage(business.owner.lineUserId, [message], null);
@@ -1112,16 +1128,18 @@ export async function sendBusinessOwnerNotification(booking, business) {
  * Create a notification message for business owner about booking cancellation
  * @param {object} booking - Booking object with all details
  * @param {object} business - Business object with owner info
+ * @param {string} locale - Locale code ('en' or 'zh-tw')
  * @returns {object} LINE Flex Message
  */
-function createBusinessOwnerCancellationNotificationMessage(booking, business) {
+function createBusinessOwnerCancellationNotificationMessage(booking, business, locale = 'en') {
+  const labels = getFieldLabels(locale);
   const appUrl = process.env.NEXTAUTH_URL || 'https://unsatirized-defamingly-humberto.ngrok-free.dev';
   const viewBookingUrl = `${appUrl}/booking/${booking.id}`;
 
   const bodyContents = [
     {
       type: 'text',
-      text: 'Appointment Cancelled',
+      text: labels.appointmentCancelled,
       weight: 'bold',
       size: 'xl',
       color: '#ef4444',
@@ -1129,7 +1147,7 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business) {
     },
     {
       type: 'text',
-      text: `A customer has cancelled their appointment at ${business.businessName}`,
+      text: `${labels.customerCancelledAppointment} ${business.businessName}`,
       size: 'sm',
       color: '#666666',
       wrap: true,
@@ -1146,7 +1164,7 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Customer',
+        text: labels.customer,
         color: '#aaaaaa',
         size: 'sm',
         flex: 0,
@@ -1172,7 +1190,7 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business) {
       contents: [
         {
           type: 'text',
-          text: 'Service',
+          text: labels.service,
           color: '#aaaaaa',
           size: 'sm',
           flex: 0,
@@ -1198,7 +1216,7 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business) {
       contents: [
         {
           type: 'text',
-          text: 'Staff',
+          text: labels.staff,
           color: '#aaaaaa',
           size: 'sm',
           flex: 0,
@@ -1223,14 +1241,14 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business) {
     contents: [
       {
         type: 'text',
-        text: 'Date & Time',
+        text: labels.dateTime,
         color: '#aaaaaa',
         size: 'sm',
         flex: 0,
       },
       {
         type: 'text',
-        text: formatDateTime(booking.dateTime),
+        text: formatDateTime(booking.dateTime, locale),
         wrap: true,
         color: '#666666',
         size: 'sm',
@@ -1253,7 +1271,7 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business) {
       contents: [
         {
           type: 'text',
-          text: 'Reason',
+          text: labels.reason,
           color: '#aaaaaa',
           size: 'sm',
         },
@@ -1271,7 +1289,7 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business) {
 
   return {
     type: 'flex',
-    altText: 'Customer cancelled appointment',
+    altText: labels.appointmentCancelled,
     contents: {
       type: 'bubble',
       hero: business.logoUrl
@@ -1300,7 +1318,7 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business) {
             height: 'sm',
             action: {
               type: 'uri',
-              label: 'View Details',
+              label: labels.viewDetails,
               uri: viewBookingUrl,
             },
             color: '#ef4444',
@@ -1315,9 +1333,10 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business) {
  * Send notification to business owner about booking cancellation
  * @param {object} booking - Full booking object with relations
  * @param {object} business - Full business object with owner info
+ * @param {string|null} locale - Optional locale override (from request); if null, uses customer.language from DB
  * @returns {Promise<object>} Result of send operation
  */
-export async function sendBusinessOwnerCancellationNotification(booking, business) {
+export async function sendBusinessOwnerCancellationNotification(booking, business, locale = null) {
   if (!business.owner?.lineUserId) {
     console.warn('[LINE] No business owner LINE user ID available');
     return { status: 'skipped', reason: 'no_owner_line_id' };
@@ -1340,7 +1359,8 @@ export async function sendBusinessOwnerCancellationNotification(booking, busines
     ownerLineUserId: business.owner.lineUserId,
   });
 
-  const message = createBusinessOwnerCancellationNotificationMessage(booking, business);
+  const effectiveLocale = locale || booking.customer?.language || 'en';
+  const message = createBusinessOwnerCancellationNotificationMessage(booking, business, effectiveLocale);
 
   // Always use shared bot token for owner notifications (null = use shared bot)
   return await sendLineMessage(business.owner.lineUserId, [message], null);

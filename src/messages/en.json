@@ -818,6 +818,55 @@
           "gotItButton": "Got It!"
         }
       }
+    },
+    "notifications": {
+      "title": "Notification Settings",
+      "subtitle": "Manage LINE notifications for new appointments",
+      "status": {
+        "title": "Notification Status",
+        "enable": "Enable Appointment Notifications",
+        "enableDescription": "Receive LINE messages when customers book appointments"
+      },
+      "notificationsDisabled": {
+        "title": "Notifications Disabled",
+        "description": "You won't receive LINE messages for new bookings. You can re-enable them anytime."
+      },
+      "types": {
+        "title": "Notification Types",
+        "newBookings": {
+          "title": "New Bookings",
+          "description": "Get notified when a customer creates a new appointment"
+        },
+        "cancellations": {
+          "title": "Booking Cancellations",
+          "description": "Get notified when customers cancel their appointments"
+        }
+      },
+      "bot": {
+        "title": "Kitsune Bot Setup",
+        "description": "Add the Kitsune bot to receive notifications on LINE",
+        "qrCode": {
+          "scanToAdd": "Scan to add friend",
+          "botId": "Bot ID: {botId}"
+        },
+        "addButton": "Add Kitsune Bot on LINE",
+        "setup": {
+          "title": "How to Setup:",
+          "step1": "Scan the QR code above with your LINE app or click the \"Add Friend\" button",
+          "step2": "Add Kitsune as a friend on LINE",
+          "step3": "You'll receive appointment notifications in your LINE chat",
+          "step4": "Click \"View Appointment\" in the notification to manage bookings on mobile"
+        },
+        "important": {
+          "title": "Important",
+          "description": "Make sure you're using the same LINE account you used to log in to this dashboard. Notifications will only work if the bot can reach your LINE account."
+        }
+      },
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "success": "Notification settings saved successfully",
+      "error": "Failed to save notification settings",
+      "qrError": "Failed to generate QR code"
     }
   },
   "errors": {

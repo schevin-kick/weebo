@@ -39,6 +39,52 @@ const LOCALIZED_TEMPLATES = {
 };
 
 /**
+ * Localized field labels for LINE message cards
+ */
+const FIELD_LABELS = {
+  en: {
+    service: 'Service',
+    staff: 'Staff',
+    dateTime: 'Date & Time',
+    duration: 'Duration',
+    customer: 'Customer',
+    status: 'Status',
+    reason: 'Reason',
+    viewMyBookings: 'View My Bookings',
+    bookAgain: 'Book Again',
+    viewAppointment: 'View Appointment',
+    viewDetails: 'View Details',
+    questionsContact: 'Questions? Contact us:',
+    newAppointmentBooked: 'New Appointment Booked!',
+    appointmentCancelled: 'Appointment Cancelled',
+    newAppointmentScheduled: 'A new appointment has been scheduled for',
+    customerCancelledAppointment: 'A customer has cancelled their appointment at',
+    confirmed: 'Confirmed',
+    pendingApproval: 'Pending Approval',
+  },
+  'zh-tw': {
+    service: '服務',
+    staff: '員工',
+    dateTime: '日期與時間',
+    duration: '時長',
+    customer: '顧客',
+    status: '狀態',
+    reason: '原因',
+    viewMyBookings: '查看我的預約',
+    bookAgain: '再次預約',
+    viewAppointment: '查看預約',
+    viewDetails: '查看詳情',
+    questionsContact: '有問題嗎？聯絡我們：',
+    newAppointmentBooked: '新預約已建立！',
+    appointmentCancelled: '預約已取消',
+    newAppointmentScheduled: '已為以下商家安排新預約',
+    customerCancelledAppointment: '顧客已取消在以下商家的預約',
+    confirmed: '已確認',
+    pendingApproval: '待審核',
+  },
+};
+
+/**
  * Default templates (English) - kept for backward compatibility
  */
 export const DEFAULT_TEMPLATES = LOCALIZED_TEMPLATES.en;
@@ -50,6 +96,15 @@ export const DEFAULT_TEMPLATES = LOCALIZED_TEMPLATES.en;
  */
 export function getLocalizedTemplates(locale = 'en') {
   return LOCALIZED_TEMPLATES[locale] || LOCALIZED_TEMPLATES.en;
+}
+
+/**
+ * Get localized field labels for LINE message cards
+ * @param {string} locale - Locale code ('en' or 'zh-tw')
+ * @returns {object} Localized field labels
+ */
+export function getFieldLabels(locale = 'en') {
+  return FIELD_LABELS[locale] || FIELD_LABELS.en;
 }
 
 /**
@@ -167,6 +222,7 @@ export default {
   DEFAULT_TEMPLATES,
   LOCALIZED_TEMPLATES,
   getLocalizedTemplates,
+  getFieldLabels,
   getMessageTemplate,
   replaceTemplateVariables,
   getAvailableVariables,

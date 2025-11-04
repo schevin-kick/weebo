@@ -818,6 +818,55 @@
           "gotItButton": "知道了！"
         }
       }
+    },
+    "notifications": {
+      "title": "通知設定",
+      "subtitle": "管理新預約的 LINE 通知",
+      "status": {
+        "title": "通知狀態",
+        "enable": "啟用預約通知",
+        "enableDescription": "當客戶預約時接收 LINE 訊息"
+      },
+      "notificationsDisabled": {
+        "title": "通知已停用",
+        "description": "您將不會收到新預約的 LINE 訊息。您可以隨時重新啟用。"
+      },
+      "types": {
+        "title": "通知類型",
+        "newBookings": {
+          "title": "新預約",
+          "description": "當客戶建立新預約時收到通知"
+        },
+        "cancellations": {
+          "title": "預約取消",
+          "description": "當客戶取消預約時收到通知"
+        }
+      },
+      "bot": {
+        "title": "Kitsune Bot 設定",
+        "description": "新增 Kitsune bot 以在 LINE 上接收通知",
+        "qrCode": {
+          "scanToAdd": "掃描以加入好友",
+          "botId": "Bot ID：{botId}"
+        },
+        "addButton": "在 LINE 上加入 Kitsune Bot",
+        "setup": {
+          "title": "設定方法：",
+          "step1": "使用您的 LINE 應用程式掃描上方的 QR code，或點擊「加入好友」按鈕",
+          "step2": "在 LINE 上將 Kitsune 加為好友",
+          "step3": "您將在 LINE 聊天中收到預約通知",
+          "step4": "點擊通知中的「查看預約」以在手機上管理預約"
+        },
+        "important": {
+          "title": "重要提醒",
+          "description": "請確保您使用的是登入此儀表板時使用的同一個 LINE 帳號。只有當 bot 可以聯繫到您的 LINE 帳號時，通知才會正常運作。"
+        }
+      },
+      "save": "儲存變更",
+      "saving": "儲存中...",
+      "success": "通知設定已成功儲存",
+      "error": "無法儲存通知設定",
+      "qrError": "無法產生 QR code"
     }
   },
   "errors": {

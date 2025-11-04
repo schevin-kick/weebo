@@ -8,6 +8,7 @@
 import { useState, useEffect, useRef } from 'react';
 import QRCodeLib from 'qrcode';
 import { Bell, CheckCircle, AlertCircle, ExternalLink, Save } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useBusiness } from '@/hooks/useDashboardData';
 import { useToast } from '@/contexts/ToastContext';
 import { useNotificationBadge } from '@/hooks/useNotificationBadge';
@@ -17,6 +18,7 @@ const KITSUNE_BOT_ID = '@470ejmoi';
 const KITSUNE_BOT_URL = `https://line.me/R/ti/p/${KITSUNE_BOT_ID}`;
 
 export default function NotificationsView({ businessId }) {
+  const t = useTranslations('dashboard.notifications');
   const toast = useToast();
   const canvasRef = useRef(null);
   const { business, isLoading, mutate } = useBusiness(businessId);
@@ -69,7 +71,7 @@ export default function NotificationsView({ businessId }) {
       setQrDataUrl(dataUrl);
     } catch (error) {
       console.error('Error generating QR code:', error);
-      toast.error('Failed to generate QR code');
+      toast.error(t('qrError'));
     }
   }
 
@@ -89,11 +91,11 @@ export default function NotificationsView({ businessId }) {
         throw new Error('Failed to save notification settings');
       }
 
-      toast.success('Notification settings saved successfully');
+      toast.success(t('success'));
       mutate();
     } catch (error) {
       console.error('Save error:', error);
-      toast.error('Failed to save notification settings');
+      toast.error(t('error'));
     } finally {
       setIsSaving(false);
     }
@@ -105,8 +107,8 @@ export default function NotificationsView({ businessId }) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Notification Settings</h1>
-          <p className="text-slate-600">Manage LINE notifications for new appointments</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <div className="space-y-4">
           <Skeleton className="h-32" rounded="xl" />
@@ -121,8 +123,8 @@ export default function NotificationsView({ businessId }) {
       {/* Page Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Notification Settings</h1>
-          <p className="text-slate-600">Manage LINE notifications for new appointments</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         {hasChanges && (
           <button
@@ -131,7 +133,7 @@ export default function NotificationsView({ businessId }) {
             className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save className="w-4 h-4" />
-            {isSaving ? 'Saving...' : 'Save Changes'}
+            {isSaving ? t('saving') : t('save')}
           </button>
         )}
       </div>
@@ -143,14 +145,14 @@ export default function NotificationsView({ businessId }) {
           <div className="bg-white rounded-xl border border-slate-200 p-6">
             <div className="flex items-center gap-2 mb-4">
               <Bell className="w-5 h-5 text-orange-500" />
-              <h2 className="text-lg font-semibold text-slate-900">Notification Status</h2>
+              <h2 className="text-lg font-semibold text-slate-900">{t('status.title')}</h2>
             </div>
 
             <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
               <div>
-                <div className="font-medium text-slate-900">Enable Appointment Notifications</div>
+                <div className="font-medium text-slate-900">{t('status.enable')}</div>
                 <div className="text-sm text-slate-600 mt-1">
-                  Receive LINE messages when customers book appointments
+                  {t('status.enableDescription')}
                 </div>
               </div>
               <button
@@ -170,9 +172,9 @@ export default function NotificationsView({ businessId }) {
                 <div className="flex items-start gap-2">
                   <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-amber-800">
-                    <p className="font-medium">Notifications Disabled</p>
+                    <p className="font-medium">{t('notificationsDisabled.title')}</p>
                     <p className="mt-1">
-                      You won't receive LINE messages for new bookings. You can re-enable them anytime.
+                      {t('notificationsDisabled.description')}
                     </p>
                   </div>
                 </div>
@@ -182,7 +184,7 @@ export default function NotificationsView({ businessId }) {
 
           {/* Notification Types */}
           <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">Notification Types</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">{t('types.title')}</h2>
 
             <div className="space-y-3">
               <label className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg">
@@ -193,9 +195,9 @@ export default function NotificationsView({ businessId }) {
                   className="mt-1 w-4 h-4 text-orange-500 rounded"
                 />
                 <div className="flex-1">
-                  <div className="font-medium text-slate-900">New Bookings</div>
+                  <div className="font-medium text-slate-900">{t('types.newBookings.title')}</div>
                   <div className="text-sm text-slate-600 mt-1">
-                    Get notified when a customer creates a new appointment
+                    {t('types.newBookings.description')}
                   </div>
                 </div>
               </label>
@@ -208,9 +210,9 @@ export default function NotificationsView({ businessId }) {
                   className="mt-1 w-4 h-4 text-orange-500 rounded"
                 />
                 <div className="flex-1">
-                  <div className="font-medium text-slate-900">Booking Cancellations</div>
+                  <div className="font-medium text-slate-900">{t('types.cancellations.title')}</div>
                   <div className="text-sm text-slate-600 mt-1">
-                    Get notified when customers cancel their appointments
+                    {t('types.cancellations.description')}
                   </div>
                 </div>
               </label>
@@ -224,9 +226,9 @@ export default function NotificationsView({ businessId }) {
           {/* Kitsune Bot Connection */}
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div className="p-6 border-b border-slate-200">
-              <h2 className="text-lg font-semibold text-slate-900 mb-1">Kitsune Bot Setup</h2>
+              <h2 className="text-lg font-semibold text-slate-900 mb-1">{t('bot.title')}</h2>
               <p className="text-sm text-slate-600">
-                Add the Kitsune bot to receive notifications on LINE
+                {t('bot.description')}
               </p>
             </div>
 
@@ -237,8 +239,8 @@ export default function NotificationsView({ businessId }) {
                   <canvas ref={canvasRef} className="max-w-full" />
                 </div>
                 <div className="mt-4 text-center">
-                  <p className="text-sm font-medium text-slate-700 mb-1">Scan to add friend</p>
-                  <p className="text-xs text-slate-500">Bot ID: {KITSUNE_BOT_ID}</p>
+                  <p className="text-sm font-medium text-slate-700 mb-1">{t('bot.qrCode.scanToAdd')}</p>
+                  <p className="text-xs text-slate-500">{t('bot.qrCode.botId', { botId: KITSUNE_BOT_ID })}</p>
                 </div>
               </div>
 
@@ -250,28 +252,28 @@ export default function NotificationsView({ businessId }) {
                 className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-[#06C755] text-white rounded-lg hover:bg-[#05B04B] transition-colors font-medium"
               >
                 <ExternalLink className="w-4 h-4" />
-                Add Kitsune Bot on LINE
+                {t('bot.addButton')}
               </a>
 
               {/* Instructions */}
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="text-sm font-semibold text-blue-900 mb-2">How to Setup:</h3>
+                <h3 className="text-sm font-semibold text-blue-900 mb-2">{t('bot.setup.title')}</h3>
                 <ol className="space-y-2 text-sm text-blue-800">
                   <li className="flex items-start gap-2">
                     <span className="font-medium mt-0.5">1.</span>
-                    <span>Scan the QR code above with your LINE app or click the "Add Friend" button</span>
+                    <span>{t('bot.setup.step1')}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="font-medium mt-0.5">2.</span>
-                    <span>Add Kitsune as a friend on LINE</span>
+                    <span>{t('bot.setup.step2')}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="font-medium mt-0.5">3.</span>
-                    <span>You'll receive appointment notifications in your LINE chat</span>
+                    <span>{t('bot.setup.step3')}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="font-medium mt-0.5">4.</span>
-                    <span>Click "View Appointment" in the notification to manage bookings on mobile</span>
+                    <span>{t('bot.setup.step4')}</span>
                   </li>
                 </ol>
               </div>
@@ -281,10 +283,9 @@ export default function NotificationsView({ businessId }) {
                 <div className="flex items-start gap-2">
                   <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-amber-800">
-                    <p className="font-medium">Important</p>
+                    <p className="font-medium">{t('bot.important.title')}</p>
                     <p className="mt-1">
-                      Make sure you're using the same LINE account you used to log in to this dashboard.
-                      Notifications will only work if the bot can reach your LINE account.
+                      {t('bot.important.description')}
                     </p>
                   </div>
                 </div>
@@ -303,7 +304,7 @@ export default function NotificationsView({ businessId }) {
             className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
           >
             <Save className="w-5 h-5" />
-            {isSaving ? 'Saving...' : 'Save Changes'}
+            {isSaving ? t('saving') : t('save')}
           </button>
         </div>
       )}
