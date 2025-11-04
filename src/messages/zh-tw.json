@@ -325,6 +325,14 @@
         }
       },
       "copyright": "© 2025 Kitsune. 版權所有。"
+    },
+    "metadata": {
+      "title": "Kitsune - LINE 預約系統 | 專業預約排程",
+      "description": "專為亞洲打造的智能預約平台。連接 9500 萬+ LINE 用戶，自動化排程，拓展您的業務。14 天免費試用，無需信用卡。",
+      "keywords": "LINE 預約系統, 預約排程, 亞洲預約軟體, LINE 整合, 商業排程, 台灣預約, 日本預約, QR Code 預約",
+      "ogTitle": "Kitsune - 透過 LINE 驅動的預約系統轉變您的業務",
+      "ogDescription": "在 LINE 上原生運作的專業預約系統。5 分鐘設定，即時數據分析，24/7 全天候服務。立即開始免費試用。",
+      "ogImageAlt": "Kitsune 預約系統介面展示 LINE 整合和數據分析儀表板"
     }
   },
   "contact": {
