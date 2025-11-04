@@ -5,6 +5,7 @@ import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/contexts/ToastContext';
 import { optimizeImage, validateImageFile } from '@/lib/imageOptimizer';
 import { fetchWithCSRF } from '@/hooks/useCSRF';
+import { useTranslations } from 'next-intl';
 
 /**
  * Generic image upload component for logos, banners, etc.
@@ -21,6 +22,7 @@ export default function ImageUpload({
   const [uploading, setUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const toast = useToast();
+  const t = useTranslations('shared.imageUpload');
 
   const aspectRatioClasses = {
     square: 'aspect-square',
@@ -170,7 +172,7 @@ export default function ImageUpload({
             {uploading ? (
               <>
                 <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-                <p className="text-sm text-slate-600">Uploading...</p>
+                <p className="text-sm text-slate-600">{t('uploading')}</p>
               </>
             ) : (
               <>
@@ -178,10 +180,10 @@ export default function ImageUpload({
                   <ImageIcon className="w-8 h-8 text-orange-600" />
                 </div>
                 <p className="text-sm font-medium text-slate-700 mb-1">
-                  Click or drag to upload
+                  {t('clickOrDrag')}
                 </p>
                 <p className="text-xs text-slate-500">
-                  JPG, PNG, WebP or GIF (max {maxSizeMB}MB)
+                  {t('fileTypes', { maxSizeMB })}
                 </p>
               </>
             )}
@@ -198,7 +200,7 @@ export default function ImageUpload({
       </div>
 
       <p className="text-xs text-slate-500 mt-2">
-        Images are automatically optimized and converted to WebP format
+        {t('optimizationNote')}
       </p>
     </div>
   );

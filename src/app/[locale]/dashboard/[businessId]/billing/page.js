@@ -216,9 +216,12 @@ export default function BillingPage() {
                   {t('subscriptionStatus.trialing.status')}
                 </span>
               </div>
-              <p className="text-slate-600 mb-4" dangerouslySetInnerHTML={{
-                __html: t('subscriptionStatus.trialing.daysRemaining', { count: subscription.daysLeft })
-              }} />
+              <p className="text-slate-600 mb-4">
+                {t.rich('subscriptionStatus.trialing.daysRemaining', {
+                  count: subscription.daysLeft,
+                  strong: (chunks) => <strong>{chunks}</strong>
+                })}
+              </p>
               <button
                 onClick={handleSubscribe}
                 disabled={actionLoading}
@@ -227,7 +230,7 @@ export default function BillingPage() {
                 {actionLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    {t('plan.loading')}
+                    {t('loading')}
                   </>
                 ) : (
                   <>{t('subscriptionStatus.trialing.subscribeNow')}</>

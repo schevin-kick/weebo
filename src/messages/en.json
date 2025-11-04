@@ -409,7 +409,8 @@
         "billing": "Billing",
         "messaging": "Messaging",
         "notifications": "Notifications",
-        "holidayHours": "Holiday Hours"
+        "holidayHours": "Holiday Hours",
+        "contact": "Contact"
       }
     },
     "header": {
@@ -1123,15 +1124,18 @@
         "required": "Required",
         "services": {
           "name": "Services Page",
-          "description": "Display your services for customers to choose from"
+          "description": "Display your services for customers to choose from",
+          "defaultTitle": "Select Service"
         },
         "staff": {
           "name": "Staff Selection",
-          "description": "Let customers choose their preferred staff member"
+          "description": "Let customers choose their preferred staff member",
+          "defaultTitle": "Select Staff"
         },
         "dateTime": {
           "name": "Date & Time Picker",
-          "description": "Date and time selection for appointments"
+          "description": "Date and time selection for appointments",
+          "defaultTitle": "Choose Date & Time"
         },
         "infoTitle": "About Preset Pages",
         "infoDescription": "Date & Time is required for all bookings and will always appear last. Other preset pages can be positioned anywhere in your flow by reordering them in the page list."
@@ -1316,6 +1320,29 @@
       "pendingBadge": "{count} pending bookings",
       "manageButton": "Manage",
       "downloadQR": "Download QR Code"
+    },
+    "wizard": {
+      "stepper": {
+        "stepProgress": "Step {current} of {total}",
+        "steps": {
+          "businessInfo": {
+            "title": "Business Info",
+            "description": "Name & hours"
+          },
+          "services": {
+            "title": "Services",
+            "description": "Add services"
+          },
+          "staff": {
+            "title": "Staff",
+            "description": "Add team members"
+          },
+          "pages": {
+            "title": "Pages",
+            "description": "Build booking flow"
+          }
+        }
+      }
     }
   },
   "modals": {
@@ -1418,6 +1445,12 @@
       "enterMinutes": "Enter minutes",
       "minutes": "minutes",
       "minSuffix": "min"
+    },
+    "imageUpload": {
+      "uploading": "Uploading...",
+      "clickOrDrag": "Click or drag to upload",
+      "fileTypes": "JPG, PNG, WebP or GIF (max {maxSizeMB}MB)",
+      "optimizationNote": "Images are automatically optimized and converted to WebP format"
     }
   },
   "legal": {

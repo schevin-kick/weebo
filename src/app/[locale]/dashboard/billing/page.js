@@ -18,12 +18,13 @@ import {
   LogOut,
 } from 'lucide-react';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function BillingPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations('billing');
   const { subscription, loading: subscriptionLoading, refetch } = useSubscription();
   const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -123,19 +124,19 @@ export default function BillingPage() {
               className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
+              {t('backToDashboard')}
             </button>
             <a
               href="/api/auth/logout"
               className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors text-sm"
             >
               <LogOut className="w-4 h-4" />
-              Sign out
+              {t('signOut')}
             </a>
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Billing</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
           <p className="text-slate-600">
-            Manage your subscription and payment information
+            {t('subtitle')}
           </p>
         </div>
 
@@ -146,10 +147,10 @@ export default function BillingPage() {
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-semibold text-green-900">
-                  Subscription Activated!
+                  {t('messages.subscriptionActivated')}
                 </h3>
                 <p className="text-sm text-green-700 mt-1">
-                  Thank you for subscribing. Your subscription is now active.
+                  {t('messages.thankYouSubscribing')}
                 </p>
               </div>
             </div>
@@ -163,10 +164,10 @@ export default function BillingPage() {
               <XCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-semibold text-yellow-900">
-                  Checkout Canceled
+                  {t('messages.checkoutCanceled')}
                 </h3>
                 <p className="text-sm text-yellow-700 mt-1">
-                  You can subscribe anytime by clicking the button below.
+                  {t('messages.canSubscribeAnytime')}
                 </p>
               </div>
             </div>
@@ -179,7 +180,7 @@ export default function BillingPage() {
             <div className="flex items-start gap-3">
               <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-red-900">Error</h3>
+                <h3 className="font-semibold text-red-900">{t('messages.error')}</h3>
                 <p className="text-sm text-red-700 mt-1">{error}</p>
               </div>
             </div>
@@ -190,19 +191,19 @@ export default function BillingPage() {
         <div className="bg-white rounded-lg border border-slate-200 p-6 mb-6">
           <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
             <CreditCard className="w-6 h-6 text-orange-600" />
-            Subscription Status
+            {t('subscriptionStatus.title')}
           </h2>
 
           {subscription?.status === 'pre_trial' && (
             <div>
               <p className="text-slate-600 mb-4">
-                Create your first business to start your free 14-day trial.
+                {t('subscriptionStatus.preTrial.description', { days: config?.trialDays || 14 })}
               </p>
               <a
                 href={`/${locale}/setup`}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
               >
-                Create Business
+                {t('subscriptionStatus.preTrial.createBusiness')}
               </a>
             </div>
           )}
@@ -212,15 +213,14 @@ export default function BillingPage() {
               <div className="flex items-center gap-2 mb-2">
                 <Clock className="w-5 h-5 text-blue-600" />
                 <span className="font-semibold text-blue-900">
-                  Free Trial Active
+                  {t('subscriptionStatus.trialing.status')}
                 </span>
               </div>
               <p className="text-slate-600 mb-4">
-                You have{' '}
-                <span className="font-semibold">
-                  {subscription.daysLeft} {subscription.daysLeft === 1 ? 'day' : 'days'}
-                </span>{' '}
-                remaining in your free trial.
+                {t.rich('subscriptionStatus.trialing.daysRemaining', {
+                  count: subscription.daysLeft,
+                  strong: (chunks) => <strong>{chunks}</strong>
+                })}
               </p>
               <button
                 onClick={handleSubscribe}
@@ -230,10 +230,10 @@ export default function BillingPage() {
                 {actionLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Loading...
+                    {t('loading')}
                   </>
                 ) : (
-                  <>Subscribe Now</>
+                  <>{t('subscriptionStatus.trialing.subscribeNow')}</>
                 )}
               </button>
             </div>
@@ -244,11 +244,11 @@ export default function BillingPage() {
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 className="w-5 h-5 text-green-600" />
                 <span className="font-semibold text-green-900">
-                  Subscription Active
+                  {t('subscriptionStatus.active.status')}
                 </span>
               </div>
               <p className="text-slate-600 mb-4">
-                Your subscription is active and in good standing.
+                {t('subscriptionStatus.active.description')}
               </p>
               <button
                 onClick={handleManageSubscription}
@@ -258,12 +258,12 @@ export default function BillingPage() {
                 {actionLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Loading...
+                    {t('loading')}
                   </>
                 ) : (
                   <>
                     <ExternalLink className="w-4 h-4" />
-                    Manage Subscription
+                    {t('subscriptionStatus.active.manageSubscription')}
                   </>
                 )}
               </button>
@@ -277,16 +277,16 @@ export default function BillingPage() {
               <div className="flex items-center gap-2 mb-2">
                 <XCircle className="w-5 h-5 text-red-600" />
                 <span className="font-semibold text-red-900">
-                  Subscription Inactive
+                  {t('subscriptionStatus.inactive.status')}
                 </span>
               </div>
               <p className="text-slate-600 mb-4">
                 {subscription.status === 'trial_expired' &&
-                  'Your free trial has ended.'}
-                {subscription.status === 'past_due' && 'Your payment is past due.'}
+                  t('subscriptionStatus.inactive.trialExpired')}
+                {subscription.status === 'past_due' && t('subscriptionStatus.inactive.pastDue')}
                 {subscription.status === 'canceled' &&
-                  'Your subscription has been canceled.'}
-                {subscription.status === 'unpaid' && 'Your subscription is unpaid.'}
+                  t('subscriptionStatus.inactive.canceled')}
+                {subscription.status === 'unpaid' && t('subscriptionStatus.inactive.unpaid')}
               </p>
               <div className="flex gap-3">
                 {subscription.status === 'past_due' ? (
@@ -298,10 +298,10 @@ export default function BillingPage() {
                     {actionLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Loading...
+                        {t('loading')}
                       </>
                     ) : (
-                      <>Update Payment Method</>
+                      <>{t('subscriptionStatus.inactive.updatePaymentMethod')}</>
                     )}
                   </button>
                 ) : (
@@ -313,10 +313,10 @@ export default function BillingPage() {
                     {actionLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Loading...
+                        {t('loading')}
                       </>
                     ) : (
-                      <>Subscribe Now</>
+                      <>{t('subscriptionStatus.inactive.subscribeNow')}</>
                     )}
                   </button>
                 )}

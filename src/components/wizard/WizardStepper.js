@@ -2,15 +2,33 @@
 
 import { Check } from 'lucide-react';
 import { Fragment } from 'react';
-
-const steps = [
-  { number: 1, title: 'Business Info', description: 'Name & hours' },
-  { number: 2, title: 'Services', description: 'Add services' },
-  { number: 3, title: 'Staff', description: 'Add team members' },
-  { number: 4, title: 'Pages', description: 'Build booking flow' },
-];
+import { useTranslations } from 'next-intl';
 
 export default function WizardStepper({ currentStep }) {
+  const t = useTranslations('setup.wizard.stepper');
+
+  const steps = [
+    {
+      number: 1,
+      title: t('steps.businessInfo.title'),
+      description: t('steps.businessInfo.description')
+    },
+    {
+      number: 2,
+      title: t('steps.services.title'),
+      description: t('steps.services.description')
+    },
+    {
+      number: 3,
+      title: t('steps.staff.title'),
+      description: t('steps.staff.description')
+    },
+    {
+      number: 4,
+      title: t('steps.pages.title'),
+      description: t('steps.pages.description')
+    },
+  ];
   return (
     <div className="w-full py-8">
       <div className="max-w-3xl mx-auto px-4">
@@ -18,7 +36,7 @@ export default function WizardStepper({ currentStep }) {
         <div className="block md:hidden">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-slate-600">
-              Step {currentStep} of 4
+              {t('stepProgress', { current: currentStep, total: 4 })}
             </span>
             <span className="text-sm text-slate-500">{steps[currentStep - 1].title}</span>
           </div>
@@ -77,13 +95,13 @@ export default function WizardStepper({ currentStep }) {
             {steps.map((step) => (
               <div key={step.number} className="text-center" style={{ width: '48px' }}>
                 <div
-                  className={`text-sm font-semibold ${
+                  className={`text-sm font-semibold whitespace-nowrap ${
                     currentStep >= step.number ? 'text-orange-600' : 'text-slate-400'
                   }`}
                 >
                   {step.title}
                 </div>
-                <div className="text-xs text-slate-500 mt-0.5">{step.description}</div>
+                <div className="text-xs text-slate-500 mt-0.5 whitespace-nowrap">{step.description}</div>
               </div>
             ))}
           </div>

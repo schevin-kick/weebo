@@ -22,6 +22,7 @@ import {
   CreditCard,
   Bell,
   X,
+  Mail,
 } from 'lucide-react';
 
 export default function Sidebar({ businessId, isOpen, onClose }) {
@@ -78,6 +79,12 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
       name: t('navigation.holidayHours'),
       href: '/holiday-hours',
       icon: CalendarX,
+    },
+    {
+      name: t('navigation.contact'),
+      href: '/contact',
+      icon: Mail,
+      external: true, // Mark as external route (not under dashboard)
     },
   ];
   const pathname = usePathname();
@@ -151,8 +158,11 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
               (item.name === 'Messaging' && showMessagingBadge) ||
               (item.name === 'Notifications' && showNotificationsBadge);
 
-            // All routes are under the businessId, including billing
-            const href = `/${locale}/dashboard/${businessId}${item.href}`;
+            // External routes (like /contact) don't include dashboard/businessId
+            // All other routes are under the businessId
+            const href = item.external
+              ? `/${locale}${item.href}`
+              : `/${locale}/dashboard/${businessId}${item.href}`;
 
             return (
               <Link

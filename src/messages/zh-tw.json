@@ -409,7 +409,8 @@
         "billing": "帳單",
         "messaging": "訊息",
         "notifications": "通知",
-        "holidayHours": "營業時間"
+        "holidayHours": "營業時間",
+        "contact": "聯絡我們"
       }
     },
     "header": {
@@ -1123,15 +1124,18 @@
         "required": "必填",
         "services": {
           "name": "服務頁面",
-          "description": "顯示您的服務供客戶選擇"
+          "description": "顯示您的服務供客戶選擇",
+          "defaultTitle": "選擇服務"
         },
         "staff": {
           "name": "選擇員工",
-          "description": "讓客戶選擇他們喜歡的員工"
+          "description": "讓客戶選擇他們喜歡的員工",
+          "defaultTitle": "選擇員工"
         },
         "dateTime": {
           "name": "日期與時間選擇器",
-          "description": "預約的日期和時間選擇"
+          "description": "預約的日期和時間選擇",
+          "defaultTitle": "選擇日期與時間"
         },
         "infoTitle": "關於預設頁面",
         "infoDescription": "日期與時間是所有預約的必填項目，將始終顯示在最後。其他預設頁面可以透過在頁面列表中重新排序來放置在流程中的任何位置。"
@@ -1316,6 +1320,29 @@
       "pendingBadge": "{count} 個待處理預約",
       "manageButton": "管理",
       "downloadQR": "下載 QR Code"
+    },
+    "wizard": {
+      "stepper": {
+        "stepProgress": "步驟 {current} / {total}",
+        "steps": {
+          "businessInfo": {
+            "title": "企業資訊",
+            "description": "名稱與營業時間"
+          },
+          "services": {
+            "title": "服務項目",
+            "description": "新增服務"
+          },
+          "staff": {
+            "title": "員工管理",
+            "description": "新增團隊成員"
+          },
+          "pages": {
+            "title": "頁面設定",
+            "description": "建立預約流程"
+          }
+        }
+      }
     }
   },
   "modals": {
@@ -1418,6 +1445,12 @@
       "enterMinutes": "輸入分鐘數",
       "minutes": "分鐘",
       "minSuffix": "分鐘"
+    },
+    "imageUpload": {
+      "uploading": "上傳中...",
+      "clickOrDrag": "點擊或拖曳以上傳",
+      "fileTypes": "JPG、PNG、WebP 或 GIF（最大 {maxSizeMB}MB）",
+      "optimizationNote": "圖片將自動優化並轉換為 WebP 格式"
     }
   },
   "legal": {

@@ -52,6 +52,7 @@ function SortablePageCard({
   onRequestDelete,
 }) {
   const t = useTranslations('settings.pageBuilder.pageManager');
+  const tPreset = useTranslations('settings.pageBuilder.presetPages');
 
   const isDateTimePage = page.type === 'preset-datetime';
   const isDraggable = !isDateTimePage;
@@ -80,8 +81,23 @@ function SortablePageCard({
     return type;
   };
 
+  // Get localized page title for preset pages
+  const getLocalizedTitle = (page) => {
+    if (page.type === 'preset-services') {
+      return tPreset('services.defaultTitle');
+    }
+    if (page.type === 'preset-staff') {
+      return tPreset('staff.defaultTitle');
+    }
+    if (page.type === 'preset-datetime') {
+      return tPreset('dateTime.defaultTitle');
+    }
+    return page.title;
+  };
+
   const label = getPageTypeLabel(page.type);
   const isPreset = page.type.startsWith('preset-');
+  const displayTitle = getLocalizedTitle(page);
 
   return (
     <div
@@ -113,7 +129,7 @@ function SortablePageCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <div className="font-semibold text-slate-900 text-sm truncate">
-              {page.title}
+              {displayTitle}
             </div>
             {isDateTimePage && (
               <span className="flex-shrink-0 px-1.5 py-0.5 bg-orange-100 text-orange-700 text-[10px] font-semibold rounded">
@@ -185,6 +201,7 @@ function SortablePageCard({
 
 export default function PageManagerSidebar() {
   const t = useTranslations('settings.pageBuilder.pageManager');
+  const tPreset = useTranslations('settings.pageBuilder.presetPages');
   const pages = useSetupWizardStore((state) => state.pages);
   const currentEditingPageId = useSetupWizardStore((state) => state.currentEditingPageId);
   const addPage = useSetupWizardStore((state) => state.addPage);
@@ -205,6 +222,20 @@ export default function PageManagerSidebar() {
   const sortedPages = [...pages].sort((a, b) => a.order - b.order);
   const pageIds = sortedPages.map((page) => page.id);
   const activePage = sortedPages.find((page) => page.id === activeId);
+
+  // Helper function to get localized page title for preset pages
+  const getLocalizedTitle = (page) => {
+    if (page.type === 'preset-services') {
+      return tPreset('services.defaultTitle');
+    }
+    if (page.type === 'preset-staff') {
+      return tPreset('staff.defaultTitle');
+    }
+    if (page.type === 'preset-datetime') {
+      return tPreset('dateTime.defaultTitle');
+    }
+    return page.title;
+  };
 
   // Setup dnd-kit sensors for drag interactions
   const sensors = useSensors(
@@ -385,7 +416,7 @@ export default function PageManagerSidebar() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-slate-900 text-sm truncate">
-                    {activePage.title}
+                    {getLocalizedTitle(activePage)}
                   </div>
                   <div className="text-xs text-slate-500 truncate">
                     {activePage.type.startsWith('preset-')
