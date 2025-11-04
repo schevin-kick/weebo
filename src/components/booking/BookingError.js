@@ -1,8 +1,11 @@
 'use client';
 
 import { AlertCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function BookingError() {
+  const t = useTranslations('booking.errors');
+  const tSuccess = useTranslations('booking.success');
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 pattern-sakura-paws flex items-center justify-center p-4">
       <div className="max-w-md w-full">
@@ -24,19 +27,17 @@ export default function BookingError() {
           {/* Error Message */}
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-slate-900 mb-3">
-              No Configuration Found
+              {t('configurationError')}
             </h1>
             <p className="text-slate-600 leading-relaxed">
-              It looks like the booking system hasn't been set up yet. Please contact the business
-              owner to configure the booking workflow.
+              {t('configurationErrorMessage')}
             </p>
           </div>
 
           {/* Info Box */}
           <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
             <p className="text-sm text-slate-700 text-center">
-              If you're the owner, please complete the setup wizard to enable bookings for your
-              customers.
+              {t('ownerSetupMessage')}
             </p>
           </div>
         </div>
@@ -44,7 +45,7 @@ export default function BookingError() {
         {/* Footer Note */}
         <div className="text-center mt-6">
           <p className="text-sm text-slate-600">
-            Powered by <span className="font-semibold text-orange-600">Kitsune</span>
+            {tSuccess('footer')}
           </p>
         </div>
       </div>

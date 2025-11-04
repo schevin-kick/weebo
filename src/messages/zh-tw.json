@@ -211,6 +211,32 @@
     }
   },
   "booking": {
+    "loading": {
+      "loadingSystem": "載入預約系統中...",
+      "initializingLine": "初始化 LINE 應用程式中...",
+      "loadingBusiness": "載入企業資訊中..."
+    },
+    "errors": {
+      "lineInitFailed": "無法初始化 LINE 應用程式",
+      "businessNotFound": "找不到企業或企業已停用",
+      "bookingFailed": "建立預約失敗：{message}",
+      "configurationError": "找不到設定",
+      "configurationErrorMessage": "看起來預約系統尚未設定。請聯絡企業負責人設定預約流程。",
+      "ownerSetupMessage": "如果您是負責人，請完成設定精靈以啟用客戶預約功能。"
+    },
+    "layout": {
+      "title": "預約您的服務"
+    },
+    "stepper": {
+      "stepCounter": "步驟 {currentStep} / {totalSteps}"
+    },
+    "navigation": {
+      "next": "下一步",
+      "back": "上一步",
+      "review": "審核",
+      "confirm": "確認",
+      "processing": "處理中..."
+    },
     "steps": {
       "selectService": "選擇服務",
       "selectStaff": "選擇人員",
@@ -223,12 +249,14 @@
       "description": "選擇您想要預約的服務",
       "duration": "時長",
       "price": "價格",
-      "noServices": "目前沒有可用的服務"
+      "noServices": "目前沒有可用的服務",
+      "noServicesMessage": "請聯絡我們以設定服務。"
     },
     "staff": {
       "title": "選擇您的專員",
       "description": "選擇您想要預約的人員",
-      "anyStaff": "任何可用人員",
+      "anyStaff": "任何人員",
+      "anyStaffDescription": "無特別偏好",
       "noStaff": "沒有可用人員"
     },
     "dateTime": {
@@ -236,31 +264,52 @@
       "description": "選擇您偏好的日期和時間",
       "selectDate": "選擇日期",
       "selectTime": "選擇時間",
-      "noAvailability": "所選日期無可用時段",
+      "selectDatePrompt": "請從上方日曆選擇日期",
+      "appointmentDuration": "預約時長：{duration} 分鐘",
+      "defaultAppointmentDuration": "預設預約時長：{duration} 分鐘",
+      "loadingTimes": "載入可用時段中...",
+      "noAvailability": "此日期無可用時段。請選擇其他日期。",
       "loading": "載入可用時段中..."
     },
     "customFields": {
       "title": "附加資訊",
       "description": "請提供以下詳細資訊",
-      "required": "必填"
+      "required": "必填",
+      "chooseOption": "請選擇一個選項...",
+      "enterPlaceholder": "輸入{label}"
     },
     "review": {
       "title": "審核您的預約",
       "description": "請確認您的預約詳細資訊",
       "service": "服務",
-      "staff": "人員",
+      "staff": "服務人員",
       "dateTime": "日期和時間",
-      "duration": "時長",
+      "location": "地點",
+      "duration": "{duration} 分鐘",
       "price": "價格",
       "additionalInfo": "附加資訊",
+      "edit": "編輯",
+      "termsText": "確認此預約即表示您同意我們的條款和條件。您將在預約處理完成後收到確認訊息。",
       "confirmBooking": "確認預約"
     },
     "success": {
       "title": "預約已確認！",
-      "description": "您的預約已成功建立。您將透過 LINE 收到確認訊息。",
+      "subtitle": "您的預約已成功安排",
+      "description": "感謝您的預約！我們很期待見到您。您將很快收到確認訊息。",
+      "location": "地點",
       "bookingId": "預約編號",
       "viewBookings": "查看我的預約",
-      "bookAgain": "再次預約"
+      "bookAgain": "再次預約",
+      "lineBot": {
+        "getUpdates": "獲取預約更新",
+        "addBotPrompt": "加入 {businessName} 的 LINE 機器人以接收預約確認和提醒！",
+        "addBotGeneric": "加我們為好友以接收預約確認和提醒！",
+        "addButton": "加入 {businessName}",
+        "addFriend": "加入好友",
+        "successMessage": "感謝您關注我們！您將透過 LINE 接收預約更新。"
+      },
+      "footer": "Powered by Kitsune",
+      "close": "關閉"
     },
     "error": {
       "title": "預約失敗",
@@ -867,6 +916,51 @@
       "success": "通知設定已成功儲存",
       "error": "無法儲存通知設定",
       "qrError": "無法產生 QR code"
+    },
+    "holidayHours": {
+      "title": "營業時間",
+      "subtitle": "管理您企業的特殊休息日和假期時段",
+      "refresh": "重新整理",
+      "addPeriod": {
+        "title": "新增休息時段",
+        "closureType": "休息類型",
+        "fullDay": {
+          "title": "全天休息",
+          "description": "整天休息"
+        },
+        "partial": {
+          "title": "部分時段",
+          "description": "特定時段休息"
+        },
+        "startDate": "開始日期",
+        "endDate": "結束日期",
+        "startTime": "開始時間",
+        "endTime": "結束時間",
+        "addButton": "新增休息時段",
+        "adding": "新增中..."
+      },
+      "scheduled": {
+        "title": "已排程的休息時段",
+        "empty": "尚無排程的休息時段",
+        "delete": "刪除",
+        "fullDay": "全天",
+        "fullDays": "全天",
+        "from": "從",
+        "to": "到"
+      },
+      "deleteDialog": {
+        "title": "刪除休息時段",
+        "message": "您確定要刪除此休息時段嗎？此操作無法復原。",
+        "confirmButton": "刪除",
+        "cancelButton": "取消"
+      },
+      "messages": {
+        "selectDates": "請選擇開始和結束日期",
+        "addSuccess": "休息時段已新增",
+        "addError": "無法新增休息時段",
+        "deleteSuccess": "休息時段已刪除",
+        "deleteError": "無法刪除休息時段"
+      }
     }
   },
   "errors": {

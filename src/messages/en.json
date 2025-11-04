@@ -211,6 +211,32 @@
     }
   },
   "booking": {
+    "loading": {
+      "loadingSystem": "Loading booking system...",
+      "initializingLine": "Initializing LINE app...",
+      "loadingBusiness": "Loading business information..."
+    },
+    "errors": {
+      "lineInitFailed": "Failed to initialize LINE app",
+      "businessNotFound": "Business not found or inactive",
+      "bookingFailed": "Failed to create booking: {message}",
+      "configurationError": "No Configuration Found",
+      "configurationErrorMessage": "It looks like the booking system hasn't been set up yet. Please contact the business owner to configure the booking workflow.",
+      "ownerSetupMessage": "If you're the owner, please complete the setup wizard to enable bookings for your customers."
+    },
+    "layout": {
+      "title": "Book Your Appointment"
+    },
+    "stepper": {
+      "stepCounter": "Step {currentStep} of {totalSteps}"
+    },
+    "navigation": {
+      "next": "Next",
+      "back": "Back",
+      "review": "Review",
+      "confirm": "Confirm",
+      "processing": "Processing..."
+    },
     "steps": {
       "selectService": "Select Service",
       "selectStaff": "Select Staff",
@@ -223,44 +249,67 @@
       "description": "Select the service you'd like to book",
       "duration": "Duration",
       "price": "Price",
-      "noServices": "No services available at this time"
+      "noServices": "No Services Available",
+      "noServicesMessage": "Please contact us to set up services."
     },
     "staff": {
       "title": "Choose Your Specialist",
       "description": "Select who you'd like to book with",
-      "anyStaff": "Any Available Staff",
+      "anyStaff": "Any Staff",
+      "anyStaffDescription": "No preference",
       "noStaff": "No staff available"
     },
     "dateTime": {
       "title": "Pick Your Time",
       "description": "Choose your preferred date and time",
-      "selectDate": "Select a date",
-      "selectTime": "Select a time",
-      "noAvailability": "No availability for the selected date",
+      "selectDate": "Select Date",
+      "selectTime": "Select Time",
+      "selectDatePrompt": "Please select a date from the calendar above",
+      "appointmentDuration": "Appointment Duration: {duration} minutes",
+      "defaultAppointmentDuration": "Default Appointment Duration: {duration} minutes",
+      "loadingTimes": "Loading available times...",
+      "noAvailability": "No available time slots for this date. Please select another date.",
       "loading": "Loading availability..."
     },
     "customFields": {
       "title": "Additional Information",
       "description": "Please provide the following details",
-      "required": "Required"
+      "required": "Required",
+      "chooseOption": "Choose an option...",
+      "enterPlaceholder": "Enter {label}"
     },
     "review": {
       "title": "Review Your Booking",
       "description": "Please confirm your booking details",
       "service": "Service",
-      "staff": "Staff",
+      "staff": "Staff Member",
       "dateTime": "Date & Time",
-      "duration": "Duration",
+      "location": "Location",
+      "duration": "{duration} minutes",
       "price": "Price",
       "additionalInfo": "Additional Information",
+      "edit": "Edit",
+      "termsText": "By confirming this booking, you agree to our terms and conditions. You will receive a confirmation once your booking is processed.",
       "confirmBooking": "Confirm Booking"
     },
     "success": {
       "title": "Booking Confirmed!",
-      "description": "Your booking has been successfully created. You'll receive a confirmation message via LINE.",
+      "subtitle": "Your appointment has been successfully scheduled",
+      "description": "Thank you for booking with us! We're excited to see you. You will receive a confirmation message shortly.",
+      "location": "Location",
       "bookingId": "Booking ID",
       "viewBookings": "View My Bookings",
-      "bookAgain": "Book Another Service"
+      "bookAgain": "Book Another Service",
+      "lineBot": {
+        "getUpdates": "Get Booking Updates",
+        "addBotPrompt": "Add {businessName}'s LINE bot to receive booking confirmations and reminders!",
+        "addBotGeneric": "Add us as a friend to receive booking confirmations and reminders!",
+        "addButton": "Add {businessName}",
+        "addFriend": "Add Friend",
+        "successMessage": "Thanks for following us! You'll receive booking updates via LINE."
+      },
+      "footer": "Powered by Kitsune",
+      "close": "Close"
     },
     "error": {
       "title": "Booking Failed",
@@ -867,6 +916,51 @@
       "success": "Notification settings saved successfully",
       "error": "Failed to save notification settings",
       "qrError": "Failed to generate QR code"
+    },
+    "holidayHours": {
+      "title": "Holiday Hours",
+      "subtitle": "Manage special closures and holiday hours for your business",
+      "refresh": "Refresh",
+      "addPeriod": {
+        "title": "Add Closed Period",
+        "closureType": "Closure Type",
+        "fullDay": {
+          "title": "Full Day Closure",
+          "description": "Closed for entire day(s)"
+        },
+        "partial": {
+          "title": "Partial Hours",
+          "description": "Closed for specific hours"
+        },
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "startTime": "Start Time",
+        "endTime": "End Time",
+        "addButton": "Add Closed Period",
+        "adding": "Adding..."
+      },
+      "scheduled": {
+        "title": "Scheduled Closures",
+        "empty": "No closed periods scheduled",
+        "delete": "Delete",
+        "fullDay": "Full Day",
+        "fullDays": "Full Days",
+        "from": "from",
+        "to": "to"
+      },
+      "deleteDialog": {
+        "title": "Delete Closed Period",
+        "message": "Are you sure you want to delete this closed period? This action cannot be undone.",
+        "confirmButton": "Delete",
+        "cancelButton": "Cancel"
+      },
+      "messages": {
+        "selectDates": "Please select start and end dates",
+        "addSuccess": "Closed period added",
+        "addError": "Failed to add closed period",
+        "deleteSuccess": "Closed period deleted",
+        "deleteError": "Failed to delete closed period"
+      }
     }
   },
   "errors": {

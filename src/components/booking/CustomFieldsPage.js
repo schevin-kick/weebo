@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { validateField } from '@/utils/bookingValidation';
+import { useTranslations } from 'next-intl';
 
 export default function CustomFieldsPage({ page, responses, onResponseChange }) {
+  const t = useTranslations('booking.customFields');
   const [errors, setErrors] = useState({});
 
   const handleChange = (componentId, value) => {
@@ -87,7 +89,7 @@ export default function CustomFieldsPage({ page, responses, onResponseChange }) 
             value={value}
             onChange={(e) => handleChange(component.id, e.target.value)}
             onBlur={() => handleBlur(component)}
-            placeholder={`Enter ${label.toLowerCase()}`}
+            placeholder={t('enterPlaceholder', { label: label.toLowerCase() })}
             className={inputClasses}
           />
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -107,7 +109,7 @@ export default function CustomFieldsPage({ page, responses, onResponseChange }) 
             value={value}
             onChange={(e) => handleChange(component.id, e.target.value)}
             onBlur={() => handleBlur(component)}
-            placeholder={`Enter ${label.toLowerCase()}`}
+            placeholder={t('enterPlaceholder', { label: label.toLowerCase() })}
             min={component.min}
             max={component.max}
             className={inputClasses}
@@ -128,7 +130,7 @@ export default function CustomFieldsPage({ page, responses, onResponseChange }) 
             value={value}
             onChange={(e) => handleChange(component.id, e.target.value)}
             onBlur={() => handleBlur(component)}
-            placeholder={`Enter ${label.toLowerCase()}`}
+            placeholder={t('enterPlaceholder', { label: label.toLowerCase() })}
             rows={4}
             className={inputClasses}
           />
@@ -150,7 +152,7 @@ export default function CustomFieldsPage({ page, responses, onResponseChange }) 
             onBlur={() => handleBlur(component)}
             className={inputClasses}
           >
-            <option value="">Choose an option...</option>
+            <option value="">{t('chooseOption')}</option>
             {component.options?.map((option, idx) => (
               <option key={idx} value={option}>
                 {option}

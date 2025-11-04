@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Check, Calendar as CalendarIcon, Clock, Loader2 } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   generateTimeSlots,
   isDateAvailable,
@@ -22,6 +23,8 @@ export default function PresetDateTimePage({
   staff,
   defaultAppointmentDuration = 60,
 }) {
+  const t = useTranslations('booking.dateTime');
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const timeSlotsRef = useRef(null);
 
@@ -217,9 +220,9 @@ export default function PresetDateTimePage({
           <Clock className="w-4 h-4 text-orange-600" />
           <span className="text-orange-900 font-medium">
             {selectedService ? (
-              <>Appointment Duration: {selectedService.duration} minutes</>
+              t('appointmentDuration', { duration: selectedService.duration })
             ) : (
-              <>Default Appointment Duration: {defaultAppointmentDuration || 60} minutes</>
+              t('defaultAppointmentDuration', { duration: defaultAppointmentDuration || 60 })
             )}
           </span>
         </div>
@@ -229,7 +232,7 @@ export default function PresetDateTimePage({
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
           <CalendarIcon className="w-4 h-4" />
-          <span>Select Date</span>
+          <span>{t('selectDate')}</span>
         </div>
 
         <div className="kitsune-calendar">
@@ -239,7 +242,7 @@ export default function PresetDateTimePage({
             tileDisabled={tileDisabled}
             tileClassName={tileClassName}
             minDate={new Date()}
-            locale="en-US"
+            locale={locale === 'zh-tw' ? 'zh-TW' : 'en-US'}
             className="border-2 border-slate-200 rounded-xl p-4 w-full"
           />
         </div>
@@ -250,18 +253,18 @@ export default function PresetDateTimePage({
         <div ref={timeSlotsRef} className="space-y-3">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
             <Clock className="w-4 h-4" />
-            <span>Select Time</span>
+            <span>{t('selectTime')}</span>
           </div>
 
           {loadingSlots ? (
             <div className="text-center py-8 bg-slate-50 rounded-xl">
               <Loader2 className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-3" />
-              <p className="text-slate-600 font-medium">Loading available times...</p>
+              <p className="text-slate-600 font-medium">{t('loadingTimes')}</p>
             </div>
           ) : availableTimeSlots.length === 0 ? (
             <div className="text-center py-8 bg-slate-50 rounded-xl">
               <p className="text-slate-600">
-                No available time slots for this date. Please select another date.
+                {t('noAvailability')}
               </p>
             </div>
           ) : (
@@ -301,7 +304,7 @@ export default function PresetDateTimePage({
             <CalendarIcon className="w-8 h-8 text-orange-500" />
           </div>
           <p className="text-slate-600">
-            Please select a date from the calendar above
+            {t('selectDatePrompt')}
           </p>
         </div>
       )}

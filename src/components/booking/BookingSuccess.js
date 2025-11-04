@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { CheckCircle, Sparkles, X, UserPlus, Bell, MapPin, Phone } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function BookingSuccess({
   bookingSummary,
@@ -12,6 +13,7 @@ export default function BookingSuccess({
   businessMessagingMode,
   bookingId
 }) {
+  const t = useTranslations('booking.success');
   const [showConfetti, setShowConfetti] = useState(true);
   const [friendshipStatus, setFriendshipStatus] = useState(null); // null | 'friend' | 'not_friend'
   const [checkingFriendship, setCheckingFriendship] = useState(true);
@@ -120,10 +122,10 @@ export default function BookingSuccess({
           {/* Success Message */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-slate-900 mb-3">
-              Booking Confirmed!
+              {t('title')}
             </h1>
             <p className="text-slate-600 text-lg">
-              Your appointment has been successfully scheduled
+              {t('subtitle')}
             </p>
           </div>
 
@@ -146,8 +148,7 @@ export default function BookingSuccess({
           {/* Message */}
           <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-5 mb-6">
             <p className="text-center text-slate-700 leading-relaxed">
-              Thank you for booking with us! We're excited to see you. You will receive a
-              confirmation message shortly.
+              {t('description')}
             </p>
           </div>
 
@@ -156,7 +157,7 @@ export default function BookingSuccess({
             <div className="bg-white border-2 border-slate-200 rounded-xl p-5 mb-6">
               <div className="flex items-center gap-2 mb-3">
                 <MapPin className="w-5 h-5 text-orange-500" />
-                <h3 className="font-semibold text-slate-900">Location</h3>
+                <h3 className="font-semibold text-slate-900">{t('location')}</h3>
               </div>
               <div className="space-y-3">
                 {businessAddress && (
@@ -198,18 +199,18 @@ export default function BookingSuccess({
                     <Bell className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-slate-900 mb-1">Get Booking Updates</h3>
+                    <h3 className="font-bold text-slate-900 mb-1">{t('lineBot.getUpdates')}</h3>
                     <p className="text-sm text-slate-600 mb-3">
                       {businessMessagingMode === 'own_bot'
-                        ? `Add ${businessName}'s LINE bot to receive booking confirmations and reminders!`
-                        : 'Add us as a friend to receive booking confirmations and reminders!'}
+                        ? t('lineBot.addBotPrompt', { businessName })
+                        : t('lineBot.addBotGeneric')}
                     </p>
                     <button
                       onClick={handleAddFriend}
                       className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-600 transition-all shadow-lg shadow-blue-500/30"
                     >
                       <UserPlus className="w-5 h-5" />
-                      {businessMessagingMode === 'own_bot' ? `Add ${businessName}` : 'Add Friend'}
+                      {businessMessagingMode === 'own_bot' ? t('lineBot.addButton', { businessName }) : t('lineBot.addFriend')}
                     </button>
                   </div>
                 </div>
@@ -227,7 +228,7 @@ export default function BookingSuccess({
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-slate-900">
-                      Thanks for following us! You'll receive booking updates via LINE.
+                      {t('lineBot.successMessage')}
                     </p>
                   </div>
                 </div>
@@ -241,7 +242,7 @@ export default function BookingSuccess({
               onClick={handleClose}
               className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-lg shadow-orange-500/30"
             >
-              Close
+              {t('close')}
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -250,7 +251,7 @@ export default function BookingSuccess({
         {/* Footer Note */}
         <div className="text-center mt-6">
           <p className="text-sm text-slate-600">
-            Powered by <span className="font-semibold text-orange-600">Kitsune</span>
+            {t('footer')}
           </p>
         </div>
       </div>

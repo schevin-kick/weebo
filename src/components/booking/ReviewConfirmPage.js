@@ -3,6 +3,7 @@
 import { Edit2, Calendar, Clock, User, Package, MapPin, Phone } from 'lucide-react';
 import StaffAvatar from '@/components/shared/StaffAvatar';
 import { formatDateForDisplay, formatTimeForDisplay } from '@/utils/dateTimeAvailability';
+import { useTranslations } from 'next-intl';
 
 export default function ReviewConfirmPage({
   pages,
@@ -16,18 +17,21 @@ export default function ReviewConfirmPage({
   businessPhone,
   onEditPage,
 }) {
+  const t = useTranslations('booking.review');
+  const tStaff = useTranslations('booking.staff');
+
   // Get service object
   const service = services.find((s) => s.id === selectedService);
 
   // Get staff object
   const staffMember =
     selectedStaff === 'any'
-      ? { id: 'any', name: 'Any Staff', photo: '' }
+      ? { id: 'any', name: tStaff('anyStaff'), photo: '' }
       : staff.find((s) => s.id === selectedStaff);
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Review Your Booking</h2>
+      <h2 className="text-2xl font-bold text-slate-900 mb-6">{t('title')}</h2>
 
       {/* Service Summary */}
       {service && (
@@ -35,7 +39,7 @@ export default function ReviewConfirmPage({
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
               <Package className="w-4 h-4" />
-              <span>Service</span>
+              <span>{t('service')}</span>
             </div>
           </div>
 
@@ -49,7 +53,7 @@ export default function ReviewConfirmPage({
                 <span className="font-semibold text-orange-600">${service.price}</span>
               )}
               {service.duration && (
-                <span className="text-slate-500">{service.duration} minutes</span>
+                <span className="text-slate-500">{t('duration', { duration: service.duration })}</span>
               )}
             </div>
           </div>
@@ -62,7 +66,7 @@ export default function ReviewConfirmPage({
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
               <User className="w-4 h-4" />
-              <span>Staff Member</span>
+              <span>{t('staff')}</span>
             </div>
           </div>
 
@@ -84,7 +88,7 @@ export default function ReviewConfirmPage({
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
               <Calendar className="w-4 h-4" />
-              <span>Date & Time</span>
+              <span>{t('dateTime')}</span>
             </div>
           </div>
 
@@ -111,7 +115,7 @@ export default function ReviewConfirmPage({
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
               <MapPin className="w-4 h-4" />
-              <span>Location</span>
+              <span>{t('location')}</span>
             </div>
           </div>
 
@@ -160,7 +164,7 @@ export default function ReviewConfirmPage({
                   className="text-orange-600 hover:text-orange-700 flex items-center gap-1 text-sm font-medium"
                 >
                   <Edit2 className="w-4 h-4" />
-                  Edit
+                  {t('edit')}
                 </button>
               </div>
 
@@ -183,8 +187,7 @@ export default function ReviewConfirmPage({
       {/* Important Notice */}
       <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
         <p className="text-sm text-orange-900">
-          By confirming this booking, you agree to our terms and conditions. You will receive a
-          confirmation once your booking is processed.
+          {t('termsText')}
         </p>
       </div>
     </div>

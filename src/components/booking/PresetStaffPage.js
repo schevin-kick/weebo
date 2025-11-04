@@ -2,14 +2,16 @@
 
 import { Check } from 'lucide-react';
 import StaffAvatar from '@/components/shared/StaffAvatar';
+import { useTranslations } from 'next-intl';
 
 export default function PresetStaffPage({ page, staff, selectedStaffId, onSelect }) {
+  const t = useTranslations('booking.staff');
   const allStaffOptions = [
     ...staff,
     {
       id: 'any',
-      name: 'Any Staff',
-      specialty: 'No preference',
+      name: t('anyStaff'),
+      specialty: t('anyStaffDescription'),
       photo: '',
     },
   ];

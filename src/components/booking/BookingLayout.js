@@ -1,8 +1,10 @@
 'use client';
 
 import FallingSakura from '@/components/background/FallingSakura';
+import { useTranslations } from 'next-intl';
 
 export default function BookingLayout({ businessName, logoUrl, children, stepper, navigation, isPreview = false }) {
+  const t = useTranslations('booking.layout');
   return (
     <>
       {!isPreview && <FallingSakura />}
@@ -25,7 +27,7 @@ export default function BookingLayout({ businessName, logoUrl, children, stepper
                 <h1 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
                   {businessName || 'Kitsune'}
                 </h1>
-                <p className="text-xs text-slate-600">Book Your Appointment</p>
+                <p className="text-xs text-slate-600">{t('title')}</p>
               </div>
             </div>
           </div>

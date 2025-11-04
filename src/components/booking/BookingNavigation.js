@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function BookingNavigation({
   onBack,
@@ -13,6 +14,8 @@ export default function BookingNavigation({
   nextLabel,
   isLoading = false,
 }) {
+  const t = useTranslations('booking.navigation');
+
   const handleNext = () => {
     if (isReviewPage && onConfirm) {
       onConfirm();
@@ -22,11 +25,11 @@ export default function BookingNavigation({
   };
 
   const getNextButtonLabel = () => {
-    if (isLoading) return 'Processing...';
+    if (isLoading) return t('processing');
     if (nextLabel) return nextLabel;
-    if (isReviewPage) return 'Confirm';
-    if (isLastPage) return 'Review';
-    return 'Next';
+    if (isReviewPage) return t('confirm');
+    if (isLastPage) return t('review');
+    return t('next');
   };
 
   const getNextButtonIcon = () => {
@@ -52,7 +55,7 @@ export default function BookingNavigation({
             }`}
         >
           <ChevronLeft className="w-5 h-5" />
-          Back
+          {t('back')}
         </button>
       )}
 

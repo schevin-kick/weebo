@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { Calendar as CalendarIcon, Trash2, Plus, RefreshCw } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { fetchWithCSRF } from '@/hooks/useCSRF';
 import ConfirmDialog from '@/components/dashboard/ConfirmDialog';
 import Skeleton from '@/components/loading/Skeleton';
@@ -22,6 +23,7 @@ const fetcher = async (url) => {
 };
 
 export default function HolidayHoursView({ businessId }) {
+  const t = useTranslations('dashboard.holidayHours');
   const toast = useToast();
 
   // Fetch closed dates using SWR
@@ -46,7 +48,7 @@ export default function HolidayHoursView({ businessId }) {
 
   async function handleAddClosedPeriod() {
     if (!startDate || !endDate) {
-      toast.error('Please select start and end dates');
+      toast.error(t('messages.selectDates'));
       return;
     }
 
@@ -75,7 +77,7 @@ export default function HolidayHoursView({ businessId }) {
 
       if (!response.ok) throw new Error('Failed to add closed period');
 
-      toast.success('Closed period added');
+      toast.success(t('messages.addSuccess'));
 
       // Reset form
       setStartDate('');
@@ -88,7 +90,7 @@ export default function HolidayHoursView({ businessId }) {
       mutate();
     } catch (error) {
       console.error('Error adding closed period:', error);
-      toast.error('Failed to add closed period');
+      toast.error(t('messages.addError'));
     } finally {
       setAdding(false);
     }
@@ -104,7 +106,7 @@ export default function HolidayHoursView({ businessId }) {
 
       if (!response.ok) throw new Error('Failed to delete');
 
-      toast.success('Closed period deleted');
+      toast.success(t('messages.deleteSuccess'));
       setShowDeleteDialog(false);
       setDeleteId(null);
 
@@ -112,7 +114,7 @@ export default function HolidayHoursView({ businessId }) {
       mutate();
     } catch (error) {
       console.error('Error deleting closed period:', error);
-      toast.error('Failed to delete closed period');
+      toast.error(t('messages.deleteError'));
     }
   }
 
@@ -135,15 +137,15 @@ export default function HolidayHoursView({ businessId }) {
 
     if (isFullDay(closedDate)) {
       if (isSameDay) {
-        return `${formatDate(start)} - Full Day`;
+        return `${formatDate(start)} - ${t('scheduled.fullDay')}`;
       } else {
-        return `${formatDate(start)} - ${formatDate(end)} - Full Days`;
+        return `${formatDate(start)} - ${formatDate(end)} - ${t('scheduled.fullDays')}`;
       }
     } else {
       if (isSameDay) {
-        return `${formatDate(start)} from ${formatTime(start)} to ${formatTime(end)}`;
+        return `${formatDate(start)} ${t('scheduled.from')} ${formatTime(start)} ${t('scheduled.to')} ${formatTime(end)}`;
       } else {
-        return `${formatDateTime(start)} to ${formatDateTime(end)}`;
+        return `${formatDateTime(start)} ${t('scheduled.to')} ${formatDateTime(end)}`;
       }
     }
   };
@@ -157,8 +159,8 @@ export default function HolidayHoursView({ businessId }) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Holiday Hours</h1>
-          <p className="text-slate-600">Manage special closures and holiday hours</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <div className="space-y-4">
           <Skeleton className="h-64" rounded="xl" />
@@ -174,15 +176,15 @@ export default function HolidayHoursView({ businessId }) {
       {/* Page Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Holiday Hours</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
           <p className="text-slate-600">
-            Manage special closures and holiday hours for your business
+            {t('subtitle')}
           </p>
         </div>
         <button
           onClick={handleRefresh}
           className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-          title="Refresh"
+          title={t('refresh')}
         >
           <RefreshCw className="w-5 h-5" />
         </button>
@@ -192,13 +194,13 @@ export default function HolidayHoursView({ businessId }) {
       <div className="bg-white rounded-xl border border-slate-200 p-6 mb-8">
         <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
           <Plus className="w-5 h-5 text-orange-600" />
-          Add Closed Period
+          {t('addPeriod.title')}
         </h2>
 
         {/* Closure Type */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-slate-700 mb-3">
-            Closure Type
+            {t('addPeriod.closureType')}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
@@ -220,8 +222,8 @@ export default function HolidayHoursView({ businessId }) {
                   )}
                 </div>
                 <div>
-                  <p className="font-semibold text-slate-900">Full Day Closure</p>
-                  <p className="text-xs text-slate-500">Closed for entire day(s)</p>
+                  <p className="font-semibold text-slate-900">{t('addPeriod.fullDay.title')}</p>
+                  <p className="text-xs text-slate-500">{t('addPeriod.fullDay.description')}</p>
                 </div>
               </div>
             </button>
@@ -245,8 +247,8 @@ export default function HolidayHoursView({ businessId }) {
                   )}
                 </div>
                 <div>
-                  <p className="font-semibold text-slate-900">Partial Hours</p>
-                  <p className="text-xs text-slate-500">Closed for specific hours</p>
+                  <p className="font-semibold text-slate-900">{t('addPeriod.partial.title')}</p>
+                  <p className="text-xs text-slate-500">{t('addPeriod.partial.description')}</p>
                 </div>
               </div>
             </button>
@@ -258,7 +260,7 @@ export default function HolidayHoursView({ businessId }) {
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               <CalendarIcon className="w-4 h-4 inline mr-1" />
-              Start Date
+              {t('addPeriod.startDate')}
             </label>
             <input
               type="date"
@@ -271,7 +273,7 @@ export default function HolidayHoursView({ businessId }) {
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               <CalendarIcon className="w-4 h-4 inline mr-1" />
-              End Date
+              {t('addPeriod.endDate')}
             </label>
             <input
               type="date"
@@ -287,7 +289,7 @@ export default function HolidayHoursView({ businessId }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Start Time
+                {t('addPeriod.startTime')}
               </label>
               <input
                 type="time"
@@ -299,7 +301,7 @@ export default function HolidayHoursView({ businessId }) {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                End Time
+                {t('addPeriod.endTime')}
               </label>
               <input
                 type="time"
@@ -316,21 +318,21 @@ export default function HolidayHoursView({ businessId }) {
           disabled={adding}
           className="w-full px-4 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {adding ? 'Adding...' : 'Add Closed Period'}
+          {adding ? t('addPeriod.adding') : t('addPeriod.addButton')}
         </button>
       </div>
 
       {/* Closed Dates List */}
       <div className="bg-white rounded-xl border border-slate-200">
         <div className="p-6 border-b border-slate-200">
-          <h2 className="text-xl font-bold text-slate-900">Scheduled Closures</h2>
+          <h2 className="text-xl font-bold text-slate-900">{t('scheduled.title')}</h2>
         </div>
 
         <div className="divide-y divide-slate-200">
           {closedDates.length === 0 ? (
             <div className="p-12 text-center">
               <CalendarIcon className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500">No closed periods scheduled</p>
+              <p className="text-slate-500">{t('scheduled.empty')}</p>
             </div>
           ) : (
             closedDates.map((closedDate) => (
@@ -355,7 +357,7 @@ export default function HolidayHoursView({ businessId }) {
                     setShowDeleteDialog(true);
                   }}
                   className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Delete"
+                  title={t('scheduled.delete')}
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
@@ -373,10 +375,10 @@ export default function HolidayHoursView({ businessId }) {
           setDeleteId(null);
         }}
         onConfirm={handleDelete}
-        title="Delete Closed Period"
-        message="Are you sure you want to delete this closed period? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t('deleteDialog.title')}
+        message={t('deleteDialog.message')}
+        confirmText={t('deleteDialog.confirmButton')}
+        cancelText={t('deleteDialog.cancelButton')}
       />
     </div>
   );

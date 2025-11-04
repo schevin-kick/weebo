@@ -1,6 +1,9 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 export default function BookingStepper({ pages, currentPageIndex, isReviewPage = false }) {
+  const t = useTranslations('booking.stepper');
   const totalSteps = pages.length + 1; // +1 for review page
   const currentStep = isReviewPage ? totalSteps : currentPageIndex + 1;
   const progressPercentage = (currentStep / totalSteps) * 100;
@@ -14,7 +17,7 @@ export default function BookingStepper({ pages, currentPageIndex, isReviewPage =
     <div className="space-y-2">
       <div className="flex items-center justify-between text-xs text-slate-600">
         <span className="font-medium">
-          Step {currentStep} of {totalSteps}
+          {t('stepCounter', { currentStep, totalSteps })}
         </span>
         <span className="text-slate-500">{Math.round(progressPercentage)}%</span>
       </div>

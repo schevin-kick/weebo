@@ -1,17 +1,19 @@
 'use client';
 
 import { Check } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function PresetServicePage({ page, services, selectedServiceId, onSelect }) {
+  const t = useTranslations('booking.service');
   if (services.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <span className="text-3xl">📋</span>
         </div>
-        <h3 className="text-lg font-semibold text-slate-900 mb-2">No Services Available</h3>
+        <h3 className="text-lg font-semibold text-slate-900 mb-2">{t('noServices')}</h3>
         <p className="text-slate-600">
-          Please contact us to set up services.
+          {t('noServicesMessage')}
         </p>
       </div>
     );

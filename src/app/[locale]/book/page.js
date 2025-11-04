@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import useBookingStore from '@/stores/bookingStore';
 import BookingLayout from '@/components/booking/BookingLayout';
 import BookingStepper from '@/components/booking/BookingStepper';
@@ -22,6 +23,7 @@ import {
 
 export default function BookingPage() {
   const searchParams = useSearchParams();
+  const t = useTranslations('booking');
 
   // Extract business_id from either direct param or liff.state
   let businessId = searchParams.get('business_id');
@@ -117,7 +119,7 @@ export default function BookingPage() {
       }
     } catch (err) {
       console.error('LIFF initialization error:', err);
-      setError('Failed to initialize LINE app');
+      setError(t('errors.lineInitFailed'));
       setLiffReady(true); // Continue anyway for testing
     }
   }
@@ -133,7 +135,7 @@ export default function BookingPage() {
       setBusinessConfig(data.business);
     } catch (err) {
       console.error('Load business error:', err);
-      setError('Business not found or inactive');
+      setError(t('errors.businessNotFound'));
     } finally {
       setLoading(false);
     }
@@ -251,7 +253,7 @@ export default function BookingPage() {
       console.log('Booking created:', result.booking);
     } catch (err) {
       console.error('Booking error:', err);
-      alert(`Failed to create booking: ${err.message}`);
+      alert(t('errors.bookingFailed', { message: err.message }));
     } finally {
       setIsConfirming(false);
     }
@@ -286,7 +288,7 @@ export default function BookingPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading booking system...</p>
+          <p className="text-slate-600">{t('loading.loadingSystem')}</p>
         </div>
       </div>
     );
