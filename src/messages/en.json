@@ -179,6 +179,154 @@
       "copyright": "© 2025 Kitsune. All rights reserved. Made with ❤️ for Asian businesses."
     }
   },
+  "brochureV2": {
+    "hero": {
+      "title": "Kitsune",
+      "subtitle": "The intelligent booking platform built for Asia",
+      "valueProps": {
+        "quickSetup": "5 Min Setup",
+        "freeTrial": "Free Trial",
+        "lineNative": "LINE Native",
+        "analytics": "Real-time Analytics"
+      },
+      "cta": {
+        "startTrial": "Start Free Trial",
+        "signIn": "Sign In",
+        "finePrint": "No credit card required • 14-day free trial"
+      }
+    },
+    "stats": {
+      "lineUsers": "95M+ LINE Users in Asia",
+      "setupTime": "5 min Setup Time",
+      "availability": "24/7 Always Available"
+    },
+    "lineIntegration": {
+      "title": "Native LINE Integration",
+      "subtitle": "Connect with 95M+ users on their favorite messaging platform",
+      "benefits": {
+        "instantConfirmations": "Instant booking confirmations via LINE",
+        "autoReminders": "Automated reminders reduce no-shows",
+        "alwaysAvailable": "24/7 booking availability",
+        "beautifulCards": "Beautiful rich message cards"
+      }
+    },
+    "features": {
+      "title": "Everything You Need",
+      "subtitle": "Powerful features designed for modern businesses",
+      "quickSetup": {
+        "title": "5-Minute Setup",
+        "description": "Get started instantly with our intuitive setup wizard. No technical knowledge required."
+      },
+      "qrCodes": {
+        "title": "Smart QR Codes",
+        "description": "Generate custom QR codes for contactless booking. Perfect for physical locations."
+      },
+      "analytics": {
+        "title": "Real-time Analytics",
+        "description": "Track bookings, revenue, and customer behavior with beautiful dashboards."
+      },
+      "scheduling": {
+        "title": "Smart Scheduling",
+        "description": "Automated scheduling with conflict prevention and capacity management."
+      },
+      "customForms": {
+        "title": "Custom Forms",
+        "description": "Build beautiful booking forms with our drag-and-drop form builder."
+      },
+      "autoReminders": {
+        "title": "Auto Reminders",
+        "description": "Reduce no-shows with automated LINE reminders sent at the perfect time."
+      }
+    },
+    "analyticsPreview": {
+      "title": "Powerful Analytics",
+      "description": "Make data-driven decisions with real-time insights into your business performance.",
+      "featuresList": {
+        "realtimeDashboard": "Real-time dashboard with live metrics",
+        "customerBehavior": "Customer behavior and booking patterns",
+        "revenueTracking": "Revenue tracking and forecasting",
+        "staffPerformance": "Staff performance analytics"
+      },
+      "dashboardMetrics": {
+        "totalBookings": "Total Bookings",
+        "thisWeek": "This Week",
+        "revenue": "Revenue"
+      }
+    },
+    "qrCodeFeature": {
+      "title": "QR Code Magic",
+      "description": "Generate beautiful, scannable QR codes that your customers can use to book instantly.",
+      "steps": {
+        "customize": {
+          "number": "1",
+          "title": "Customize Your QR",
+          "description": "Add your branding and styling"
+        },
+        "share": {
+          "number": "2",
+          "title": "Share Anywhere",
+          "description": "Print or display digitally"
+        },
+        "accept": {
+          "number": "3",
+          "title": "Accept Bookings",
+          "description": "Customers scan and book instantly"
+        }
+      }
+    },
+    "screenshots": {
+      "title": "See It In Action",
+      "subtitle": "Discover how Kitsune transforms your booking experience",
+      "dashboard": {
+        "title": "Intuitive Dashboard",
+        "description": "Manage all your bookings, customers, and analytics from one beautiful interface."
+      },
+      "calendar": {
+        "title": "Smart Calendar",
+        "description": "Visual scheduling with drag-and-drop, color coding, and automatic conflict detection."
+      },
+      "mobile": {
+        "title": "Mobile-First Design",
+        "description": "Beautiful, responsive booking forms that work flawlessly on all devices."
+      },
+      "formBuilder": {
+        "title": "Custom Form Builder",
+        "description": "Drag-and-drop form builder to create the perfect booking experience for your customers."
+      }
+    },
+    "finalCta": {
+      "title": "Ready to Transform Your Business?",
+      "description": "Join hundreds of businesses already using Kitsune to streamline their booking process.",
+      "buttons": {
+        "getStarted": "Get Started Free",
+        "signIn": "Sign In"
+      },
+      "finePrint": "No credit card required • 5 min setup • {trialDays}-day free trial"
+    },
+    "footer": {
+      "brand": "Kitsune",
+      "tagline": "The intelligent booking platform built for Asia",
+      "sections": {
+        "resources": {
+          "title": "Resources",
+          "features": "Features",
+          "pricing": "Pricing",
+          "screenshots": "Screenshots",
+          "getStarted": "Get Started"
+        },
+        "legal": {
+          "title": "Legal",
+          "privacy": "Privacy Policy",
+          "terms": "Terms of Service",
+          "contact": "Contact"
+        },
+        "account": {
+          "signIn": "Sign In"
+        }
+      },
+      "copyright": "© 2025 Kitsune. All rights reserved."
+    }
+  },
   "contact": {
     "title": "Contact Us",
     "subtitle": "Have a question or need help? We'd love to hear from you.",
@@ -1302,6 +1450,10 @@
     "logo": "Kitsune",
     "subtitle": "Business Dashboard",
     "logoutButton": "Logout",
+    "error": {
+      "authFailed": "Failed to verify authentication",
+      "retryButton": "Retry"
+    },
     "welcomeMessage": "Welcome back, {name}!",
     "description": "Manage your booking systems and create new businesses.",
     "createNewBusiness": "Create New Business",

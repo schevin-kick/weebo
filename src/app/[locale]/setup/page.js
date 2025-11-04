@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Store, Plus, Settings, LogOut, QrCode } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import FallingSakura from '@/components/background/FallingSakura';
 import KitsuneLogo from '@/components/loading/KitsuneLogo';
 
 export default function BusinessDashboard() {
+  const t = useTranslations('setup');
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [businesses, setBusinesses] = useState([]);
@@ -101,12 +103,12 @@ export default function BusinessDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
+          <p className="text-red-600 mb-4">{t('error.authFailed')}</p>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
           >
-            Retry
+            {t('error.retryButton')}
           </button>
         </div>
       </div>
@@ -132,9 +134,9 @@ export default function BusinessDashboard() {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                    Kitsune
+                    {t('logo')}
                   </h1>
-                  <p className="text-sm text-slate-600">Business Dashboard</p>
+                  <p className="text-sm text-slate-600">{t('subtitle')}</p>
                 </div>
               </div>
 
@@ -153,7 +155,7 @@ export default function BusinessDashboard() {
                   <button
                     onClick={handleLogout}
                     className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Logout"
+                    title={t('logoutButton')}
                   >
                     <LogOut className="w-5 h-5" />
                   </button>
@@ -168,10 +170,10 @@ export default function BusinessDashboard() {
           {/* Welcome Section */}
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-slate-900 mb-2">
-              Welcome back, {user?.displayName}!
+              {t('welcomeMessage', { name: user?.displayName })}
             </h2>
             <p className="text-slate-600">
-              Manage your booking systems and create new businesses.
+              {t('description')}
             </p>
           </div>
 
@@ -182,7 +184,7 @@ export default function BusinessDashboard() {
               className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-amber-600 transition-all shadow-lg shadow-orange-500/30"
             >
               <Plus className="w-5 h-5" />
-              Create New Business
+              {t('createNewBusiness')}
             </button>
           </div>
 
@@ -199,13 +201,14 @@ export default function BusinessDashboard() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-blue-900 mb-1">
-                      {config ? `${config.trialDays}-Day` : '14-Day'} Free Trial Included
+                      {t('trialNotice.title', { count: config?.trialDays || 14 })}
                     </h3>
                     <p className="text-blue-700 text-sm">
-                      Creating your first business will start your{' '}
-                      <strong>{config ? `${config.trialDays}-day` : '14-day'} free trial</strong> of Kitsune.
-                      Full access to all features, no credit card required. After the trial, continue for just{' '}
-                      {config ? `${config.priceAmount} ${config.priceCurrency}` : '210 TWD'}/month.
+                      {t('trialNotice.description', {
+                        count: config?.trialDays || 14,
+                        price: config?.priceAmount || 210,
+                        currency: config?.priceCurrency || 'TWD'
+                      })}
                     </p>
                   </div>
                 </div>
@@ -216,18 +219,17 @@ export default function BusinessDashboard() {
                   <Store className="w-10 h-10 text-orange-500" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                  No businesses yet
+                  {t('noBusiness.title')}
                 </h3>
                 <p className="text-slate-600 mb-6 max-w-md mx-auto">
-                  Create your first booking system to get started. You can manage
-                  multiple businesses from this dashboard.
+                  {t('noBusiness.description')}
                 </p>
                 <button
                   onClick={() => router.push('/setup/new')}
                   className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-amber-600 transition-all"
                 >
                   <Plus className="w-5 h-5" />
-                  Create Your First Business
+                  {t('noBusiness.button')}
                 </button>
               </div>
             </>
@@ -238,6 +240,7 @@ export default function BusinessDashboard() {
                   key={business.id}
                   business={business}
                   onClick={() => router.push(`/setup/${business.id}`)}
+                  t={t}
                 />
               ))}
             </div>
@@ -248,7 +251,7 @@ export default function BusinessDashboard() {
   );
 }
 
-function BusinessCard({ business, onClick }) {
+function BusinessCard({ business, onClick, t }) {
   return (
     <div
       onClick={onClick}
@@ -275,17 +278,17 @@ function BusinessCard({ business, onClick }) {
 
         <div className="flex items-center gap-4 text-sm text-slate-600 mb-4">
           <div>
-            <span className="font-medium">{business._count?.services || 0}</span> services
+            {t('businessCard.servicesCount', { count: business._count?.services || 0 })}
           </div>
           <div>
-            <span className="font-medium">{business._count?.staff || 0}</span> staff
+            {t('businessCard.staffCount', { count: business._count?.staff || 0 })}
           </div>
         </div>
 
         {business._count?.pendingBookings > 0 && (
           <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
             <p className="text-sm text-orange-700">
-              <span className="font-semibold">{business._count.pendingBookings}</span> pending bookings
+              {t('businessCard.pendingBadge', { count: business._count.pendingBookings })}
             </p>
           </div>
         )}
@@ -299,7 +302,7 @@ function BusinessCard({ business, onClick }) {
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
           >
             <Settings className="w-4 h-4" />
-            Manage
+            {t('businessCard.manageButton')}
           </button>
           {business.qrCodeUrl && (
             <a
@@ -307,7 +310,7 @@ function BusinessCard({ business, onClick }) {
               download={`${business.businessName}-qr.png`}
               onClick={(e) => e.stopPropagation()}
               className="flex items-center justify-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-              title="Download QR Code"
+              title={t('businessCard.downloadQR')}
             >
               <QrCode className="w-4 h-4" />
             </a>

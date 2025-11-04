@@ -179,6 +179,154 @@
       "copyright": "© 2025 Kitsune. 版權所有。用 ❤️ 為亞洲企業製作。"
     }
   },
+  "brochureV2": {
+    "hero": {
+      "title": "Kitsune",
+      "subtitle": "專為亞洲打造的智能預約平台",
+      "valueProps": {
+        "quickSetup": "5 分鐘設定",
+        "freeTrial": "免費試用",
+        "lineNative": "LINE 原生整合",
+        "analytics": "即時數據分析"
+      },
+      "cta": {
+        "startTrial": "開始免費試用",
+        "signIn": "登入",
+        "finePrint": "無需信用卡 • 14 天免費試用"
+      }
+    },
+    "stats": {
+      "lineUsers": "亞洲 9500 萬+ LINE 用戶",
+      "setupTime": "5 分鐘設定時間",
+      "availability": "24/7 全天候服務"
+    },
+    "lineIntegration": {
+      "title": "原生 LINE 整合",
+      "subtitle": "連接 9500 萬+ 用戶最喜愛的通訊平台",
+      "benefits": {
+        "instantConfirmations": "透過 LINE 即時確認預約",
+        "autoReminders": "自動提醒減少爽約",
+        "alwaysAvailable": "24/7 全天候預約",
+        "beautifulCards": "精美的訊息卡片"
+      }
+    },
+    "features": {
+      "title": "一應俱全",
+      "subtitle": "為現代企業設計的強大功能",
+      "quickSetup": {
+        "title": "5 分鐘設定",
+        "description": "透過直覺的設定精靈立即開始。無需技術知識。"
+      },
+      "qrCodes": {
+        "title": "智能 QR Code",
+        "description": "生成無接觸預約的自訂 QR Code。完美適合實體店面。"
+      },
+      "analytics": {
+        "title": "即時數據分析",
+        "description": "透過精美的儀表板追蹤預約、營收和客戶行為。"
+      },
+      "scheduling": {
+        "title": "智能排程",
+        "description": "自動排程，具備衝突預防和容量管理功能。"
+      },
+      "customForms": {
+        "title": "自訂表單",
+        "description": "使用拖放式表單建構器建立精美的預約表單。"
+      },
+      "autoReminders": {
+        "title": "自動提醒",
+        "description": "透過在完美時機發送的 LINE 自動提醒減少爽約。"
+      }
+    },
+    "analyticsPreview": {
+      "title": "強大的數據分析",
+      "description": "透過即時業務績效洞察做出數據驅動的決策。",
+      "featuresList": {
+        "realtimeDashboard": "即時儀表板與實時指標",
+        "customerBehavior": "客戶行為與預約模式",
+        "revenueTracking": "營收追蹤與預測",
+        "staffPerformance": "員工績效分析"
+      },
+      "dashboardMetrics": {
+        "totalBookings": "總預約數",
+        "thisWeek": "本週",
+        "revenue": "營收"
+      }
+    },
+    "qrCodeFeature": {
+      "title": "QR Code 魔法",
+      "description": "生成精美可掃描的 QR Code，讓您的客戶立即預約。",
+      "steps": {
+        "customize": {
+          "number": "1",
+          "title": "自訂您的 QR",
+          "description": "添加您的品牌與風格"
+        },
+        "share": {
+          "number": "2",
+          "title": "隨處分享",
+          "description": "列印或數位展示"
+        },
+        "accept": {
+          "number": "3",
+          "title": "接受預約",
+          "description": "客戶掃描並立即預約"
+        }
+      }
+    },
+    "screenshots": {
+      "title": "實際運作展示",
+      "subtitle": "探索 Kitsune 如何轉變您的預約體驗",
+      "dashboard": {
+        "title": "直覺儀表板",
+        "description": "從一個精美的介面管理所有預約、客戶和數據分析。"
+      },
+      "calendar": {
+        "title": "智能行事曆",
+        "description": "視覺化排程，具備拖放、顏色編碼和自動衝突檢測功能。"
+      },
+      "mobile": {
+        "title": "行動優先設計",
+        "description": "精美的響應式預約表單，在所有裝置上完美運作。"
+      },
+      "formBuilder": {
+        "title": "自訂表單建構器",
+        "description": "拖放式表單建構器，為您的客戶打造完美的預約體驗。"
+      }
+    },
+    "finalCta": {
+      "title": "準備好轉變您的業務了嗎？",
+      "description": "加入數百家已使用 Kitsune 簡化預約流程的企業。",
+      "buttons": {
+        "getStarted": "免費開始",
+        "signIn": "登入"
+      },
+      "finePrint": "無需信用卡 • 5 分鐘設定 • {trialDays} 天免費試用"
+    },
+    "footer": {
+      "brand": "Kitsune",
+      "tagline": "專為亞洲打造的智能預約平台",
+      "sections": {
+        "resources": {
+          "title": "資源",
+          "features": "功能",
+          "pricing": "價格",
+          "screenshots": "截圖",
+          "getStarted": "開始使用"
+        },
+        "legal": {
+          "title": "法律",
+          "privacy": "隱私政策",
+          "terms": "服務條款",
+          "contact": "聯絡方式"
+        },
+        "account": {
+          "signIn": "登入"
+        }
+      },
+      "copyright": "© 2025 Kitsune. 版權所有。"
+    }
+  },
   "contact": {
     "title": "聯絡我們",
     "subtitle": "有問題或需要協助？我們很樂意聽取您的意見。",
@@ -1302,6 +1450,10 @@
     "logo": "Kitsune",
     "subtitle": "企業儀表板",
     "logoutButton": "登出",
+    "error": {
+      "authFailed": "驗證失敗",
+      "retryButton": "重試"
+    },
     "welcomeMessage": "歡迎回來，{name}！",
     "description": "管理您的預約系統並建立新企業。",
     "createNewBusiness": "建立新企業",
