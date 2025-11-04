@@ -8,10 +8,14 @@
 
 import { AlertTriangle, Info } from 'lucide-react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { usePathname } from 'next/navigation';
 
 export default function TrialBanner({ subscription }) {
   const t = useTranslations('trialBanner');
+  const locale = useLocale();
+  const pathname = usePathname();
+
   // Only show for trialing users
   if (subscription?.status !== 'trialing') {
     return null;
@@ -19,6 +23,15 @@ export default function TrialBanner({ subscription }) {
 
   const daysLeft = subscription.daysLeft || 0;
   const isUrgent = daysLeft <= 3;
+
+  // Extract businessId from pathname (e.g., /en/dashboard/biz_123/... -> biz_123)
+  const businessIdMatch = pathname.match(/\/dashboard\/([^\/]+)/);
+  const businessId = businessIdMatch ? businessIdMatch[1] : null;
+
+  // Construct billing link - use business-specific if available, otherwise general
+  const billingHref = businessId && businessId !== 'billing' && businessId !== 'subscription-required'
+    ? `/${locale}/dashboard/${businessId}/billing`
+    : `/${locale}/dashboard/billing`;
 
   return (
     <div
@@ -57,7 +70,7 @@ export default function TrialBanner({ subscription }) {
 
         {/* Action Button */}
         <Link
-          href="/dashboard/billing"
+          href={billingHref}
           className={`
             px-4 py-2 rounded-lg text-sm font-medium transition-colors flex-shrink-0
             ${

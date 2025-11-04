@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { formatDateTime, formatDuration } from '@/lib/dateUtils';
 
 export default function LINEMessagePreview({
@@ -13,6 +14,7 @@ export default function LINEMessagePreview({
   body = 'We look forward to seeing you!',
   business = null,
 }) {
+  const t = useTranslations('dashboard.messaging.preview');
   // Sample booking data for preview
   const sampleBooking = {
     service: { name: 'Haircut & Style' },
@@ -56,9 +58,9 @@ export default function LINEMessagePreview({
                 </div>
                 <div className="flex-1">
                   <div className="font-medium text-slate-900">
-                    {business?.businessName || 'Your Business'}
+                    {business?.businessName || t('businessName')}
                   </div>
-                  <div className="text-xs text-slate-500">LINE Official Account</div>
+                  <div className="text-xs text-slate-500">{t('lineOfficialAccount')}</div>
                 </div>
               </div>
 
@@ -101,32 +103,32 @@ export default function LINEMessagePreview({
                     <div className="flex items-center gap-2 mb-4">
                       <span className="text-yellow-500 text-sm">⭐</span>
                       <span className="text-sm text-slate-400">
-                        {business?.businessName || 'Your Business'}
+                        {business?.businessName || t('businessName')}
                       </span>
                     </div>
 
                     {/* Booking Details */}
                     <div className="space-y-2 mb-4 border-t border-slate-100 pt-4">
                       <div className="flex items-start text-xs">
-                        <span className="text-slate-400 w-20 flex-shrink-0">Service</span>
+                        <span className="text-slate-400 w-20 flex-shrink-0">{t('service')}</span>
                         <span className="text-slate-600 font-medium flex-1">
                           {sampleBooking.service.name}
                         </span>
                       </div>
                       <div className="flex items-start text-xs">
-                        <span className="text-slate-400 w-20 flex-shrink-0">Staff</span>
+                        <span className="text-slate-400 w-20 flex-shrink-0">{t('staff')}</span>
                         <span className="text-slate-600 flex-1">
                           {sampleBooking.staff.name}
                         </span>
                       </div>
                       <div className="flex items-start text-xs">
-                        <span className="text-slate-400 w-20 flex-shrink-0">Date & Time</span>
+                        <span className="text-slate-400 w-20 flex-shrink-0">{t('dateTime')}</span>
                         <span className="text-slate-600 flex-1">
                           {formatDateTime(sampleBooking.dateTime)}
                         </span>
                       </div>
                       <div className="flex items-start text-xs">
-                        <span className="text-slate-400 w-20 flex-shrink-0">Duration</span>
+                        <span className="text-slate-400 w-20 flex-shrink-0">{t('duration')}</span>
                         <span className="text-slate-600 flex-1">
                           {formatDuration(sampleBooking.duration)}
                         </span>
@@ -158,14 +160,14 @@ export default function LINEMessagePreview({
                       className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-medium py-2 rounded-lg"
                       disabled
                     >
-                      View My Bookings
+                      {t('viewMyBookings')}
                     </button>
                   </div>
                 </div>
 
                 {/* Message Timestamp */}
                 <div className="text-xs text-slate-400 mt-1 ml-2">
-                  Just now
+                  {t('justNow')}
                 </div>
               </div>
             </div>
@@ -174,7 +176,7 @@ export default function LINEMessagePreview({
 
         {/* Preview Label */}
         <div className="text-center mt-4 text-sm text-slate-500">
-          Live Preview
+          {t('title')}
         </div>
       </div>
     </div>

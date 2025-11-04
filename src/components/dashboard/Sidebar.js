@@ -7,7 +7,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useNotificationBadge } from '@/hooks/useNotificationBadge';
 import { version } from '../../../package.json';
 import {
@@ -26,6 +26,7 @@ import {
 
 export default function Sidebar({ businessId, isOpen, onClose }) {
   const t = useTranslations('dashboard.sidebar');
+  const locale = useLocale();
 
   const navItems = [
     {
@@ -150,10 +151,8 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
               (item.name === 'Messaging' && showMessagingBadge) ||
               (item.name === 'Notifications' && showNotificationsBadge);
 
-            // Billing is account-wide, not business-specific
-            const href = item.name === 'Billing'
-              ? '/dashboard/billing'
-              : `/dashboard/${businessId}${item.href}`;
+            // All routes are under the businessId, including billing
+            const href = `/${locale}/dashboard/${businessId}${item.href}`;
 
             return (
               <Link

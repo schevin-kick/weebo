@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Save, CheckCircle, AlertCircle, Info, Eye, EyeOff, Key } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useBusiness } from '@/hooks/useDashboardData';
 import { useToast } from '@/contexts/ToastContext';
 import { useNotificationBadge } from '@/hooks/useNotificationBadge';
@@ -18,6 +19,7 @@ import LineBotIdHelpModal from '@/components/modals/LineBotIdHelpModal';
 import LineTokenHelpModal from '@/components/modals/LineTokenHelpModal';
 
 export default function MessagingView({ businessId }) {
+  const t = useTranslations('dashboard.messaging');
   const toast = useToast();
   const searchParams = useSearchParams();
   const { business, isLoading, mutate } = useBusiness(businessId);
@@ -61,20 +63,13 @@ export default function MessagingView({ businessId }) {
     const error = searchParams.get('error');
 
     if (success === 'line_connected') {
-      toast.success('LINE account connected successfully!');
+      toast.success(t('success.lineConnected'));
       // Clean up URL
       window.history.replaceState({}, '', `/dashboard/${businessId}/messaging`);
       // Refresh business data to show new connection status
       mutate();
     } else if (error) {
-      const errorMessages = {
-        line_oauth_failed: 'Failed to connect LINE account. Please try again.',
-        invalid_state: 'Invalid OAuth state. Please try again.',
-        no_code: 'No authorization code received. Please try again.',
-        oauth_callback_failed: 'OAuth callback failed. Please try again.',
-        no_business: 'No business found. Please contact support.',
-      };
-      toast.error(errorMessages[error] || 'An error occurred. Please try again.');
+      toast.error(t('errors.connectionFailed'));
       // Clean up URL
       window.history.replaceState({}, '', `/dashboard/${businessId}/messaging`);
     }
@@ -127,12 +122,12 @@ export default function MessagingView({ businessId }) {
     }
 
     if (!value.startsWith('@')) {
-      setBotIdError('Bot ID must start with @');
+      setBotIdError(t('lineConfig.botIdMustStartWith'));
       return false;
     }
 
     if (!/^@[a-zA-Z0-9]+$/.test(value)) {
-      setBotIdError('Bot ID must contain only letters and numbers after @');
+      setBotIdError(t('lineConfig.botIdInvalidFormat'));
       return false;
     }
 
@@ -148,7 +143,7 @@ export default function MessagingView({ businessId }) {
   const handleSave = async () => {
     // Validate bot ID before saving
     if (lineBotBasicId && !validateBotId(lineBotBasicId)) {
-      toast.error('Please fix the Bot Basic ID format');
+      toast.error(t('lineConfig.fixBotIdFormat'));
       return;
     }
 
@@ -180,11 +175,11 @@ export default function MessagingView({ businessId }) {
         throw new Error('Failed to save messaging settings');
       }
 
-      toast.success('Messaging settings saved successfully');
+      toast.success(t('success.settingsSaved'));
       mutate();
     } catch (error) {
       console.error('Save error:', error);
-      toast.error('Failed to save messaging settings');
+      toast.error(t('errors.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -192,12 +187,12 @@ export default function MessagingView({ businessId }) {
 
   const handleSetupWebhook = async () => {
     if (!channelAccessToken || channelAccessToken === '••••••••') {
-      toast.error('Please enter a valid channel access token first');
+      toast.error(t('lineConfig.enterTokenFirst'));
       return;
     }
 
     if (!lineBotBasicId) {
-      toast.error('Please enter your bot basic ID first');
+      toast.error(t('lineConfig.enterBotIdFirst'));
       return;
     }
 
@@ -221,11 +216,11 @@ export default function MessagingView({ businessId }) {
 
       setWebhookConfigured(true);
       setWebhookUrl(data.webhookUrl);
-      toast.success(data.message || 'Webhook configured successfully!');
+      toast.success(t('webhook.successTitle'));
       mutate(); // Refresh business data
     } catch (error) {
       console.error('Webhook setup error:', error);
-      toast.error(error.message || 'Failed to setup webhook');
+      toast.error(t('errors.webhookSetupFailed'));
     } finally {
       setIsSettingUpWebhook(false);
     }
@@ -237,8 +232,8 @@ export default function MessagingView({ businessId }) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Messaging Settings</h1>
-          <p className="text-slate-600">Customize LINE message templates</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <div className="space-y-4">
           <Skeleton className="h-32" rounded="xl" />
@@ -255,8 +250,8 @@ export default function MessagingView({ businessId }) {
       {/* Page Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Messaging Settings</h1>
-          <p className="text-slate-600">Customize LINE message templates and connection</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
         <button
           onClick={handleSave}
@@ -264,7 +259,7 @@ export default function MessagingView({ businessId }) {
           className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Save className="w-4 h-4" />
-          {isSaving ? 'Saving...' : 'Save Changes'}
+          {isSaving ? t('saving') : t('saveButton')}
         </button>
       </div>
 
@@ -273,9 +268,9 @@ export default function MessagingView({ businessId }) {
         <div className="space-y-6">
           {/* Messaging Mode Selector */}
           <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-1">Messaging Mode</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">{t('messagingMode.title')}</h2>
             <p className="text-sm text-slate-600 mb-4">
-              Choose how you want to send messages to customers
+              {t('messagingMode.description')}
             </p>
 
             <div className="space-y-3">
@@ -293,9 +288,9 @@ export default function MessagingView({ businessId }) {
                   className="mt-1"
                 />
                 <div className="flex-1">
-                  <div className="font-medium text-slate-900">Use Kitsune Bot (Recommended)</div>
+                  <div className="font-medium text-slate-900">{t('messagingMode.shared.title')}</div>
                   <div className="text-sm text-slate-600 mt-1">
-                    Simple setup, no configuration needed. Messages sent from Kitsune's LINE bot.
+                    {t('messagingMode.shared.description')}
                   </div>
                 </div>
               </label>
@@ -314,9 +309,9 @@ export default function MessagingView({ businessId }) {
                   className="mt-1"
                 />
                 <div className="flex-1">
-                  <div className="font-medium text-slate-900">Use My LINE Bot (Advanced)</div>
+                  <div className="font-medium text-slate-900">{t('messagingMode.ownBot.title')}</div>
                   <div className="text-sm text-slate-600 mt-1">
-                    Your own branding, unlimited messages. Requires LINE Official Account setup.
+                    {t('messagingMode.ownBot.description')}
                   </div>
                 </div>
               </label>
@@ -327,9 +322,9 @@ export default function MessagingView({ businessId }) {
           {messagingMode === 'own_bot' && (
             <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
               <div className="p-6 border-b border-slate-200">
-                <h2 className="text-lg font-semibold text-slate-900 mb-1">LINE Bot Configuration</h2>
+                <h2 className="text-lg font-semibold text-slate-900 mb-1">{t('lineConfig.title')}</h2>
                 <p className="text-sm text-slate-600">
-                  Enter your LINE Official Account credentials
+                  {t('lineConfig.description')}
                 </p>
               </div>
 
@@ -347,12 +342,12 @@ export default function MessagingView({ businessId }) {
                   <div className="flex-1">
                     <div className={`font-medium ${isLineConnected ? 'text-green-600' : 'text-slate-600'
                       }`}>
-                      {isLineConnected ? 'Credentials Saved' : 'Credentials Not Configured'}
+                      {isLineConnected ? t('lineConfig.credentialsSaved') : t('lineConfig.credentialsNotConfigured')}
                     </div>
                     <p className="text-xs text-slate-500 mt-1">
                       {isLineConnected
-                        ? 'Your bot credentials are configured'
-                        : 'Add your Channel Access Token and Bot Basic ID below'}
+                        ? t('lineConfig.credentialsSavedDesc')
+                        : t('lineConfig.credentialsNotConfiguredDesc')}
                     </p>
                   </div>
                 </div>
@@ -362,14 +357,14 @@ export default function MessagingView({ businessId }) {
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-slate-700">
                       <Key className="w-4 h-4 inline mr-1" />
-                      Channel Access Token
+                      {t('lineConfig.channelAccessToken')}
                     </label>
                     <button
                       onClick={() => setShowTokenHelpModal(true)}
                       className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 font-medium"
                     >
                       <Info className="w-3.5 h-3.5" />
-                      How do I get this?
+                      {t('lineConfig.howToGetToken')}
                     </button>
                   </div>
                   <div className="relative">
@@ -377,7 +372,7 @@ export default function MessagingView({ businessId }) {
                       type={showToken ? 'text' : 'password'}
                       value={channelAccessToken}
                       onChange={(e) => setChannelAccessToken(e.target.value)}
-                      placeholder="Enter your LINE Channel Access Token"
+                      placeholder={t('lineConfig.channelAccessTokenPlaceholder')}
                       className="w-full px-4 py-2 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent font-mono text-sm"
                     />
                     <button
@@ -389,7 +384,7 @@ export default function MessagingView({ businessId }) {
                     </button>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    Get this from LINE Developers Console → Your Channel → Messaging API → Channel access token (long-lived)
+                    {t('lineConfig.channelAccessTokenHelp')}
                   </p>
                 </div>
 
@@ -397,21 +392,21 @@ export default function MessagingView({ businessId }) {
                 <div className="mt-6 pt-6 border-t border-slate-200">
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-slate-700">
-                      Bot Basic ID
+                      {t('lineConfig.botBasicId')}
                     </label>
                     <button
                       onClick={() => setShowHelpModal(true)}
                       className="inline-flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 font-medium"
                     >
                       <Info className="w-3.5 h-3.5" />
-                      How do I find this?
+                      {t('lineConfig.howToFindId')}
                     </button>
                   </div>
                   <input
                     type="text"
                     value={lineBotBasicId}
                     onChange={(e) => handleBotIdChange(e.target.value)}
-                    placeholder="@abc1234"
+                    placeholder={t('lineConfig.botBasicIdPlaceholder')}
                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${botIdError ? 'border-red-300' : 'border-slate-300'
                       }`}
                   />
@@ -421,17 +416,17 @@ export default function MessagingView({ businessId }) {
                   {!botIdError && lineBotBasicId && (
                     <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" />
-                      Valid Bot ID format
+                      {t('lineConfig.validBotIdFormat')}
                     </p>
                   )}
                   <p className="text-xs text-slate-500 mt-1">
-                    Your LINE bot's unique identifier (e.g., @abc1234). This allows customers to add your bot as a friend.
+                    {t('lineConfig.botBasicIdHelp')}
                   </p>
                 </div>
 
                 {/* Webhook Setup Section */}
                 <div className="mt-6 pt-6 border-t border-slate-200">
-                  <h3 className="text-sm font-semibold text-slate-900 mb-3">Webhook Configuration</h3>
+                  <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('webhook.title')}</h3>
 
                   {/* Webhook warning */}
                   {!webhookAcknowledged && (
@@ -439,10 +434,9 @@ export default function MessagingView({ businessId }) {
                       <div className="flex items-start gap-2">
                         <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                         <div>
-                          <div className="font-medium text-amber-900">Important: Webhook Override</div>
+                          <div className="font-medium text-amber-900">{t('webhook.importantTitle')}</div>
                           <div className="text-sm text-amber-800 mt-1">
-                            We will override your existing webhook URL to enable messaging.
-                            Any existing webhook integrations will stop working.
+                            {t('webhook.importantMessage')}
                           </div>
                           <label className="flex items-center gap-2 mt-3">
                             <input
@@ -451,7 +445,7 @@ export default function MessagingView({ businessId }) {
                               onChange={(e) => setWebhookAcknowledged(e.target.checked)}
                               className="rounded border-amber-300"
                             />
-                            <span className="text-sm">I understand and accept the webhook override</span>
+                            <span className="text-sm">{t('webhook.acknowledge')}</span>
                           </label>
                         </div>
                       </div>
@@ -466,7 +460,7 @@ export default function MessagingView({ businessId }) {
                         disabled={!channelAccessToken || channelAccessToken === '••••••••' || !lineBotBasicId || isSettingUpWebhook}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {isSettingUpWebhook ? 'Setting up...' : (webhookConfigured ? 'Reconfigure Webhook' : 'Setup Webhook')}
+                        {isSettingUpWebhook ? t('webhook.settingUp') : (webhookConfigured ? t('webhook.reconfigureButton') : t('webhook.setupButton'))}
                       </button>
 
                       {webhookConfigured && webhookUrl && (
@@ -475,7 +469,7 @@ export default function MessagingView({ businessId }) {
                             <div className="flex items-start gap-2">
                               <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                               <div className="flex-1">
-                                <div className="text-sm font-medium text-green-900">Webhook configured successfully</div>
+                                <div className="text-sm font-medium text-green-900">{t('webhook.successTitle')}</div>
                                 <div className="text-xs text-green-700 mt-1 font-mono break-all">{webhookUrl}</div>
                               </div>
                             </div>
@@ -484,9 +478,9 @@ export default function MessagingView({ businessId }) {
                             <div className="flex items-start gap-2">
                               <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                               <div className="flex-1">
-                                <div className="text-sm font-medium text-blue-900">Important: Enable webhook in LINE Console</div>
+                                <div className="text-sm font-medium text-blue-900">{t('webhook.enableInConsoleTitle')}</div>
                                 <div className="text-xs text-blue-700 mt-1">
-                                  Go to LINE Developers Console → Messaging API → Enable the "Use webhook" toggle to activate webhook delivery.
+                                  {t('webhook.enableInConsoleMessage')}
                                 </div>
                               </div>
                             </div>
@@ -503,9 +497,9 @@ export default function MessagingView({ businessId }) {
           {/* Message Template Editor */}
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div className="p-6 border-b border-slate-200">
-              <h2 className="text-lg font-semibold text-slate-900 mb-1">Message Templates</h2>
+              <h2 className="text-lg font-semibold text-slate-900 mb-1">{t('templates.title')}</h2>
               <p className="text-sm text-slate-600">
-                Customize the header and body text for each message type
+                {t('templates.description')}
               </p>
             </div>
 
@@ -513,9 +507,9 @@ export default function MessagingView({ businessId }) {
             <div className="border-b border-slate-200">
               <div className="flex">
                 {[
-                  { id: 'confirmation', label: 'Confirmation', color: 'green' },
-                  { id: 'cancellation', label: 'Cancellation', color: 'red' },
-                  { id: 'reminder', label: 'Reminder', color: 'orange' },
+                  { id: 'confirmation', label: t('templates.confirmation'), color: 'green' },
+                  { id: 'cancellation', label: t('templates.cancellation'), color: 'red' },
+                  { id: 'reminder', label: t('templates.reminder'), color: 'orange' },
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -536,7 +530,7 @@ export default function MessagingView({ businessId }) {
               {/* Header Input */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Header Text
+                  {t('templates.headerText')}
                 </label>
                 <input
                   type="text"
@@ -544,11 +538,11 @@ export default function MessagingView({ businessId }) {
                   onChange={(e) => handleTemplateChange(activeTab, 'header', e.target.value)}
                   maxLength={100}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  placeholder="Enter header text..."
+                  placeholder={t('templates.headerPlaceholder')}
                 />
                 <div className="flex justify-between mt-1">
                   <p className="text-xs text-slate-500">
-                    Bold text shown at the top of the message
+                    {t('templates.headerHelp')}
                   </p>
                   <p className="text-xs text-slate-400">
                     {currentTemplate.header.length}/100
@@ -559,7 +553,7 @@ export default function MessagingView({ businessId }) {
               {/* Body Input */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Body Text
+                  {t('templates.bodyText')}
                 </label>
                 <textarea
                   value={currentTemplate.body}
@@ -567,11 +561,11 @@ export default function MessagingView({ businessId }) {
                   maxLength={500}
                   rows={3}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
-                  placeholder="Enter body text..."
+                  placeholder={t('templates.bodyPlaceholder')}
                 />
                 <div className="flex justify-between mt-1">
                   <p className="text-xs text-slate-500">
-                    Additional message details shown below the header
+                    {t('templates.bodyHelp')}
                   </p>
                   <p className="text-xs text-slate-400">
                     {currentTemplate.body.length}/500
@@ -584,9 +578,9 @@ export default function MessagingView({ businessId }) {
           {/* Reminder Settings */}
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div className="p-6 border-b border-slate-200">
-              <h2 className="text-lg font-semibold text-slate-900 mb-1">Reminder Settings</h2>
+              <h2 className="text-lg font-semibold text-slate-900 mb-1">{t('reminder.title')}</h2>
               <p className="text-sm text-slate-600">
-                Automatically send reminder messages before appointments
+                {t('reminder.description')}
               </p>
             </div>
 
@@ -594,9 +588,9 @@ export default function MessagingView({ businessId }) {
               {/* Enable Reminders Toggle */}
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-medium text-slate-900">Enable Reminders</div>
+                  <div className="font-medium text-slate-900">{t('reminder.enableReminders')}</div>
                   <div className="text-sm text-slate-600">
-                    Send automated reminders to customers
+                    {t('reminder.enableRemindersDesc')}
                   </div>
                 </div>
                 <button
@@ -615,7 +609,7 @@ export default function MessagingView({ businessId }) {
               {enableReminders && (
                 <div>
                   <p className="text-sm text-slate-600">
-                    Reminders will be sent daily at 9:00 AM UTC for all appointments in the next 24 hours.
+                    {t('reminder.scheduleInfo')}
                   </p>
                 </div>
               )}
@@ -626,25 +620,25 @@ export default function MessagingView({ businessId }) {
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div className="p-6 border-b border-slate-200">
               <h2 className="text-lg font-semibold text-slate-900 mb-1">
-                Message Hero Background
+                {t('heroBackground.title')}
               </h2>
               <p className="text-sm text-slate-600">
-                Choose background color for logo display (helps white/light logos stand out)
+                {t('heroBackground.description')}
               </p>
             </div>
 
             <div className="p-6">
               <label className="block text-sm font-medium text-slate-700 mb-3">
-                Background Color
+                {t('heroBackground.backgroundColorLabel')}
               </label>
 
               {/* Preset Color Options */}
               <div className="grid grid-cols-4 gap-3 mb-4">
                 {[
-                  { name: 'White', value: '#FFFFFF' },
-                  { name: 'Light Gray', value: '#F1F5F9' },
-                  { name: 'Dark Gray', value: '#1E293B' },
-                  { name: 'Black', value: '#000000' },
+                  { name: t('heroBackground.white'), value: '#FFFFFF' },
+                  { name: t('heroBackground.lightGray'), value: '#F1F5F9' },
+                  { name: t('heroBackground.darkGray'), value: '#1E293B' },
+                  { name: t('heroBackground.black'), value: '#000000' },
                 ].map((color) => (
                   <button
                     key={color.value}
@@ -668,7 +662,7 @@ export default function MessagingView({ businessId }) {
 
               {/* Custom Color Picker */}
               <div className="flex items-center gap-3">
-                <label className="text-sm text-slate-600">Custom:</label>
+                <label className="text-sm text-slate-600">{t('heroBackground.customLabel')}</label>
                 <input
                   type="color"
                   value={heroBackgroundColor}
@@ -680,12 +674,12 @@ export default function MessagingView({ businessId }) {
                   value={heroBackgroundColor}
                   onChange={(e) => setHeroBackgroundColor(e.target.value)}
                   className="flex-1 px-3 py-2 text-sm border border-slate-300 rounded-lg font-mono"
-                  placeholder="#FFFFFF"
+                  placeholder={t('heroBackground.customPlaceholder')}
                 />
               </div>
 
               <p className="text-xs text-slate-500 mt-3">
-                Preview updates in real-time on the right →
+                {t('heroBackground.previewNote')}
               </p>
             </div>
           </div>
@@ -712,7 +706,7 @@ export default function MessagingView({ businessId }) {
           className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
         >
           <Save className="w-5 h-5" />
-          {isSaving ? 'Saving...' : 'Save Changes'}
+          {isSaving ? t('saving') : t('saveButton')}
         </button>
       </div>
 

@@ -286,6 +286,62 @@
     "subscribeNow": "Subscribe Now",
     "viewBilling": "View Billing"
   },
+  "billing": {
+    "title": "Billing",
+    "subtitle": "Manage your subscription and payment information",
+    "backToDashboard": "Back to Dashboard",
+    "signOut": "Sign out",
+    "loading": "Loading billing information...",
+    "messages": {
+      "subscriptionActivated": "Subscription Activated!",
+      "thankYouSubscribing": "Thank you for subscribing. Your subscription is now active.",
+      "checkoutCanceled": "Checkout Canceled",
+      "canSubscribeAnytime": "You can subscribe anytime by clicking the button below.",
+      "error": "Error"
+    },
+    "subscriptionStatus": {
+      "title": "Subscription Status",
+      "preTrial": {
+        "description": "Create your first business to start your free {days}-day trial.",
+        "createBusiness": "Create Business"
+      },
+      "trialing": {
+        "status": "Free Trial Active",
+        "daysRemaining": "You have <strong>{count, plural, one {# day} other {# days}}</strong> remaining in your free trial.",
+        "subscribeNow": "Subscribe Now"
+      },
+      "active": {
+        "status": "Subscription Active",
+        "description": "Your subscription is active and in good standing.",
+        "manageSubscription": "Manage Subscription"
+      },
+      "inactive": {
+        "status": "Subscription Inactive",
+        "trialExpired": "Your free trial has ended.",
+        "pastDue": "Your payment is past due.",
+        "canceled": "Your subscription has been canceled.",
+        "unpaid": "Your subscription is unpaid.",
+        "updatePaymentMethod": "Update Payment Method",
+        "subscribeNow": "Subscribe Now"
+      }
+    },
+    "plan": {
+      "title": "Kitsune Pro Plan",
+      "pricePerMonth": "/ month",
+      "trialIncluded": "{days}-day free trial included",
+      "loading": "Loading...",
+      "everythingYouNeed": "Everything you need:",
+      "features": {
+        "unlimitedBookings": "Unlimited bookings",
+        "customServicesPricing": "Custom services & pricing",
+        "staffManagement": "Staff management",
+        "availabilityManagement": "Availability management",
+        "customerManagement": "Customer management",
+        "lineMessaging": "LINE messaging integration",
+        "analyticsDashboard": "Analytics dashboard"
+      }
+    }
+  },
   "dashboard": {
     "welcome": "Welcome back",
     "selectBusiness": "Select a Business",
@@ -601,6 +657,166 @@
         "printOpened": "Opening print dialog",
         "linkCopied": "Link copied to clipboard",
         "generateFailed": "Failed to generate QR code"
+      }
+    },
+    "messaging": {
+      "title": "Messaging Settings",
+      "subtitle": "Customize LINE message templates and connection",
+      "saveButton": "Save Changes",
+      "saving": "Saving...",
+      "messagingMode": {
+        "title": "Messaging Mode",
+        "description": "Choose how you want to send messages to customers",
+        "shared": {
+          "title": "Use Kitsune Bot (Recommended)",
+          "description": "Simple setup, no configuration needed. Messages sent from Kitsune's LINE bot."
+        },
+        "ownBot": {
+          "title": "Use My LINE Bot (Advanced)",
+          "description": "Your own branding, unlimited messages. Requires LINE Official Account setup."
+        }
+      },
+      "lineConfig": {
+        "title": "LINE Bot Configuration",
+        "description": "Enter your LINE Official Account credentials",
+        "credentialsSaved": "Credentials Saved",
+        "credentialsSavedDesc": "Your bot credentials are configured",
+        "credentialsNotConfigured": "Credentials Not Configured",
+        "credentialsNotConfiguredDesc": "Add your Channel Access Token and Bot Basic ID below",
+        "channelAccessToken": "Channel Access Token",
+        "channelAccessTokenPlaceholder": "Enter your LINE Channel Access Token",
+        "channelAccessTokenHelp": "Get this from LINE Developers Console → Your Channel → Messaging API → Channel access token (long-lived)",
+        "howToGetToken": "How do I get this?",
+        "botBasicId": "Bot Basic ID",
+        "botBasicIdPlaceholder": "@abc1234",
+        "botBasicIdHelp": "Your LINE bot's unique identifier (e.g., @abc1234). This allows customers to add your bot as a friend.",
+        "howToFindId": "How do I find this?",
+        "botIdMustStartWith": "Bot ID must start with @",
+        "botIdInvalidFormat": "Bot ID must contain only letters and numbers after @",
+        "validBotIdFormat": "Valid Bot ID format",
+        "enterTokenFirst": "Please enter a valid channel access token first",
+        "enterBotIdFirst": "Please enter your bot basic ID first",
+        "fixBotIdFormat": "Please fix the Bot Basic ID format"
+      },
+      "webhook": {
+        "title": "Webhook Configuration",
+        "importantTitle": "Important: Webhook Override",
+        "importantMessage": "We will override your existing webhook URL to enable messaging. Any existing webhook integrations will stop working.",
+        "acknowledge": "I understand and accept the webhook override",
+        "setupButton": "Setup Webhook",
+        "reconfigureButton": "Reconfigure Webhook",
+        "settingUp": "Setting up...",
+        "successTitle": "Webhook configured successfully",
+        "enableInConsoleTitle": "Important: Enable webhook in LINE Console",
+        "enableInConsoleMessage": "Go to LINE Developers Console → Messaging API → Enable the \"Use webhook\" toggle to activate webhook delivery."
+      },
+      "templates": {
+        "title": "Message Templates",
+        "description": "Customize the header and body text for each message type",
+        "confirmation": "Confirmation",
+        "cancellation": "Cancellation",
+        "reminder": "Reminder",
+        "headerText": "Header Text",
+        "headerPlaceholder": "Enter header text...",
+        "headerHelp": "Bold text shown at the top of the message",
+        "bodyText": "Body Text",
+        "bodyPlaceholder": "Enter body text...",
+        "bodyHelp": "Additional message details shown below the header"
+      },
+      "reminder": {
+        "title": "Reminder Settings",
+        "description": "Automatically send reminder messages before appointments",
+        "enableReminders": "Enable Reminders",
+        "enableRemindersDesc": "Send automated reminders to customers",
+        "scheduleInfo": "Reminders will be sent daily at 9:00 AM UTC for all appointments in the next 24 hours."
+      },
+      "heroBackground": {
+        "title": "Message Hero Background",
+        "description": "Choose background color for logo display (helps white/light logos stand out)",
+        "backgroundColorLabel": "Background Color",
+        "white": "White",
+        "lightGray": "Light Gray",
+        "darkGray": "Dark Gray",
+        "black": "Black",
+        "customLabel": "Custom:",
+        "customPlaceholder": "#FFFFFF",
+        "previewNote": "Preview updates in real-time on the right →"
+      },
+      "preview": {
+        "title": "Live Preview",
+        "businessName": "Kevo's Kuts",
+        "lineOfficialAccount": "LINE Official Account",
+        "bookConfirmed": "Book confirmed",
+        "niceSeeYouSoon": "nice see u soon",
+        "service": "Service",
+        "staff": "Staff",
+        "dateTime": "Date & Time",
+        "duration": "Duration",
+        "viewMyBookings": "View My Bookings",
+        "justNow": "Just now"
+      },
+      "success": {
+        "settingsSaved": "Messaging settings saved successfully",
+        "lineConnected": "LINE account connected successfully!"
+      },
+      "errors": {
+        "saveFailed": "Failed to save messaging settings",
+        "webhookSetupFailed": "Failed to setup webhook",
+        "connectionFailed": "Failed to connect LINE account. Please try again."
+      },
+      "helpModals": {
+        "botId": {
+          "title": "How to Find Your Bot Basic ID",
+          "introduction": "Your Bot Basic ID is a unique identifier for your LINE Official Account. It's used to create the \"Add Friend\" link that allows customers to connect with your bot.",
+          "followSteps": "Follow these steps:",
+          "step1Title": "Go to LINE Developers Console",
+          "step1Description": "Open the LINE Developers Console in a new tab",
+          "step1Button": "Open LINE Console",
+          "step2Title": "Select Your Provider",
+          "step2Description": "Click on the provider that contains your Messaging API channel",
+          "step3Title": "Select Your Messaging API Channel",
+          "step3Description": "Choose the channel associated with your business bot",
+          "step4Title": "Go to \"Messaging API\" Tab",
+          "step4Description": "Click on the \"Messaging API\" tab in the navigation",
+          "step5Title": "Find Your Bot Basic ID",
+          "step5Description": "Scroll down to find the \"Bot basic ID\" field. It will look like this:",
+          "step5Example": "Bot basic ID:",
+          "step6Title": "Copy and Paste",
+          "step6Description": "Copy the Bot Basic ID (including the @ symbol) and paste it into the input field",
+          "formatTitle": "Format",
+          "formatDescription": "The Bot Basic ID always starts with @ followed by alphanumeric characters.",
+          "formatExample": "Example:",
+          "needHelpTitle": "Need More Help?",
+          "needHelpDescription": "If you're having trouble finding your Bot Basic ID, check out the official LINE documentation:",
+          "needHelpLink": "LINE Messaging API Documentation",
+          "gotItButton": "Got It!"
+        },
+        "token": {
+          "title": "How to Get Your Channel Access Token",
+          "introduction": "Your Channel Access Token is a secret key that allows Kitsune to send messages through your LINE Official Account. Keep this token secure and never share it publicly.",
+          "followSteps": "Follow these steps:",
+          "step1Title": "Go to LINE Developers Console",
+          "step1Description": "Open the LINE Developers Console in a new tab",
+          "step1Button": "Open LINE Console",
+          "step2Title": "Select Your Provider",
+          "step2Description": "Click on the provider that contains your Messaging API channel",
+          "step3Title": "Select Your Messaging API Channel",
+          "step3Description": "Choose the channel associated with your business bot",
+          "step4Title": "Go to \"Messaging API\" Tab",
+          "step4Description": "Click on the \"Messaging API\" tab in the navigation",
+          "step5Title": "Issue Channel Access Token",
+          "step5Description": "Scroll down to the \"Channel access token (long-lived)\" section and click the \"Issue\" button if you haven't already",
+          "step6Title": "Copy the Token",
+          "step6Description": "Click the \"Copy\" button next to your token. The token is a long string of characters.",
+          "step7Title": "Paste into Kitsune",
+          "step7Description": "Paste the token into the Channel Access Token field in Kitsune",
+          "securityTitle": "Security Notice",
+          "securityDescription": "This token grants full access to send messages from your LINE Official Account. Never share it publicly or commit it to version control. If you believe your token has been compromised, revoke it immediately in the LINE Developers Console and issue a new one.",
+          "needHelpTitle": "Need More Help?",
+          "needHelpDescription": "If you're having trouble finding your Channel Access Token, check out the official LINE documentation:",
+          "needHelpLink": "LINE Messaging API Documentation",
+          "gotItButton": "Got It!"
+        }
       }
     }
   },

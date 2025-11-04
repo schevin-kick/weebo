@@ -286,6 +286,62 @@
     "subscribeNow": "立即訂閱",
     "viewBilling": "查看帳單"
   },
+  "billing": {
+    "title": "帳單",
+    "subtitle": "管理您的訂閱和付款資訊",
+    "backToDashboard": "返回儀表板",
+    "signOut": "登出",
+    "loading": "載入帳單資訊中...",
+    "messages": {
+      "subscriptionActivated": "訂閱已啟動！",
+      "thankYouSubscribing": "感謝您的訂閱。您的訂閱現已啟動。",
+      "checkoutCanceled": "結帳已取消",
+      "canSubscribeAnytime": "您可以隨時點擊下方按鈕進行訂閱。",
+      "error": "錯誤"
+    },
+    "subscriptionStatus": {
+      "title": "訂閱狀態",
+      "preTrial": {
+        "description": "建立您的第一個企業以開始 {days} 天免費試用。",
+        "createBusiness": "建立企業"
+      },
+      "trialing": {
+        "status": "免費試用進行中",
+        "daysRemaining": "您的免費試用還剩 <strong>{count} 天</strong>。",
+        "subscribeNow": "立即訂閱"
+      },
+      "active": {
+        "status": "訂閱有效",
+        "description": "您的訂閱已啟動且狀態良好。",
+        "manageSubscription": "管理訂閱"
+      },
+      "inactive": {
+        "status": "訂閱無效",
+        "trialExpired": "您的免費試用已結束。",
+        "pastDue": "您的付款已逾期。",
+        "canceled": "您的訂閱已取消。",
+        "unpaid": "您的訂閱未付款。",
+        "updatePaymentMethod": "更新付款方式",
+        "subscribeNow": "立即訂閱"
+      }
+    },
+    "plan": {
+      "title": "Kitsune 專業版方案",
+      "pricePerMonth": "/ 月",
+      "trialIncluded": "包含 {days} 天免費試用",
+      "loading": "載入中...",
+      "everythingYouNeed": "您所需的一切：",
+      "features": {
+        "unlimitedBookings": "無限次預約",
+        "customServicesPricing": "客製化服務與定價",
+        "staffManagement": "員工管理",
+        "availabilityManagement": "空檔管理",
+        "customerManagement": "客戶管理",
+        "lineMessaging": "LINE 訊息整合",
+        "analyticsDashboard": "數據分析儀表板"
+      }
+    }
+  },
   "dashboard": {
     "welcome": "歡迎回來",
     "selectBusiness": "選擇企業",
@@ -601,6 +657,166 @@
         "printOpened": "正在開啟列印對話框",
         "linkCopied": "連結已複製到剪貼簿",
         "generateFailed": "產生 QR Code 失敗"
+      }
+    },
+    "messaging": {
+      "title": "訊息設定",
+      "subtitle": "自訂 LINE 訊息範本與連線",
+      "saveButton": "儲存變更",
+      "saving": "儲存中...",
+      "messagingMode": {
+        "title": "訊息模式",
+        "description": "選擇如何傳送訊息給客戶",
+        "shared": {
+          "title": "使用 Kitsune 機器人（推薦）",
+          "description": "簡單設定，無需配置。訊息由 Kitsune 的 LINE 機器人發送。"
+        },
+        "ownBot": {
+          "title": "使用我的 LINE 機器人（進階）",
+          "description": "您自己的品牌，無限訊息。需要設定 LINE 官方帳號。"
+        }
+      },
+      "lineConfig": {
+        "title": "LINE 機器人設定",
+        "description": "輸入您的 LINE 官方帳號憑證",
+        "credentialsSaved": "憑證已儲存",
+        "credentialsSavedDesc": "您的機器人憑證已設定完成",
+        "credentialsNotConfigured": "憑證尚未設定",
+        "credentialsNotConfiguredDesc": "請在下方新增您的頻道存取權杖和機器人基本 ID",
+        "channelAccessToken": "頻道存取權杖",
+        "channelAccessTokenPlaceholder": "輸入您的 LINE 頻道存取權杖",
+        "channelAccessTokenHelp": "從 LINE Developers Console → 您的頻道 → Messaging API → 頻道存取權杖（長期）取得",
+        "howToGetToken": "如何取得？",
+        "botBasicId": "機器人基本 ID",
+        "botBasicIdPlaceholder": "@abc1234",
+        "botBasicIdHelp": "您的 LINE 機器人的唯一識別碼（例如：@abc1234）。這允許客戶將您的機器人加為好友。",
+        "howToFindId": "如何找到？",
+        "botIdMustStartWith": "機器人 ID 必須以 @ 開頭",
+        "botIdInvalidFormat": "機器人 ID 在 @ 之後只能包含字母和數字",
+        "validBotIdFormat": "有效的機器人 ID 格式",
+        "enterTokenFirst": "請先輸入有效的頻道存取權杖",
+        "enterBotIdFirst": "請先輸入您的機器人基本 ID",
+        "fixBotIdFormat": "請修正機器人基本 ID 格式"
+      },
+      "webhook": {
+        "title": "Webhook 設定",
+        "importantTitle": "重要：Webhook 覆蓋",
+        "importantMessage": "我們將覆蓋您現有的 webhook URL 以啟用訊息功能。任何現有的 webhook 整合將停止運作。",
+        "acknowledge": "我了解並接受 webhook 覆蓋",
+        "setupButton": "設定 Webhook",
+        "reconfigureButton": "重新設定 Webhook",
+        "settingUp": "設定中...",
+        "successTitle": "Webhook 設定成功",
+        "enableInConsoleTitle": "重要：在 LINE Console 啟用 webhook",
+        "enableInConsoleMessage": "前往 LINE Developers Console → Messaging API → 啟用「使用 webhook」切換以啟動 webhook 傳遞。"
+      },
+      "templates": {
+        "title": "訊息範本",
+        "description": "為每種訊息類型自訂標題和內文",
+        "confirmation": "確認",
+        "cancellation": "取消",
+        "reminder": "提醒",
+        "headerText": "標題文字",
+        "headerPlaceholder": "輸入標題文字...",
+        "headerHelp": "顯示在訊息頂部的粗體文字",
+        "bodyText": "內文",
+        "bodyPlaceholder": "輸入內文...",
+        "bodyHelp": "顯示在標題下方的額外訊息詳情"
+      },
+      "reminder": {
+        "title": "提醒設定",
+        "description": "在預約前自動發送提醒訊息",
+        "enableReminders": "啟用提醒",
+        "enableRemindersDesc": "向客戶發送自動提醒",
+        "scheduleInfo": "提醒將每天 UTC 上午 9:00 發送，提醒未來 24 小時內的所有預約。"
+      },
+      "heroBackground": {
+        "title": "訊息主圖背景",
+        "description": "選擇標誌顯示的背景顏色（幫助白色/淺色標誌更醒目）",
+        "backgroundColorLabel": "背景顏色",
+        "white": "白色",
+        "lightGray": "淺灰色",
+        "darkGray": "深灰色",
+        "black": "黑色",
+        "customLabel": "自訂：",
+        "customPlaceholder": "#FFFFFF",
+        "previewNote": "預覽會即時更新在右側 →"
+      },
+      "preview": {
+        "title": "即時預覽",
+        "businessName": "Kevo's Kuts",
+        "lineOfficialAccount": "LINE 官方帳號",
+        "bookConfirmed": "預約已確認",
+        "niceSeeYouSoon": "期待見到您",
+        "service": "服務",
+        "staff": "員工",
+        "dateTime": "日期與時間",
+        "duration": "時長",
+        "viewMyBookings": "查看我的預約",
+        "justNow": "剛剛"
+      },
+      "success": {
+        "settingsSaved": "訊息設定已成功儲存",
+        "lineConnected": "LINE 帳號連線成功！"
+      },
+      "errors": {
+        "saveFailed": "儲存訊息設定失敗",
+        "webhookSetupFailed": "設定 webhook 失敗",
+        "connectionFailed": "LINE 帳號連線失敗。請重試。"
+      },
+      "helpModals": {
+        "botId": {
+          "title": "如何找到您的機器人基本 ID",
+          "introduction": "您的機器人基本 ID 是您 LINE 官方帳號的唯一識別碼。它用於建立「加入好友」連結，讓客戶可以與您的機器人連線。",
+          "followSteps": "請依照以下步驟：",
+          "step1Title": "前往 LINE Developers Console",
+          "step1Description": "在新分頁開啟 LINE Developers Console",
+          "step1Button": "開啟 LINE Console",
+          "step2Title": "選擇您的提供者",
+          "step2Description": "點擊包含您 Messaging API 頻道的提供者",
+          "step3Title": "選擇您的 Messaging API 頻道",
+          "step3Description": "選擇與您的商業機器人關聯的頻道",
+          "step4Title": "前往「Messaging API」分頁",
+          "step4Description": "點擊導覽列中的「Messaging API」分頁",
+          "step5Title": "找到您的機器人基本 ID",
+          "step5Description": "向下捲動找到「Bot basic ID」欄位。它看起來像這樣：",
+          "step5Example": "Bot basic ID：",
+          "step6Title": "複製並貼上",
+          "step6Description": "複製機器人基本 ID（包括 @ 符號）並貼到輸入欄位中",
+          "formatTitle": "格式",
+          "formatDescription": "機器人基本 ID 必須以 @ 開頭，後接英數字元。",
+          "formatExample": "範例：",
+          "needHelpTitle": "需要更多協助？",
+          "needHelpDescription": "如果您在尋找機器人基本 ID 時遇到困難，請查看 LINE 官方文件：",
+          "needHelpLink": "LINE Messaging API 文件",
+          "gotItButton": "知道了！"
+        },
+        "token": {
+          "title": "如何取得您的頻道存取權杖",
+          "introduction": "您的頻道存取權杖是一個密鑰，允許 Kitsune 透過您的 LINE 官方帳號發送訊息。請妥善保管此權杖，切勿公開分享。",
+          "followSteps": "請依照以下步驟：",
+          "step1Title": "前往 LINE Developers Console",
+          "step1Description": "在新分頁開啟 LINE Developers Console",
+          "step1Button": "開啟 LINE Console",
+          "step2Title": "選擇您的提供者",
+          "step2Description": "點擊包含您 Messaging API 頻道的提供者",
+          "step3Title": "選擇您的 Messaging API 頻道",
+          "step3Description": "選擇與您的商業機器人關聯的頻道",
+          "step4Title": "前往「Messaging API」分頁",
+          "step4Description": "點擊導覽列中的「Messaging API」分頁",
+          "step5Title": "發行頻道存取權杖",
+          "step5Description": "向下捲動至「Channel access token (long-lived)」區段，如果您還沒發行，請點擊「Issue」按鈕",
+          "step6Title": "複製權杖",
+          "step6Description": "點擊權杖旁的「Copy」按鈕。權杖是一長串字元。",
+          "step7Title": "貼到 Kitsune",
+          "step7Description": "將權杖貼到 Kitsune 的頻道存取權杖欄位中",
+          "securityTitle": "安全提醒",
+          "securityDescription": "此權杖可完全存取您的 LINE 官方帳號以發送訊息。切勿公開分享或將其提交到版本控制系統。如果您認為權杖已遭洩露，請立即在 LINE Developers Console 撤銷並發行新權杖。",
+          "needHelpTitle": "需要更多協助？",
+          "needHelpDescription": "如果您在尋找頻道存取權杖時遇到困難，請查看 LINE 官方文件：",
+          "needHelpLink": "LINE Messaging API 文件",
+          "gotItButton": "知道了！"
+        }
       }
     }
   },

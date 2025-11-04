@@ -7,9 +7,12 @@
 
 import { X, ExternalLink, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import ModalPortal from '@/components/portal/ModalPortal';
 
 export default function LineBotIdHelpModal({ isOpen, onClose }) {
+  const t = useTranslations('dashboard.messaging.helpModals.botId');
+
   if (!isOpen) return null;
 
   return (
@@ -33,7 +36,7 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
             {/* Header */}
             <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
               <h2 className="text-2xl font-bold text-slate-900">
-                How to Find Your Bot Basic ID
+                {t('title')}
               </h2>
               <button
                 onClick={onClose}
@@ -47,15 +50,12 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
             <div className="p-6 space-y-6">
               {/* Introduction */}
               <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-4">
-                <p className="text-slate-700 leading-relaxed">
-                  Your <strong>Bot Basic ID</strong> is a unique identifier for your LINE Official Account.
-                  It's used to create the "Add Friend" link that allows customers to connect with your bot.
-                </p>
+                <p className="text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: t('introduction') }} />
               </div>
 
               {/* Steps */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-slate-900 mb-3">Follow these steps:</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-3">{t('followSteps')}</h3>
 
                 {/* Step 1 */}
                 <div className="flex gap-4">
@@ -64,10 +64,10 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-slate-900 mb-1">
-                      Go to LINE Developers Console
+                      {t('step1Title')}
                     </h4>
                     <p className="text-sm text-slate-600 mb-2">
-                      Open the LINE Developers Console in a new tab
+                      {t('step1Description')}
                     </p>
                     <a
                       href="https://developers.line.biz/console/"
@@ -75,7 +75,7 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
                     >
-                      Open LINE Console
+                      {t('step1Button')}
                       <ExternalLink className="w-4 h-4" />
                     </a>
                   </div>
@@ -88,10 +88,10 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-slate-900 mb-1">
-                      Select Your Provider
+                      {t('step2Title')}
                     </h4>
                     <p className="text-sm text-slate-600">
-                      Click on the provider that contains your Messaging API channel
+                      {t('step2Description')}
                     </p>
                   </div>
                 </div>
@@ -103,10 +103,10 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-slate-900 mb-1">
-                      Select Your Messaging API Channel
+                      {t('step3Title')}
                     </h4>
                     <p className="text-sm text-slate-600">
-                      Choose the channel associated with your business bot
+                      {t('step3Description')}
                     </p>
                   </div>
                 </div>
@@ -118,10 +118,10 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-slate-900 mb-1">
-                      Go to "Messaging API" Tab
+                      {t('step4Title')}
                     </h4>
                     <p className="text-sm text-slate-600">
-                      Click on the "Messaging API" tab in the navigation
+                      {t('step4Description')}
                     </p>
                   </div>
                 </div>
@@ -133,13 +133,13 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-slate-900 mb-1">
-                      Find Your Bot Basic ID
+                      {t('step5Title')}
                     </h4>
                     <p className="text-sm text-slate-600 mb-2">
-                      Scroll down to find the "Bot basic ID" field. It will look like this:
+                      {t('step5Description')}
                     </p>
                     <div className="bg-slate-100 border border-slate-300 rounded-lg p-3 font-mono text-sm">
-                      <span className="text-slate-500">Bot basic ID:</span>{' '}
+                      <span className="text-slate-500">{t('step5Example')}</span>{' '}
                       <span className="text-orange-600 font-semibold">@abc1234</span>
                     </div>
                   </div>
@@ -152,10 +152,10 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-slate-900 mb-1">
-                      Copy and Paste
+                      {t('step6Title')}
                     </h4>
                     <p className="text-sm text-slate-600">
-                      Copy the Bot Basic ID (including the @ symbol) and paste it into the input field
+                      {t('step6Description')}
                     </p>
                   </div>
                 </div>
@@ -166,12 +166,10 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                 <div className="flex gap-3">
                   <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-blue-900 mb-1">Format</h4>
-                    <p className="text-sm text-blue-800">
-                      The Bot Basic ID always starts with <code className="bg-blue-100 px-1.5 py-0.5 rounded">@</code> followed by alphanumeric characters.
-                    </p>
+                    <h4 className="font-semibold text-blue-900 mb-1">{t('formatTitle')}</h4>
+                    <p className="text-sm text-blue-800" dangerouslySetInnerHTML={{ __html: t('formatDescription') }} />
                     <p className="text-sm text-blue-800 mt-2">
-                      Example: <code className="bg-blue-100 px-2 py-1 rounded font-mono">@abc1234</code>
+                      {t('formatExample')} <code className="bg-blue-100 px-2 py-1 rounded font-mono">@abc1234</code>
                     </p>
                   </div>
                 </div>
@@ -179,9 +177,9 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
 
               {/* Additional Help */}
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                <h4 className="font-semibold text-slate-900 mb-2">Need More Help?</h4>
+                <h4 className="font-semibold text-slate-900 mb-2">{t('needHelpTitle')}</h4>
                 <p className="text-sm text-slate-600 mb-3">
-                  If you're having trouble finding your Bot Basic ID, check out the official LINE documentation:
+                  {t('needHelpDescription')}
                 </p>
                 <a
                   href="https://developers.line.biz/en/docs/messaging-api/getting-started/"
@@ -189,7 +187,7 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-medium"
                 >
-                  LINE Messaging API Documentation
+                  {t('needHelpLink')}
                   <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
@@ -201,7 +199,7 @@ export default function LineBotIdHelpModal({ isOpen, onClose }) {
                 onClick={onClose}
                 className="w-full px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-lg shadow-orange-500/30"
               >
-                Got It!
+                {t('gotItButton')}
               </button>
             </div>
           </motion.div>

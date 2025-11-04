@@ -13,10 +13,27 @@ import TrialBanner from './TrialBanner';
 import SubscriptionContext from '@/contexts/SubscriptionContext';
 import { updateCSRFToken } from '@/hooks/useCSRF';
 
+// Helper function to check if path matches (with or without locale prefix)
+const pathMatches = (pathname, targetPath) => {
+  // Check direct match
+  if (pathname.startsWith(targetPath)) return true;
+
+  // Check with locale prefix (e.g., /en/dashboard/billing, /zh-tw/dashboard/billing)
+  const localePattern = /^\/[a-z]{2}(-[a-z]{2})?/;
+  const withoutLocale = pathname.replace(localePattern, '');
+  return withoutLocale.startsWith(targetPath);
+};
+
 const ALLOWED_PATHS_WITHOUT_SUBSCRIPTION = [
   '/dashboard/billing',
   '/dashboard/subscription-required',
 ];
+
+// Check if path is a billing path (handles both /dashboard/billing and /dashboard/[businessId]/billing)
+const isBillingPath = (pathname) => {
+  const withoutLocale = pathname.replace(/^\/[a-z]{2}(-[a-z]{2})?/, '');
+  return withoutLocale.includes('/billing') || withoutLocale === '/dashboard/billing';
+};
 
 // Pages that should ALWAYS bypass cache (accurate subscription info is critical)
 const ALWAYS_BYPASS_CACHE_PATHS = [
@@ -50,8 +67,8 @@ export default function SubscriptionCheck({ children }) {
     try {
       // Check if current page should always bypass cache
       const isAlwaysBypassPath = ALWAYS_BYPASS_CACHE_PATHS.some((path) =>
-        pathname.startsWith(path)
-      );
+        pathMatches(pathname, path)
+      ) || isBillingPath(pathname);
 
       // Detect if user just returned from Stripe or created first business
       const urlParams = new URLSearchParams(window.location.search);
@@ -122,13 +139,16 @@ export default function SubscriptionCheck({ children }) {
       if (!data.hasAccess) {
         // Check if current path is allowed without subscription
         const isAllowedPath = ALLOWED_PATHS_WITHOUT_SUBSCRIPTION.some((path) =>
-          pathname.startsWith(path)
-        );
+          pathMatches(pathname, path)
+        ) || isBillingPath(pathname);
 
         if (!isAllowedPath) {
           // Redirect to subscription required page using full page navigation
           // (client-side routing was causing the page to get stuck in loading state)
-          window.location.href = '/dashboard/subscription-required';
+          // Extract locale from current pathname
+          const localeMatch = pathname.match(/^\/([a-z]{2}(-[a-z]{2})?)\//);
+          const locale = localeMatch ? localeMatch[1] : 'en';
+          window.location.href = `/${locale}/dashboard/subscription-required`;
           return;
         }
         // If on allowed path without access, continue to render
