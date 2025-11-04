@@ -1,10 +1,33 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 
 export default function LineIntegrationSvg() {
+  const containerRef = useRef(null);
+
+  // Track scroll progress of the SVG container
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start 70%', 'end 30%']
+  });
+
+  // Scroll-based transforms for main SVG
+  const svgScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 0.95]);
+  const svgRotate = useTransform(scrollYProgress, [0, 0.5, 1], [-3, 0, 3]);
+  const svgY = useTransform(scrollYProgress, [0, 0.5, 1], [30, 0, -30]);
+
+  // Additional scroll-based animations for individual elements
+  const dashboardX = useTransform(scrollYProgress, [0, 0.5], [-50, 0]);
+  const dashboardOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+  const customerX = useTransform(scrollYProgress, [0, 0.5], [50, 0]);
+  const customerOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+  const lineHubScale = useTransform(scrollYProgress, [0.2, 0.5], [0.5, 1]);
+  const pathProgress = useTransform(scrollYProgress, [0.3, 0.7], [0, 1]);
+  const floatingIconsY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+
   return (
-    <div className="w-full h-full relative bg-gradient-to-br from-green-50/30 via-white to-emerald-50/20">
+    <div ref={containerRef} className="w-full h-full relative bg-gradient-to-br from-green-50/30 via-white to-emerald-50/20">
       <motion.svg
         viewBox="0 0 1000 600"
         className="w-full h-full"
@@ -13,6 +36,11 @@ export default function LineIntegrationSvg() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
+        style={{
+          scale: svgScale,
+          rotateZ: svgRotate,
+          y: svgY
+        }}
       >
         <defs>
           {/* LINE Green Gradient */}
@@ -54,12 +82,16 @@ export default function LineIntegrationSvg() {
           transition={{ duration: 1.5, delay: 0.3 }}
         />
 
-        {/* Dashboard Panel (Left) */}
+        {/* Dashboard Panel (Left) - with scroll animation */}
         <motion.g
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
+          style={{
+            x: dashboardX,
+            opacity: dashboardOpacity
+          }}
         >
           {/* Dashboard Container */}
           <rect
@@ -153,7 +185,7 @@ export default function LineIntegrationSvg() {
           <rect x="145" y="195" width="80" height="8" rx="4" fill="#6366f1" opacity="0.2" />
         </motion.g>
 
-        {/* Connection Path 1: Dashboard to LINE */}
+        {/* Connection Path 1: Dashboard to LINE - scroll animated */}
         <motion.path
           d="M 240 280 Q 350 250, 420 280"
           stroke="url(#lineGreen)"
@@ -165,6 +197,10 @@ export default function LineIntegrationSvg() {
           whileInView={{ pathLength: 1, opacity: 0.6 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.5 }}
+          style={{
+            pathLength: pathProgress,
+            opacity: useTransform(pathProgress, [0, 0.5, 1], [0, 0.8, 0.6])
+          }}
         />
 
         {/* Message Bubble 1: Flowing from Dashboard to LINE */}
@@ -187,12 +223,15 @@ export default function LineIntegrationSvg() {
           <path d="M -12 10 L -16 16 L -8 12" fill="#22c55e" />
         </motion.g>
 
-        {/* LINE Hub (Center) */}
+        {/* LINE Hub (Center) - with scroll scale */}
         <motion.g
           initial={{ scale: 0, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.6 }}
+          style={{
+            scale: lineHubScale
+          }}
         >
           {/* Outer Ring - Pulsing */}
           <motion.circle
@@ -269,7 +308,7 @@ export default function LineIntegrationSvg() {
           />
         ))}
 
-        {/* Connection Path 2: LINE to Customers */}
+        {/* Connection Path 2: LINE to Customers - scroll animated */}
         <motion.path
           d="M 555 280 Q 650 250, 720 280"
           stroke="url(#customerGradient)"
@@ -281,9 +320,13 @@ export default function LineIntegrationSvg() {
           whileInView={{ pathLength: 1, opacity: 0.6 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.7 }}
+          style={{
+            pathLength: pathProgress,
+            opacity: useTransform(pathProgress, [0, 0.5, 1], [0, 0.8, 0.6])
+          }}
         />
 
-        {/* Connection Path 3: LINE to Customer (lower) */}
+        {/* Connection Path 3: LINE to Customer (lower) - scroll animated */}
         <motion.path
           d="M 555 320 Q 650 350, 720 320"
           stroke="url(#customerGradient)"
@@ -295,6 +338,10 @@ export default function LineIntegrationSvg() {
           whileInView={{ pathLength: 1, opacity: 0.6 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.8 }}
+          style={{
+            pathLength: pathProgress,
+            opacity: useTransform(pathProgress, [0, 0.5, 1], [0, 0.8, 0.6])
+          }}
         />
 
         {/* Message Bubbles: Flowing to Customers */}
@@ -319,7 +366,7 @@ export default function LineIntegrationSvg() {
           <path d="M -8 -3 L -4 1 L 4 -7" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" />
         </motion.g>
 
-        {/* Customer Nodes (Right) */}
+        {/* Customer Nodes (Right) - with scroll animation */}
         {[
           { cx: 780, cy: 240, delay: 0.9 },
           { cx: 820, cy: 300, delay: 1.0 },
@@ -331,6 +378,10 @@ export default function LineIntegrationSvg() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: customer.delay }}
+            style={{
+              x: customerX,
+              opacity: customerOpacity
+            }}
           >
             {/* Device outline */}
             <rect
@@ -391,7 +442,7 @@ export default function LineIntegrationSvg() {
           </motion.g>
         ))}
 
-        {/* Floating Icons */}
+        {/* Floating Icons - with scroll parallax */}
         {/* Calendar Icon */}
         <motion.g
           initial={{ opacity: 0, y: 10 }}
@@ -403,6 +454,9 @@ export default function LineIntegrationSvg() {
             duration: 4,
             repeat: Infinity,
             ease: "easeInOut"
+          }}
+          style={{
+            y: floatingIconsY
           }}
         >
           <rect x="300" y="140" width="40" height="40" rx="6" fill="#6366f1" opacity="0.2" />
@@ -421,6 +475,9 @@ export default function LineIntegrationSvg() {
             delay: 0.5,
             repeat: Infinity,
             ease: "easeInOut"
+          }}
+          style={{
+            y: useTransform(floatingIconsY, v => v * 0.8)
           }}
         >
           <path

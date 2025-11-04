@@ -67,22 +67,24 @@ export default function ScreenshotCard({
 
       {/* Content */}
       <div className={reverse ? 'md:col-start-1 md:row-start-1' : ''}>
-        <motion.h3
-          initial={{ opacity: 0, x: reverse ? 20 : -20 }}
-          animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: reverse ? 20 : -20 }}
-          transition={{ duration: 0.6, delay: delay + 0.2 }}
-          className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent"
-        >
-          {title}
-        </motion.h3>
-        <motion.p
-          initial={{ opacity: 0, x: reverse ? 20 : -20 }}
-          animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: reverse ? 20 : -20 }}
-          transition={{ duration: 0.6, delay: delay + 0.3 }}
-          className="text-lg text-slate-300 leading-relaxed"
-        >
-          {description}
-        </motion.p>
+        <div className="glass rounded-3xl p-8 border-2 border-white/10 shadow-xl backdrop-blur-lg bg-white/80">
+          <motion.h3
+            initial={{ opacity: 0, x: reverse ? 20 : -20 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: reverse ? 20 : -20 }}
+            transition={{ duration: 0.6, delay: delay + 0.2 }}
+            className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent"
+          >
+            {title}
+          </motion.h3>
+          <motion.p
+            initial={{ opacity: 0, x: reverse ? 20 : -20 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: reverse ? 20 : -20 }}
+            transition={{ duration: 0.6, delay: delay + 0.3 }}
+            className="text-lg text-gray-700 leading-relaxed"
+          >
+            {description}
+          </motion.p>
+        </div>
       </div>
     </motion.div>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import {
   Sparkles,
@@ -30,6 +30,7 @@ import InteractiveCard from '@/components/brochure-v2/InteractiveCard';
 import LightFeatureCard from '@/components/brochure-v2/LightFeatureCard';
 import HeroSvgAnimation from '@/components/brochure-v2/HeroSvgAnimation';
 import LineIntegrationSvg from '@/components/brochure-v2/LineIntegrationSvg';
+import LineBackgroundSvg from '@/components/brochure-v2/LineBackgroundSvg';
 import QRCodeMagicSvg from '@/components/brochure-v2/QRCodeMagicSvg';
 import '@/styles/brochure-v2.css';
 
@@ -41,6 +42,17 @@ export default function BrochureV2Page() {
   const [modalImage, setModalImage] = useState(null);
   const [config, setConfig] = useState(null);
   const qrSectionRef = useRef(null);
+  const phoneRef = useRef(null);
+
+  // Phone parallax scroll effect
+  const { scrollYProgress } = useScroll({
+    target: phoneRef,
+    offset: ["start end", "end start"]
+  });
+
+  const phoneY = useTransform(scrollYProgress, [0, 0.5, 1], [100, 0, -100]);
+  const phoneScale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.85, 1, 1, 0.95]);
+  const phoneRotate = useTransform(scrollYProgress, [0, 0.5, 1], [-5, 0, 5]);
 
   // Floating notifications data
   const notifications = [
@@ -74,8 +86,6 @@ export default function BrochureV2Page() {
     }
   ];
 
-  // Floating decorative emojis
-  const decorativeEmojis = ['✨', '💫', '🌸', '⭐', '💖', '🎀'];
 
   // Load pricing config
   useEffect(() => {
@@ -108,32 +118,13 @@ export default function BrochureV2Page() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden animate-gradient-bg">
+      {/* Fixed Background Animation */}
+      <div className="fixed inset-0 pointer-events-none opacity-40 z-0">
+        <LineBackgroundSvg />
+      </div>
+
       {/* Scroll Progress Bar */}
       <ScrollProgress />
-
-      {/* Floating decorative emojis */}
-      {decorativeEmojis.map((emoji, idx) => (
-        <motion.div
-          key={idx}
-          className="fixed text-4xl pointer-events-none opacity-20 animate-emoji-float z-0"
-          style={{
-            top: `${10 + idx * 15}%`,
-            left: `${5 + idx * 15}%`,
-          }}
-          animate={{
-            y: [0, -30, 0],
-            rotate: [0, 5, -5, 0],
-            opacity: [0.2, 0.4, 0.2],
-          }}
-          transition={{
-            duration: 4 + idx,
-            repeat: Infinity,
-            delay: idx * 0.5,
-          }}
-        >
-          {emoji}
-        </motion.div>
-      ))}
 
       {/* Pulsing gradient blobs */}
       <div className="fixed top-20 right-20 w-96 h-96 bg-orange-300/30 rounded-full blur-3xl animate-pulse pointer-events-none" />
@@ -237,10 +228,16 @@ export default function BrochureV2Page() {
           {/* Floating mockup video */}
           <ParallaxSection speed={-0.3}>
             <motion.div
+              ref={phoneRef}
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1.5 }}
               className="mt-20"
+              style={{
+                y: phoneY,
+                scale: phoneScale,
+                rotateZ: phoneRotate
+              }}
             >
               <div className="relative max-w-sm mx-auto perspective-container">
                 <InteractiveCard hoverScale={1.03} tiltIntensity={5}>
