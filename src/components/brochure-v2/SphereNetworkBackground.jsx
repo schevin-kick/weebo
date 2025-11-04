@@ -36,16 +36,16 @@ function TravelingParticle({ start, end, delay, color }) {
       opacity = (1 - localProgress) / fadeDistance;
     }
 
-    particleRef.current.material.opacity = opacity * 0.3;
+    particleRef.current.material.opacity = opacity * 0.6;
   });
 
   return (
     <mesh ref={particleRef}>
-      <sphereGeometry args={[0.03, 8, 8]} />
+      <sphereGeometry args={[0.04, 8, 8]} />
       <meshBasicMaterial
         color={color}
         transparent
-        opacity={0.1}
+        opacity={0.3}
       />
     </mesh>
   );
@@ -62,7 +62,7 @@ function NetworkSphere({ scrollProgress }) {
   const { positions, connections } = useMemo(() => {
     const points = [];
     const sphereRadius = 2.8;
-    const count = 120; // Increased from 80 for even more density
+    const count = 60; // Reduced from 120 for fewer points and connections
 
     // Fibonacci sphere algorithm for even distribution
     const goldenRatio = (1 + Math.sqrt(5)) / 2;
@@ -79,7 +79,7 @@ function NetworkSphere({ scrollProgress }) {
 
     // Calculate connections between nearby points
     const conns = [];
-    const maxDistance = 2.0; // Slightly reduced for more selective connections
+    const maxDistance = 1.5; // Reduced from 2.0 for fewer connections
     for (let i = 0; i < points.length; i++) {
       for (let j = i + 1; j < points.length; j++) {
         const dx = points[i].x - points[j].x;
@@ -98,8 +98,8 @@ function NetworkSphere({ scrollProgress }) {
 
   // Select a subset of connections for particles
   const particleConnections = useMemo(() => {
-    // Use about 33% of connections
-    return connections.filter((_, idx) => idx % 3 === 0);
+    // Use about 50% of connections for more traveling particles
+    return connections.filter((_, idx) => idx % 2 === 0);
   }, [connections]);
 
   // Animation loop
@@ -116,7 +116,7 @@ function NetworkSphere({ scrollProgress }) {
 
     // Pulse line opacity based on time
     if (linesMaterialRef.current) {
-      const pulse = Math.sin(state.clock.getElapsedTime() * 0.5) * 0.03 + 0.1;
+      const pulse = Math.sin(state.clock.getElapsedTime() * 0.5) * 0.1 + 0.25;
       linesMaterialRef.current.opacity = pulse;
     }
   });
@@ -157,12 +157,12 @@ function NetworkSphere({ scrollProgress }) {
             position={[midpoint.x, midpoint.y, midpoint.z]}
             rotation={[euler.x, euler.y, euler.z]}
           >
-            <cylinderGeometry args={[0.008, 0.008, length, 4]} />
+            <cylinderGeometry args={[0.012, 0.012, length, 4]} />
             <meshBasicMaterial
               ref={idx === 0 ? linesMaterialRef : null}
               color="#22c55e"
               transparent
-              opacity={0.1}
+              opacity={0.25}
             />
           </mesh>
         );

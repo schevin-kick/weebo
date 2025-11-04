@@ -319,8 +319,9 @@ export default function BrochureV2Content() {
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               <InteractiveCard hoverScale={1.05} tiltIntensity={8}>
-                <div className="glass rounded-3xl p-8 shadow-xl hover-lift">
-                  <p className="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+                <div className="relative overflow-hidden rounded-2xl p-8 shadow-xl bg-gradient-to-br from-orange-100 via-pink-50 to-white border-2 border-orange-200">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-300/20 to-pink-300/20 rounded-full blur-2xl" />
+                  <p className="relative text-4xl font-bold bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent leading-tight">
                     {t('stats.lineUsers')}
                   </p>
                 </div>
@@ -333,8 +334,9 @@ export default function BrochureV2Content() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <InteractiveCard hoverScale={1.05} tiltIntensity={8}>
-                <div className="glass rounded-3xl p-8 shadow-xl hover-lift">
-                  <p className="text-5xl font-black bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                <div className="relative overflow-hidden rounded-2xl p-8 shadow-xl bg-gradient-to-br from-pink-100 via-purple-50 to-white border-2 border-pink-200">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-300/20 to-purple-300/20 rounded-full blur-2xl" />
+                  <p className="relative text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent leading-tight">
                     {t('stats.setupTime')}
                   </p>
                 </div>
@@ -347,8 +349,9 @@ export default function BrochureV2Content() {
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               <InteractiveCard hoverScale={1.05} tiltIntensity={8}>
-                <div className="glass rounded-3xl p-8 shadow-xl hover-lift">
-                  <p className="text-5xl font-black bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                <div className="relative overflow-hidden rounded-2xl p-8 shadow-xl bg-gradient-to-br from-purple-100 via-blue-50 to-white border-2 border-purple-200">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-300/20 to-blue-300/20 rounded-full blur-2xl" />
+                  <p className="relative text-4xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent leading-tight">
                     {t('stats.availability')}
                   </p>
                 </div>
@@ -513,11 +516,11 @@ export default function BrochureV2Content() {
                 transition={{ duration: 0.8 }}
               >
                 <h2 className="text-4xl md:text-5xl font-black mb-6">
-                  <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent drop-shadow-sm">
                     {t('analyticsPreview.title')}
                   </span>
                 </h2>
-                <p className="text-xl text-gray-700 mb-8 leading-relaxed font-medium">
+                <p className="text-xl text-gray-800 mb-8 leading-relaxed font-bold">
                   {t('analyticsPreview.description')}
                 </p>
                 <div className="space-y-4">
@@ -535,8 +538,10 @@ export default function BrochureV2Content() {
                       transition={{ duration: 0.5, delay: idx * 0.1 }}
                       className="flex items-center gap-3"
                     >
-                      <CheckCircle className="w-6 h-6 text-cyan-400 flex-shrink-0" />
-                      <span className="text-gray-800 text-lg font-medium">{feature}</span>
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg">
+                        <CheckCircle className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="text-gray-900 text-lg font-bold">{feature}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -614,41 +619,41 @@ export default function BrochureV2Content() {
                 className="order-1 md:order-2"
               >
                 <h2 className="text-4xl md:text-5xl font-black mb-6">
-                  <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent drop-shadow-sm">
                     {t('qrCodeFeature.title')}
                   </span>
                 </h2>
-                <p className="text-xl text-gray-700 mb-8 leading-relaxed font-medium">
+                <p className="text-xl text-gray-800 mb-8 leading-relaxed font-bold">
                   {t('qrCodeFeature.description')}
                 </p>
                 <div className="glass rounded-2xl p-6 shadow-lg border-2 border-pink-200">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white font-black shadow-lg">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center text-white font-black shadow-lg">
                       {t('qrCodeFeature.steps.customize.number')}
                     </div>
                     <div>
-                      <p className="text-gray-800 font-black mb-1">{t('qrCodeFeature.steps.customize.title')}</p>
-                      <p className="text-gray-600">{t('qrCodeFeature.steps.customize.description')}</p>
+                      <p className="text-gray-900 font-black mb-1">{t('qrCodeFeature.steps.customize.title')}</p>
+                      <p className="text-gray-700 font-medium">{t('qrCodeFeature.steps.customize.description')}</p>
                     </div>
                   </div>
                   <div className="h-px bg-pink-200 my-4" />
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white font-black shadow-lg">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center text-white font-black shadow-lg">
                       {t('qrCodeFeature.steps.share.number')}
                     </div>
                     <div>
-                      <p className="text-gray-800 font-black mb-1">{t('qrCodeFeature.steps.share.title')}</p>
-                      <p className="text-gray-600">{t('qrCodeFeature.steps.share.description')}</p>
+                      <p className="text-gray-900 font-black mb-1">{t('qrCodeFeature.steps.share.title')}</p>
+                      <p className="text-gray-700 font-medium">{t('qrCodeFeature.steps.share.description')}</p>
                     </div>
                   </div>
                   <div className="h-px bg-pink-200 my-4" />
                   <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white font-black shadow-lg">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center text-white font-black shadow-lg">
                       {t('qrCodeFeature.steps.accept.number')}
                     </div>
                     <div>
-                      <p className="text-gray-800 font-black mb-1">{t('qrCodeFeature.steps.accept.title')}</p>
-                      <p className="text-gray-600">{t('qrCodeFeature.steps.accept.description')}</p>
+                      <p className="text-gray-900 font-black mb-1">{t('qrCodeFeature.steps.accept.title')}</p>
+                      <p className="text-gray-700 font-medium">{t('qrCodeFeature.steps.accept.description')}</p>
                     </div>
                   </div>
                 </div>
