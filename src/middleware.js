@@ -58,7 +58,10 @@ export function middleware(request) {
       const acceptLanguage = request.headers.get('accept-language') || '';
       if (acceptLanguage.includes('zh-TW') || acceptLanguage.includes('zh-Hant') || acceptLanguage.includes('zh-HK')) {
         locale = 'zh-tw';
+      } else if (acceptLanguage.includes('en')) {
+        locale = 'en';
       }
+      // else: falls back to defaultLocale (zh-tw for Taiwan-focused app)
     }
 
     // Redirect to localized path
