@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, getBaseUrl } from '@/lib/auth';
 import stripe from '@/lib/stripe';
 import prisma from '@/lib/prisma';
 
@@ -99,8 +99,8 @@ export async function POST(request) {
         },
       ],
       locale: locale,
-      success_url: `${process.env.NEXTAUTH_URL}/dashboard/billing?success=true`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/dashboard/billing?canceled=true`,
+      success_url: `${getBaseUrl()}/dashboard/billing?success=true`,
+      cancel_url: `${getBaseUrl()}/dashboard/billing?canceled=true`,
       allow_promotion_codes: true,
       billing_address_collection: 'required',
       customer_update: {

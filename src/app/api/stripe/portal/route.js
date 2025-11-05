@@ -5,7 +5,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, getBaseUrl } from '@/lib/auth';
 import stripe from '@/lib/stripe';
 import prisma from '@/lib/prisma';
 
@@ -48,7 +48,7 @@ export async function GET(request) {
     // Create Customer Portal session
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: owner.stripeCustomerId,
-      return_url: `${process.env.NEXTAUTH_URL}/dashboard/billing`,
+      return_url: `${getBaseUrl()}/dashboard/billing`,
     });
 
     console.log(`[Stripe] Created portal session for user ${owner.id}`);

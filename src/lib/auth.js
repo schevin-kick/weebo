@@ -8,6 +8,14 @@ const SESSION_SECRET = new TextEncoder().encode(
 );
 
 /**
+ * Get the base URL for the application
+ * @returns {string} Base URL with protocol
+ */
+export function getBaseUrl() {
+  return process.env.NEXTAUTH_URL || 'http://localhost:3000';
+}
+
+/**
  * Create a session token for authenticated user
  * @param {object} user - User data { id, lineUserId, displayName, pictureUrl, email }
  * @param {object} subscription - Optional subscription data for caching
@@ -112,7 +120,7 @@ export async function exchangeLINECode(code) {
   const params = new URLSearchParams({
     grant_type: 'authorization_code',
     code,
-    redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/line`,
+    redirect_uri: `${getBaseUrl()}/api/auth/callback/line`,
     client_id: process.env.LINE_LOGIN_CHANNEL_ID,
     client_secret: process.env.LINE_LOGIN_CHANNEL_SECRET,
   });
@@ -159,7 +167,7 @@ export function getLINELoginUrl(state = null, requestBotScope = false) {
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: process.env.LINE_LOGIN_CHANNEL_ID,
-    redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/line`,
+    redirect_uri: `${getBaseUrl()}/api/auth/callback/line`,
     state: state || Math.random().toString(36).substring(7),
     scope: requestBotScope ? 'profile openid email bot' : 'profile openid email',
   });

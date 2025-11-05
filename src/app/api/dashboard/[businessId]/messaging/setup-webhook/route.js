@@ -5,7 +5,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, getBaseUrl } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
@@ -59,7 +59,7 @@ export async function POST(request, { params }) {
     console.log('[Webhook Setup] Token validated successfully');
 
     // Step 2: Set webhook URL
-    const webhookUrl = `${process.env.NEXTAUTH_URL}/api/webhooks/line/${businessId}`;
+    const webhookUrl = `${getBaseUrl()}/api/webhooks/line/${businessId}`;
     console.log('[Webhook Setup] Setting webhook URL:', webhookUrl);
 
     const webhookResponse = await fetch(

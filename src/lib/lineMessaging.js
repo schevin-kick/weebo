@@ -7,6 +7,7 @@ import { formatDateTime as formatDateTimeNonLocalized, formatDuration as formatD
 import { formatDateTime, formatDuration } from './localizedDateUtils';
 import { getValidChannelAccessToken } from './lineTokenManager';
 import { getMessageTemplate, getFieldLabels } from './messageTemplates';
+import { getBaseUrl } from './auth';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -877,7 +878,7 @@ export async function sendBookingReminder(booking, business) {
  */
 function createBusinessOwnerNotificationMessage(booking, business, locale = 'en') {
   const labels = getFieldLabels(locale);
-  const appUrl = process.env.NEXTAUTH_URL || 'https://unsatirized-defamingly-humberto.ngrok-free.dev';
+  const appUrl = getBaseUrl();
   const viewBookingUrl = `${appUrl}/booking/${booking.id}`;
 
   const bodyContents = [
@@ -1133,7 +1134,7 @@ export async function sendBusinessOwnerNotification(booking, business, locale = 
  */
 function createBusinessOwnerCancellationNotificationMessage(booking, business, locale = 'en') {
   const labels = getFieldLabels(locale);
-  const appUrl = process.env.NEXTAUTH_URL || 'https://unsatirized-defamingly-humberto.ngrok-free.dev';
+  const appUrl = getBaseUrl();
   const viewBookingUrl = `${appUrl}/booking/${booking.id}`;
 
   const bodyContents = [
