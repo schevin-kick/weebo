@@ -1,9 +1,9 @@
 /**
- * Local Storage Utilities for Kitsune Dashboard
+ * Local Storage Utilities for Weebo Dashboard
  * Handles storing user preferences in browser localStorage
  */
 
-const LAST_SELECTED_BUSINESS_KEY = 'kitsune_last_selected_business';
+const LAST_SELECTED_BUSINESS_KEY = 'weebo_last_selected_business';
 
 /**
  * Get the last selected business ID for a user

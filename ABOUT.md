@@ -1,4 +1,4 @@
-# Kitsune Booking - MVP Setup Wizard
+# Weebo Booking - MVP Setup Wizard
 
 LINE bot-based booking system for SMBs in Thailand/Taiwan. Businesses setup in 5 minutes, customers book via LINE QR codes.
 

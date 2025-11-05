@@ -1,13 +1,13 @@
 /**
- * Animated Kitsune Logo Loading Component
- * Cute fox animation for loading states
+ * Animated Weebo Logo Loading Component
+ * Robot animation for loading states
  */
 
 'use client';
 
-import './kitsune-logo.css';
+import './weebo-logo.css';
 
-export default function KitsuneLogo({ size = 'large' }) {
+export default function WeeboLogo({ size = 'large' }) {
   const sizeClasses = {
     small: 'w-24 h-24',
     medium: 'w-40 h-40',
@@ -21,7 +21,7 @@ export default function KitsuneLogo({ size = 'large' }) {
         {/* Glowing Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
 
-        {/* Kitsune Animated Video */}
+        {/* Waving Robot Animated Video */}
         <div className="relative flex items-center justify-center h-full rounded-3xl overflow-hidden">
           <video
             autoPlay
@@ -30,8 +30,8 @@ export default function KitsuneLogo({ size = 'large' }) {
             playsInline
             className="h-full object-contain rounded-3xl"
           >
-            <source src="/kitsune-animated.webm" type="video/webm" />
-            <source src="/kitsune-animated.mp4" type="video/mp4" />
+            <source src="/waving-robot.webm" type="video/webm" />
+            <source src="/waving-robot.mp4" type="video/mp4" />
           </video>
         </div>
       </div>

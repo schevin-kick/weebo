@@ -1,10 +1,10 @@
 # Stripe Setup Guide
 
-Complete guide for setting up Stripe subscriptions in Kitsune.
+Complete guide for setting up Stripe subscriptions in Weebo.
 
 ## Overview
 
-Kitsune uses Stripe for subscription management with the following flow:
+Weebo uses Stripe for subscription management with the following flow:
 
 1. **Configurable free trial** - Starts when user creates their first business (default: 14 days)
 2. **Configurable subscription pricing** - Automatically begins after trial ends (default: 200 TWD/month)
@@ -64,7 +64,7 @@ Before starting, you need:
 
 1. **Set business details**:
    - Go to https://dashboard.stripe.com/settings/account
-   - Set business name: "Kitsune Booking"
+   - Set business name: "Weebo Booking"
    - Set country: Taiwan
    - Complete business profile
 
@@ -99,8 +99,8 @@ Before starting, you need:
    - Go to https://dashboard.stripe.com/test/products
    - Click "+ Add product"
    - Fill in:
-     - **Name**: Kitsune Pro
-     - **Description**: Full access to Kitsune booking management system
+     - **Name**: Weebo Pro
+     - **Description**: Full access to Weebo booking management system
      - **Image**: Upload your logo (optional)
    - Click "Add pricing"
      - **Price**: 200
@@ -243,7 +243,7 @@ For production, create a webhook endpoint in Stripe Dashboard:
 2. Click "+ Add endpoint"
 3. Fill in:
    - **Endpoint URL**: `https://yourdomain.com/api/stripe/webhook`
-   - **Description**: Kitsune subscription webhooks
+   - **Description**: Weebo subscription webhooks
    - **Events to send**: Select these events:
      - `checkout.session.completed`
      - `customer.subscription.created`

@@ -54,7 +54,7 @@
   },
   "brochure": {
     "hero": {
-      "title": "Kitsune",
+      "title": "Weebo",
       "subtitle": "The intelligent booking platform built for Asia. Powered by LINE integration, designed for simplicity, packed with analytics.",
       "valueProps": {
         "quickSetup": "5 Min Setup",
@@ -140,7 +140,7 @@
       }
     },
     "screenshots": {
-      "title": "See Kitsune in Action",
+      "title": "See Weebo in Action",
       "subtitle": "Explore the intuitive interface designed to make booking management effortless",
       "dashboard": {
         "title": "Powerful Dashboard",
@@ -161,7 +161,7 @@
     },
     "finalCta": {
       "title": "Ready to Transform Your Bookings?",
-      "description": "Join hundreds of businesses using Kitsune to streamline their booking process and delight their customers.",
+      "description": "Join hundreds of businesses using Weebo to streamline their booking process and delight their customers.",
       "noCreditCard": "No credit card required",
       "quickSetup": "5-minute setup",
       "freeTrial": "Free {trialDays}-day trial"
@@ -176,12 +176,12 @@
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
       "contact": "Contact Us",
-      "copyright": "© 2025 Kitsune. All rights reserved. Made with ❤️ for Asian businesses."
+      "copyright": "© 2025 Weebo. All rights reserved. Made with ❤️ for Asian businesses."
     }
   },
   "brochureV2": {
     "hero": {
-      "title": "Kitsune",
+      "title": "Weebo",
       "subtitle": "The intelligent booking platform built for Asia",
       "valueProps": {
         "quickSetup": "5 Min Setup",
@@ -294,7 +294,7 @@
     },
     "screenshots": {
       "title": "See It In Action",
-      "subtitle": "Discover how Kitsune transforms your booking experience",
+      "subtitle": "Discover how Weebo transforms your booking experience",
       "dashboard": {
         "title": "Intuitive Dashboard",
         "description": "Manage all your bookings, customers, and analytics from one beautiful interface."
@@ -314,7 +314,7 @@
     },
     "finalCta": {
       "title": "Ready to Transform Your Business?",
-      "description": "Join hundreds of businesses already using Kitsune to streamline their booking process.",
+      "description": "Join hundreds of businesses already using Weebo to streamline their booking process.",
       "buttons": {
         "getStarted": "Get Started Free",
         "signIn": "Sign In"
@@ -322,7 +322,7 @@
       "finePrint": "No credit card required • 5 min setup • {trialDays}-day free trial"
     },
     "footer": {
-      "brand": "Kitsune",
+      "brand": "Weebo",
       "tagline": "The intelligent booking platform built for Asia",
       "sections": {
         "resources": {
@@ -342,15 +342,15 @@
           "signIn": "Sign In"
         }
       },
-      "copyright": "© 2025 Kitsune. All rights reserved."
+      "copyright": "© 2025 Weebo. All rights reserved."
     },
     "metadata": {
-      "title": "Kitsune - LINE Booking System | Professional Appointment Scheduling",
+      "title": "Weebo - LINE Booking System | Professional Appointment Scheduling",
       "description": "The intelligent booking platform built for Asia. Connect with 95M+ LINE users, automate scheduling, and grow your business. 14-day free trial, no credit card required.",
       "keywords": "LINE booking system, appointment scheduling, Asia booking software, LINE integration, business scheduling, Taiwan booking, Japan booking, QR code booking",
-      "ogTitle": "Kitsune - Transform Your Business with LINE-Powered Booking",
+      "ogTitle": "Weebo - Transform Your Business with LINE-Powered Booking",
       "ogDescription": "Professional appointment booking system that runs natively on LINE. 5-minute setup, real-time analytics, and 24/7 availability. Start your free trial today.",
-      "ogImageAlt": "Kitsune booking system interface showing LINE integration and analytics dashboard"
+      "ogImageAlt": "Weebo booking system interface showing LINE integration and analytics dashboard"
     }
   },
   "contact": {
@@ -482,7 +482,7 @@
         "addFriend": "Add Friend",
         "successMessage": "Thanks for following us! You'll receive booking updates via LINE."
       },
-      "footer": "Powered by Kitsune",
+      "footer": "Powered by Weebo",
       "close": "Close"
     },
     "error": {
@@ -549,7 +549,7 @@
       }
     },
     "plan": {
-      "title": "Kitsune Pro Plan",
+      "title": "Weebo Pro Plan",
       "pricePerMonth": "/ month",
       "trialIncluded": "{days}-day free trial included",
       "loading": "Loading...",
@@ -571,7 +571,7 @@
     "noBusiness": "No businesses found",
     "createBusiness": "Create New Business",
     "sidebar": {
-      "logo": "Kitsune",
+      "logo": "Weebo",
       "title": "Dashboard",
       "navigation": {
         "home": "Home",
@@ -892,8 +892,8 @@
         "title": "Messaging Mode",
         "description": "Choose how you want to send messages to customers",
         "shared": {
-          "title": "Use Kitsune Bot (Recommended)",
-          "description": "Simple setup, no configuration needed. Messages sent from Kitsune's LINE bot."
+          "title": "Use Weebo Bot (Recommended)",
+          "description": "Simple setup, no configuration needed. Messages sent from Weebo's LINE bot."
         },
         "ownBot": {
           "title": "Use My LINE Bot (Advanced)",
@@ -1017,7 +1017,7 @@
         },
         "token": {
           "title": "How to Get Your Channel Access Token",
-          "introduction": "Your Channel Access Token is a secret key that allows Kitsune to send messages through your LINE Official Account. Keep this token secure and never share it publicly.",
+          "introduction": "Your Channel Access Token is a secret key that allows Weebo to send messages through your LINE Official Account. Keep this token secure and never share it publicly.",
           "followSteps": "Follow these steps:",
           "step1Title": "Go to LINE Developers Console",
           "step1Description": "Open the LINE Developers Console in a new tab",
@@ -1032,8 +1032,8 @@
           "step5Description": "Scroll down to the \"Channel access token (long-lived)\" section and click the \"Issue\" button if you haven't already",
           "step6Title": "Copy the Token",
           "step6Description": "Click the \"Copy\" button next to your token. The token is a long string of characters.",
-          "step7Title": "Paste into Kitsune",
-          "step7Description": "Paste the token into the Channel Access Token field in Kitsune",
+          "step7Title": "Paste into Weebo",
+          "step7Description": "Paste the token into the Channel Access Token field in Weebo",
           "securityTitle": "Security Notice",
           "securityDescription": "This token grants full access to send messages from your LINE Official Account. Never share it publicly or commit it to version control. If you believe your token has been compromised, revoke it immediately in the LINE Developers Console and issue a new one.",
           "needHelpTitle": "Need More Help?",
@@ -1067,17 +1067,17 @@
         }
       },
       "bot": {
-        "title": "Kitsune Bot Setup",
-        "description": "Add the Kitsune bot to receive notifications on LINE",
+        "title": "Weebo Bot Setup",
+        "description": "Add the Weebo bot to receive notifications on LINE",
         "qrCode": {
           "scanToAdd": "Scan to add friend",
           "botId": "Bot ID: {botId}"
         },
-        "addButton": "Add Kitsune Bot on LINE",
+        "addButton": "Add Weebo Bot on LINE",
         "setup": {
           "title": "How to Setup:",
           "step1": "Scan the QR code above with your LINE app or click the \"Add Friend\" button",
-          "step2": "Add Kitsune as a friend on LINE",
+          "step2": "Add Weebo as a friend on LINE",
           "step3": "You'll receive appointment notifications in your LINE chat",
           "step4": "Click \"View Appointment\" in the notification to manage bookings on mobile"
         },
@@ -1491,7 +1491,7 @@
     }
   },
   "setup": {
-    "logo": "Kitsune",
+    "logo": "Weebo",
     "subtitle": "Business Dashboard",
     "logoutButton": "Logout",
     "error": {
@@ -1503,7 +1503,7 @@
     "createNewBusiness": "Create New Business",
     "trialNotice": {
       "title": "{count}-Day Free Trial Included",
-      "description": "Creating your first business will start your {count}-day free trial of Kitsune. Full access to all features, no credit card required. After the trial, continue for just {price} {currency}/month."
+      "description": "Creating your first business will start your {count}-day free trial of Weebo. Full access to all features, no credit card required. After the trial, continue for just {price} {currency}/month."
     },
     "noBusiness": {
       "title": "No businesses yet",
@@ -1866,8 +1866,8 @@
         "definitions": {
           "title": "1. Definitions",
           "items": {
-            "service": "'Service' or 'Platform' refers to the Kitsune LINE-based booking system, including the web dashboard, LINE bot, and all related services.",
-            "company": "'Company,' 'we,' 'us,' or 'our' refers to the operator of the Kitsune platform.",
+            "service": "'Service' or 'Platform' refers to the Weebo LINE-based booking system, including the web dashboard, LINE bot, and all related services.",
+            "company": "'Company,' 'we,' 'us,' or 'our' refers to the operator of the Weebo platform.",
             "user": "'You,' 'your,' or 'User' refers to the business entity or individual accessing our services.",
             "customer": "'Customer' or 'End User' refers to individuals who make bookings through your LINE bot.",
             "content": "'Content' refers to all information, data, text, software, graphics, or other materials."

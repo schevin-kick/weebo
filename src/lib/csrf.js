@@ -1,7 +1,7 @@
 import { randomBytes, createHash } from 'crypto';
 import { cookies } from 'next/headers';
 
-const CSRF_COOKIE_NAME = 'kitsune_csrf';
+const CSRF_COOKIE_NAME = 'weebo_csrf';
 const CSRF_HEADER_NAME = 'x-csrf-token';
 
 /**

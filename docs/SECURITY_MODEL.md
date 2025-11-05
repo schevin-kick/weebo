@@ -363,7 +363,7 @@ Subscription changes come from **Stripe webhooks** (server-to-server):
    ```bash
    # Get session cookie from browser
    curl -X PUT http://localhost:3000/api/businesses/biz_123 \
-     -H "Cookie: kitsune_session=..." \
+     -H "Cookie: weebo_session=..." \
      -d '{"businessName": "Test"}'
    # Verify: 403 if subscription expired
    ```

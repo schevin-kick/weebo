@@ -54,7 +54,7 @@
   },
   "brochure": {
     "hero": {
-      "title": "Kitsune",
+      "title": "Weebo",
       "subtitle": "專為亞洲打造的智能預約平台。整合 LINE、簡單易用、強大分析。",
       "valueProps": {
         "quickSetup": "5 分鐘設定",
@@ -140,7 +140,7 @@
       }
     },
     "screenshots": {
-      "title": "Kitsune 實際運作",
+      "title": "Weebo 實際運作",
       "subtitle": "探索旨在讓預約管理輕鬆無憂的直覺介面",
       "dashboard": {
         "title": "強大的儀表板",
@@ -161,7 +161,7 @@
     },
     "finalCta": {
       "title": "準備好轉變您的預約方式了嗎？",
-      "description": "加入數百家使用 Kitsune 簡化預約流程並取悅客戶的企業。",
+      "description": "加入數百家使用 Weebo 簡化預約流程並取悅客戶的企業。",
       "noCreditCard": "無需信用卡",
       "quickSetup": "5 分鐘設定",
       "freeTrial": "免費試用 {trialDays} 天"
@@ -176,12 +176,12 @@
       "privacy": "隱私政策",
       "terms": "服務條款",
       "contact": "聯絡我們",
-      "copyright": "© 2025 Kitsune. 版權所有。用 ❤️ 為亞洲企業製作。"
+      "copyright": "© 2025 Weebo. 版權所有。用 ❤️ 為亞洲企業製作。"
     }
   },
   "brochureV2": {
     "hero": {
-      "title": "Kitsune",
+      "title": "Weebo",
       "subtitle": "專為亞洲打造的智能預約平台",
       "valueProps": {
         "quickSetup": "5 分鐘設定",
@@ -294,7 +294,7 @@
     },
     "screenshots": {
       "title": "實際運作展示",
-      "subtitle": "探索 Kitsune 如何轉變您的預約體驗",
+      "subtitle": "探索 Weebo 如何轉變您的預約體驗",
       "dashboard": {
         "title": "直覺儀表板",
         "description": "從一個精美的介面管理所有預約、客戶和數據分析。"
@@ -314,7 +314,7 @@
     },
     "finalCta": {
       "title": "準備好轉變您的業務了嗎？",
-      "description": "加入數百家已使用 Kitsune 簡化預約流程的企業。",
+      "description": "加入數百家已使用 Weebo 簡化預約流程的企業。",
       "buttons": {
         "getStarted": "免費開始",
         "signIn": "登入"
@@ -322,7 +322,7 @@
       "finePrint": "無需信用卡 • 5 分鐘設定 • {trialDays} 天免費試用"
     },
     "footer": {
-      "brand": "Kitsune",
+      "brand": "Weebo",
       "tagline": "專為亞洲打造的智能預約平台",
       "sections": {
         "resources": {
@@ -342,15 +342,15 @@
           "signIn": "登入"
         }
       },
-      "copyright": "© 2025 Kitsune. 版權所有。"
+      "copyright": "© 2025 Weebo. 版權所有。"
     },
     "metadata": {
-      "title": "Kitsune - LINE 預約系統 | 專業預約排程",
+      "title": "Weebo - LINE 預約系統 | 專業預約排程",
       "description": "專為亞洲打造的智能預約平台。連接 9500 萬+ LINE 用戶，自動化排程，拓展您的業務。14 天免費試用，無需信用卡。",
       "keywords": "LINE 預約系統, 預約排程, 亞洲預約軟體, LINE 整合, 商業排程, 台灣預約, 日本預約, QR Code 預約",
-      "ogTitle": "Kitsune - 透過 LINE 驅動的預約系統轉變您的業務",
+      "ogTitle": "Weebo - 透過 LINE 驅動的預約系統轉變您的業務",
       "ogDescription": "在 LINE 上原生運作的專業預約系統。5 分鐘設定，即時數據分析，24/7 全天候服務。立即開始免費試用。",
-      "ogImageAlt": "Kitsune 預約系統介面展示 LINE 整合和數據分析儀表板"
+      "ogImageAlt": "Weebo 預約系統介面展示 LINE 整合和數據分析儀表板"
     }
   },
   "contact": {
@@ -482,7 +482,7 @@
         "addFriend": "加入好友",
         "successMessage": "感謝您關注我們！您將透過 LINE 接收預約更新。"
       },
-      "footer": "Powered by Kitsune",
+      "footer": "Powered by Weebo",
       "close": "關閉"
     },
     "error": {
@@ -549,7 +549,7 @@
       }
     },
     "plan": {
-      "title": "Kitsune 專業版方案",
+      "title": "Weebo 專業版方案",
       "pricePerMonth": "/ 月",
       "trialIncluded": "包含 {days} 天免費試用",
       "loading": "載入中...",
@@ -571,7 +571,7 @@
     "noBusiness": "找不到企業",
     "createBusiness": "建立新企業",
     "sidebar": {
-      "logo": "Kitsune",
+      "logo": "Weebo",
       "title": "儀表板",
       "navigation": {
         "home": "首頁",
@@ -892,8 +892,8 @@
         "title": "訊息模式",
         "description": "選擇如何傳送訊息給客戶",
         "shared": {
-          "title": "使用 Kitsune 機器人（推薦）",
-          "description": "簡單設定，無需配置。訊息由 Kitsune 的 LINE 機器人發送。"
+          "title": "使用 Weebo 機器人（推薦）",
+          "description": "簡單設定，無需配置。訊息由 Weebo 的 LINE 機器人發送。"
         },
         "ownBot": {
           "title": "使用我的 LINE 機器人（進階）",
@@ -1017,7 +1017,7 @@
         },
         "token": {
           "title": "如何取得您的頻道存取權杖",
-          "introduction": "您的頻道存取權杖是一個密鑰，允許 Kitsune 透過您的 LINE 官方帳號發送訊息。請妥善保管此權杖，切勿公開分享。",
+          "introduction": "您的頻道存取權杖是一個密鑰，允許 Weebo 透過您的 LINE 官方帳號發送訊息。請妥善保管此權杖，切勿公開分享。",
           "followSteps": "請依照以下步驟：",
           "step1Title": "前往 LINE Developers Console",
           "step1Description": "在新分頁開啟 LINE Developers Console",
@@ -1032,8 +1032,8 @@
           "step5Description": "向下捲動至「Channel access token (long-lived)」區段，如果您還沒發行，請點擊「Issue」按鈕",
           "step6Title": "複製權杖",
           "step6Description": "點擊權杖旁的「Copy」按鈕。權杖是一長串字元。",
-          "step7Title": "貼到 Kitsune",
-          "step7Description": "將權杖貼到 Kitsune 的頻道存取權杖欄位中",
+          "step7Title": "貼到 Weebo",
+          "step7Description": "將權杖貼到 Weebo 的頻道存取權杖欄位中",
           "securityTitle": "安全提醒",
           "securityDescription": "此權杖可完全存取您的 LINE 官方帳號以發送訊息。切勿公開分享或將其提交到版本控制系統。如果您認為權杖已遭洩露，請立即在 LINE Developers Console 撤銷並發行新權杖。",
           "needHelpTitle": "需要更多協助？",
@@ -1067,17 +1067,17 @@
         }
       },
       "bot": {
-        "title": "Kitsune Bot 設定",
-        "description": "新增 Kitsune bot 以在 LINE 上接收通知",
+        "title": "Weebo Bot 設定",
+        "description": "新增 Weebo bot 以在 LINE 上接收通知",
         "qrCode": {
           "scanToAdd": "掃描以加入好友",
           "botId": "Bot ID：{botId}"
         },
-        "addButton": "在 LINE 上加入 Kitsune Bot",
+        "addButton": "在 LINE 上加入 Weebo Bot",
         "setup": {
           "title": "設定方法：",
           "step1": "使用您的 LINE 應用程式掃描上方的 QR code，或點擊「加入好友」按鈕",
-          "step2": "在 LINE 上將 Kitsune 加為好友",
+          "step2": "在 LINE 上將 Weebo 加為好友",
           "step3": "您將在 LINE 聊天中收到預約通知",
           "step4": "點擊通知中的「查看預約」以在手機上管理預約"
         },
@@ -1491,7 +1491,7 @@
     }
   },
   "setup": {
-    "logo": "Kitsune",
+    "logo": "Weebo",
     "subtitle": "企業儀表板",
     "logoutButton": "登出",
     "error": {
@@ -1503,7 +1503,7 @@
     "createNewBusiness": "建立新企業",
     "trialNotice": {
       "title": "包含 {count} 天免費試用",
-      "description": "建立您的第一個企業將開始 Kitsune 的 {count} 天免費試用。完整存取所有功能，無需信用卡。試用後，只需每月 {price} {currency} 即可繼續使用。"
+      "description": "建立您的第一個企業將開始 Weebo 的 {count} 天免費試用。完整存取所有功能，無需信用卡。試用後，只需每月 {price} {currency} 即可繼續使用。"
     },
     "noBusiness": {
       "title": "尚無企業",
@@ -1863,8 +1863,8 @@
         "definitions": {
           "title": "一、定義",
           "items": {
-            "service": "「服務」或「平台」指 Kitsune 基於 LINE 的預約系統，包括網頁儀表板、LINE 機器人和所有相關服務。",
-            "company": "「本公司」、「我們」或「我們的」指 Kitsune 平台的營運者。",
+            "service": "「服務」或「平台」指 Weebo 基於 LINE 的預約系統，包括網頁儀表板、LINE 機器人和所有相關服務。",
+            "company": "「本公司」、「我們」或「我們的」指 Weebo 平台的營運者。",
             "user": "「您」、「您的」或「使用者」指存取我們服務的企業實體或個人。",
             "customer": "「客戶」或「終端使用者」指透過您的 LINE 機器人進行預約的個人。",
             "content": "「內容」指所有資訊、資料、文字、軟體、圖形或其他材料。"

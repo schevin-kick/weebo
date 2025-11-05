@@ -15,7 +15,7 @@ const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: '2024-11-20.acacia',
     appInfo: {
-      name: 'Kitsune',
+      name: 'Weebo',
       version: '1.0.0',
     },
   })

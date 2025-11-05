@@ -199,7 +199,7 @@ export async function POST(request) {
       <div class="field-value message-box">${sanitizedMessage}</div>
     </div>
     <div class="footer">
-      Sent from Kitsune Contact Form<br>
+      Sent from Weebo Contact Form<br>
       ${new Date().toLocaleString('en-US', {
         dateStyle: 'full',
         timeStyle: 'long',
@@ -222,13 +222,13 @@ Message:
 ${sanitizedMessage}
 
 ---
-Sent from Kitsune Contact Form
+Sent from Weebo Contact Form
 ${new Date().toISOString()}
     `.trim();
 
     // Send email
     await transporter.sendMail({
-      from: `"Kitsune Contact Form" <${gmailUser}>`,
+      from: `"Weebo Contact Form" <${gmailUser}>`,
       to: contactEmailTo,
       replyTo: sanitizedEmail,
       subject: `Contact Form: Message from ${sanitizedName}`,

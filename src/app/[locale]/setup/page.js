@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Store, Plus, Settings, LogOut, QrCode } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import FallingSakura from '@/components/background/FallingSakura';
-import KitsuneLogo from '@/components/loading/KitsuneLogo';
+import WeeboLogo from '@/components/loading/WeeboLogo';
 
 export default function BusinessDashboard() {
   const t = useTranslations('setup');
@@ -93,7 +93,7 @@ export default function BusinessDashboard() {
       <>
         <FallingSakura />
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50">
-          <KitsuneLogo size="large" />
+          <WeeboLogo size="large" />
         </div>
       </>
     );

@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { generateCSRFToken, setCSRFCookie } from './csrf';
 
-const SESSION_COOKIE_NAME = 'kitsune_session';
+const SESSION_COOKIE_NAME = 'weebo_session';
 const SESSION_SECRET = new TextEncoder().encode(
   process.env.AUTH_SECRET || 'default-secret-change-in-production'
 );

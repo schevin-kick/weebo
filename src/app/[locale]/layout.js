@@ -25,7 +25,7 @@ export async function generateMetadata({ params }) {
   };
 
   return {
-    title: "Kitsune",
+    title: "Weebo",
     description: locale === 'zh-tw'
       ? "商業管理平台"
       : "Business management platform",
