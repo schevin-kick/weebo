@@ -422,6 +422,7 @@
       "title": "選擇服務",
       "description": "選擇您想要預約的服務",
       "duration": "時長",
+      "durationUnit": "分鐘",
       "price": "價格",
       "noServices": "目前沒有可用的服務",
       "noServicesMessage": "請聯絡我們以設定服務。"

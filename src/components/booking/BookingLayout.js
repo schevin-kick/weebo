@@ -1,7 +1,6 @@
 'use client';
 
 import FallingSakura from '@/components/background/FallingSakura';
-import LanguageSelector from '@/components/shared/LanguageSelector';
 import { useTranslations } from 'next-intl';
 
 export default function BookingLayout({ businessName, logoUrl, children, stepper, navigation, isPreview = false }) {
@@ -11,13 +10,6 @@ export default function BookingLayout({ businessName, logoUrl, children, stepper
       {!isPreview && <FallingSakura />}
 
       <div className={`${isPreview ? 'h-full' : 'min-h-screen'} bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 ${!isPreview ? 'pattern-sakura-paws' : ''} ${navigation ? 'pb-24' : ''}`}>
-        {/* Language Selector */}
-        {!isPreview && (
-          <div className="fixed top-4 right-4 z-50">
-            <LanguageSelector variant="light" />
-          </div>
-        )}
-
         {/* Header */}
         <header className="bg-white border-b border-slate-200 z-40 shadow-sm sticky top-0">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4">

@@ -66,7 +66,7 @@ export default function PresetServicePage({ page, services, selectedServiceId, o
                       </span>
                     )}
                     {service.duration && (
-                      <span className="text-slate-500">{service.duration} minutes</span>
+                      <span className="text-slate-500">{service.duration} {t('durationUnit')}</span>
                     )}
                   </div>
                 </div>

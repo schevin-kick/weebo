@@ -422,6 +422,7 @@
       "title": "Choose a Service",
       "description": "Select the service you'd like to book",
       "duration": "Duration",
+      "durationUnit": "minutes",
       "price": "Price",
       "noServices": "No Services Available",
       "noServicesMessage": "Please contact us to set up services."
