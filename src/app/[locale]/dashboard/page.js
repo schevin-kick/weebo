@@ -121,7 +121,7 @@ export default function DashboardSelectionPage() {
               <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center overflow-hidden">
                 <img
                   src="/logo.png"
-                  alt="Kitsune"
+                  alt="Weebo"
                   className="w-full h-full object-cover"
                 />
               </div>

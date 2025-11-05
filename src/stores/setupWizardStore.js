@@ -267,11 +267,11 @@ const useSetupWizardStore = create(
           pages: state.pages.map((page) =>
             page.id === pageId
               ? {
-                  ...page,
-                  components: page.components.map((c) =>
-                    c.id === componentId ? { ...c, ...updates } : c
-                  ),
-                }
+                ...page,
+                components: page.components.map((c) =>
+                  c.id === componentId ? { ...c, ...updates } : c
+                ),
+              }
               : page
           ),
         })),
@@ -642,7 +642,7 @@ const useSetupWizardStore = create(
         }),
     }),
     {
-      name: 'kitsune-setup-wizard',
+      name: 'weebo-setup-wizard',
       partialize: (state) => ({
         businessName: state.businessName,
         logoUrl: state.logoUrl,

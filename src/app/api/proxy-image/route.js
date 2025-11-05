@@ -107,7 +107,7 @@ export async function GET(request) {
       const imageResponse = await fetch(validation.url.toString(), {
         signal: controller.signal,
         headers: {
-          'User-Agent': 'Kitsune-Image-Proxy/1.0',
+          'User-Agent': 'Weebo-Image-Proxy/1.0',
         },
       });
 

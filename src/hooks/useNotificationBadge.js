@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 
-const STORAGE_KEY_PREFIX = 'kitsune_notification_badge_';
+const STORAGE_KEY_PREFIX = 'weebo_notification_badge_';
 
 /**
  * Hook to manage notification badge visibility

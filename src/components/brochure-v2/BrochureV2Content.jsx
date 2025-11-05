@@ -699,11 +699,11 @@ export default function BrochureV2Content() {
           <div className="space-y-32">
             <ScreenshotCard
               src="/brochure/booking-modal.webp"
-              alt="Kitsune Dashboard with Booking Details"
+              alt="Weebo Dashboard with Booking Details"
               title={t('screenshots.dashboard.title')}
               description={t('screenshots.dashboard.description')}
               delay={0.1}
-              onClick={() => setModalImage({ src: '/brochure/booking-modal.png', alt: 'Kitsune Dashboard with Booking Details' })}
+              onClick={() => setModalImage({ src: '/brochure/booking-modal.png', alt: 'Weebo Dashboard with Booking Details' })}
             />
 
             <ScreenshotCard

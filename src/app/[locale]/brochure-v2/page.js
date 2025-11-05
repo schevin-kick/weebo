@@ -14,7 +14,7 @@ export async function generateMetadata({ params }) {
       description: t('metadata.ogDescription'),
       type: 'website',
       locale: locale,
-      siteName: 'Kitsune',
+      siteName: 'Weebo',
       images: [
         {
           url: '/brochure/og-image.png',
@@ -53,7 +53,7 @@ export default async function BrochureV2Page({ params }) {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'SoftwareApplication',
-            name: 'Kitsune',
+            name: 'Weebo',
             applicationCategory: 'BusinessApplication',
             offers: {
               '@type': 'Offer',

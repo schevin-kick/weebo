@@ -126,11 +126,11 @@ export default function SubscriptionRequiredPage() {
           {/* Message */}
           <p className="text-slate-600 text-center mb-6">
             {isPastDue &&
-              'Your payment is past due. Please update your payment method to continue using Kitsune.'}
+              'Your payment is past due. Please update your payment method to continue using Weebo.'}
             {isCanceled &&
               'Your subscription has been canceled. Resubscribe to continue managing your business.'}
             {isTrialExpired &&
-              'Your free trial has ended. Subscribe to Kitsune Pro to continue managing your business.'}
+              'Your free trial has ended. Subscribe to Weebo Pro to continue managing your business.'}
             {!isPastDue && !isCanceled && !isTrialExpired &&
               'An active subscription is required to access this feature.'}
           </p>
@@ -148,7 +148,7 @@ export default function SubscriptionRequiredPage() {
           {/* Features List */}
           <div className="bg-slate-50 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-slate-900 mb-3 text-sm">
-              Kitsune Pro includes:
+              Weebo plan includes:
             </h3>
             <div className="space-y-2">
               <div className="flex items-start gap-2">

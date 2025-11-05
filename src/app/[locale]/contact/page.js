@@ -168,7 +168,7 @@ export default function ContactPage() {
           className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-lg border-2 border-orange-300 rounded-full text-gray-800 hover:bg-white hover:border-pink-400 transition-all shadow-lg hover:shadow-xl"
         >
           <Sparkles className="w-4 h-4 text-orange-500" />
-          <span className="text-sm font-semibold">Kitsune</span>
+          <span className="text-sm font-semibold">Back</span>
         </Link>
       </div>
 
@@ -276,9 +276,8 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder={t('form.namePlaceholder')}
-                    className={`w-full px-5 py-4 bg-white border-2 ${
-                      errors.name ? 'border-red-400' : 'border-pink-200'
-                    } rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-400 transition-all shadow-sm hover:shadow-md`}
+                    className={`w-full px-5 py-4 bg-white border-2 ${errors.name ? 'border-red-400' : 'border-pink-200'
+                      } rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-400 transition-all shadow-sm hover:shadow-md`}
                     disabled={isSubmitting}
                   />
                   {errors.name && (
@@ -301,9 +300,8 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder={t('form.emailPlaceholder')}
-                    className={`w-full px-5 py-4 bg-white border-2 ${
-                      errors.email ? 'border-red-400' : 'border-pink-200'
-                    } rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-400 transition-all shadow-sm hover:shadow-md`}
+                    className={`w-full px-5 py-4 bg-white border-2 ${errors.email ? 'border-red-400' : 'border-pink-200'
+                      } rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-400 transition-all shadow-sm hover:shadow-md`}
                     disabled={isSubmitting}
                   />
                   {errors.email && (
@@ -320,9 +318,8 @@ export default function ContactPage() {
                     <label htmlFor="message" className="block text-gray-800 font-bold text-lg">
                       💬 {t('form.message')}
                     </label>
-                    <span className={`text-sm font-medium ${
-                      characterCount > MAX_MESSAGE_LENGTH ? 'text-red-500' : 'text-gray-500'
-                    }`}>
+                    <span className={`text-sm font-medium ${characterCount > MAX_MESSAGE_LENGTH ? 'text-red-500' : 'text-gray-500'
+                      }`}>
                       {t('form.charactersRemaining', { count: MAX_MESSAGE_LENGTH - characterCount })}
                     </span>
                   </div>
@@ -333,9 +330,8 @@ export default function ContactPage() {
                     onChange={handleChange}
                     placeholder={t('form.messagePlaceholder')}
                     rows={6}
-                    className={`w-full px-5 py-4 bg-white border-2 ${
-                      errors.message ? 'border-red-400' : 'border-pink-200'
-                    } rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-400 transition-all resize-none shadow-sm hover:shadow-md`}
+                    className={`w-full px-5 py-4 bg-white border-2 ${errors.message ? 'border-red-400' : 'border-pink-200'
+                      } rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-400 transition-all resize-none shadow-sm hover:shadow-md`}
                     disabled={isSubmitting}
                   />
                   {errors.message && (

@@ -273,62 +273,62 @@ export default function BillingPage() {
           {['trial_expired', 'past_due', 'canceled', 'unpaid'].includes(
             subscription?.status
           ) && (
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <XCircle className="w-5 h-5 text-red-600" />
-                <span className="font-semibold text-red-900">
-                  {t('subscriptionStatus.inactive.status')}
-                </span>
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <XCircle className="w-5 h-5 text-red-600" />
+                  <span className="font-semibold text-red-900">
+                    {t('subscriptionStatus.inactive.status')}
+                  </span>
+                </div>
+                <p className="text-slate-600 mb-4">
+                  {subscription.status === 'trial_expired' &&
+                    t('subscriptionStatus.inactive.trialExpired')}
+                  {subscription.status === 'past_due' && t('subscriptionStatus.inactive.pastDue')}
+                  {subscription.status === 'canceled' &&
+                    t('subscriptionStatus.inactive.canceled')}
+                  {subscription.status === 'unpaid' && t('subscriptionStatus.inactive.unpaid')}
+                </p>
+                <div className="flex gap-3">
+                  {subscription.status === 'past_due' ? (
+                    <button
+                      onClick={handleManageSubscription}
+                      disabled={actionLoading}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
+                    >
+                      {actionLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          {t('loading')}
+                        </>
+                      ) : (
+                        <>{t('subscriptionStatus.inactive.updatePaymentMethod')}</>
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleSubscribe}
+                      disabled={actionLoading}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
+                    >
+                      {actionLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          {t('loading')}
+                        </>
+                      ) : (
+                        <>{t('subscriptionStatus.inactive.subscribeNow')}</>
+                      )}
+                    </button>
+                  )}
+                </div>
               </div>
-              <p className="text-slate-600 mb-4">
-                {subscription.status === 'trial_expired' &&
-                  t('subscriptionStatus.inactive.trialExpired')}
-                {subscription.status === 'past_due' && t('subscriptionStatus.inactive.pastDue')}
-                {subscription.status === 'canceled' &&
-                  t('subscriptionStatus.inactive.canceled')}
-                {subscription.status === 'unpaid' && t('subscriptionStatus.inactive.unpaid')}
-              </p>
-              <div className="flex gap-3">
-                {subscription.status === 'past_due' ? (
-                  <button
-                    onClick={handleManageSubscription}
-                    disabled={actionLoading}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
-                  >
-                    {actionLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        {t('loading')}
-                      </>
-                    ) : (
-                      <>{t('subscriptionStatus.inactive.updatePaymentMethod')}</>
-                    )}
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleSubscribe}
-                    disabled={actionLoading}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
-                  >
-                    {actionLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        {t('loading')}
-                      </>
-                    ) : (
-                      <>{t('subscriptionStatus.inactive.subscribeNow')}</>
-                    )}
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
+            )}
         </div>
 
         {/* Plan Details */}
         <div className="bg-white rounded-lg border border-slate-200 p-6">
           <h2 className="text-xl font-bold text-slate-900 mb-4">
-            Kitsune Pro Plan
+            Weebo Plan
           </h2>
 
           <div className="mb-4">

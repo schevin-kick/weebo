@@ -407,7 +407,7 @@ export default async function BrochureV2ServerContent({ locale }) {
               <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl">
                 <Image
                   src="/brochure/booking-modal.webp"
-                  alt="Kitsune Dashboard with Booking Details"
+                  alt="Weebo Dashboard with Booking Details"
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"

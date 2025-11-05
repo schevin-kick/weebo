@@ -47,7 +47,7 @@ export default function BookingSuccess({
           return;
         }
 
-        // For shared mode, check friendship status with Kitsune bot
+        // For shared mode, check friendship status with Weebo bot
         const friendship = await liff.getFriendship();
         setFriendshipStatus(friendship.friendFlag ? 'friend' : 'not_friend');
       }

@@ -139,7 +139,7 @@ export default function MyBookingsPage() {
             {/* Kitsune Platform Logo */}
             <img
               src="/logo.png"
-              alt="Kitsune"
+              alt="Weebo"
               className="w-10 h-10 rounded-xl object-contain"
             />
             <div>

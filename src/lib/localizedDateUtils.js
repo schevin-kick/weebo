@@ -1,5 +1,5 @@
 /**
- * Localized Date/Time Utilities for Kitsune Dashboard
+ * Localized Date/Time Utilities for Weebo Dashboard
  * Provides locale-aware date and time formatting
  */
 

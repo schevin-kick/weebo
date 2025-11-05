@@ -1,5 +1,5 @@
 /**
- * Date/Time Utilities for Kitsune Dashboard
+ * Date/Time Utilities for Weebo Dashboard
  * Using date-fns for date manipulation and formatting
  */
 

@@ -59,7 +59,7 @@ export default function SetupWizardPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                  Kitsune
+                  Weebo
                 </h1>
                 <p className="text-sm text-slate-600">Setup Wizard</p>
               </div>

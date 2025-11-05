@@ -128,7 +128,7 @@ export default function BusinessDashboard() {
                 <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center overflow-hidden">
                   <img
                     src="/logo.png"
-                    alt="Kitsune"
+                    alt="Weebo"
                     className="w-full h-full object-cover"
                   />
                 </div>
