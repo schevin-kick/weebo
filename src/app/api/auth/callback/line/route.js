@@ -71,7 +71,9 @@ export async function GET(request) {
     }, subscriptionData);
 
     // Set session cookie
-    await setSessionCookie(sessionToken);
+    const csrfToken = await setSessionCookie(sessionToken);
+    console.log(`[Auth] Session cookie set for user ${owner.id}, CSRF token: ${csrfToken ? 'generated' : 'failed'}`);
+    console.log(`[Auth] Cookie config: secure=true, sameSite=none, httpOnly=true`);
 
     // Redirect to setup (outside try/catch to avoid catching NEXT_REDIRECT)
     redirect('/setup');
