@@ -132,6 +132,10 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '2mb',
     },
+    // Ensure Prisma binaries are included in serverless functions
+    outputFileTracingIncludes: {
+      '/api/**/*': ['./node_modules/.prisma/client/**/*'],
+    },
   },
 };
 
