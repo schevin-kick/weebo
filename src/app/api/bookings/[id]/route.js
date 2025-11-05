@@ -129,9 +129,10 @@ export async function PATCH(request, { params }) {
     // Send LINE notification about cancellation with customer's preferred locale
     let messageResult = null;
     if (status === 'cancelled') {
-      try {
-        const locale = getCustomerLocale(booking.customer);
+      // Get locale once for both customer and owner notifications
+      const locale = getCustomerLocale(booking.customer);
 
+      try {
         messageResult = await sendBookingCancellation(
           booking,
           existing.business,
