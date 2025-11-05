@@ -1,4 +1,5 @@
 import createNextIntlPlugin from 'next-intl/plugin';
+import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.js');
 
@@ -7,6 +8,14 @@ const nextConfig = {
   /* config options here */
   reactCompiler: true,
   reactStrictMode: false,
+
+  // Webpack configuration to include Prisma binaries
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()];
+    }
+    return config;
+  },
 
   // Security headers
   async headers() {
