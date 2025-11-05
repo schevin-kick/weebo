@@ -135,9 +135,9 @@ const nextConfig = {
 
   // Experimental features
   experimental: {
-    // Ensure Prisma binaries are included in serverless functions
+    // Ensure Prisma binaries are included in all serverless functions (API routes and pages)
     outputFileTracingIncludes: {
-      '/api/**/*': ['./node_modules/.prisma/client/**/*', './node_modules/@prisma/client/**/*'],
+      '/**/*': ['./node_modules/.prisma/client/**/*', './node_modules/@prisma/client/**/*'],
     },
     // Body size limits for security
     serverActions: {
