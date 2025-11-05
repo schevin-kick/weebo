@@ -12,9 +12,10 @@ export const DEFAULT_LOCALE = 'zh-tw'; // Default to Traditional Chinese for Tai
 /**
  * Detect locale from Next.js request headers
  * @param {object} request - Next.js request object with headers
+ * @param {string} fallbackLocale - Optional fallback locale to use instead of DEFAULT_LOCALE
  * @returns {string} Locale code ('en' or 'zh-tw')
  */
-export function detectLocaleFromRequest(request) {
+export function detectLocaleFromRequest(request, fallbackLocale = null) {
   // Try to get locale from cookies
   const cookieLocale = request.cookies?.get?.('NEXT_LOCALE')?.value;
   if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale)) {
@@ -24,6 +25,11 @@ export function detectLocaleFromRequest(request) {
   // Try to get from headers
   const acceptLanguage = request.headers?.get?.('accept-language') || '';
 
+  // Check for English first (more specific check)
+  if (acceptLanguage.includes('en-US') || acceptLanguage.includes('en-GB') || acceptLanguage.startsWith('en')) {
+    return 'en';
+  }
+
   // Check for Traditional Chinese
   if (acceptLanguage.includes('zh-TW') || acceptLanguage.includes('zh-Hant')) {
     return 'zh-tw';
@@ -32,6 +38,11 @@ export function detectLocaleFromRequest(request) {
   // Check for Chinese (might be simplified, but default to traditional for Taiwan)
   if (acceptLanguage.startsWith('zh')) {
     return 'zh-tw';
+  }
+
+  // Use provided fallback if valid, otherwise use DEFAULT_LOCALE
+  if (fallbackLocale && SUPPORTED_LOCALES.includes(fallbackLocale)) {
+    return fallbackLocale;
   }
 
   return DEFAULT_LOCALE;

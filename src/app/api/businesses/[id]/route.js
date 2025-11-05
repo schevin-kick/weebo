@@ -40,7 +40,13 @@ export async function GET(request, { params }) {
 
     // Return full data for owner, limited data for public
     if (isOwner) {
-      return NextResponse.json({ business, isOwner: true });
+      // For owner, also include the shared Kitsune bot ID if they're using shared mode
+      const kitsuneSharedBotId = process.env.LINE_BOT_BASIC_ID;
+      return NextResponse.json({
+        business,
+        isOwner: true,
+        kitsuneSharedBotId
+      });
     } else {
       // Public view - hide sensitive data
       // For shared mode, use Kitsune's shared bot Basic ID

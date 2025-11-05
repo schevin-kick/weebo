@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import {
   Sparkles,
@@ -49,16 +49,6 @@ export default function BrochureV2Content() {
 
   // Global page scroll for background sphere
   const { scrollYProgress: globalScrollProgress } = useScroll();
-
-  // Phone parallax scroll effect
-  const { scrollYProgress } = useScroll({
-    target: phoneRef,
-    offset: ["start end", "end start"]
-  });
-
-  const phoneY = useTransform(scrollYProgress, [0, 0.5, 1], [100, 0, -100]);
-  const phoneScale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.85, 1, 1, 0.95]);
-  const phoneRotate = useTransform(scrollYProgress, [0, 0.5, 1], [-5, 0, 5]);
 
   // Convert scroll progress MotionValue to regular value for Three.js
   const [scrollValue, setScrollValue] = useState(0);
@@ -245,80 +235,101 @@ export default function BrochureV2Content() {
             {t('hero.cta.finePrint')}
           </motion.p>
 
-          {/* Floating mockup video */}
-          <ParallaxSection speed={-0.3}>
+          {/* Desktop: Floating mockup video with full animations */}
+          <div className="hidden md:block">
             <motion.div
               ref={phoneRef}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.5 }}
-              className="mt-20"
-              style={{
-                y: phoneY,
-                scale: phoneScale,
-                rotateZ: phoneRotate
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  duration: 0.6,
+                  ease: "easeOut"
+                }
               }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="mt-20"
             >
-              <div className="relative max-w-sm mx-auto perspective-container">
-                <InteractiveCard hoverScale={1.03} tiltIntensity={5}>
-                  {/* Smartphone Frame */}
-                  <div className="relative rounded-[50px] bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-3 shadow-2xl">
-                    {/* Phone Bezel Inner Shadow */}
-                    <div className="absolute inset-3 rounded-[40px] shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)]" />
+                <div className="relative max-w-sm mx-auto perspective-container">
+                  <InteractiveCard hoverScale={1.03} tiltIntensity={5}>
+                    {/* Smartphone Frame */}
+                    <div className="relative rounded-[50px] bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-3 shadow-2xl">
+                      {/* Phone Bezel Inner Shadow */}
+                      <div className="absolute inset-3 rounded-[40px] shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)]" />
 
-                    {/* Notch */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-7 bg-black rounded-b-3xl z-20 shadow-lg">
-                      {/* Camera */}
-                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gray-700" />
-                      {/* Speaker */}
-                      <div className="absolute top-2 left-1/2 -translate-x-1/2 translate-x-4 w-6 h-1.5 rounded-full bg-gray-800" />
-                    </div>
-
-                    {/* Screen */}
-                    <div className="relative rounded-[40px] glass shadow-2xl overflow-hidden soft-glow" style={{ aspectRatio: '9/19.5' }}>
-                      {/* SVG Animation */}
-                      <HeroSvgAnimation />
-
-                      {/* Waving robot video overlay - in front of SVG animations */}
-                      <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
-                        <video
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          className="w-48 h-48 object-contain opacity-30"
-                        >
-                          <source src="/robot-waving-unscreen-optimized.mp4" type="video/mp4" />
-                        </video>
+                      {/* Notch */}
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-7 bg-black rounded-b-3xl z-20 shadow-lg">
+                        {/* Camera */}
+                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gray-700" />
+                        {/* Speaker */}
+                        <div className="absolute top-2 left-1/2 -translate-x-1/2 translate-x-4 w-6 h-1.5 rounded-full bg-gray-800" />
                       </div>
 
-                      {/* Floating Notifications Overlay */}
-                      <AnimatePresence mode="wait">
-                        <FloatingNotification
-                          key={activeNotification}
-                          icon={notifications[activeNotification].icon}
-                          title={notifications[activeNotification].title}
-                          message={notifications[activeNotification].message}
-                          position={notifications[activeNotification].position}
-                          gradient={notifications[activeNotification].gradient}
-                        />
-                      </AnimatePresence>
+                      {/* Screen */}
+                      <div className="relative rounded-[40px] glass shadow-2xl overflow-hidden soft-glow" style={{ aspectRatio: '9/19.5' }}>
+                        {/* SVG Animation */}
+                        <HeroSvgAnimation />
 
-                      {/* Screen Reflection Overlay */}
-                      <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+                        {/* Waving robot video overlay - in front of SVG animations */}
+                        <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
+                          <video
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-48 h-48 object-contain opacity-30"
+                          >
+                            <source src="/robot-waving-unscreen-optimized.mp4" type="video/mp4" />
+                          </video>
+                        </div>
+
+                        {/* Floating Notifications Overlay */}
+                        <AnimatePresence mode="wait">
+                          <FloatingNotification
+                            key={activeNotification}
+                            icon={notifications[activeNotification].icon}
+                            title={notifications[activeNotification].title}
+                            message={notifications[activeNotification].message}
+                            position={notifications[activeNotification].position}
+                            gradient={notifications[activeNotification].gradient}
+                          />
+                        </AnimatePresence>
+
+                        {/* Screen Reflection Overlay */}
+                        <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+                      </div>
+
+                      {/* Power Button */}
+                      <div className="absolute right-0 top-32 w-1 h-16 bg-gray-950 rounded-l-sm" />
+
+                      {/* Volume Buttons */}
+                      <div className="absolute left-0 top-28 w-1 h-10 bg-gray-950 rounded-r-sm" />
+                      <div className="absolute left-0 top-40 w-1 h-10 bg-gray-950 rounded-r-sm" />
                     </div>
-
-                    {/* Power Button */}
-                    <div className="absolute right-0 top-32 w-1 h-16 bg-gray-950 rounded-l-sm" />
-
-                    {/* Volume Buttons */}
-                    <div className="absolute left-0 top-28 w-1 h-10 bg-gray-950 rounded-r-sm" />
-                    <div className="absolute left-0 top-40 w-1 h-10 bg-gray-950 rounded-r-sm" />
-                  </div>
-                </InteractiveCard>
-              </div>
+                  </InteractiveCard>
+                </div>
             </motion.div>
-          </ParallaxSection>
+          </div>
+
+          {/* Mobile: Simple robot video only */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.5 }}
+            className="mt-16 md:hidden"
+          >
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-64 h-64 mx-auto object-contain rounded-3xl"
+            >
+              <source src="/robot-waving-unscreen-optimized.mp4" type="video/mp4" />
+            </video>
+          </motion.div>
         </div>
       </section>
 
@@ -568,25 +579,59 @@ export default function BrochureV2Content() {
                 transition={{ duration: 0.8 }}
                 className="relative"
               >
-                <InteractiveCard hoverScale={1.02} tiltIntensity={5}>
-                  <div className="aspect-square rounded-3xl glass shadow-2xl p-8 soft-glow">
+                {/* Desktop: Interactive card with 3D effects */}
+                <div className="hidden md:block">
+                  <InteractiveCard hoverScale={1.02} tiltIntensity={5}>
+                    <div className="aspect-square rounded-3xl glass shadow-2xl p-8 soft-glow">
+                      {/* Simple dashboard visualization */}
+                      <div className="space-y-6 h-full flex flex-col justify-around">
+                        <div className="bg-gradient-to-br from-cyan-400/30 to-blue-400/30 rounded-2xl p-6 border-2 border-cyan-300 shadow-lg">
+                          <p className="text-gray-700 text-sm mb-2 font-bold">{t('analyticsPreview.dashboardMetrics.totalBookings')}</p>
+                          <AnimatedCounter
+                            end={1247}
+                            className="text-4xl font-black text-gray-800"
+                          />
+                        </div>
+                        <div className="bg-gradient-to-br from-pink-400/30 to-rose-400/30 rounded-2xl p-6 border-2 border-pink-300 shadow-lg">
+                          <p className="text-gray-700 text-sm mb-2 font-bold">{t('analyticsPreview.dashboardMetrics.thisWeek')}</p>
+                          <AnimatedCounter
+                            end={89}
+                            className="text-4xl font-black text-gray-800"
+                          />
+                        </div>
+                        <div className="bg-gradient-to-br from-emerald-400/30 to-green-400/30 rounded-2xl p-6 border-2 border-emerald-300 shadow-lg">
+                          <p className="text-gray-700 text-sm mb-2 font-bold">{t('analyticsPreview.dashboardMetrics.revenue')}</p>
+                          <AnimatedCounter
+                            end={45280}
+                            prefix="$"
+                            className="text-4xl font-black text-gray-800"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </InteractiveCard>
+                </div>
+
+                {/* Mobile: Simple layout with proper spacing */}
+                <div className="md:hidden">
+                  <div className="rounded-3xl glass shadow-2xl p-4 soft-glow">
                     {/* Simple dashboard visualization */}
-                    <div className="space-y-6 h-full flex flex-col justify-around">
-                      <div className="bg-gradient-to-br from-cyan-400/30 to-blue-400/30 rounded-2xl p-6 border-2 border-cyan-300 shadow-lg">
+                    <div className="space-y-4">
+                      <div className="bg-gradient-to-br from-cyan-400/30 to-blue-400/30 rounded-2xl p-4 border-2 border-cyan-300 shadow-lg">
                         <p className="text-gray-700 text-sm mb-2 font-bold">{t('analyticsPreview.dashboardMetrics.totalBookings')}</p>
                         <AnimatedCounter
                           end={1247}
                           className="text-4xl font-black text-gray-800"
                         />
                       </div>
-                      <div className="bg-gradient-to-br from-pink-400/30 to-rose-400/30 rounded-2xl p-6 border-2 border-pink-300 shadow-lg">
+                      <div className="bg-gradient-to-br from-pink-400/30 to-rose-400/30 rounded-2xl p-4 border-2 border-pink-300 shadow-lg">
                         <p className="text-gray-700 text-sm mb-2 font-bold">{t('analyticsPreview.dashboardMetrics.thisWeek')}</p>
                         <AnimatedCounter
                           end={89}
                           className="text-4xl font-black text-gray-800"
                         />
                       </div>
-                      <div className="bg-gradient-to-br from-emerald-400/30 to-green-400/30 rounded-2xl p-6 border-2 border-emerald-300 shadow-lg">
+                      <div className="bg-gradient-to-br from-emerald-400/30 to-green-400/30 rounded-2xl p-4 border-2 border-emerald-300 shadow-lg">
                         <p className="text-gray-700 text-sm mb-2 font-bold">{t('analyticsPreview.dashboardMetrics.revenue')}</p>
                         <AnimatedCounter
                           end={45280}
@@ -596,7 +641,7 @@ export default function BrochureV2Content() {
                       </div>
                     </div>
                   </div>
-                </InteractiveCard>
+                </div>
               </motion.div>
             </div>
           </div>

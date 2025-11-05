@@ -9,6 +9,12 @@ const nextConfig = {
   reactCompiler: true,
   reactStrictMode: false,
 
+  // Allow ngrok and localhost origins in development
+  allowedDevOrigins: [
+    'cozies-unentreated-aleen.ngrok-free.dev',
+    'localhost:3000',
+  ],
+
   // Webpack configuration to include Prisma binaries
   webpack: (config, { isServer }) => {
     if (isServer) {

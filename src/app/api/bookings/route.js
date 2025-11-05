@@ -3,7 +3,7 @@ import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { sendBookingConfirmation, sendBusinessOwnerNotification } from '@/lib/lineMessaging';
 import { publicRateLimit, authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
-import { detectLocaleFromPathname } from '@/lib/localeUtils';
+import { detectLocaleFromRequest } from '@/lib/localeUtils';
 
 /**
  * POST /api/bookings
@@ -11,9 +11,6 @@ import { detectLocaleFromPathname } from '@/lib/localeUtils';
  */
 export async function POST(request) {
   try {
-    // Detect locale from request URL (for immediate notifications)
-    const locale = detectLocaleFromPathname(request.nextUrl?.pathname);
-
     // Apply rate limiting (public endpoint - 10 req/min per IP)
     const identifier = getIdentifier(request);
     const rateLimitResult = await checkRateLimit(publicRateLimit, identifier);
@@ -33,7 +30,11 @@ export async function POST(request) {
       dateTime,
       duration,
       responses,
+      locale: requestLocale,
     } = data;
+
+    // Detect locale from request headers/cookies, fallback to request body locale
+    const locale = detectLocaleFromRequest(request, requestLocale);
 
     // Validate required fields
     if (!businessId || !dateTime) {

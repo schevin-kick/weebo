@@ -65,6 +65,7 @@ export function useBusiness(businessId) {
 
   return {
     business: data?.business,
+    kitsuneSharedBotId: data?.kitsuneSharedBotId,
     isLoading,
     isError: error,
     mutate,

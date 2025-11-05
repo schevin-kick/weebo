@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import useBookingStore from '@/stores/bookingStore';
 import BookingLayout from '@/components/booking/BookingLayout';
@@ -23,6 +23,8 @@ import {
 
 export default function BookingPage() {
   const searchParams = useSearchParams();
+  const params = useParams();
+  const locale = params.locale || 'zh-tw'; // Will be 'en' or 'zh-tw' from the URL
   const t = useTranslations('booking');
 
   // Extract business_id from either direct param or liff.state
@@ -140,7 +142,7 @@ export default function BookingPage() {
     // Get current locale from pathname
     const currentPath = window.location.pathname;
     const currentLocale = currentPath.startsWith('/en/') ? 'en' :
-                         currentPath.startsWith('/zh-tw/') ? 'zh-tw' : 'zh-tw';
+      currentPath.startsWith('/zh-tw/') ? 'zh-tw' : 'zh-tw';
 
     // Map LINE language codes to our locales
     let targetLocale = 'zh-tw'; // Default to Chinese
@@ -153,7 +155,7 @@ export default function BookingPage() {
       }
       // Chinese variants (Traditional Chinese, Taiwan, Hong Kong)
       else if (langLower.includes('zh-tw') || langLower.includes('zh-hant') ||
-               langLower.includes('zh-hk') || langLower.includes('zh_tw')) {
+        langLower.includes('zh-hk') || langLower.includes('zh_tw')) {
         targetLocale = 'zh-tw';
       }
       // Simplified Chinese defaults to Traditional (can be changed if needed)
@@ -176,7 +178,7 @@ export default function BookingPage() {
     // Store current locale from pathname
     const currentPath = window.location.pathname;
     const currentLocale = currentPath.startsWith('/en/') ? 'en' :
-                         currentPath.startsWith('/zh-tw/') ? 'zh-tw' : 'zh-tw';
+      currentPath.startsWith('/zh-tw/') ? 'zh-tw' : 'zh-tw';
 
     document.cookie = `NEXT_LOCALE=${currentLocale}; path=/; max-age=${60 * 60 * 24 * 365}`;
   }
@@ -285,6 +287,7 @@ export default function BookingPage() {
         dateTime: selectedDateTime,
         duration: selectedService?.duration || businessConfig?.defaultDuration,
         responses: responses || {},
+        locale: locale, // Pass locale for fallback locale detection
       };
 
       // Submit booking

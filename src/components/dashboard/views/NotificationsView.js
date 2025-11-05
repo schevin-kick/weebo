@@ -14,15 +14,16 @@ import { useToast } from '@/contexts/ToastContext';
 import { useNotificationBadge } from '@/hooks/useNotificationBadge';
 import Skeleton from '@/components/loading/Skeleton';
 
-const KITSUNE_BOT_ID = '@531rhzlf';
-const KITSUNE_BOT_URL = `https://line.me/R/ti/p/${KITSUNE_BOT_ID}`;
-
 export default function NotificationsView({ businessId }) {
   const t = useTranslations('dashboard.notifications');
   const toast = useToast();
   const canvasRef = useRef(null);
-  const { business, isLoading, mutate } = useBusiness(businessId);
+  const { business, kitsuneSharedBotId, isLoading, mutate } = useBusiness(businessId);
   const { markAsVisited } = useNotificationBadge('notifications', businessId);
+
+  // Use dynamic Kitsune bot ID from environment (via API)
+  const KITSUNE_BOT_ID = kitsuneSharedBotId || '@531rhzlf'; // Fallback to hardcoded value
+  const KITSUNE_BOT_URL = `https://line.me/R/ti/p/${KITSUNE_BOT_ID}`;
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -40,16 +41,16 @@ export default function NotificationsView({ businessId }) {
     }
   }, [business]);
 
-  // Generate QR code
+  // Generate QR code when bot ID is available
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (canvasRef.current) {
+      if (canvasRef.current && kitsuneSharedBotId) {
         generateQRCode();
       }
     }, 100);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [kitsuneSharedBotId]);
 
   async function generateQRCode() {
     if (!canvasRef.current) return;
