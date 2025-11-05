@@ -279,6 +279,19 @@ export default function BrochureV2Content() {
                       {/* SVG Animation */}
                       <HeroSvgAnimation />
 
+                      {/* Waving robot video overlay - in front of SVG animations */}
+                      <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
+                        <video
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-48 h-48 object-contain opacity-30"
+                        >
+                          <source src="/robot-waving-unscreen-optimized.mp4" type="video/mp4" />
+                        </video>
+                      </div>
+
                       {/* Floating Notifications Overlay */}
                       <AnimatePresence mode="wait">
                         <FloatingNotification
