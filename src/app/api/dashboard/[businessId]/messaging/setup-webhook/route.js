@@ -7,9 +7,13 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
 export async function POST(request, { params }) {
   try {
+    // Detect user's locale from request headers
+    const locale = detectLocaleFromRequest(request);
+
     const session = await getSession();
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -115,13 +119,15 @@ export async function POST(request, { params }) {
 
     console.log('[Webhook Setup] Setup completed successfully');
 
+    const message = webhookVerified
+      ? await translate(locale, 'api.webhookSetup.successVerified')
+      : await translate(locale, 'api.webhookSetup.successUnverified');
+
     return NextResponse.json({
       success: true,
       webhookUrl,
       verified: webhookVerified,
-      message: webhookVerified
-        ? 'Webhook configured and verified successfully! Remember to enable the "Use webhook" toggle in your LINE Developers Console → Messaging API settings.'
-        : 'Webhook configured but verification failed. This is normal - webhooks will still work. Remember to enable the "Use webhook" toggle in your LINE Developers Console → Messaging API settings.'
+      message
     });
 
   } catch (error) {

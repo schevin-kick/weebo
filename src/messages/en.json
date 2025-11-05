@@ -1160,6 +1160,24 @@
       "body": "Don't forget your appointment tomorrow!"
     }
   },
+  "api": {
+    "lineWebhook": {
+      "welcomeSharedBot": "Thanks for adding us! You'll receive booking confirmations and reminders here.",
+      "welcomeBusinessBot": "Welcome back! You'll continue to receive booking updates here.",
+      "bookingLinked": "Booking linked! You'll receive updates for booking #{bookingId}."
+    },
+    "booking": {
+      "subscriptionInactive": "This business is currently unavailable for bookings. Please contact the business owner."
+    },
+    "contact": {
+      "success": "Message sent successfully",
+      "error": "Failed to send message. Please try again later."
+    },
+    "webhookSetup": {
+      "successVerified": "Webhook configured and verified successfully! Remember to enable the \"Use webhook\" toggle in your LINE Developers Console → Messaging API settings.",
+      "successUnverified": "Webhook configured but verification failed. This is normal - webhooks will still work. Remember to enable the \"Use webhook\" toggle in your LINE Developers Console → Messaging API settings."
+    }
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your business configuration",

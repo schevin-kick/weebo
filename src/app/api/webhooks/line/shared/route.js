@@ -76,14 +76,18 @@ export async function POST(request) {
         } else {
           console.log('[Shared Bot Webhook] No recent booking found');
 
-          // Send generic welcome message
+          // Send generic welcome message with default locale (EN)
           try {
             const { sendLineMessage } = await import('@/lib/lineMessaging');
+            const { translate } = await import('@/lib/localeUtils');
+
+            const welcomeMessage = await translate('en', 'api.lineWebhook.welcomeSharedBot');
+
             await sendLineMessage(
               userId,
               [{
                 type: 'text',
-                text: `Thanks for adding us! You'll receive booking confirmations and reminders here.`
+                text: welcomeMessage
               }],
               null // No specific business - use shared bot token
             );

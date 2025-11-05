@@ -184,11 +184,15 @@ export async function POST(request, { params }) {
 
             // Send confirmation
             try {
+              const { translate, getCustomerLocale } = await import('@/lib/localeUtils');
+              const locale = getCustomerLocale(booking.customer);
+              const confirmationMessage = await translate(locale, 'api.lineWebhook.bookingLinked', { bookingId });
+
               await sendLineMessage(
                 businessBotUserId,
                 [{
                   type: 'text',
-                  text: `Booking linked! You'll receive updates for booking #${bookingId}.`
+                  text: confirmationMessage
                 }],
                 business
               );

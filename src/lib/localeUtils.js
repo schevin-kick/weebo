@@ -89,3 +89,73 @@ export function getCustomerLocale(customer) {
   }
   return DEFAULT_LOCALE;
 }
+
+/**
+ * Translation messages cache
+ */
+let messagesCache = null;
+
+/**
+ * Load translation messages from JSON files
+ * @returns {object} Messages object with locale keys
+ */
+async function loadMessages() {
+  if (messagesCache) {
+    return messagesCache;
+  }
+
+  try {
+    const enMessages = await import('@/messages/en.json');
+    const zhTwMessages = await import('@/messages/zh-tw.json');
+
+    messagesCache = {
+      'en': enMessages.default,
+      'zh-tw': zhTwMessages.default
+    };
+
+    return messagesCache;
+  } catch (error) {
+    console.error('Failed to load translation messages:', error);
+    return {
+      'en': {},
+      'zh-tw': {}
+    };
+  }
+}
+
+/**
+ * Get nested property from object using dot notation
+ * @param {object} obj - Object to search
+ * @param {string} path - Dot-notation path (e.g., 'api.contact.success')
+ * @returns {any} Value at path or undefined
+ */
+function getNestedProperty(obj, path) {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
+}
+
+/**
+ * Server-side translation function
+ * @param {string} locale - Locale code ('en' or 'zh-tw')
+ * @param {string} key - Translation key in dot notation (e.g., 'api.contact.success')
+ * @param {object} values - Optional values for interpolation (e.g., {bookingId: '123'})
+ * @returns {Promise<string>} Translated string
+ */
+export async function translate(locale, key, values = {}) {
+  const normalizedLocale = normalizeLocale(locale);
+  const messages = await loadMessages();
+
+  const message = getNestedProperty(messages[normalizedLocale], key);
+
+  if (!message) {
+    console.warn(`Translation missing for key: ${key} in locale: ${normalizedLocale}`);
+    return key;
+  }
+
+  // Simple interpolation for values like {bookingId}
+  let result = message;
+  Object.keys(values).forEach(valueKey => {
+    result = result.replace(new RegExp(`\\{${valueKey}\\}`, 'g'), values[valueKey]);
+  });
+
+  return result;
+}

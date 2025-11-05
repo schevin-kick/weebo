@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { publicRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
+import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
 // Email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,6 +16,9 @@ const MAX_MESSAGE_LENGTH = 400;
  */
 export async function POST(request) {
   try {
+    // Detect user's locale
+    const locale = detectLocaleFromRequest(request);
+
     // Apply rate limiting (10 requests per 10 minutes per IP)
     const identifier = getIdentifier(request);
     const rateLimitResult = await checkRateLimit(publicRateLimit, identifier);
@@ -238,16 +242,25 @@ ${new Date().toISOString()}
     });
 
     // Return success response
+    const successMessage = await translate(locale, 'api.contact.success');
     return NextResponse.json(
       {
         success: true,
-        message: 'Message sent successfully',
+        message: successMessage,
       },
       { status: 200 }
     );
 
   } catch (error) {
     console.error('[Contact Form] Error:', error);
+
+    // Detect locale for error messages (with fallback)
+    let errorLocale = 'en';
+    try {
+      errorLocale = detectLocaleFromRequest(request);
+    } catch (e) {
+      console.error('[Contact Form] Failed to detect locale for error message');
+    }
 
     // Check for specific nodemailer errors
     if (error.code === 'EAUTH') {
@@ -258,8 +271,9 @@ ${new Date().toISOString()}
       );
     }
 
+    const errorMessage = await translate(errorLocale, 'api.contact.error');
     return NextResponse.json(
-      { error: 'Failed to send message. Please try again later.' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

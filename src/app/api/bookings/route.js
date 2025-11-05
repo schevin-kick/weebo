@@ -73,10 +73,13 @@ export async function POST(request) {
     const { hasAccess } = await checkSubscriptionAccess(business.ownerId);
 
     if (!hasAccess) {
+      const { translate } = await import('@/lib/localeUtils');
+      const errorMessage = await translate(locale, 'api.booking.subscriptionInactive');
+
       return NextResponse.json(
         {
           error: 'Booking unavailable',
-          message: 'This business is currently unavailable for bookings. Please contact the business owner.'
+          message: errorMessage
         },
         { status: 403 }
       );

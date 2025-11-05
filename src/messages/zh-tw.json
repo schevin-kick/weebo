@@ -1160,6 +1160,24 @@
       "body": "別忘了您明天的預約！"
     }
   },
+  "api": {
+    "lineWebhook": {
+      "welcomeSharedBot": "感謝您加入我們！您將在這裡收到預約確認和提醒。",
+      "welcomeBusinessBot": "歡迎回來！您將繼續在這裡收到預約更新。",
+      "bookingLinked": "預約已連結！您將收到預約 #{bookingId} 的更新。"
+    },
+    "booking": {
+      "subscriptionInactive": "此店家目前無法接受預約。請聯繫店家。"
+    },
+    "contact": {
+      "success": "訊息已成功發送",
+      "error": "發送訊息失敗。請稍後再試。"
+    },
+    "webhookSetup": {
+      "successVerified": "Webhook 已成功配置並驗證！請記得在 LINE Developers Console → Messaging API 設定中啟用「使用 webhook」開關。",
+      "successUnverified": "Webhook 已配置但驗證失敗。這是正常的 - webhook 仍然可以運作。請記得在 LINE Developers Console → Messaging API 設定中啟用「使用 webhook」開關。"
+    }
+  },
   "settings": {
     "title": "設定",
     "subtitle": "管理您的企業配置",
