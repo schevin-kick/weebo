@@ -10,6 +10,7 @@ import prisma from '@/lib/prisma';
 import { sendBookingConfirmation, sendBookingCancellation } from '@/lib/lineMessaging';
 import { authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
 import { validateCSRFToken } from '@/lib/csrf';
+import { getCustomerLocale } from '@/lib/localeUtils';
 
 export async function PATCH(request, { params }) {
   try {
@@ -92,16 +93,19 @@ export async function PATCH(request, { params }) {
       },
     });
 
-    // Send LINE message
+    // Send LINE message with customer's preferred locale
     let messageResult = null;
     try {
+      const locale = getCustomerLocale(booking.customer);
+
       if (status === 'confirmed') {
-        messageResult = await sendBookingConfirmation(updatedBooking, booking.business);
+        messageResult = await sendBookingConfirmation(updatedBooking, booking.business, locale);
       } else if (status === 'cancelled') {
         messageResult = await sendBookingCancellation(
           updatedBooking,
           booking.business,
-          cancellationReason
+          cancellationReason,
+          locale
         );
       }
 

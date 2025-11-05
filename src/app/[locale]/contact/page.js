@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { Mail, Send, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import LanguageSelector from '@/components/shared/LanguageSelector';
-import { Link } from '@/i18n/routing';
 
 export default function ContactPage() {
   const t = useTranslations('contact');
@@ -161,15 +160,15 @@ export default function ContactPage() {
         <LanguageSelector variant="light" />
       </div>
 
-      {/* Back to brochure link */}
+      {/* Back button */}
       <div className="absolute top-4 left-4 z-50">
-        <Link
-          href="/brochure"
+        <button
+          onClick={() => window.history.back()}
           className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-lg border-2 border-orange-300 rounded-full text-gray-800 hover:bg-white hover:border-pink-400 transition-all shadow-lg hover:shadow-xl"
         >
           <Sparkles className="w-4 h-4 text-orange-500" />
           <span className="text-sm font-semibold">Back</span>
-        </Link>
+        </button>
       </div>
 
       {/* Main content */}

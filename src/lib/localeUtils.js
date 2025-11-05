@@ -7,7 +7,7 @@
  * Supported locales in the application
  */
 export const SUPPORTED_LOCALES = ['en', 'zh-tw'];
-export const DEFAULT_LOCALE = 'en';
+export const DEFAULT_LOCALE = 'zh-tw'; // Default to Traditional Chinese for Taiwan
 
 /**
  * Detect locale from Next.js request headers

@@ -106,6 +106,16 @@ export default function BookingPage() {
           pictureUrl: profile.pictureUrl,
         });
 
+        // Detect language from LINE profile if available
+        // Note: LINE profile may include language in some cases
+        if (profile.language) {
+          console.log('LINE profile language detected:', profile.language);
+          detectAndSetLanguage(profile.language);
+        } else {
+          // Store current locale preference in cookie for future visits
+          storeLanguagePreference();
+        }
+
         setLiffReady(true);
       } else {
         // Development mode without LIFF
@@ -115,13 +125,60 @@ export default function BookingPage() {
           displayName: 'Test User',
           pictureUrl: null,
         });
+        storeLanguagePreference();
         setLiffReady(true);
       }
     } catch (err) {
       console.error('LIFF initialization error:', err);
       setError(t('errors.lineInitFailed'));
+      storeLanguagePreference();
       setLiffReady(true); // Continue anyway for testing
     }
+  }
+
+  function detectAndSetLanguage(lineLanguage) {
+    // Get current locale from pathname
+    const currentPath = window.location.pathname;
+    const currentLocale = currentPath.startsWith('/en/') ? 'en' :
+                         currentPath.startsWith('/zh-tw/') ? 'zh-tw' : 'zh-tw';
+
+    // Map LINE language codes to our locales
+    let targetLocale = 'zh-tw'; // Default to Chinese
+
+    if (lineLanguage) {
+      const langLower = lineLanguage.toLowerCase();
+      // English variants
+      if (langLower.includes('en')) {
+        targetLocale = 'en';
+      }
+      // Chinese variants (Traditional Chinese, Taiwan, Hong Kong)
+      else if (langLower.includes('zh-tw') || langLower.includes('zh-hant') ||
+               langLower.includes('zh-hk') || langLower.includes('zh_tw')) {
+        targetLocale = 'zh-tw';
+      }
+      // Simplified Chinese defaults to Traditional (can be changed if needed)
+      else if (langLower.includes('zh')) {
+        targetLocale = 'zh-tw';
+      }
+    }
+
+    // Store language preference in cookie
+    document.cookie = `NEXT_LOCALE=${targetLocale}; path=/; max-age=${60 * 60 * 24 * 365}`;
+
+    // If locale doesn't match, redirect to correct locale
+    if (currentLocale !== targetLocale) {
+      const newPath = currentPath.replace(/^\/(en|zh-tw)/, `/${targetLocale}`);
+      window.location.href = newPath + window.location.search;
+    }
+  }
+
+  function storeLanguagePreference() {
+    // Store current locale from pathname
+    const currentPath = window.location.pathname;
+    const currentLocale = currentPath.startsWith('/en/') ? 'en' :
+                         currentPath.startsWith('/zh-tw/') ? 'zh-tw' : 'zh-tw';
+
+    document.cookie = `NEXT_LOCALE=${currentLocale}; path=/; max-age=${60 * 60 * 24 * 365}`;
   }
 
   async function loadBusinessConfig() {

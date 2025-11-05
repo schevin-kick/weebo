@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { sendBookingCancellation, sendBusinessOwnerCancellationNotification } from '@/lib/lineMessaging';
+import { getCustomerLocale } from '@/lib/localeUtils';
 
 /**
  * GET /api/bookings/[id]
@@ -125,14 +126,17 @@ export async function PATCH(request, { params }) {
       },
     });
 
-    // Send LINE notification about cancellation
+    // Send LINE notification about cancellation with customer's preferred locale
     let messageResult = null;
     if (status === 'cancelled') {
       try {
+        const locale = getCustomerLocale(booking.customer);
+
         messageResult = await sendBookingCancellation(
           booking,
           existing.business,
-          data.cancellationReason || null
+          data.cancellationReason || null,
+          locale
         );
 
         // Log message result
@@ -167,7 +171,8 @@ export async function PATCH(request, { params }) {
           if (businessWithOwner && businessWithOwner.notificationsEnabled !== false) {
             const ownerNotifResult = await sendBusinessOwnerCancellationNotification(
               booking,
-              businessWithOwner
+              businessWithOwner,
+              locale
             );
 
             if (ownerNotifResult && ownerNotifResult.status === 'sent') {

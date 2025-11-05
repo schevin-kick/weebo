@@ -5,8 +5,8 @@ export const routing = defineRouting({
   // A list of all locales that are supported
   locales: ['en', 'zh-tw'],
 
-  // Used when no locale matches
-  defaultLocale: 'en',
+  // Used when no locale matches (defaulting to Traditional Chinese for Taiwan)
+  defaultLocale: 'zh-tw',
 
   // Prefix strategy for locale in URLs
   localePrefix: 'always', // Always show locale in URL: /en/dashboard, /zh-tw/dashboard
