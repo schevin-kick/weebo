@@ -14,7 +14,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { useNotificationBadge } from '@/hooks/useNotificationBadge';
 import Skeleton from '@/components/loading/Skeleton';
 
-const KITSUNE_BOT_ID = '@470ejmoi';
+const KITSUNE_BOT_ID = '@531rhzlf';
 const KITSUNE_BOT_URL = `https://line.me/R/ti/p/${KITSUNE_BOT_ID}`;
 
 export default function NotificationsView({ businessId }) {
