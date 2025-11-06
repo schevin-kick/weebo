@@ -48,14 +48,24 @@ export async function GET(request) {
 
     // Process each business
     for (const business of businesses) {
-      // Find all bookings until end of tomorrow (11:59 PM UTC)
-      const startTime = now; // Now
-      const tomorrow = new Date(now);
-      tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-      tomorrow.setUTCHours(23, 59, 59, 999);
-      const endTime = tomorrow;
+      // Find all bookings for tomorrow in Taiwan timezone (Asia/Taipei, UTC+8)
+      // Convert current UTC time to Taiwan time to determine "tomorrow"
+      const taiwanOffset = 8 * 60 * 60 * 1000; // UTC+8 in milliseconds
+      const nowInTaiwan = new Date(now.getTime() + taiwanOffset);
 
-      // Find confirmed bookings until end of tomorrow that haven't been sent yet
+      // Calculate tomorrow in Taiwan timezone (00:00:00 to 23:59:59)
+      const tomorrowInTaiwan = new Date(nowInTaiwan);
+      tomorrowInTaiwan.setDate(tomorrowInTaiwan.getDate() + 1);
+      tomorrowInTaiwan.setHours(0, 0, 0, 0);
+
+      const endOfTomorrowInTaiwan = new Date(tomorrowInTaiwan);
+      endOfTomorrowInTaiwan.setHours(23, 59, 59, 999);
+
+      // Convert back to UTC for database query
+      const startTime = new Date(tomorrowInTaiwan.getTime() - taiwanOffset);
+      const endTime = new Date(endOfTomorrowInTaiwan.getTime() - taiwanOffset);
+
+      // Find confirmed bookings for tomorrow (Taiwan time) that haven't been sent yet
       const bookingsToRemind = await prisma.booking.findMany({
         where: {
           businessId: business.id,
