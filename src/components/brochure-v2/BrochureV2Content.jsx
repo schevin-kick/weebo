@@ -151,7 +151,7 @@ export default function BrochureV2Content() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black mb-6"
+            className="text-6xl md:text-8xl lg:text-9xl font-black mb-4"
           >
             <TypewriterText
               text={t('hero.title')}
@@ -162,14 +162,14 @@ export default function BrochureV2Content() {
           </motion.h1>
 
           {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showSubheading ? 1 : 0 }}
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: showSubheading ? 1 : 0, y: showSubheading ? 0 : 30 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed font-medium"
+            className="text-xl md:text-3xl text-gray-700 mb-8 max-w-4xl mx-auto font-semibold"
           >
             {t('hero.subtitle')}
-          </motion.p>
+          </motion.h2>
 
           {/* Quick Value Propositions */}
           <motion.div
