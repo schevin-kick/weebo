@@ -48,11 +48,14 @@ export async function GET(request) {
 
     // Process each business
     for (const business of businesses) {
-      // Find all bookings in the next 24 hours (tomorrow's appointments)
+      // Find all bookings until end of tomorrow (11:59 PM UTC)
       const startTime = now; // Now
-      const endTime = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
+      const tomorrow = new Date(now);
+      tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+      tomorrow.setUTCHours(23, 59, 59, 999);
+      const endTime = tomorrow;
 
-      // Find confirmed bookings in the next 24 hours that haven't been sent yet
+      // Find confirmed bookings until end of tomorrow that haven't been sent yet
       const bookingsToRemind = await prisma.booking.findMany({
         where: {
           businessId: business.id,
