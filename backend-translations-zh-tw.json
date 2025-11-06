@@ -1,0 +1,36 @@
+{
+  "messageTemplates": {
+    "confirmation": {
+      "header": "您的預訂已確認！",
+      "body": "我們期待與您見面！"
+    },
+    "cancellation": {
+      "header": "預訂取消",
+      "body": "您的預訂已取消，我們希望很快再見到您！"
+    },
+    "reminder": {
+      "header": "提醒：預約",
+      "body": "別忘了明天的預約"
+    }
+  },
+  "fieldLabels": {
+    "service": "服務",
+    "staff": "員工",
+    "dateTime": "日期與時間",
+    "duration": "時間長度",
+    "customer": "客戶",
+    "status": "狀態",
+    "reason": "原因",
+    "viewMyBookings": "查看我的預訂",
+    "bookAgain": "再次預訂",
+    "viewAppointment": "檢視預約",
+    "viewDetails": "檢視詳細資訊",
+    "questionsContact": "有問題嗎？",
+    "newAppointmentBooked": "新預約已預約！",
+    "appointmentCancelled": "取消預約",
+    "newAppointmentScheduled": "新的預約時間已排定為",
+    "customerCancelledAppointment": "一位客戶取消了在",
+    "confirmed": "已確認",
+    "pendingApproval": "待批准"
+  }
+}

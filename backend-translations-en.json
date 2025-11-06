@@ -1,0 +1,36 @@
+{
+  "messageTemplates": {
+    "confirmation": {
+      "header": "Your booking is confirmed!",
+      "body": "We look forward to seeing you!"
+    },
+    "cancellation": {
+      "header": "Booking Cancelled",
+      "body": "Your booking has been cancelled. We hope to see you again soon!"
+    },
+    "reminder": {
+      "header": "Reminder: Upcoming Appointment",
+      "body": "Don't forget your appointment tomorrow!"
+    }
+  },
+  "fieldLabels": {
+    "service": "Service",
+    "staff": "Staff",
+    "dateTime": "Date & Time",
+    "duration": "Duration",
+    "customer": "Customer",
+    "status": "Status",
+    "reason": "Reason",
+    "viewMyBookings": "View My Bookings",
+    "bookAgain": "Book Again",
+    "viewAppointment": "View Appointment",
+    "viewDetails": "View Details",
+    "questionsContact": "Questions? Contact us:",
+    "newAppointmentBooked": "New Appointment Booked!",
+    "appointmentCancelled": "Appointment Cancelled",
+    "newAppointmentScheduled": "A new appointment has been scheduled for",
+    "customerCancelledAppointment": "A customer has cancelled their appointment at",
+    "confirmed": "Confirmed",
+    "pendingApproval": "Pending Approval"
+  }
+}
