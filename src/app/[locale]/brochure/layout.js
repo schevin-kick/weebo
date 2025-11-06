@@ -1,43 +1,54 @@
-export const metadata = {
-  title: 'Kitsune - Smart Appointment Scheduling for Asia | LINE Integration',
-  description: 'Transform your business with Kitsune - the intelligent appointment scheduling platform built for Asia. Seamless LINE integration, 5-minute setup, powerful analytics, and 24/7 booking for salons, spas, cafes, and service businesses.',
-  keywords: 'appointment booking, LINE booking system, Asia booking platform, appointment scheduler, salon booking, spa booking, cafe reservations, QR code booking, LINE integration, business scheduling, Japan booking system, Thailand booking, Taiwan booking',
-  openGraph: {
-    title: 'Kitsune - Smart Appointment Scheduling with LINE Integration',
-    description: 'The intelligent booking platform built for Asia. Powered by LINE, designed for simplicity, packed with analytics. Setup in 5 minutes.',
-    type: 'website',
-    locale: 'en_US',
-    siteName: 'Kitsune',
-    images: [
-      {
-        url: '/brochure/kitsune2.webp',
-        width: 1200,
-        height: 630,
-        alt: 'Kitsune Dashboard Preview',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Kitsune - Smart Appointment Scheduling for Asia',
-    description: 'Transform your business with LINE-powered booking. 5-minute setup, powerful analytics, 24/7 availability.',
-    images: ['/brochure/kitsune2.webp'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+import { getTranslations } from 'next-intl/server';
+
+export async function generateMetadata({ params }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'brochure.metadata' });
+
+  return {
+    title: t('title'),
+    description: t('description'),
+    keywords: t('keywords'),
+    openGraph: {
+      title: t('ogTitle'),
+      description: t('ogDescription'),
+      type: 'website',
+      locale: locale === 'zh-tw' ? 'zh_TW' : 'en_US',
+      siteName: 'Weebo',
+      images: [
+        {
+          url: '/brochure/weebo_og.webp',
+          width: 1200,
+          height: 630,
+          alt: t('ogImageAlt'),
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('twitterTitle'),
+      description: t('twitterDescription'),
+      images: ['/brochure/weebo_og.webp'],
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
-  alternates: {
-    canonical: 'https://kitsunebooking.com',
-  },
-};
+    alternates: {
+      canonical: 'https://kitsunebooking.com',
+      languages: {
+        'en': '/en/brochure',
+        'zh-TW': '/zh-tw/brochure',
+      },
+    },
+  };
+}
 
 export default function BrochureLayout({ children }) {
   return children;

@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages, getTranslations } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { notFound } from 'next/navigation';
 
@@ -18,6 +18,7 @@ const geistMono = Geist_Mono({
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'metadata.default' });
 
   const localeNames = {
     'en': 'English',
@@ -25,10 +26,8 @@ export async function generateMetadata({ params }) {
   };
 
   return {
-    title: "Weebo",
-    description: locale === 'zh-tw'
-      ? "商業管理平台"
-      : "Business management platform",
+    title: t('title'),
+    description: t('description'),
     icons: {
       icon: [
         { url: '/favicon.ico', sizes: 'any' },

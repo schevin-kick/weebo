@@ -52,6 +52,28 @@
       "failed": "Failed"
     }
   },
+  "metadata": {
+    "default": {
+      "title": "Weebo",
+      "description": "Business management platform"
+    }
+  },
+  "structuredData": {
+    "brochure": {
+      "name": "Weebo",
+      "description": "Transform your business with Weebo - the intelligent appointment scheduling platform built for Asia. Seamless LINE integration, 5-minute setup, powerful analytics.",
+      "featureList": [
+        "LINE Integration",
+        "5-Minute Setup",
+        "QR Code Generation",
+        "Real-time Analytics",
+        "Staff Management",
+        "Custom Booking Forms",
+        "Automated Reminders",
+        "Multi-language Support"
+      ]
+    }
+  },
   "brochureV2": {
     "hero": {
       "title": "Weebo",
@@ -226,6 +248,18 @@
       "ogImageAlt": "Weebo booking system interface showing LINE integration and analytics dashboard"
     }
   },
+  "brochure": {
+    "metadata": {
+      "title": "Kitsune - Smart Appointment Scheduling for Asia | LINE Integration",
+      "description": "Transform your business with Kitsune - the intelligent appointment scheduling platform built for Asia. Seamless LINE integration, 5-minute setup, powerful analytics, and 24/7 booking for salons, spas, cafes, and service businesses.",
+      "keywords": "appointment booking, LINE booking system, Asia booking platform, appointment scheduler, salon booking, spa booking, cafe reservations, QR code booking, LINE integration, business scheduling, Japan booking system, Thailand booking, Taiwan booking",
+      "ogTitle": "Kitsune - Smart Appointment Scheduling with LINE Integration",
+      "ogDescription": "The intelligent booking platform built for Asia. Powered by LINE, designed for simplicity, packed with analytics. Setup in 5 minutes.",
+      "ogImageAlt": "Kitsune Dashboard Preview",
+      "twitterTitle": "Kitsune - Smart Appointment Scheduling for Asia",
+      "twitterDescription": "Transform your business with LINE-powered booking. 5-minute setup, powerful analytics, 24/7 availability."
+    }
+  },
   "contact": {
     "title": "Contact Us",
     "subtitle": "Have a question or need help? We'd love to hear from you.",
@@ -255,6 +289,11 @@
       "title": "Oops!",
       "description": "Something went wrong. Please try again later.",
       "rateLimit": "Too many requests. Please try again in a few minutes."
+    },
+    "metadata": {
+      "title": "Contact Us - Weebo | LINE Booking System",
+      "description": "Have questions or need help? Contact the Weebo team. We're here to assist you with LINE booking systems, appointment scheduling, and business management solutions.",
+      "keywords": "contact Weebo, customer support, LINE booking help, appointment system support, business support"
     }
   },
   "booking": {
@@ -1621,6 +1660,10 @@
           }
         }
       }
+    },
+    "metadata": {
+      "title": "Setup Wizard - Weebo",
+      "description": "Set up your LINE booking bot in minutes"
     }
   },
   "modals": {

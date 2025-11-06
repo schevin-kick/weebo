@@ -31,6 +31,7 @@ import LanguageSelector from '@/components/shared/LanguageSelector';
 export default function BrochurePage() {
   const t = useTranslations('brochure');
   const tCommon = useTranslations('common');
+  const tStructuredData = useTranslations('structuredData.brochure');
   const [showSubheading, setShowSubheading] = useState(false);
   const [heroRef, heroInView] = useInView({ threshold: 0.1 });
   const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -782,7 +783,7 @@ export default function BrochurePage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            "name": "Kitsune ",
+            "name": tStructuredData('name'),
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web",
             "offers": {
@@ -796,16 +797,16 @@ export default function BrochurePage() {
               "ratingValue": "4.8",
               "ratingCount": "127"
             },
-            "description": "Transform your business with Kitsune - the intelligent appointment scheduling platform built for Asia. Seamless LINE integration, 5-minute setup, powerful analytics.",
+            "description": tStructuredData('description'),
             "featureList": [
-              "LINE Integration",
-              "5-Minute Setup",
-              "QR Code Generation",
-              "Real-time Analytics",
-              "Staff Management",
-              "Custom Booking Forms",
-              "Automated Reminders",
-              "Multi-language Support"
+              tStructuredData('featureList.0'),
+              tStructuredData('featureList.1'),
+              tStructuredData('featureList.2'),
+              tStructuredData('featureList.3'),
+              tStructuredData('featureList.4'),
+              tStructuredData('featureList.5'),
+              tStructuredData('featureList.6'),
+              tStructuredData('featureList.7')
             ],
             "screenshot": "/brochure/booking-modal.png"
           })

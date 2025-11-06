@@ -52,6 +52,28 @@
       "failed": "失敗"
     }
   },
+  "metadata": {
+    "default": {
+      "title": "Weebo",
+      "description": "業務管理平台"
+    }
+  },
+  "structuredData": {
+    "brochure": {
+      "name": "Weebo",
+      "description": "透過 Weebo - 專為亞洲打造的智慧型預約排程平台，改變您的業務。 無縫 LINE 整合、5 分鐘設定、強大分析功能。",
+      "featureList": [
+        "LINE 整合",
+        "5 分鐘設定",
+        "QR 代碼產生",
+        "即時分析",
+        "員工管理",
+        "自訂預約表單",
+        "自動提醒",
+        "多語言支援"
+      ]
+    }
+  },
   "brochureV2": {
     "hero": {
       "title": "Weebo",
@@ -226,6 +248,18 @@
       "ogImageAlt": "顯示 LINE 整合和分析儀表板的 Weebo 預訂系統介面"
     }
   },
+  "brochure": {
+    "metadata": {
+      "title": "Weebo - 亞洲智能預約排程 | LINE 整合",
+      "description": "使用 Weebo - 專為亞洲打造的智慧型預約排程平台，為美容院、水療中心、咖啡館和服務業提供無縫 LINE 整合、5 分鐘設定、強大分析功能和全天候預約服務。",
+      "keywords": "預約、LINE 預約系統、亞洲預約平台、預約排程、沙龍預約、SPA 預約、咖啡廳預約、QR code 預約、LINE 整合、業務排程、日本預約系統、泰國預約、台灣預約",
+      "ogTitle": "Weebo - 整合 LINE 的智慧型預約排程服務",
+      "ogDescription": "專為亞洲打造的智慧型預訂平台。 由 LINE 提供技術支援，設計簡易，內含分析功能。 5 分鐘內即可完成設定。",
+      "ogImageAlt": "Weebo 控制面板預覽",
+      "twitterTitle": "Weebo - 亞洲智能預約排程服務",
+      "twitterDescription": "5 分鐘設定、強大的分析功能、24/7 可用性。"
+    }
+  },
   "contact": {
     "title": "聯絡我們",
     "subtitle": "有問題或需要協助？ 我們很樂意聽取您的意見。",
@@ -255,6 +289,11 @@
       "title": "哎呀",
       "description": "出錯了，請稍後再試。",
       "rateLimit": "請求太多，請過幾分鐘後再試。"
+    },
+    "metadata": {
+      "title": "聯絡我們 - Weebo | LINE 預訂系統",
+      "description": "有問題或需要協助？ 請聯絡 Weebo 團隊，我們將協助您使用 LINE 預約系統、預約排程和業務管理解決方案。",
+      "keywords": "聯絡 Weebo、客戶支援、LINE 預約協助、預約系統支援、業務支援"
     }
   },
   "booking": {
@@ -1618,6 +1657,10 @@
           }
         }
       }
+    },
+    "metadata": {
+      "title": "設定精靈 - Weebo",
+      "description": "在幾分鐘內設定您的 LINE 預訂機器人"
     }
   },
   "modals": {
