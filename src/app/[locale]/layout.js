@@ -28,6 +28,11 @@ export async function generateMetadata({ params }) {
   return {
     title: t('title'),
     description: t('description'),
+    viewport: {
+      width: 'device-width',
+      initialScale: 1,
+      maximumScale: 5,
+    },
     icons: {
       icon: [
         { url: '/favicon.ico', sizes: 'any' },

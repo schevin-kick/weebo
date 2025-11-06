@@ -15,8 +15,6 @@ Allow: /zh-tw/legal/
 # Block old brochure pages (deprecated)
 Disallow: /en/brochure$
 Disallow: /zh-tw/brochure$
-Disallow: /en/brochure-v2
-Disallow: /zh-tw/brochure-v2
 
 # Disallow authenticated/private areas
 Disallow: /api/
@@ -50,8 +48,7 @@ Allow: /*.woff$
 Allow: /*.woff2$
 
 # Sitemaps
-# Note: Update these URLs when you change your production domain
-Sitemap: https://weebo-ten.vercel.app/sitemap.xml
+Sitemap: /sitemap.xml
 
 # Crawl delay (optional - be nice to the server)
 # Crawl-delay: 1

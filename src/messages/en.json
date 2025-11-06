@@ -76,8 +76,8 @@
   },
   "brochureV2": {
     "hero": {
-      "title": "Weebo",
-      "subtitle": "The intelligent booking platform built for Asia",
+      "title": "Weebo - LINE Booking System for Asian Businesses",
+      "subtitle": "Intelligent appointment scheduling platform built for Asia",
       "valueProps": {
         "quickSetup": "5 Min Setup",
         "freeTrial": "Free Trial",

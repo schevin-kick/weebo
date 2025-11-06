@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Expand } from 'lucide-react';
+import Image from 'next/image';
 
 export default function ScreenshotCard({
   src,
@@ -45,11 +46,14 @@ export default function ScreenshotCard({
           }}
           aria-label={`Click to enlarge ${alt}`}
         >
-          <img
+          <Image
             src={src}
             alt={alt}
+            width={2746}
+            height={1718}
             className="w-full h-auto"
-            loading="lazy"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            quality={90}
           />
           {/* Overlay gradient on hover */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />

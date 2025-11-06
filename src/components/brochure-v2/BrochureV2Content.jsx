@@ -464,7 +464,7 @@ export default function BrochureV2Content() {
       </section>
 
       {/* Features Grid */}
-      <section className="relative py-32 px-4">
+      <section className="relative py-32 px-4" id="features">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -862,7 +862,6 @@ export default function BrochureV2Content() {
               <h4 className="text-gray-800 font-black mb-4">{t('footer.sections.resources.title')}</h4>
               <ul className="space-y-2 text-gray-600 text-sm font-medium">
                 <li><a href="#features" className="hover:text-gray-800 transition-colors">{t('footer.sections.resources.features')}</a></li>
-                <li><a href="#pricing" className="hover:text-gray-800 transition-colors">{t('footer.sections.resources.pricing')}</a></li>
                 <li><a href="#screenshots" className="hover:text-gray-800 transition-colors">{t('footer.sections.resources.screenshots')}</a></li>
                 <li><a href="/api/auth/login" className="hover:text-gray-800 transition-colors">{t('footer.sections.resources.getStarted')}</a></li>
               </ul>
