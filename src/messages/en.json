@@ -1040,17 +1040,225 @@
       "welcomeBusinessBot": "Welcome back! You'll continue to receive booking updates here.",
       "bookingLinked": "Booking linked! You'll receive updates for booking #{bookingId}."
     },
+    "errors": {
+      "unauthorized": "Unauthorized",
+      "forbidden": "Forbidden",
+      "invalidCsrf": "Invalid CSRF token",
+      "missingFields": "Missing required fields",
+      "invalidSubmission": "Invalid submission"
+    },
     "booking": {
-      "subscriptionInactive": "This business is currently unavailable for bookings. Please contact the business owner."
+      "subscriptionInactive": "This business is currently unavailable for bookings. Please contact the business owner.",
+      "errors": {
+        "businessNotFound": "Business not found",
+        "outsideBusinessHours": "Selected time is outside business hours",
+        "businessClosed": "Business is closed during the selected time",
+        "staffUnavailable": "Selected staff is not available at this time",
+        "alreadyBooked": "This time slot is already booked",
+        "bookingNotFound": "Booking not found",
+        "failedToCreate": "Failed to create booking",
+        "failedToFetch": "Failed to fetch bookings",
+        "failedToUpdate": "Failed to update booking",
+        "failedToUpdateStatus": "Failed to update booking status",
+        "failedToUpdateNotes": "Failed to update notes",
+        "failedToMarkNoShow": "Failed to mark as no-show",
+        "missingParams": "Missing query parameters",
+        "invalidStatus": "Invalid status",
+        "missingDateTime": "Missing required fields"
+      },
+      "availability": {
+        "missingParams": "Missing required parameters: businessId and date",
+        "businessNotFound": "Business not found",
+        "failedToFetch": "Failed to fetch availability"
+      }
+    },
+    "business": {
+      "errors": {
+        "notFound": "Business not found",
+        "failedToFetch": "Failed to fetch businesses",
+        "failedToCreate": "Failed to create business",
+        "failedToUpdate": "Failed to update business",
+        "failedToDelete": "Failed to delete business"
+      }
     },
     "contact": {
       "success": "Message sent successfully",
-      "error": "Failed to send message. Please try again later."
+      "error": "Failed to send message. Please try again later.",
+      "errors": {
+        "invalidName": "Invalid name",
+        "invalidEmail": "Invalid email address",
+        "messageTooLong": "Message must be between 1 and 400 characters",
+        "emailNotConfigured": "Email service not configured",
+        "authFailed": "Email service authentication failed"
+      }
+    },
+    "upload": {
+      "errors": {
+        "noFile": "No file provided",
+        "invalidType": "Invalid file type. Please upload JPG, PNG, WebP, or GIF",
+        "tooLarge": "File too large. Maximum size is 1MB",
+        "failedToUpload": "Failed to upload file"
+      },
+      "success": "Image uploaded successfully",
+      "failed": "Failed to upload image. Please try again"
+    },
+    "closedDates": {
+      "errors": {
+        "businessIdRequired": "Business ID required",
+        "businessNotFound": "Business not found",
+        "failedToFetch": "Failed to fetch closed dates",
+        "failedToCreate": "Failed to create closed date"
+      }
+    },
+    "stripe": {
+      "errors": {
+        "notConfigured": "Stripe is not configured",
+        "priceIdMissing": "Stripe price ID not configured",
+        "userNotFound": "User not found",
+        "noCustomer": "No Stripe customer found. Please subscribe first.",
+        "failedCheckout": "Failed to create checkout session",
+        "failedPortal": "Failed to create portal session"
+      }
+    },
+    "proxyImage": {
+      "errors": {
+        "urlRequired": "Image URL is required",
+        "invalidUrl": "Invalid image URL",
+        "failedToFetch": "Failed to fetch image",
+        "notImage": "URL does not point to an image",
+        "tooLarge": "Image too large (max 5MB)",
+        "timeout": "Image fetch timeout",
+        "failedToProxy": "Failed to proxy image"
+      }
     },
     "webhookSetup": {
       "successVerified": "Webhook configured and verified successfully! Remember to enable the \"Use webhook\" toggle in your LINE Developers Console → Messaging API settings.",
-      "successUnverified": "Webhook configured but verification failed. This is normal - webhooks will still work. Remember to enable the \"Use webhook\" toggle in your LINE Developers Console → Messaging API settings."
+      "successUnverified": "Webhook configured but verification failed. This is normal - webhooks will still work. Remember to enable the \"Use webhook\" toggle in your LINE Developers Console → Messaging API settings.",
+      "errors": {
+        "credentialsRequired": "Channel access token and bot basic ID are required",
+        "invalidToken": "Invalid channel access token",
+        "failedToSet": "Failed to set webhook"
+      }
+    },
+    "dashboard": {
+      "messaging": {
+        "errors": {
+          "businessNotFound": "Business not found",
+          "invalidTemplates": "Invalid templates",
+          "reminderHoursRange": "reminderHoursBefore must be between 1 and 168",
+          "botIdMustStartWith": "Bot Basic ID must start with @",
+          "botIdInvalidFormat": "Bot Basic ID must contain only letters and numbers after @",
+          "invalidMessagingMode": "Invalid messaging mode. Must be \"shared\" or \"own_bot\"",
+          "invalidColorFormat": "Invalid color format. Must be hex format like #FFFFFF",
+          "internalError": "Internal server error"
+        }
+      }
+    },
+    "cron": {
+      "errors": {
+        "unauthorized": "Unauthorized",
+        "jobFailed": "Cron job failed"
+      }
+    },
+    "lineWebhook": {
+      "errors": {
+        "businessNotFound": "Business not found",
+        "internalError": "Internal error"
+      }
     }
+  },
+  "lib": {
+    "messageTemplates": {
+      "validation": {
+        "missingType": "Missing template type: {type}",
+        "headerRequired": "{type}: header is required and must be a string",
+        "bodyRequired": "{type}: body is required and must be a string",
+        "headerTooLong": "{type}: header exceeds 100 characters",
+        "bodyTooLong": "{type}: body exceeds 500 characters"
+      }
+    },
+    "validation": {
+      "invalidTimeFormat": "Invalid time format (HH:MM)",
+      "businessNameMin": "Business name must be at least 3 characters",
+      "businessNameMax": "Business name must be at most 100 characters",
+      "serviceNameMin": "Service name must be at least 3 characters",
+      "serviceNameMax": "Service name must be at most 100 characters",
+      "durationMin": "Duration must be at least 5 minutes",
+      "durationMax": "Duration must be at most 480 minutes (8 hours)",
+      "descriptionMax": "Description must be at most 100 characters",
+      "pricePositive": "Price must be positive",
+      "greetingRequired": "Greeting message is required",
+      "greetingTooLong": "Message is too long",
+      "questionRequired": "Question is required",
+      "questionTooLong": "Question is too long",
+      "labelRequired": "Field label is required",
+      "labelTooLong": "Label is too long",
+      "staffNameRequired": "Staff name is required",
+      "advanceBookingMin": "Must allow booking at least 1 day ahead",
+      "advanceBookingMax": "Cannot book more than 30 days ahead",
+      "workflowMin": "At least one workflow component is required",
+      "workflowMax": "Maximum 20 workflow components allowed",
+      "invalidEmail": "Invalid email address",
+      "invalidPhone": "Invalid phone number"
+    },
+    "imageOptimizer": {
+      "errors": {
+        "failedToOptimize": "Failed to optimize image",
+        "invalidFileType": "Please upload a valid image file (JPG, PNG, WebP, or GIF)",
+        "tooLarge": "Image is too large ({sizeMB}MB). Maximum size is {maxSizeMB}MB"
+      }
+    },
+    "r2": {
+      "errors": {
+        "bucketNameMissing": "R2_BUCKET_NAME environment variable is not set",
+        "uploadFailed": "Failed to upload to R2: {error}"
+      }
+    },
+    "qr": {
+      "errors": {
+        "generationFailed": "Failed to generate QR code: {error}",
+        "previewFailed": "Failed to generate QR code preview"
+      }
+    },
+    "auth": {
+      "errors": {
+        "exchangeFailed": "Failed to exchange LINE authorization code",
+        "profileFailed": "Failed to fetch LINE profile",
+        "refreshFailed": "Failed to refresh LINE token: {error}"
+      }
+    }
+  },
+  "utils": {
+    "bookingValidation": {
+      "fieldRequired": "{label} is required",
+      "checkboxRequired": "Please select at least one {label}",
+      "invalidEmail": "Please enter a valid email address",
+      "invalidPhone": "Please enter a valid phone number",
+      "invalidNumber": "Please enter a valid number",
+      "numberMin": "Value must be at least {min}",
+      "numberMax": "Value must be at most {max}",
+      "selectService": "Please select a service",
+      "serviceNotFound": "Selected service not found",
+      "selectStaff": "Please select a staff member",
+      "staffNotFound": "Selected staff member not found",
+      "selectDateTime": "Please select a date and time",
+      "selectDateAndTime": "Please select both date and time"
+    }
+  },
+  "toasts": {
+    "notesSaved": "Notes saved successfully",
+    "notesSaveFailed": "Failed to save notes",
+    "bookingConfirmed": "Booking confirmed successfully",
+    "bookingConfirmFailed": "Failed to confirm booking",
+    "bookingCancelled": "Booking cancelled successfully",
+    "bookingCancelFailed": "Failed to cancel booking",
+    "noShowMarked": "Marked as no-show",
+    "noShowFailed": "Failed to mark as no-show",
+    "completedMarked": "Marked as completed",
+    "completedFailed": "Failed to mark as completed",
+    "photoUploaded": "Photo uploaded successfully",
+    "photoUploadFailed": "Failed to upload photo. Please try again",
+    "settingsUpdateFailed": "Failed to update business settings"
   },
   "settings": {
     "title": "Settings",

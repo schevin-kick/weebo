@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
 /**
  * GET /api/bookings/availability
@@ -7,6 +8,7 @@ import prisma from '@/lib/prisma';
  */
 export async function GET(request) {
   try {
+    const locale = detectLocaleFromRequest(request);
     const { searchParams } = new URL(request.url);
     const businessId = searchParams.get('businessId');
     const date = searchParams.get('date'); // YYYY-MM-DD format
@@ -14,8 +16,9 @@ export async function GET(request) {
 
     // Validate required fields
     if (!businessId || !date) {
+      const errorMessage = await translate(locale, 'api.booking.availability.missingParams');
       return NextResponse.json(
-        { error: 'Missing required parameters: businessId and date' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -26,8 +29,9 @@ export async function GET(request) {
     });
 
     if (!business) {
+      const errorMessage = await translate(locale, 'api.booking.availability.businessNotFound');
       return NextResponse.json(
-        { error: 'Business not found' },
+        { error: errorMessage },
         { status: 404 }
       );
     }
@@ -73,8 +77,10 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error('Get availability error:', error);
+    const locale = detectLocaleFromRequest(request);
+    const errorMessage = await translate(locale, 'api.booking.availability.failedToFetch');
     return NextResponse.json(
-      { error: 'Failed to fetch availability' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

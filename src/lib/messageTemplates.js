@@ -4,6 +4,8 @@
  * with localization support
  */
 
+import { translate } from './localeUtils';
+
 /**
  * Localized default message templates
  */
@@ -180,35 +182,36 @@ export function getAvailableVariables() {
 /**
  * Validate message template structure
  * @param {object} templates - Templates object to validate
+ * @param {string} locale - Locale code for error messages ('en' or 'zh-tw'), defaults to 'en'
  * @returns {object} Validation result { valid: boolean, errors: string[] }
  */
-export function validateTemplates(templates) {
+export function validateTemplates(templates, locale = 'zh-tw') {
   const errors = [];
   const requiredTypes = ['confirmation', 'cancellation', 'reminder'];
 
   requiredTypes.forEach((type) => {
     if (!templates[type]) {
-      errors.push(`Missing template type: ${type}`);
+      errors.push(translate(locale, 'lib.messageTemplates.validation.missingType', { type }));
       return;
     }
 
     const template = templates[type];
 
     if (!template.header || typeof template.header !== 'string') {
-      errors.push(`${type}: header is required and must be a string`);
+      errors.push(translate(locale, 'lib.messageTemplates.validation.headerRequired', { type }));
     }
 
     if (!template.body || typeof template.body !== 'string') {
-      errors.push(`${type}: body is required and must be a string`);
+      errors.push(translate(locale, 'lib.messageTemplates.validation.bodyRequired', { type }));
     }
 
     // Check character limits
     if (template.header && template.header.length > 100) {
-      errors.push(`${type}: header exceeds 100 characters`);
+      errors.push(translate(locale, 'lib.messageTemplates.validation.headerTooLong', { type }));
     }
 
     if (template.body && template.body.length > 500) {
-      errors.push(`${type}: body exceeds 500 characters`);
+      errors.push(translate(locale, 'lib.messageTemplates.validation.bodyTooLong', { type }));
     }
   });
 

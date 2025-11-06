@@ -1,3 +1,5 @@
+import { translate } from '../lib/localeUtils';
+
 /**
  * Validates email format
  */
@@ -20,17 +22,26 @@ export function validatePhone(phone) {
 
 /**
  * Validates a single field based on its configuration
+ * @param {object} component - The component configuration
+ * @param {*} value - The value to validate
+ * @param {string} locale - The locale for error messages (default: 'zh-tw')
  */
-export function validateField(component, value) {
+export function validateField(component, value, locale = 'zh-tw') {
   // Check required
   if (component.required) {
     if (value === null || value === undefined || value === '') {
-      return { valid: false, error: `${component.label} is required` };
+      return {
+        valid: false,
+        error: translate(locale, 'utils.bookingValidation.fieldRequired', { label: component.label })
+      };
     }
 
     // For arrays (checkboxes), check if at least one is selected
     if (Array.isArray(value) && value.length === 0) {
-      return { valid: false, error: `Please select at least one ${component.label}` };
+      return {
+        valid: false,
+        error: translate(locale, 'utils.bookingValidation.checkboxRequired', { label: component.label })
+      };
     }
   }
 
@@ -43,13 +54,19 @@ export function validateField(component, value) {
   if (component.type === 'preset-field') {
     if (component.fieldType === 'email' && component.validation) {
       if (!validateEmail(value)) {
-        return { valid: false, error: 'Please enter a valid email address' };
+        return {
+          valid: false,
+          error: translate(locale, 'utils.bookingValidation.invalidEmail')
+        };
       }
     }
 
     if (component.fieldType === 'phone') {
       if (!validatePhone(value)) {
-        return { valid: false, error: 'Please enter a valid phone number' };
+        return {
+          valid: false,
+          error: translate(locale, 'utils.bookingValidation.invalidPhone')
+        };
       }
     }
   }
@@ -60,15 +77,24 @@ export function validateField(component, value) {
       const numValue = parseFloat(value);
 
       if (isNaN(numValue)) {
-        return { valid: false, error: 'Please enter a valid number' };
+        return {
+          valid: false,
+          error: translate(locale, 'utils.bookingValidation.invalidNumber')
+        };
       }
 
       if (component.min !== undefined && numValue < component.min) {
-        return { valid: false, error: `Value must be at least ${component.min}` };
+        return {
+          valid: false,
+          error: translate(locale, 'utils.bookingValidation.numberMin', { min: component.min })
+        };
       }
 
       if (component.max !== undefined && numValue > component.max) {
-        return { valid: false, error: `Value must be at most ${component.max}` };
+        return {
+          valid: false,
+          error: translate(locale, 'utils.bookingValidation.numberMax', { max: component.max })
+        };
       }
     }
   }
@@ -78,8 +104,11 @@ export function validateField(component, value) {
 
 /**
  * Validates all fields on a page
+ * @param {object} page - The page configuration
+ * @param {object} responses - The user responses
+ * @param {string} locale - The locale for error messages (default: 'zh-tw')
  */
-export function validatePage(page, responses) {
+export function validatePage(page, responses, locale = 'zh-tw') {
   const errors = {};
   let isValid = true;
 
@@ -91,7 +120,7 @@ export function validatePage(page, responses) {
   // Validate each component
   for (const component of page.components) {
     const value = responses[component.id];
-    const validation = validateField(component, value);
+    const validation = validateField(component, value, locale);
 
     if (!validation.valid) {
       errors[component.id] = validation.error;
@@ -104,15 +133,24 @@ export function validatePage(page, responses) {
 
 /**
  * Validates preset service selection
+ * @param {string} selectedServiceId - The selected service ID
+ * @param {Array} services - Available services
+ * @param {string} locale - The locale for error messages (default: 'zh-tw')
  */
-export function validateServiceSelection(selectedServiceId, services) {
+export function validateServiceSelection(selectedServiceId, services, locale = 'zh-tw') {
   if (!selectedServiceId) {
-    return { valid: false, error: 'Please select a service' };
+    return {
+      valid: false,
+      error: translate(locale, 'utils.bookingValidation.selectService')
+    };
   }
 
   const service = services.find((s) => s.id === selectedServiceId);
   if (!service) {
-    return { valid: false, error: 'Selected service not found' };
+    return {
+      valid: false,
+      error: translate(locale, 'utils.bookingValidation.serviceNotFound')
+    };
   }
 
   return { valid: true, error: null };
@@ -120,10 +158,16 @@ export function validateServiceSelection(selectedServiceId, services) {
 
 /**
  * Validates preset staff selection
+ * @param {string} selectedStaffId - The selected staff ID
+ * @param {Array} staff - Available staff
+ * @param {string} locale - The locale for error messages (default: 'zh-tw')
  */
-export function validateStaffSelection(selectedStaffId, staff) {
+export function validateStaffSelection(selectedStaffId, staff, locale = 'zh-tw') {
   if (!selectedStaffId) {
-    return { valid: false, error: 'Please select a staff member' };
+    return {
+      valid: false,
+      error: translate(locale, 'utils.bookingValidation.selectStaff')
+    };
   }
 
   // "any" is always valid
@@ -133,7 +177,10 @@ export function validateStaffSelection(selectedStaffId, staff) {
 
   const staffMember = staff.find((s) => s.id === selectedStaffId);
   if (!staffMember) {
-    return { valid: false, error: 'Selected staff member not found' };
+    return {
+      valid: false,
+      error: translate(locale, 'utils.bookingValidation.staffNotFound')
+    };
   }
 
   return { valid: true, error: null };
@@ -141,14 +188,22 @@ export function validateStaffSelection(selectedStaffId, staff) {
 
 /**
  * Validates datetime selection
+ * @param {object} selectedDateTime - The selected date and time object
+ * @param {string} locale - The locale for error messages (default: 'zh-tw')
  */
-export function validateDateTimeSelection(selectedDateTime) {
+export function validateDateTimeSelection(selectedDateTime, locale = 'zh-tw') {
   if (!selectedDateTime) {
-    return { valid: false, error: 'Please select a date and time' };
+    return {
+      valid: false,
+      error: translate(locale, 'utils.bookingValidation.selectDateTime')
+    };
   }
 
   if (!selectedDateTime.date || !selectedDateTime.time) {
-    return { valid: false, error: 'Please select both date and time' };
+    return {
+      valid: false,
+      error: translate(locale, 'utils.bookingValidation.selectDateAndTime')
+    };
   }
 
   return { valid: true, error: null };

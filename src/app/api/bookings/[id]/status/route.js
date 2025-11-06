@@ -10,13 +10,15 @@ import prisma from '@/lib/prisma';
 import { sendBookingConfirmation, sendBookingCancellation } from '@/lib/lineMessaging';
 import { authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
 import { validateCSRFToken } from '@/lib/csrf';
-import { getCustomerLocale } from '@/lib/localeUtils';
+import { getCustomerLocale, detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
 export async function PATCH(request, { params }) {
   try {
+    const locale = detectLocaleFromRequest(request);
     const session = await getSession();
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const errorMessage = await translate(locale, 'api.errors.unauthorized');
+      return NextResponse.json({ error: errorMessage }, { status: 401 });
     }
 
     // Apply rate limiting
@@ -30,8 +32,9 @@ export async function PATCH(request, { params }) {
     // Validate CSRF token
     const csrfValid = await validateCSRFToken(request);
     if (!csrfValid) {
+      const errorMessage = await translate(locale, 'api.errors.invalidCsrf');
       return NextResponse.json(
-        { error: 'Invalid CSRF token' },
+        { error: errorMessage },
         { status: 403 }
       );
     }
@@ -41,7 +44,8 @@ export async function PATCH(request, { params }) {
     const { status, cancellationReason } = body;
 
     if (!['confirmed', 'cancelled', 'completed'].includes(status)) {
-      return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+      const errorMessage = await translate(locale, 'api.booking.errors.invalidStatus');
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
 
     // Fetch booking with all relations
@@ -56,12 +60,14 @@ export async function PATCH(request, { params }) {
     });
 
     if (!booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      const errorMessage = await translate(locale, 'api.booking.errors.bookingNotFound');
+      return NextResponse.json({ error: errorMessage }, { status: 404 });
     }
 
     // Verify business ownership
     if (booking.business.ownerId !== session.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      const errorMessage = await translate(locale, 'api.errors.unauthorized');
+      return NextResponse.json({ error: errorMessage }, { status: 403 });
     }
 
     // Update booking status
@@ -131,8 +137,10 @@ export async function PATCH(request, { params }) {
     });
   } catch (error) {
     console.error('Error updating booking status:', error);
+    const locale = detectLocaleFromRequest(request);
+    const errorMessage = await translate(locale, 'api.booking.errors.failedToUpdateStatus');
     return NextResponse.json(
-      { error: 'Failed to update booking status' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth';
 import { uploadToR2, generateR2Key } from '@/lib/r2';
 import { uploadRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
 import { validateCSRFToken } from '@/lib/csrf';
+import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
 /**
  * POST /api/upload
@@ -11,10 +12,13 @@ import { validateCSRFToken } from '@/lib/csrf';
  */
 export async function POST(request) {
   try {
+    const locale = detectLocaleFromRequest(request);
+
     // Check authentication
     const session = await getSession();
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const errorMessage = await translate(locale, 'api.errors.unauthorized');
+      return NextResponse.json({ error: errorMessage }, { status: 401 });
     }
 
     // Apply rate limiting (5 uploads per minute)
@@ -28,8 +32,9 @@ export async function POST(request) {
     // Validate CSRF token
     const csrfValid = await validateCSRFToken(request);
     if (!csrfValid) {
+      const errorMessage = await translate(locale, 'api.errors.invalidCsrf');
       return NextResponse.json(
-        { error: 'Invalid CSRF token' },
+        { error: errorMessage },
         { status: 403 }
       );
     }
@@ -39,14 +44,16 @@ export async function POST(request) {
     const folder = formData.get('folder') || 'uploads'; // staff-photos, logos, etc.
 
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+      const errorMessage = await translate(locale, 'api.upload.errors.noFile');
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
 
     // Validate file type
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
     if (!validTypes.includes(file.type)) {
+      const errorMessage = await translate(locale, 'api.upload.errors.invalidType');
       return NextResponse.json(
-        { error: 'Invalid file type. Please upload JPG, PNG, WebP, or GIF' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -54,8 +61,9 @@ export async function POST(request) {
     // Validate file size (max 1MB after client-side optimization)
     const maxSize = 1 * 1024 * 1024; // 1MB
     if (file.size > maxSize) {
+      const errorMessage = await translate(locale, 'api.upload.errors.tooLarge');
       return NextResponse.json(
-        { error: 'File too large. Maximum size is 1MB' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -80,8 +88,10 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error('Upload error:', error);
+    const locale = detectLocaleFromRequest(request);
+    const errorMessage = await translate(locale, 'api.upload.errors.failedToUpload');
     return NextResponse.json(
-      { error: 'Failed to upload file' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

@@ -3,7 +3,7 @@ import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { sendBookingConfirmation, sendBusinessOwnerNotification } from '@/lib/lineMessaging';
 import { publicRateLimit, authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
-import { detectLocaleFromRequest } from '@/lib/localeUtils';
+import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
 /**
  * POST /api/bookings
@@ -38,8 +38,9 @@ export async function POST(request) {
 
     // Validate required fields
     if (!businessId || !dateTime) {
+      const errorMessage = await translate(locale, 'api.booking.errors.missingDateTime');
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -63,8 +64,9 @@ export async function POST(request) {
     });
 
     if (!business) {
+      const errorMessage = await translate(locale, 'api.booking.errors.businessNotFound');
       return NextResponse.json(
-        { error: 'Business not found' },
+        { error: errorMessage },
         { status: 404 }
       );
     }
@@ -110,8 +112,9 @@ export async function POST(request) {
     );
 
     if (!isWithinHours && !business.appointmentOnly) {
+      const errorMessage = await translate(locale, 'api.booking.errors.outsideBusinessHours');
       return NextResponse.json(
-        { error: 'Selected time is outside business hours' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -124,8 +127,9 @@ export async function POST(request) {
     });
 
     if (closedDate) {
+      const errorMessage = await translate(locale, 'api.booking.errors.businessClosed');
       return NextResponse.json(
-        { error: 'Business is closed during the selected time' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -140,8 +144,9 @@ export async function POST(request) {
         );
 
         if (!isStaffAvailable) {
+          const errorMessage = await translate(locale, 'api.booking.errors.staffUnavailable');
           return NextResponse.json(
-            { error: 'Selected staff is not available at this time' },
+            { error: errorMessage },
             { status: 400 }
           );
         }
@@ -169,8 +174,9 @@ export async function POST(request) {
       });
 
       if (conflictingBooking) {
+        const errorMessage = await translate(locale, 'api.booking.errors.alreadyBooked');
         return NextResponse.json(
-          { error: 'This time slot is already booked' },
+          { error: errorMessage },
           { status: 400 }
         );
       }
@@ -328,8 +334,10 @@ export async function POST(request) {
       stack: error.stack,
       code: error.code,
     });
+    const locale = detectLocaleFromRequest(request);
+    const errorMessage = await translate(locale, 'api.booking.errors.failedToCreate');
     return NextResponse.json(
-      { error: error.message || 'Failed to create booking' },
+      { error: error.message || errorMessage },
       { status: 500 }
     );
   }
@@ -375,7 +383,9 @@ export async function GET(request) {
       // Business owner checking their bookings (requires auth)
       // Note: session already retrieved above for rate limiting
       if (!session) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const locale = detectLocaleFromRequest(request);
+        const errorMessage = await translate(locale, 'api.errors.unauthorized');
+        return NextResponse.json({ error: errorMessage }, { status: 401 });
       }
 
       // Verify business ownership
@@ -384,7 +394,9 @@ export async function GET(request) {
       });
 
       if (!business || business.ownerId !== session.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        const locale = detectLocaleFromRequest(request);
+        const errorMessage = await translate(locale, 'api.errors.forbidden');
+        return NextResponse.json({ error: errorMessage }, { status: 403 });
       }
 
       whereClause.businessId = businessId;
@@ -417,8 +429,10 @@ export async function GET(request) {
     } else if (customerId) {
       whereClause.customerId = customerId;
     } else {
+      const locale = detectLocaleFromRequest(request);
+      const errorMessage = await translate(locale, 'api.booking.errors.missingParams');
       return NextResponse.json(
-        { error: 'Missing query parameters' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -492,8 +506,10 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error('Get bookings error:', error);
+    const locale = detectLocaleFromRequest(request);
+    const errorMessage = await translate(locale, 'api.booking.errors.failedToFetch');
     return NextResponse.json(
-      { error: 'Failed to fetch bookings' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

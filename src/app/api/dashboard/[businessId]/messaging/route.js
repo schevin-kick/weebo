@@ -8,6 +8,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { PrismaClient } from '@prisma/client';
 import { validateTemplates } from '@/lib/messageTemplates';
+import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
 const prisma = new PrismaClient();
 
@@ -17,10 +18,12 @@ const prisma = new PrismaClient();
  */
 export async function GET(request, { params }) {
   try {
+    const locale = detectLocaleFromRequest(request);
     const session = await getSession();
 
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const errorMessage = await translate(locale, 'api.errors.unauthorized');
+      return NextResponse.json({ error: errorMessage }, { status: 401 });
     }
 
     const { businessId } = await params;
@@ -46,7 +49,8 @@ export async function GET(request, { params }) {
     });
 
     if (!business || business.ownerId !== session.id) {
-      return NextResponse.json({ error: 'Business not found' }, { status: 404 });
+      const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.businessNotFound');
+      return NextResponse.json({ error: errorMessage }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -64,8 +68,10 @@ export async function GET(request, { params }) {
     });
   } catch (error) {
     console.error('Get messaging settings error:', error);
+    const locale = detectLocaleFromRequest(request);
+    const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.internalError');
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
@@ -77,10 +83,13 @@ export async function GET(request, { params }) {
  */
 export async function PATCH(request, { params }) {
   try {
+    // Detect locale from request for error messages
+    const locale = detectLocaleFromRequest(request);
     const session = await getSession();
 
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const errorMessage = await translate(locale, 'api.errors.unauthorized');
+      return NextResponse.json({ error: errorMessage }, { status: 401 });
     }
 
     const { businessId } = await params;
@@ -93,15 +102,17 @@ export async function PATCH(request, { params }) {
     });
 
     if (!business || business.ownerId !== session.id) {
-      return NextResponse.json({ error: 'Business not found' }, { status: 404 });
+      const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.businessNotFound');
+      return NextResponse.json({ error: errorMessage }, { status: 404 });
     }
 
     // Validate message templates if provided
     if (body.messageTemplates) {
-      const validation = validateTemplates(body.messageTemplates);
+      const validation = validateTemplates(body.messageTemplates, locale);
       if (!validation.valid) {
+        const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.invalidTemplates');
         return NextResponse.json(
-          { error: 'Invalid templates', details: validation.errors },
+          { error: errorMessage, details: validation.errors },
           { status: 400 }
         );
       }
@@ -121,8 +132,9 @@ export async function PATCH(request, { params }) {
     if (body.reminderHoursBefore !== undefined) {
       const hours = parseInt(body.reminderHoursBefore);
       if (isNaN(hours) || hours < 1 || hours > 168) {
+        const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.reminderHoursRange');
         return NextResponse.json(
-          { error: 'reminderHoursBefore must be between 1 and 168' },
+          { error: errorMessage },
           { status: 400 }
         );
       }
@@ -133,14 +145,16 @@ export async function PATCH(request, { params }) {
       // Validate Bot Basic ID format if provided
       if (body.lineBotBasicId) {
         if (!body.lineBotBasicId.startsWith('@')) {
+          const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.botIdMustStartWith');
           return NextResponse.json(
-            { error: 'Bot Basic ID must start with @' },
+            { error: errorMessage },
             { status: 400 }
           );
         }
         if (!/^@[a-zA-Z0-9]+$/.test(body.lineBotBasicId)) {
+          const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.botIdInvalidFormat');
           return NextResponse.json(
-            { error: 'Bot Basic ID must contain only letters and numbers after @' },
+            { error: errorMessage },
             { status: 400 }
           );
         }
@@ -155,8 +169,9 @@ export async function PATCH(request, { params }) {
 
     if (body.messagingMode !== undefined) {
       if (!['shared', 'own_bot'].includes(body.messagingMode)) {
+        const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.invalidMessagingMode');
         return NextResponse.json(
-          { error: 'Invalid messaging mode. Must be "shared" or "own_bot"' },
+          { error: errorMessage },
           { status: 400 }
         );
       }
@@ -170,8 +185,9 @@ export async function PATCH(request, { params }) {
     if (body.heroBackgroundColor !== undefined) {
       // Validate hex color format
       if (body.heroBackgroundColor && !/^#[0-9A-Fa-f]{6}$/.test(body.heroBackgroundColor)) {
+        const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.invalidColorFormat');
         return NextResponse.json(
-          { error: 'Invalid color format. Must be hex format like #FFFFFF' },
+          { error: errorMessage },
           { status: 400 }
         );
       }
@@ -206,8 +222,10 @@ export async function PATCH(request, { params }) {
     });
   } catch (error) {
     console.error('Update messaging settings error:', error);
+    const locale = detectLocaleFromRequest(request);
+    const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.internalError');
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

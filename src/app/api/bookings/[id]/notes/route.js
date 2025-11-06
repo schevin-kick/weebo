@@ -7,12 +7,15 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
 export async function PATCH(request, { params }) {
   try {
+    const locale = detectLocaleFromRequest(request);
     const session = await getSession();
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const errorMessage = await translate(locale, 'api.errors.unauthorized');
+      return NextResponse.json({ error: errorMessage }, { status: 401 });
     }
 
     const { id } = await params;
@@ -28,12 +31,14 @@ export async function PATCH(request, { params }) {
     });
 
     if (!booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      const errorMessage = await translate(locale, 'api.booking.errors.bookingNotFound');
+      return NextResponse.json({ error: errorMessage }, { status: 404 });
     }
 
     // Verify business ownership
     if (booking.business.ownerId !== session.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      const errorMessage = await translate(locale, 'api.errors.unauthorized');
+      return NextResponse.json({ error: errorMessage }, { status: 403 });
     }
 
     // Update notes
@@ -45,8 +50,10 @@ export async function PATCH(request, { params }) {
     return NextResponse.json({ booking: updatedBooking });
   } catch (error) {
     console.error('Error updating booking notes:', error);
+    const locale = detectLocaleFromRequest(request);
+    const errorMessage = await translate(locale, 'api.booking.errors.failedToUpdateNotes');
     return NextResponse.json(
-      { error: 'Failed to update notes' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

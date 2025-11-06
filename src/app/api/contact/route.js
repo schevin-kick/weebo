@@ -34,8 +34,9 @@ export async function POST(request) {
     // If the "website" field is filled, it's likely a bot
     if (website && website.trim() !== '') {
       console.warn('[Contact Form] Honeypot triggered:', { identifier });
+      const errorMessage = await translate(locale, 'api.errors.invalidSubmission');
       return NextResponse.json(
-        { error: 'Invalid submission' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -48,16 +49,18 @@ export async function POST(request) {
         identifier,
         timeElapsed: `${timeElapsed}ms`,
       });
+      const errorMessage = await translate(locale, 'api.errors.invalidSubmission');
       return NextResponse.json(
-        { error: 'Invalid submission' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
 
     // Validate required fields
     if (!name || !email || !message) {
+      const errorMessage = await translate(locale, 'api.errors.missingFields');
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -65,8 +68,9 @@ export async function POST(request) {
     // Validate name (basic sanitization)
     const sanitizedName = name.trim();
     if (sanitizedName.length === 0 || sanitizedName.length > 100) {
+      const errorMessage = await translate(locale, 'api.contact.errors.invalidName');
       return NextResponse.json(
-        { error: 'Invalid name' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -74,8 +78,9 @@ export async function POST(request) {
     // Validate email format
     const sanitizedEmail = email.trim().toLowerCase();
     if (!EMAIL_REGEX.test(sanitizedEmail)) {
+      const errorMessage = await translate(locale, 'api.contact.errors.invalidEmail');
       return NextResponse.json(
-        { error: 'Invalid email address' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -83,8 +88,9 @@ export async function POST(request) {
     // Validate message length
     const sanitizedMessage = message.trim();
     if (sanitizedMessage.length === 0 || sanitizedMessage.length > MAX_MESSAGE_LENGTH) {
+      const errorMessage = await translate(locale, 'api.contact.errors.messageTooLong');
       return NextResponse.json(
-        { error: `Message must be between 1 and ${MAX_MESSAGE_LENGTH} characters` },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -96,8 +102,9 @@ export async function POST(request) {
 
     if (!gmailUser || !gmailAppPassword || !contactEmailTo) {
       console.error('[Contact Form] Missing email configuration environment variables');
+      const errorMessage = await translate(locale, 'api.contact.errors.emailNotConfigured');
       return NextResponse.json(
-        { error: 'Email service not configured' },
+        { error: errorMessage },
         { status: 500 }
       );
     }
@@ -265,8 +272,9 @@ ${new Date().toISOString()}
     // Check for specific nodemailer errors
     if (error.code === 'EAUTH') {
       console.error('[Contact Form] Gmail authentication failed. Check GMAIL_USER and GMAIL_APP_PASSWORD');
+      const errorMessage = await translate(errorLocale, 'api.contact.errors.authFailed');
       return NextResponse.json(
-        { error: 'Email service authentication failed' },
+        { error: errorMessage },
         { status: 500 }
       );
     }

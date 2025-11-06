@@ -1039,17 +1039,194 @@
       "welcomeBusinessBot": "歡迎回來！您將繼續在此收到預訂更新。",
       "bookingLinked": "預訂連結！您將會收到預訂 #{bookingId} 的更新。"
     },
+    "errors": {
+      "unauthorized": "未經授權",
+      "forbidden": "禁止",
+      "invalidCsrf": "無效 CSRF 令牌",
+      "missingFields": "遺漏必填欄位",
+      "invalidSubmission": "無效提交"
+    },
     "booking": {
-      "subscriptionInactive": "此業務目前無法預約，請聯絡業務所有人。"
+      "subscriptionInactive": "此業務目前無法預約，請聯絡業務所有人。",
+      "errors": {
+        "businessNotFound": "未找到業務",
+        "outsideBusinessHours": "所選時間為營業時間以外",
+        "businessClosed": "在選定時間內不營業",
+        "staffUnavailable": "目前沒有選定的工作人員",
+        "alreadyBooked": "此時段已被預約",
+        "bookingNotFound": "未找到預訂",
+        "failedToCreate": "建立預訂失敗",
+        "failedToFetch": "取得預訂失敗",
+        "failedToUpdate": "更新預訂失敗",
+        "failedToUpdateStatus": "更新預訂狀態失敗",
+        "failedToUpdateNotes": "更新筆記失敗",
+        "failedToMarkNoShow": "未標記為未出席",
+        "missingParams": "遺失查詢參數",
+        "invalidStatus": "無效狀態",
+        "missingDateTime": "遺漏必填欄位"
+      },
+      "availability": {
+        "missingParams": "缺少必填參數：businessId 和 date",
+        "businessNotFound": "未找到業務",
+        "failedToFetch": "取得可用性失敗"
+      }
+    },
+    "business": {
+      "errors": {
+        "notFound": "未找到業務",
+        "failedToFetch": "取得業務失敗",
+        "failedToCreate": "未能創建業務",
+        "failedToUpdate": "更新業務失敗",
+        "failedToDelete": "刪除業務失敗"
+      }
     },
     "contact": {
       "success": "訊息已成功傳送",
-      "error": "傳送訊息失敗，請稍後再試。"
+      "error": "傳送訊息失敗，請稍後再試。",
+      "errors": {
+        "invalidName": "無效名稱",
+        "invalidEmail": "無效的電子郵件地址",
+        "messageTooLong": "訊息必須介於 1 到 400 個字元之間",
+        "emailNotConfigured": "未設定電子郵件服務",
+        "authFailed": "電子郵件服務驗證失敗"
+      }
+    },
+    "upload": {
+      "errors": {
+        "noFile": "未提供檔案",
+        "invalidType": "檔案類型無效，請上傳 JPG、PNG、WebP 或 GIF",
+        "tooLarge": "檔案太大，最大為 1MB",
+        "failedToUpload": "上傳檔案失敗"
+      },
+      "success": "圖片上傳成功",
+      "failed": "上傳圖片失敗，請再試一次"
+    },
+    "closedDates": {
+      "errors": {
+        "businessIdRequired": "需要商業 ID",
+        "businessNotFound": "未找到業務",
+        "failedToFetch": "擷取關閉日期失敗",
+        "failedToCreate": "建立封閉日期失敗"
+      }
+    },
+    "stripe": {
+      "errors": {
+        "notConfigured": "Stripe 未設定",
+        "priceIdMissing": "Stripe 價格 ID 未設定",
+        "userNotFound": "未找到使用者",
+        "noCustomer": "未找到 Stripe 客戶，請先訂閱。",
+        "failedCheckout": "建立結帳階段失敗",
+        "failedPortal": "建立入口網站階段失敗"
+      }
+    },
+    "proxyImage": {
+      "errors": {
+        "urlRequired": "需要影像 URL",
+        "invalidUrl": "無效的圖像 URL",
+        "failedToFetch": "擷取影像失敗",
+        "notImage": "URL 未指向影像",
+        "tooLarge": "圖片太大（最大 5MB）",
+        "timeout": "圖像擷取逾時",
+        "failedToProxy": "代理影像失敗"
+      }
     },
     "webhookSetup": {
       "successVerified": "Webhook 已配置並驗證成功！請記住在您的 LINE 開發人員控制台 → 訊息 API 設定中啟用「使用 webhook」切換鍵。",
       "successUnverified": "已設定 Webhook，但驗證失敗。 這是正常現象 - Webhook 仍可正常運作。 請記得在您的 LINE 開發人員控制台 → 訊息 API 設定中啟用「使用 webhook」切換鍵。"
     }
+  },
+  "lib": {
+    "messageTemplates": {
+      "validation": {
+        "missingType": "缺少樣板類型：{type}",
+        "headerRequired": "{type}：頁首為必填項，且必須為字串",
+        "bodyRequired": "{type}：正文為必填項，且必須為字串",
+        "headerTooLong": "{type}：標題超過 100 個字元",
+        "bodyTooLong": "{type}：主體超過 500 個字元"
+      }
+    },
+    "validation": {
+      "invalidTimeFormat": "無效時間格式 (HH:MM)",
+      "businessNameMin": "公司名稱必須至少包含 3 個字元",
+      "businessNameMax": "公司名稱最多不得超過 100 個字元",
+      "serviceNameMin": "服務名稱必須至少包含 3 個字元",
+      "serviceNameMax": "服務名稱最多不得超過 100 個字元",
+      "durationMin": "時間長度必須至少為 5 分鐘",
+      "durationMax": "時間長度必須在 480 分鐘 (8 小時) 以內",
+      "descriptionMax": "說明最多不得超過 100 個字元",
+      "pricePositive": "價格必須為正數",
+      "greetingRequired": "需要問候訊息",
+      "greetingTooLong": "訊息太長",
+      "questionRequired": "問題為必填欄位",
+      "questionTooLong": "問題太長",
+      "labelRequired": "需要欄位標籤",
+      "labelTooLong": "標籤太長",
+      "staffNameRequired": "需要員工姓名",
+      "advanceBookingMin": "必須至少提前 1 天預訂",
+      "advanceBookingMax": "預訂不得超過 30 天",
+      "workflowMin": "至少需要一個工作流程元件",
+      "workflowMax": "最多可使用 20 個工作流程元件",
+      "invalidEmail": "無效的電子郵件地址",
+      "invalidPhone": "無效的電話號碼"
+    },
+    "imageOptimizer": {
+      "errors": {
+        "failedToOptimize": "優化影像失敗",
+        "invalidFileType": "請上傳有效的圖檔 (JPG、PNG、WebP 或 GIF)",
+        "tooLarge": "影像太大 ({sizeMB}MB)，最大大小為 {maxSizeMB}MB"
+      }
+    },
+    "r2": {
+      "errors": {
+        "bucketNameMissing": "未設定 R2_BUCKET_NAME 環境變數",
+        "uploadFailed": "上傳至 R2 失敗：{error}"
+      }
+    },
+    "qr": {
+      "errors": {
+        "generationFailed": "產生 QR 代碼失敗：{error}",
+        "previewFailed": "產生 QR 代碼預覽失敗"
+      }
+    },
+    "auth": {
+      "errors": {
+        "exchangeFailed": "無法交換 LINE 授權碼",
+        "profileFailed": "無法取得 LINE 個人檔案",
+        "refreshFailed": "無法刷新 LINE 權杖：{error}"
+      }
+    }
+  },
+  "utils": {
+    "bookingValidation": {
+      "fieldRequired": "{label} 為必填項",
+      "checkboxRequired": "請至少選擇一個 {label}",
+      "invalidEmail": "請輸入有效的電子郵件地址",
+      "invalidPhone": "請輸入有效的電話號碼",
+      "invalidNumber": "請輸入有效的號碼",
+      "numberMin": "數值必須至少為 {min}",
+      "numberMax": "數值不得超過 {max}",
+      "selectService": "請選擇服務",
+      "serviceNotFound": "未找到選取的服務",
+      "selectStaff": "請選擇員工",
+      "staffNotFound": "找不到選取的員工",
+      "selectDateTime": "請選擇日期與時間",
+      "selectDateAndTime": "請同時選擇日期與時間"
+    }
+  },
+  "toasts": {
+    "notesSaved": "筆記已成功儲存",
+    "notesSaveFailed": "儲存筆記失敗",
+    "bookingConfirmed": "預訂確認成功",
+    "bookingConfirmFailed": "確認預訂失敗",
+    "bookingCancelled": "預訂已成功取消",
+    "bookingCancelFailed": "取消預訂失敗",
+    "noShowMarked": "標記為未出席",
+    "noShowFailed": "未標示為未出席",
+    "completedMarked": "標記為已完成",
+    "completedFailed": "未標示為已完成",
+    "photoUploaded": "照片上傳成功",
+    "photoUploadFailed": "上傳照片失敗，請再試一次",
+    "settingsUpdateFailed": "更新業務設定失敗"
   },
   "settings": {
     "title": "設定",
