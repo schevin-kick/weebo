@@ -329,7 +329,8 @@ export default function BrochureV2Content() {
               playsInline
               className="w-64 h-64 mx-auto object-contain rounded-3xl"
             >
-              <source src="/robot-waving-unscreen-optimized.mp4" type="video/mp4" />
+              <source src="/brochure/waving-home-mobile.webm" type="video/webm" />
+              <source src="/brochure/waving-home-mobile.mp4" type="video/mp4" />
             </video>
           </motion.div>
         </div>

@@ -242,10 +242,22 @@
     "metadata": {
       "title": "Weebo - LINE Booking System | Professional Appointment Scheduling",
       "description": "The intelligent booking platform built for Asia. Connect with 95M+ LINE users, automate scheduling, and grow your business. 14-day free trial, no credit card required.",
-      "keywords": "LINE booking system, appointment scheduling, Asia booking software, LINE integration, business scheduling, Taiwan booking, Japan booking, QR code booking",
+      "descriptionShort": "LINE booking system with 5-min setup, automated scheduling, and real-time analytics. Built for Asia's service businesses. 14-day free trial.",
+      "descriptionLong": "Weebo is the intelligent appointment scheduling platform designed for Asia. Seamlessly integrates with LINE to connect with 95M+ users. Perfect for salons, spas, cafes, clinics, and service businesses. Features include QR code booking, automated reminders, real-time analytics, multi-language support, and staff management. 5-minute setup, 14-day free trial, no credit card required. Never miss a booking opportunity with 24/7 availability.",
+      "descriptionFeatures": "✓ Native LINE integration ✓ QR code booking ✓ Automated reminders ✓ Real-time analytics ✓ Multi-language support ✓ 5-minute setup",
+      "descriptionBenefits": "Reduce no-shows by 40%, increase customer satisfaction, automate booking workflows, and save time. The LINE-powered booking system designed specifically for Asian small businesses.",
+      "keywords": "LINE booking system, appointment scheduling, Asia booking software, LINE integration, business scheduling, Taiwan booking, Japan booking, Thailand booking, QR code booking, contactless booking, small business scheduling, online booking system, salon booking, spa booking, restaurant reservation, automated reminders, real-time analytics, multi-language booking",
       "ogTitle": "Weebo - Transform Your Business with LINE-Powered Booking",
       "ogDescription": "Professional appointment booking system that runs natively on LINE. 5-minute setup, real-time analytics, and 24/7 availability. Start your free trial today.",
-      "ogImageAlt": "Weebo booking system interface showing LINE integration and analytics dashboard"
+      "ogImageAlt": "Weebo booking system interface showing LINE integration and analytics dashboard",
+      "ogUrl": "/en/brochure-v2",
+      "twitterTitle": "Weebo | LINE Booking System - 5-Minute Setup for Asian Businesses",
+      "twitterDescription": "Native LINE booking system | QR code scanning | Automated reminders | Real-time analytics | Free trial",
+      "twitterSite": "@WeeboBooking",
+      "twitterCreator": "@WeeboBooking",
+      "schemaDescription": "Weebo is a professional appointment booking and management software designed for the Asian market, with deep LINE integration. Features include QR code booking, automated reminders, real-time analytics, and multi-language support. Perfect for hair salons, spas, cafes, clinics, and various service businesses.",
+      "geoRegion": "TW",
+      "geoPlacename": "Taiwan"
     }
   },
   "brochure": {

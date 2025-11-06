@@ -1,0 +1,61 @@
+# robots.txt for Weebo (kitsunebooking.com)
+# Last updated: 2025-11-06
+
+# Default rules for all crawlers
+User-agent: *
+
+# Allow public marketing pages
+Allow: /en/$
+Allow: /zh-tw/$
+Allow: /en/contact
+Allow: /zh-tw/contact
+Allow: /en/legal/
+Allow: /zh-tw/legal/
+
+# Block old brochure pages (deprecated)
+Disallow: /en/brochure$
+Disallow: /zh-tw/brochure$
+Disallow: /en/brochure-v2
+Disallow: /zh-tw/brochure-v2
+
+# Disallow authenticated/private areas
+Disallow: /api/
+Disallow: /en/dashboard/
+Disallow: /zh-tw/dashboard/
+Disallow: /en/setup/
+Disallow: /zh-tw/setup/
+Disallow: /en/book/my-bookings/
+Disallow: /zh-tw/book/my-bookings/
+Disallow: /en/booking/
+Disallow: /zh-tw/booking/
+
+# Allow public booking pages (these are customer-facing)
+Allow: /en/book$
+Allow: /zh-tw/book$
+
+# Disallow admin and internal paths
+Disallow: /_next/
+Disallow: /admin/
+
+# Allow static assets
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.webp$
+Allow: /*.svg$
+Allow: /*.gif$
+Allow: /*.woff$
+Allow: /*.woff2$
+
+# Sitemaps
+# Note: Update these URLs when you change your production domain
+Sitemap: https://weebo-ten.vercel.app/sitemap.xml
+
+# Crawl delay (optional - be nice to the server)
+# Crawl-delay: 1
+
+# Block specific bots if needed (currently allowing all)
+# User-agent: BadBot
+# Disallow: /

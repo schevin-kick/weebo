@@ -167,7 +167,7 @@
       }
     },
     "qrCodeFeature": {
-      "title": "QR Code Magic",
+      "title": "QR Code 魔術",
       "description": "產生美觀、可掃瞄的 QR 代碼，讓您的客戶可以立即使用這些代碼進行預訂。",
       "steps": {
         "customize": {
@@ -241,11 +241,23 @@
     },
     "metadata": {
       "title": "Weebo - LINE 預約系統 | 專業預約排程",
-      "description": "專為亞洲打造的智慧型預約平台，與 9500 萬以上的 LINE 使用者連線、自動排程，並拓展您的業務。 14 天免費試用，無需信用卡。",
-      "keywords": "LINE 預約系統、預約排程、亞洲預約軟體、LINE 整合、商務排程、台灣預約、日本預約、QR code 預約",
-      "ogTitle": "Weebo - 透過線上預約，改變您的業務",
-      "ogDescription": "專業的預約預約系統，可在 LINE 上原生執行。 5 分鐘設定、即時分析、24/7 可用性。 立即開始免費試用。",
-      "ogImageAlt": "顯示 LINE 整合和分析儀表板的 Weebo 預訂系統介面"
+      "description": "專為亞洲打造的智慧型預約平台，與 9500 萬以上的 LINE 使用者連線、自動排程，並拓展您的業務。14 天免費試用，無需信用卡。",
+      "descriptionShort": "LINE 預約系統只需 5 分鐘即可完成設定、自動排程和即時分析，專為亞洲服務業打造。14 天免費試用。",
+      "descriptionLong": "Weebo 是專為亞洲設計的智慧型預約排程平台，與 LINE 無縫整合，可連結 9500 萬以上的使用者，是美容院、水療中心、咖啡館、診所和服務業的最佳選擇。功能包括 QR 碼預約、自動提醒、即時分析、多語言支援和員工管理。5 分鐘設定、14 天免費試用、無需信用卡。24 小時全天候服務，絕不會錯過任何預約機會。",
+      "descriptionFeatures": "✓ 原生 LINE 整合 ✓ QR 代碼預約 ✓ 自動提醒 ✓ 即時分析 ✓ 多語支援 ✓ 5 分鐘設定",
+      "descriptionBenefits": "減少 40% 的缺席率，提高客戶滿意度，自動化預約工作流程，並節省時間。專為亞洲小型企業設計、由 LINE 驅動的預約系統。",
+      "keywords": "LINE 預約系統, 預約排程, 亞洲預約軟體, LINE 整合, 商務排程, 台灣預約, 日本預約, 泰國預約, QR code 預約, 非接觸式預約, 小型企業排程, 線上預約系統, 沙龍預約, SPA 預約, 餐廳預約, 自動提醒, 即時分析, 多語言預約",
+      "ogTitle": "Weebo - 透過 LINE 驅動預約，改變您的業務",
+      "ogDescription": "專業的預約預約系統，可在 LINE 上原生執行。5 分鐘設定、即時分析、24/7 可用性。立即開始免費試用。",
+      "ogImageAlt": "顯示 LINE 整合和分析儀表板的 Weebo 預訂系統介面",
+      "ogUrl": "/zh-tw/brochure-v2",
+      "twitterTitle": "Weebo | LINE 預訂系統 - 適合亞洲企業的 5 分鐘設定方案",
+      "twitterDescription": "原生 LINE 預約系統 | QR 掃描 | 自動提醒 | 即時分析 | 免費試用",
+      "twitterSite": "@WeeboBooking",
+      "twitterCreator": "@WeeboBooking",
+      "schemaDescription": "Weebo 是專為亞洲市場設計的專業預約與管理軟體，與 LINE 深度整合。功能包括 QR 碼預約、自動提醒、即時分析與多國語言支援。非常適合髮廊、水療中心、咖啡館、診所與各種服務業者使用。",
+      "geoRegion": "TW",
+      "geoPlacename": "台灣"
     }
   },
   "brochure": {
