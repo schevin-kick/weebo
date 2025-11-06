@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 export default function InteractiveCard({
   children,
@@ -10,6 +11,7 @@ export default function InteractiveCard({
   tiltIntensity = 10
 }) {
   const ref = useRef(null);
+  const isMobile = useIsMobile();
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -21,7 +23,7 @@ export default function InteractiveCard({
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [`-${tiltIntensity}deg`, `${tiltIntensity}deg`]);
 
   const handleMouseMove = (e) => {
-    if (!ref.current) return;
+    if (!ref.current || isMobile) return;
 
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
@@ -41,16 +43,21 @@ export default function InteractiveCard({
     y.set(0);
   };
 
+  // Disable tilt effect on mobile, keep hover scale
+  const style = isMobile
+    ? {}
+    : {
+        rotateX,
+        rotateY,
+        transformStyle: 'preserve-3d',
+      };
+
   return (
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: 'preserve-3d',
-      }}
+      style={style}
       whileHover={{ scale: hoverScale }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className={`${className}`}

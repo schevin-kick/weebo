@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 export default function ParallaxSection({
   children,
@@ -9,12 +10,23 @@ export default function ParallaxSection({
   className = ''
 }) {
   const ref = useRef(null);
+  const isMobile = useIsMobile();
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start end', 'end start']
   });
 
   const y = useTransform(scrollYProgress, [0, 1], [0, speed * 100]);
+
+  // Disable parallax on mobile
+  if (isMobile) {
+    return (
+      <div ref={ref} className={className}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <motion.div ref={ref} style={{ y }} className={className}>

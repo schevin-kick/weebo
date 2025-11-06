@@ -2,9 +2,11 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 export default function LineIntegrationSvg() {
   const containerRef = useRef(null);
+  const isMobile = useIsMobile();
 
   // Track scroll progress of the SVG container
   const { scrollYProgress } = useScroll({
@@ -12,19 +14,19 @@ export default function LineIntegrationSvg() {
     offset: ['start 70%', 'end 30%']
   });
 
-  // Scroll-based transforms for main SVG
-  const svgScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 0.95]);
-  const svgRotate = useTransform(scrollYProgress, [0, 0.5, 1], [-3, 0, 3]);
-  const svgY = useTransform(scrollYProgress, [0, 0.5, 1], [30, 0, -30]);
+  // Scroll-based transforms for main SVG (disabled on mobile)
+  const svgScale = useTransform(scrollYProgress, [0, 0.5, 1], isMobile ? [1, 1, 1] : [0.9, 1, 0.95]);
+  const svgRotate = useTransform(scrollYProgress, [0, 0.5, 1], isMobile ? [0, 0, 0] : [-3, 0, 3]);
+  const svgY = useTransform(scrollYProgress, [0, 0.5, 1], isMobile ? [0, 0, 0] : [30, 0, -30]);
 
-  // Additional scroll-based animations for individual elements
-  const dashboardX = useTransform(scrollYProgress, [0, 0.5], [-50, 0]);
+  // Additional scroll-based animations for individual elements (disabled on mobile)
+  const dashboardX = useTransform(scrollYProgress, [0, 0.5], isMobile ? [0, 0] : [-50, 0]);
   const dashboardOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
-  const customerX = useTransform(scrollYProgress, [0, 0.5], [50, 0]);
+  const customerX = useTransform(scrollYProgress, [0, 0.5], isMobile ? [0, 0] : [50, 0]);
   const customerOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
-  const lineHubScale = useTransform(scrollYProgress, [0.2, 0.5], [0.5, 1]);
+  const lineHubScale = useTransform(scrollYProgress, [0.2, 0.5], isMobile ? [1, 1] : [0.5, 1]);
   const pathProgress = useTransform(scrollYProgress, [0.3, 0.7], [0, 1]);
-  const floatingIconsY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const floatingIconsY = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [0, -40]);
 
   return (
     <div ref={containerRef} className="w-full h-full relative bg-gradient-to-br from-green-50/30 via-white to-emerald-50/20">

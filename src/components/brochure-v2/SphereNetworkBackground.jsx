@@ -54,7 +54,7 @@ function TravelingParticle({ start, end, delay, color }) {
 /**
  * Main network sphere with nodes, connections, and particles
  */
-function NetworkSphere({ scrollProgress }) {
+function NetworkSphere({ scrollProgress, isMobile }) {
   const groupRef = useRef();
   const linesMaterialRef = useRef();
 
@@ -62,7 +62,8 @@ function NetworkSphere({ scrollProgress }) {
   const { positions, connections } = useMemo(() => {
     const points = [];
     const sphereRadius = 2.8;
-    const count = 60; // Reduced from 120 for fewer points and connections
+    // Reduce particle count on mobile for better performance
+    const count = isMobile ? 30 : 60;
 
     // Fibonacci sphere algorithm for even distribution
     const goldenRatio = (1 + Math.sqrt(5)) / 2;
@@ -79,7 +80,8 @@ function NetworkSphere({ scrollProgress }) {
 
     // Calculate connections between nearby points
     const conns = [];
-    const maxDistance = 1.5; // Reduced from 2.0 for fewer connections
+    // Reduce connection distance on mobile for fewer lines
+    const maxDistance = isMobile ? 1.2 : 1.5;
     for (let i = 0; i < points.length; i++) {
       for (let j = i + 1; j < points.length; j++) {
         const dx = points[i].x - points[j].x;
@@ -94,7 +96,7 @@ function NetworkSphere({ scrollProgress }) {
     }
 
     return { positions: points, connections: conns };
-  }, []);
+  }, [isMobile]);
 
   // Select a subset of connections for particles
   const particleConnections = useMemo(() => {
@@ -109,10 +111,12 @@ function NetworkSphere({ scrollProgress }) {
     // Gentle continuous rotation
     groupRef.current.rotation.y += 0.002;
 
-    // Scroll-influenced rotation
-    const scrollInfluence = scrollProgress * Math.PI * 2;
-    groupRef.current.rotation.x = Math.sin(scrollInfluence * 0.5) * 0.3;
-    groupRef.current.rotation.z = Math.cos(scrollInfluence * 0.3) * 0.15;
+    // Scroll-influenced rotation (disabled on mobile)
+    if (!isMobile) {
+      const scrollInfluence = scrollProgress * Math.PI * 2;
+      groupRef.current.rotation.x = Math.sin(scrollInfluence * 0.5) * 0.3;
+      groupRef.current.rotation.z = Math.cos(scrollInfluence * 0.3) * 0.15;
+    }
 
     // Pulse line opacity based on time
     if (linesMaterialRef.current) {
@@ -208,11 +212,11 @@ function NetworkSphere({ scrollProgress }) {
 /**
  * Main component - integrates Three.js Canvas with scroll tracking
  */
-export default function SphereNetworkBackground({ scrollProgress = 0 }) {
+export default function SphereNetworkBackground({ scrollProgress = 0, isMobile = false }) {
   return (
     <Canvas
       camera={{ position: [0, 0, 6], fov: 60 }}
-      gl={{ alpha: true, antialias: true }}
+      gl={{ alpha: true, antialias: !isMobile }} // Disable antialiasing on mobile for performance
       style={{ background: 'transparent' }}
     >
       {/* Ambient light for overall illumination */}
@@ -223,7 +227,7 @@ export default function SphereNetworkBackground({ scrollProgress = 0 }) {
       <pointLight position={[-5, -5, 5]} intensity={0.3} color="#a855f7" />
 
       {/* Main network sphere */}
-      <NetworkSphere scrollProgress={scrollProgress} />
+      <NetworkSphere scrollProgress={scrollProgress} isMobile={isMobile} />
     </Canvas>
   );
 }

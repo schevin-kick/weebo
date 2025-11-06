@@ -34,10 +34,12 @@ import LineIntegrationSvg from '@/components/brochure-v2/LineIntegrationSvg';
 import SphereNetworkBackground from '@/components/brochure-v2/SphereNetworkBackground';
 import QRCodeMagicSvg from '@/components/brochure-v2/QRCodeMagicSvg';
 import LanguageSelector from '@/components/shared/LanguageSelector';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import '@/styles/brochure-v2.css';
 
 export default function BrochureV2Content() {
   const t = useTranslations('brochureV2');
+  const isMobile = useIsMobile();
   const [showSubheading, setShowSubheading] = useState(false);
   const [heroRef, heroInView] = useInView({ threshold: 0.1 });
   const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -125,7 +127,7 @@ export default function BrochureV2Content() {
     <div className="relative min-h-screen overflow-x-hidden animate-gradient-bg">
       {/* Fixed Background Animation - 3D Network Sphere */}
       <div className="fixed inset-0 pointer-events-none opacity-70 z-0">
-        <SphereNetworkBackground scrollProgress={scrollValue} />
+        <SphereNetworkBackground scrollProgress={scrollValue} isMobile={isMobile} />
       </div>
 
       {/* Scroll Progress Bar */}
