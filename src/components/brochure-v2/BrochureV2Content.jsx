@@ -254,64 +254,64 @@ export default function BrochureV2Content() {
               viewport={{ once: true, margin: "-100px" }}
               className="mt-20"
             >
-                <div className="relative max-w-sm mx-auto perspective-container">
-                  <InteractiveCard hoverScale={1.03} tiltIntensity={5}>
-                    {/* Smartphone Frame */}
-                    <div className="relative rounded-[50px] bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-3 shadow-2xl">
-                      {/* Phone Bezel Inner Shadow */}
-                      <div className="absolute inset-3 rounded-[40px] shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)]" />
+              <div className="relative max-w-sm mx-auto perspective-container">
+                <InteractiveCard hoverScale={1.03} tiltIntensity={5}>
+                  {/* Smartphone Frame */}
+                  <div className="relative rounded-[50px] bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-3 shadow-2xl">
+                    {/* Phone Bezel Inner Shadow */}
+                    <div className="absolute inset-3 rounded-[40px] shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)]" />
 
-                      {/* Notch */}
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-7 bg-black rounded-b-3xl z-20 shadow-lg">
-                        {/* Camera */}
-                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gray-700" />
-                        {/* Speaker */}
-                        <div className="absolute top-2 left-1/2 -translate-x-1/2 translate-x-4 w-6 h-1.5 rounded-full bg-gray-800" />
-                      </div>
-
-                      {/* Screen */}
-                      <div className="relative rounded-[40px] glass shadow-2xl overflow-hidden soft-glow" style={{ aspectRatio: '9/19.5' }}>
-                        {/* SVG Animation */}
-                        <HeroSvgAnimation />
-
-                        {/* Waving robot video overlay - in front of SVG animations */}
-                        <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
-                          <video
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="w-48 h-48 object-contain opacity-30"
-                          >
-                            <source src="/robot-waving-unscreen-optimized.mp4" type="video/mp4" />
-                          </video>
-                        </div>
-
-                        {/* Floating Notifications Overlay */}
-                        <AnimatePresence mode="wait">
-                          <FloatingNotification
-                            key={activeNotification}
-                            icon={notifications[activeNotification].icon}
-                            title={notifications[activeNotification].title}
-                            message={notifications[activeNotification].message}
-                            position={notifications[activeNotification].position}
-                            gradient={notifications[activeNotification].gradient}
-                          />
-                        </AnimatePresence>
-
-                        {/* Screen Reflection Overlay */}
-                        <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/10 via-transparent to-transparent" />
-                      </div>
-
-                      {/* Power Button */}
-                      <div className="absolute right-0 top-32 w-1 h-16 bg-gray-950 rounded-l-sm" />
-
-                      {/* Volume Buttons */}
-                      <div className="absolute left-0 top-28 w-1 h-10 bg-gray-950 rounded-r-sm" />
-                      <div className="absolute left-0 top-40 w-1 h-10 bg-gray-950 rounded-r-sm" />
+                    {/* Notch */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-7 bg-black rounded-b-3xl z-20 shadow-lg">
+                      {/* Camera */}
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gray-700" />
+                      {/* Speaker */}
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 translate-x-4 w-6 h-1.5 rounded-full bg-gray-800" />
                     </div>
-                  </InteractiveCard>
-                </div>
+
+                    {/* Screen */}
+                    <div className="relative rounded-[40px] glass shadow-2xl overflow-hidden soft-glow" style={{ aspectRatio: '9/19.5' }}>
+                      {/* SVG Animation */}
+                      <HeroSvgAnimation />
+
+                      {/* Waving robot video overlay - in front of SVG animations */}
+                      <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
+                        <video
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-48 h-48 object-contain opacity-30"
+                        >
+                          <source src="/robot-waving-unscreen-optimized.mp4" type="video/mp4" />
+                        </video>
+                      </div>
+
+                      {/* Floating Notifications Overlay */}
+                      <AnimatePresence mode="wait">
+                        <FloatingNotification
+                          key={activeNotification}
+                          icon={notifications[activeNotification].icon}
+                          title={notifications[activeNotification].title}
+                          message={notifications[activeNotification].message}
+                          position={notifications[activeNotification].position}
+                          gradient={notifications[activeNotification].gradient}
+                        />
+                      </AnimatePresence>
+
+                      {/* Screen Reflection Overlay */}
+                      <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+                    </div>
+
+                    {/* Power Button */}
+                    <div className="absolute right-0 top-32 w-1 h-16 bg-gray-950 rounded-l-sm" />
+
+                    {/* Volume Buttons */}
+                    <div className="absolute left-0 top-28 w-1 h-10 bg-gray-950 rounded-r-sm" />
+                    <div className="absolute left-0 top-40 w-1 h-10 bg-gray-950 rounded-r-sm" />
+                  </div>
+                </InteractiveCard>
+              </div>
             </motion.div>
           </div>
 
@@ -530,6 +530,96 @@ export default function BrochureV2Content() {
         </div>
       </section>
 
+      {/* Feature Showcase with Images */}
+      <section className="relative py-32 px-4" id="feature-showcase">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-20"
+          >
+            <h2 className="text-4xl md:text-6xl font-black mb-6">
+              <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                {t('featureShowcase.title')}
+              </span>
+            </h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto font-medium">
+              {t('featureShowcase.subtitle')}
+            </p>
+          </motion.div>
+
+          <div className="space-y-32">
+            <ScreenshotCard
+              src="/brochure/features/feature1.png"
+              alt={t('featureShowcase.feature1.title')}
+              title={t('featureShowcase.feature1.title')}
+              description={t('featureShowcase.feature1.description')}
+              delay={0.1}
+              onClick={() => setModalImage({ src: '/brochure/features/feature1.png', alt: t('featureShowcase.feature1.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature2.png"
+              alt={t('featureShowcase.feature2.title')}
+              title={t('featureShowcase.feature2.title')}
+              description={t('featureShowcase.feature2.description')}
+              delay={0.2}
+              reverse
+              onClick={() => setModalImage({ src: '/brochure/features/feature2.png', alt: t('featureShowcase.feature2.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature3.png"
+              alt={t('featureShowcase.feature3.title')}
+              title={t('featureShowcase.feature3.title')}
+              description={t('featureShowcase.feature3.description')}
+              delay={0.3}
+              onClick={() => setModalImage({ src: '/brochure/features/feature3.png', alt: t('featureShowcase.feature3.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature4.png"
+              alt={t('featureShowcase.feature4.title')}
+              title={t('featureShowcase.feature4.title')}
+              description={t('featureShowcase.feature4.description')}
+              delay={0.4}
+              reverse
+              onClick={() => setModalImage({ src: '/brochure/features/feature4.png', alt: t('featureShowcase.feature4.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature5.png"
+              alt={t('featureShowcase.feature5.title')}
+              title={t('featureShowcase.feature5.title')}
+              description={t('featureShowcase.feature5.description')}
+              delay={0.5}
+              onClick={() => setModalImage({ src: '/brochure/features/feature5.png', alt: t('featureShowcase.feature5.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature6.png"
+              alt={t('featureShowcase.feature6.title')}
+              title={t('featureShowcase.feature6.title')}
+              description={t('featureShowcase.feature6.description')}
+              delay={0.6}
+              reverse
+              onClick={() => setModalImage({ src: '/brochure/features/feature6.png', alt: t('featureShowcase.feature6.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature7.png"
+              alt={t('featureShowcase.feature7.title')}
+              title={t('featureShowcase.feature7.title')}
+              description={t('featureShowcase.feature7.description')}
+              delay={0.7}
+              onClick={() => setModalImage({ src: '/brochure/features/feature7.png', alt: t('featureShowcase.feature7.title') })}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Analytics Preview */}
       <section className="relative py-32 px-4">
         <ParallaxSection speed={-0.2}>
@@ -725,7 +815,7 @@ export default function BrochureV2Content() {
       </section>
 
       {/* Screenshots Section */}
-      <section className="relative py-32 px-4" id="screenshots">
+      {/* <section className="relative py-32 px-4" id="screenshots">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -764,14 +854,6 @@ export default function BrochureV2Content() {
               onClick={() => setModalImage({ src: '/brochure/calendar-view.png', alt: 'Calendar and Scheduling Interface' })}
             />
 
-            <ScreenshotCard
-              src="/brochure/mobile-form.webp"
-              alt="Mobile Booking Form Interface"
-              title={t('screenshots.mobile.title')}
-              description={t('screenshots.mobile.description')}
-              delay={0.3}
-              onClick={() => setModalImage({ src: '/brochure/mobile-form.png', alt: 'Mobile Booking Form Interface' })}
-            />
 
             <ScreenshotCard
               src="/brochure/form-builder.webp"
@@ -784,7 +866,7 @@ export default function BrochureV2Content() {
             />
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Final CTA Section */}
       <section className="relative py-32 px-4">

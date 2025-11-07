@@ -151,6 +151,38 @@
         "description": "Reduce no-shows with automated LINE reminders sent at the perfect time."
       }
     },
+    "featureShowcase": {
+      "title": "Powerful Features for Modern Businesses",
+      "subtitle": "Everything you need to manage bookings through LINE",
+      "feature1": {
+        "title": "Seamless LINE Integration",
+        "description": "Book directly through LINE - your customers' favorite messaging app with 95M+ users across Asia. Connect instantly with customers in Taiwan, Japan, and Thailand."
+      },
+      "feature2": {
+        "title": "QR Code Booking",
+        "description": "Contactless booking via QR codes - perfect for salons, spas, cafes, and clinics. Print on business cards, posters, or display on screens for instant customer access."
+      },
+      "feature3": {
+        "title": "Visual Smart Calendar",
+        "description": "Intuitive scheduling with drag-and-drop functionality, color-coded appointments, and automatic conflict detection. Manage multiple staff calendars from one beautiful interface."
+      },
+      "feature4": {
+        "title": "Real-time Analytics Dashboard",
+        "description": "Track bookings, revenue, and customer behavior with beautiful dashboards. Make data-driven decisions with insights into peak hours, popular services, and customer patterns."
+      },
+      "feature5": {
+        "title": "Automated LINE Reminders",
+        "description": "Reduce no-shows by 40% with automated LINE reminders sent at the perfect time. Customizable message templates with multilingual support for Asian markets."
+      },
+      "feature6": {
+        "title": "Custom Booking Forms",
+        "description": "Build beautiful booking forms with drag-and-drop builder - collect exactly what you need from customers. Add custom fields, pricing options, and service variants."
+      },
+      "feature7": {
+        "title": "Multi-Staff Management",
+        "description": "Manage multiple staff schedules, services, and availability from one centralized dashboard. Assign specific services, set individual working hours, and track performance."
+      }
+    },
     "analyticsPreview": {
       "title": "Powerful Analytics",
       "description": "Make data-driven decisions with real-time insights into your business performance.",
@@ -185,6 +217,38 @@
           "title": "Accept Bookings",
           "description": "Customers scan and book instantly"
         }
+      }
+    },
+    "featureShowcase": {
+      "title": "Powerful Features in Action",
+      "subtitle": "See how Weebo's advanced features help you run your business better",
+      "feature1": {
+        "title": "Mobile-First Design",
+        "description": "Beautiful, responsive booking forms that work flawlessly on all devices. Your customers can book appointments from anywhere, on any device."
+      },
+      "feature2": {
+        "title": "Customizable Forms",
+        "description": "Create the perfect booking experience with our drag-and-drop form builder. Collect exactly the information you need from your customers."
+      },
+      "feature3": {
+        "title": "Real-time Analytics",
+        "description": "Track your business performance with detailed analytics and insights. Make data-driven decisions to grow your business."
+      },
+      "feature4": {
+        "title": "Multi-language Support",
+        "description": "Serve customers in their preferred language. Weebo supports multiple languages including English, Traditional Chinese, and more."
+      },
+      "feature5": {
+        "title": "Seamless LINE Integration",
+        "description": "Connect with your customers on LINE with automatic booking confirmations, reminders, and notifications sent directly to their LINE app."
+      },
+      "feature6": {
+        "title": "QR Code Management",
+        "description": "Generate beautiful, branded QR codes for easy booking. Share them anywhere - on social media, print materials, or your website."
+      },
+      "feature7": {
+        "title": "Smart Scheduling",
+        "description": "Intelligent calendar with conflict detection, drag-and-drop rescheduling, and color-coded appointments for easy management."
       }
     },
     "screenshots": {

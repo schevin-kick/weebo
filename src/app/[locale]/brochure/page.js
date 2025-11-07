@@ -22,6 +22,7 @@ import ThreeBackground from '@/components/brochure/ThreeBackground';
 import TypewriterText from '@/components/brochure/TypewriterText';
 import ParallaxSection from '@/components/brochure/ParallaxSection';
 import FeatureCard from '@/components/brochure/FeatureCard';
+import FeatureShowcase from '@/components/brochure/FeatureShowcase';
 import AnimatedCounter from '@/components/brochure/AnimatedCounter';
 import ScreenshotCard from '@/components/brochure/ScreenshotCard';
 import FloatingNotification from '@/components/brochure/FloatingNotification';
@@ -32,6 +33,7 @@ export default function BrochurePage() {
   const t = useTranslations('brochure');
   const tCommon = useTranslations('common');
   const tStructuredData = useTranslations('structuredData.brochure');
+  const tFeatureShowcase = useTranslations('brochureV2.featureShowcase');
   const [showSubheading, setShowSubheading] = useState(false);
   const [heroRef, heroInView] = useInView({ threshold: 0.1 });
   const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -449,6 +451,87 @@ export default function BrochurePage() {
         </div>
       </section>
 
+      {/* Feature Showcase with Images */}
+      <section className="relative py-32 px-4" aria-label="Featured Capabilities">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-20"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                {tFeatureShowcase('title')}
+              </span>
+            </h2>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+              {tFeatureShowcase('subtitle')}
+            </p>
+          </motion.div>
+
+          <div className="space-y-32">
+            <FeatureShowcase
+              imageSrc="/brochure/features/feature1.png"
+              title={tFeatureShowcase('feature1.title')}
+              description={tFeatureShowcase('feature1.description')}
+              gradient="from-green-500 to-emerald-500"
+              imagePosition="left"
+              delay={0.1}
+            />
+            <FeatureShowcase
+              imageSrc="/brochure/features/feature2.png"
+              title={tFeatureShowcase('feature2.title')}
+              description={tFeatureShowcase('feature2.description')}
+              gradient="from-pink-500 to-rose-500"
+              imagePosition="right"
+              delay={0.2}
+            />
+            <FeatureShowcase
+              imageSrc="/brochure/features/feature3.png"
+              title={tFeatureShowcase('feature3.title')}
+              description={tFeatureShowcase('feature3.description')}
+              gradient="from-blue-500 to-cyan-500"
+              imagePosition="left"
+              delay={0.3}
+            />
+            <FeatureShowcase
+              imageSrc="/brochure/features/feature4.png"
+              title={tFeatureShowcase('feature4.title')}
+              description={tFeatureShowcase('feature4.description')}
+              gradient="from-purple-500 to-indigo-500"
+              imagePosition="right"
+              delay={0.4}
+            />
+            <FeatureShowcase
+              imageSrc="/brochure/features/feature5.png"
+              title={tFeatureShowcase('feature5.title')}
+              description={tFeatureShowcase('feature5.description')}
+              gradient="from-yellow-500 to-orange-500"
+              imagePosition="left"
+              delay={0.5}
+            />
+            <FeatureShowcase
+              imageSrc="/brochure/features/feature6.png"
+              title={tFeatureShowcase('feature6.title')}
+              description={tFeatureShowcase('feature6.description')}
+              gradient="from-emerald-500 to-green-500"
+              imagePosition="right"
+              delay={0.6}
+            />
+            <FeatureShowcase
+              imageSrc="/brochure/features/feature7.png"
+              title={tFeatureShowcase('feature7.title')}
+              description={tFeatureShowcase('feature7.description')}
+              gradient="from-orange-500 to-amber-500"
+              imagePosition="left"
+              delay={0.7}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Analytics Preview */}
       <section className="relative py-32 px-4" aria-label="Analytics Dashboard">
         <ParallaxSection speed={-0.2}>
@@ -651,15 +734,6 @@ export default function BrochurePage() {
               delay={0.2}
               reverse
               onClick={() => setModalImage({ src: '/brochure/calendar-view.png', alt: 'Calendar and Scheduling Interface' })}
-            />
-
-            <ScreenshotCard
-              src="/brochure/mobile-form.webp"
-              alt="Mobile Booking Form Interface"
-              title={t('screenshots.lineIntegration.title')}
-              description={t('screenshots.lineIntegration.description')}
-              delay={0.3}
-              onClick={() => setModalImage({ src: '/brochure/mobile-form.png', alt: 'Mobile Booking Form Interface' })}
             />
 
             <ScreenshotCard
