@@ -10,6 +10,9 @@ import { getSubscriptionConfig } from '@/lib/subscriptionConfig';
 // Metadata is now defined in the layout for better SEO and to ensure
 // it appears in the initial HTML (not streamed)
 
+// Force dynamic rendering since we fetch pricing from Redis
+export const dynamic = 'force-dynamic';
+
 export default async function Home({ params }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'brochureV2' });

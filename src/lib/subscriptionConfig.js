@@ -8,11 +8,11 @@ import stripe from './stripe';
 import redis from './redis';
 
 const PRICE_CACHE_KEY = 'stripe:price:config';
-const CACHE_TTL = 60 * 60; // 1 hour
+const CACHE_TTL = 60 * 60 * 24; // 24 hours
 
 /**
  * Get subscription configuration from Stripe API
- * Cached in Redis for performance (1 hour TTL)
+ * Cached in Redis for performance (24 hour TTL)
  * @returns {Promise<Object>} Subscription config
  */
 export async function getSubscriptionConfig() {
