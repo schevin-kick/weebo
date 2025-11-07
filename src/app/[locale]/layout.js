@@ -20,20 +20,74 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#1a1a1a' },
+  ],
 };
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'metadata.default' });
+  const t = await getTranslations({ locale, namespace: 'brochureV2' });
 
-  const localeNames = {
-    'en': 'English',
-    'zh-tw': '繁體中文',
-  };
+  // Dynamic base URL for metadata
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://weebo-ten.vercel.app');
 
   return {
-    title: t('title'),
-    description: t('description'),
+    metadataBase: new URL(baseUrl),
+    title: {
+      default: t('metadata.title'),
+      template: `%s | Weebo`,
+    },
+    description: t('metadata.description'),
+    keywords: t('metadata.keywords'),
+    robots: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-video-preview': -1,
+        'max-snippet': -1,
+      },
+    },
+    other: {
+      'geo.region': t('metadata.geoRegion'),
+      'geo.placename': t('metadata.geoPlacename'),
+      'geo.position': '25.0330;121.5654',
+    },
+    openGraph: {
+      title: t('metadata.ogTitle'),
+      description: t('metadata.ogDescription'),
+      type: 'website',
+      url: `${baseUrl}/${locale}`,
+      locale: locale === 'zh-tw' ? 'zh_TW' : 'en_US',
+      siteName: 'Weebo',
+      images: [
+        {
+          url: `${baseUrl}/brochure/og-image.png`,
+          width: 1200,
+          height: 630,
+          alt: t('metadata.ogImageAlt'),
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: t('metadata.twitterSite'),
+      creator: t('metadata.twitterCreator'),
+      title: t('metadata.twitterTitle'),
+      description: t('metadata.twitterDescription'),
+      images: {
+        url: `${baseUrl}/brochure/og-image.png`,
+        alt: t('metadata.ogImageAlt'),
+      },
+    },
     icons: {
       icon: [
         { url: '/favicon.ico', sizes: 'any' },
@@ -43,10 +97,22 @@ export async function generateMetadata({ params }) {
       apple: '/apple-touch-icon.png',
     },
     alternates: {
+      canonical: `/${locale}`,
       languages: {
         'en': '/en',
-        'zh-TW': '/zh-tw',
+        'zh-tw': '/zh-tw',
       },
+    },
+    applicationName: 'Weebo',
+    appleWebApp: {
+      capable: true,
+      title: 'Weebo',
+      statusBarStyle: 'default',
+    },
+    formatDetection: {
+      telephone: false,
+      email: false,
+      address: false,
     },
   };
 }

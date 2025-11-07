@@ -133,12 +133,13 @@ const nextConfig = {
     ];
   },
 
+  // Output file tracing for Prisma binaries
+  outputFileTracingIncludes: {
+    '/**/*': ['./node_modules/.prisma/client/**/*', './node_modules/@prisma/client/**/*'],
+  },
+
   // Experimental features
   experimental: {
-    // Ensure Prisma binaries are included in all serverless functions (API routes and pages)
-    outputFileTracingIncludes: {
-      '/**/*': ['./node_modules/.prisma/client/**/*', './node_modules/@prisma/client/**/*'],
-    },
     // Body size limits for security
     serverActions: {
       bodySizeLimit: '2mb',
