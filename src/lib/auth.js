@@ -12,7 +12,7 @@ const SESSION_SECRET = new TextEncoder().encode(
  * @returns {string} Base URL with protocol
  */
 export function getBaseUrl() {
-  return process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  return process.env.NEXTAUTH_URL || 'https://www.weebo.io';
 }
 
 /**

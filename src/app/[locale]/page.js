@@ -22,7 +22,7 @@ export default async function Home({ params }) {
 
   // Dynamic base URL that works in all environments
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://weebo-ten.vercel.app');
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://www.weebo.io');
 
   const structuredData = {
     '@context': 'https://schema.org',
