@@ -10,6 +10,15 @@ import BrochureWrapper from '@/components/home/BrochureWrapper';
 import AuthenticatedRedirect from '@/components/home/AuthenticatedRedirect';
 import { getTranslations } from 'next-intl/server';
 
+export async function generateViewport() {
+  return {
+    themeColor: [
+      { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+      { media: '(prefers-color-scheme: dark)', color: '#1a1a1a' },
+    ],
+  };
+}
+
 export async function generateMetadata({ params }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'brochureV2' });
@@ -94,10 +103,6 @@ export async function generateMetadata({ params }) {
       email: false,
       address: false,
     },
-    themeColor: [
-      { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-      { media: '(prefers-color-scheme: dark)', color: '#1a1a1a' },
-    ],
   };
 }
 

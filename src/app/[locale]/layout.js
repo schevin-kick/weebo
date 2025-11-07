@@ -16,6 +16,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export async function generateMetadata({ params }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'metadata.default' });
@@ -28,11 +34,6 @@ export async function generateMetadata({ params }) {
   return {
     title: t('title'),
     description: t('description'),
-    viewport: {
-      width: 'device-width',
-      initialScale: 1,
-      maximumScale: 5,
-    },
     icons: {
       icon: [
         { url: '/favicon.ico', sizes: 'any' },
