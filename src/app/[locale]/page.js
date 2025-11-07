@@ -28,6 +28,7 @@ export async function generateMetadata({ params }) {
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://weebo-ten.vercel.app');
 
   return {
+    metadataBase: new URL(baseUrl),
     title: t('metadata.title'),
     description: t('metadata.description'),
     keywords: t('metadata.keywords'),

@@ -4,6 +4,10 @@
  */
 
 export const metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://weebo-ten.vercel.app')
+  ),
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
