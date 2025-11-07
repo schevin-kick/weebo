@@ -151,38 +151,6 @@
         "description": "Reduce no-shows with automated LINE reminders sent at the perfect time."
       }
     },
-    "featureShowcase": {
-      "title": "Powerful Features for Modern Businesses",
-      "subtitle": "Everything you need to manage bookings through LINE",
-      "feature1": {
-        "title": "Seamless LINE Integration",
-        "description": "Book directly through LINE - your customers' favorite messaging app with 95M+ users across Asia. Connect instantly with customers in Taiwan, Japan, and Thailand."
-      },
-      "feature2": {
-        "title": "QR Code Booking",
-        "description": "Contactless booking via QR codes - perfect for salons, spas, cafes, and clinics. Print on business cards, posters, or display on screens for instant customer access."
-      },
-      "feature3": {
-        "title": "Visual Smart Calendar",
-        "description": "Intuitive scheduling with drag-and-drop functionality, color-coded appointments, and automatic conflict detection. Manage multiple staff calendars from one beautiful interface."
-      },
-      "feature4": {
-        "title": "Real-time Analytics Dashboard",
-        "description": "Track bookings, revenue, and customer behavior with beautiful dashboards. Make data-driven decisions with insights into peak hours, popular services, and customer patterns."
-      },
-      "feature5": {
-        "title": "Automated LINE Reminders",
-        "description": "Reduce no-shows by 40% with automated LINE reminders sent at the perfect time. Customizable message templates with multilingual support for Asian markets."
-      },
-      "feature6": {
-        "title": "Custom Booking Forms",
-        "description": "Build beautiful booking forms with drag-and-drop builder - collect exactly what you need from customers. Add custom fields, pricing options, and service variants."
-      },
-      "feature7": {
-        "title": "Multi-Staff Management",
-        "description": "Manage multiple staff schedules, services, and availability from one centralized dashboard. Assign specific services, set individual working hours, and track performance."
-      }
-    },
     "analyticsPreview": {
       "title": "Powerful Analytics",
       "description": "Make data-driven decisions with real-time insights into your business performance.",
@@ -223,32 +191,32 @@
       "title": "Powerful Features in Action",
       "subtitle": "See how Weebo's advanced features help you run your business better",
       "feature1": {
-        "title": "Mobile-First Design",
-        "description": "Beautiful, responsive booking forms that work flawlessly on all devices. Your customers can book appointments from anywhere, on any device."
+        "title": "Comprehensive Analytics Dashboard",
+        "description": "Get complete visibility into your business performance with real-time analytics. Track bookings, revenue trends, staff productivity, and customer insights through beautiful, actionable dashboards that help you make data-driven decisions."
       },
       "feature2": {
-        "title": "Customizable Forms",
-        "description": "Create the perfect booking experience with our drag-and-drop form builder. Collect exactly the information you need from your customers."
+        "title": "Intuitive Appointment Management",
+        "description": "View and manage all your appointments in one streamlined interface. Quickly navigate your schedule, update booking details, and handle customer requests with an appointment management system designed for efficiency."
       },
       "feature3": {
-        "title": "Real-time Analytics",
-        "description": "Track your business performance with detailed analytics and insights. Make data-driven decisions to grow your business."
+        "title": "Daily Overview at a Glance",
+        "description": "Start each day with a clear picture of what's ahead. Your dashboard instantly shows today's agenda, upcoming appointments, key metrics, and performance indicators—everything you need to stay on top of your business."
       },
       "feature4": {
-        "title": "Multi-language Support",
-        "description": "Serve customers in their preferred language. Weebo supports multiple languages including English, Traditional Chinese, and more."
+        "title": "Advanced Appointment Controls",
+        "description": "Take full control of your scheduling with a rich, intuitive interface. Easily create, modify, and reschedule appointments with drag-and-drop functionality, visual time slots, and instant conflict detection."
       },
       "feature5": {
-        "title": "Seamless LINE Integration",
-        "description": "Connect with your customers on LINE with automatic booking confirmations, reminders, and notifications sent directly to their LINE app."
+        "title": "Seamless LINE Bot Integration",
+        "description": "Connect with customers on their preferred platform. Use your own LINE bot or leverage the Weebo bot to automate appointment confirmations, send reminders, and facilitate instant communication with your customers."
       },
       "feature6": {
-        "title": "QR Code Management",
-        "description": "Generate beautiful, branded QR codes for easy booking. Share them anywhere - on social media, print materials, or your website."
+        "title": "Flexible Custom Form Builder",
+        "description": "Create perfectly tailored booking experiences with our drag-and-drop form builder. Add custom fields, conditional logic, pricing options, and service variants to collect exactly the information you need from customers."
       },
       "feature7": {
-        "title": "Smart Scheduling",
-        "description": "Intelligent calendar with conflict detection, drag-and-drop rescheduling, and color-coded appointments for easy management."
+        "title": "Beautiful Customer Booking Experience",
+        "description": "Delight your customers with a modern, mobile-friendly booking interface. Your custom forms provide a seamless experience where customers can easily view services, select time slots, and complete appointments in just a few taps."
       }
     },
     "screenshots": {
@@ -269,6 +237,26 @@
       "formBuilder": {
         "title": "Custom Form Builder",
         "description": "Drag-and-drop form builder to create the perfect booking experience for your customers."
+      }
+    },
+    "pricing": {
+      "title": "Simple, Transparent Pricing",
+      "subtitle": "One plan with everything you need to grow your business",
+      "planName": "Weebo",
+      "perMonth": "/ month",
+      "trialBadge": "{days}-Day Free Trial",
+      "startTrial": "Start Free Trial",
+      "noCreditCard": "No credit card required",
+      "featuresTitle": "Everything included:",
+      "features": {
+        "unlimitedBookings": "Unlimited bookings",
+        "lineIntegration": "Full LINE integration",
+        "customForms": "Custom booking forms",
+        "staffManagement": "Staff management",
+        "analytics": "Real-time analytics & insights",
+        "qrCodes": "QR code generation",
+        "autoReminders": "Automated reminders",
+        "support": "Cancel anytime"
       }
     },
     "finalCta": {

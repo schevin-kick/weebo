@@ -11,7 +11,7 @@ import AuthenticatedRedirect from '@/components/home/AuthenticatedRedirect';
 import { getTranslations } from 'next-intl/server';
 
 export async function generateMetadata({ params }) {
-  const { locale } = params;
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'brochureV2' });
 
   // Dynamic base URL for metadata

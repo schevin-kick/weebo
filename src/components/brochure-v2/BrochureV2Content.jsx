@@ -530,6 +530,136 @@ export default function BrochureV2Content() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section className="relative py-32 px-4" id="pricing">
+        <div className="max-w-4xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-6xl font-black mb-6">
+              <span className="bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                {t('pricing.title')}
+              </span>
+            </h2>
+            <p className="text-xl text-gray-700 font-medium">
+              {t('pricing.subtitle')}
+            </p>
+          </motion.div>
+
+          {/* Pricing Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <InteractiveCard hoverScale={1.03} tiltIntensity={5}>
+              <div className="glass rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-pink-200 soft-glow relative overflow-hidden">
+                {/* Background Gradient Orbs */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-gradient-to-br from-orange-200 to-pink-200 rounded-full blur-3xl opacity-20" />
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl opacity-20" />
+
+                <div className="relative z-10">
+                  {/* Trial Badge */}
+                  {config?.trialDays && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ type: "spring", delay: 0.3 }}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full text-white font-bold text-sm mb-6 shadow-lg"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      {t('pricing.trialBadge', { days: config.trialDays })}
+                    </motion.div>
+                  )}
+
+                  {/* Plan Name & Price */}
+                  <div className="mb-8">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                      {t('pricing.planName')}
+                    </h3>
+                    <div className="flex items-baseline gap-2">
+                      {config ? (
+                        <>
+                          <span className="text-5xl md:text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+                            {config.priceAmount}
+                          </span>
+                          <span className="text-2xl font-bold text-gray-600">
+                            {config.priceCurrency}
+                          </span>
+                          <span className="text-xl text-gray-500">
+                            {t('pricing.perMonth')}
+                          </span>
+                        </>
+                      ) : (
+                        <div className="h-16 w-48 bg-gray-200 rounded-lg animate-pulse" />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Features List */}
+                  <div className="mb-8">
+                    <h4 className="text-lg font-bold text-gray-800 mb-4">
+                      {t('pricing.featuresTitle')}
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {[
+                        'unlimitedBookings',
+                        'lineIntegration',
+                        'customForms',
+                        'staffManagement',
+                        'analytics',
+                        'qrCodes',
+                        'autoReminders',
+                        'support'
+                      ].map((feature, index) => (
+                        <motion.div
+                          key={feature}
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.4 + index * 0.05 }}
+                          className="flex items-start gap-3"
+                        >
+                          <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-700 font-medium">
+                            {t(`pricing.features.${feature}`)}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CTA Button */}
+                  <motion.a
+                    href="/api/auth/login"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="block w-full px-8 py-5 bg-gradient-to-r from-orange-400 to-pink-400 rounded-2xl text-white font-bold text-lg shadow-2xl hover:shadow-xl soft-glow transition-all text-center group"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      {t('pricing.startTrial')}
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </motion.a>
+
+                  {/* Fine Print */}
+                  <p className="text-center text-gray-500 text-sm mt-4">
+                    {t('pricing.noCreditCard')}
+                  </p>
+                </div>
+              </div>
+            </InteractiveCard>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Feature Showcase with Images */}
       <section className="relative py-32 px-4" id="feature-showcase">
         <div className="max-w-6xl mx-auto">
@@ -552,59 +682,11 @@ export default function BrochureV2Content() {
 
           <div className="space-y-32">
             <ScreenshotCard
-              src="/brochure/features/feature1.png"
-              alt={t('featureShowcase.feature1.title')}
-              title={t('featureShowcase.feature1.title')}
-              description={t('featureShowcase.feature1.description')}
-              delay={0.1}
-              onClick={() => setModalImage({ src: '/brochure/features/feature1.png', alt: t('featureShowcase.feature1.title') })}
-            />
-
-            <ScreenshotCard
-              src="/brochure/features/feature2.png"
-              alt={t('featureShowcase.feature2.title')}
-              title={t('featureShowcase.feature2.title')}
-              description={t('featureShowcase.feature2.description')}
-              delay={0.2}
-              reverse
-              onClick={() => setModalImage({ src: '/brochure/features/feature2.png', alt: t('featureShowcase.feature2.title') })}
-            />
-
-            <ScreenshotCard
-              src="/brochure/features/feature3.png"
-              alt={t('featureShowcase.feature3.title')}
-              title={t('featureShowcase.feature3.title')}
-              description={t('featureShowcase.feature3.description')}
-              delay={0.3}
-              onClick={() => setModalImage({ src: '/brochure/features/feature3.png', alt: t('featureShowcase.feature3.title') })}
-            />
-
-            <ScreenshotCard
-              src="/brochure/features/feature4.png"
-              alt={t('featureShowcase.feature4.title')}
-              title={t('featureShowcase.feature4.title')}
-              description={t('featureShowcase.feature4.description')}
-              delay={0.4}
-              reverse
-              onClick={() => setModalImage({ src: '/brochure/features/feature4.png', alt: t('featureShowcase.feature4.title') })}
-            />
-
-            <ScreenshotCard
-              src="/brochure/features/feature5.png"
-              alt={t('featureShowcase.feature5.title')}
-              title={t('featureShowcase.feature5.title')}
-              description={t('featureShowcase.feature5.description')}
-              delay={0.5}
-              onClick={() => setModalImage({ src: '/brochure/features/feature5.png', alt: t('featureShowcase.feature5.title') })}
-            />
-
-            <ScreenshotCard
               src="/brochure/features/feature6.png"
               alt={t('featureShowcase.feature6.title')}
               title={t('featureShowcase.feature6.title')}
               description={t('featureShowcase.feature6.description')}
-              delay={0.6}
-              reverse
+              delay={0.1}
               onClick={() => setModalImage({ src: '/brochure/features/feature6.png', alt: t('featureShowcase.feature6.title') })}
             />
 
@@ -613,8 +695,56 @@ export default function BrochureV2Content() {
               alt={t('featureShowcase.feature7.title')}
               title={t('featureShowcase.feature7.title')}
               description={t('featureShowcase.feature7.description')}
-              delay={0.7}
+              delay={0.2}
+              reverse
               onClick={() => setModalImage({ src: '/brochure/features/feature7.png', alt: t('featureShowcase.feature7.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature5.png"
+              alt={t('featureShowcase.feature5.title')}
+              title={t('featureShowcase.feature5.title')}
+              description={t('featureShowcase.feature5.description')}
+              delay={0.3}
+              onClick={() => setModalImage({ src: '/brochure/features/feature5.png', alt: t('featureShowcase.feature5.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature1.png"
+              alt={t('featureShowcase.feature1.title')}
+              title={t('featureShowcase.feature1.title')}
+              description={t('featureShowcase.feature1.description')}
+              delay={0.4}
+              reverse
+              onClick={() => setModalImage({ src: '/brochure/features/feature1.png', alt: t('featureShowcase.feature1.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature2.png"
+              alt={t('featureShowcase.feature2.title')}
+              title={t('featureShowcase.feature2.title')}
+              description={t('featureShowcase.feature2.description')}
+              delay={0.5}
+              onClick={() => setModalImage({ src: '/brochure/features/feature2.png', alt: t('featureShowcase.feature2.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature3.png"
+              alt={t('featureShowcase.feature3.title')}
+              title={t('featureShowcase.feature3.title')}
+              description={t('featureShowcase.feature3.description')}
+              delay={0.6}
+              reverse
+              onClick={() => setModalImage({ src: '/brochure/features/feature3.png', alt: t('featureShowcase.feature3.title') })}
+            />
+
+            <ScreenshotCard
+              src="/brochure/features/feature4.png"
+              alt={t('featureShowcase.feature4.title')}
+              title={t('featureShowcase.feature4.title')}
+              description={t('featureShowcase.feature4.description')}
+              delay={0.7}
+              onClick={() => setModalImage({ src: '/brochure/features/feature4.png', alt: t('featureShowcase.feature4.title') })}
             />
           </div>
         </div>
