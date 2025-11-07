@@ -401,6 +401,16 @@ export async function GET(request) {
 
       whereClause.businessId = businessId;
 
+      // Add date range filter
+      const startDate = searchParams.get('startDate');
+      const endDate = searchParams.get('endDate');
+      if (startDate && endDate) {
+        whereClause.dateTime = {
+          gte: new Date(startDate),
+          lte: new Date(endDate),
+        };
+      }
+
       // Add status filter
       if (status && status !== 'all') {
         whereClause.status = status;

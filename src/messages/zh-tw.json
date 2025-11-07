@@ -375,7 +375,7 @@
       "description": "請提供以下詳細資訊",
       "required": "必須",
       "chooseOption": "選擇選項...",
-      "enterPlaceholder": "輸入 { 標籤｝"
+      "enterPlaceholder": "請輸入{label}"
     },
     "review": {
       "title": "檢視您的預訂",
@@ -427,9 +427,9 @@
   },
   "trialBanner": {
     "freeTrial": "免費試用",
-    "daysRemaining": "{數，複數，一個 {# 天} 其他 {# 天}}剩餘的",
-    "trialEndsIn": "審判於",
-    "trialEndsInUrgent": "審判在{數，複數，一個{#天}其他{#天}}結束！",
+    "daysRemaining": "剩餘 {count, plural, one {# 天} other {# 天}}",
+    "trialEndsIn": "試用期結束於",
+    "trialEndsInUrgent": "試用期將在 {count, plural, one {# 天} other {# 天}} 後結束！",
     "subscribePrompt": "立即訂閱，讓您的業務運作更順暢。",
     "subscribeNow": "立即訂閱",
     "viewBilling": "檢視帳單"
@@ -455,7 +455,7 @@
       },
       "trialing": {
         "status": "免費試用有效",
-        "daysRemaining": "您的免費試用期還剩<strong>{ 數，複數，一個 {# 天} 其他 {# 天}}</strong>。",
+        "daysRemaining": "您的免費試用期還剩 <strong>{count, plural, one {# 天} other {# 天}}</strong>。",
         "subscribeNow": "立即訂閱"
       },
       "active": {
@@ -574,11 +574,11 @@
         "totalBookings": "總預訂",
         "completionRate": "{rate}% 完成率",
         "revenue": "營收",
-        "avgRevenue": "平均值: {金額｝",
+        "avgRevenue": "平均值: {amount}",
         "customers": "客戶",
         "uniqueCustomers": "獨特的客戶",
-        "noShows": "未顯示",
-        "noShowRate": "{率}%率"
+        "noShows": "未出現",
+        "noShowRate": "{rate}% 未出現率"
       },
       "bookingTrends": {
         "title": "預訂趨勢",
@@ -749,7 +749,7 @@
         "noBookings": "未找到預訂"
       },
       "pagination": {
-        "page": "{總頁數}的{目前}頁面",
+        "page": "第 {current} 頁，共 {total} 頁",
         "previous": "上一頁",
         "next": "下一頁"
       },
@@ -1423,8 +1423,8 @@
         "moveDown": "下移",
         "deletePage": "刪除頁面",
         "required": "必須",
-        "fields": "{點數、複數、一個 {# 欄位} 其他 {# 欄位}}。",
-        "pagesInFlow": "在您的流程中 {數、複數、一個 {# 頁面} 其他 {# 頁面}}}。",
+        "fields": "{count, plural, one {# 個欄位} other {# 個欄位}}",
+        "pagesInFlow": "流程中有 {count, plural, one {# 個頁面} other {# 個頁面}}",
         "emptyTitle": "尚未有頁面",
         "emptyDescription": "新增自訂頁面或預設頁面即可開始使用",
         "deleteDialog": {
@@ -1581,10 +1581,10 @@
           }
         },
         "presetField": {
-          "title": "字段",
+          "title": "{field} 欄位",
           "description": "這是內建格式和行為的預設欄位。",
           "labelLabel": "欄位標籤",
-          "labelPlaceholder": "例如，「您的 {字段}」",
+          "labelPlaceholder": "例如：「您的{field}」",
           "labelHelper": "在此欄位上方顯示給客戶的文字",
           "requiredLabel": "必填欄位",
           "requiredHelper": "客戶必須填寫此欄",

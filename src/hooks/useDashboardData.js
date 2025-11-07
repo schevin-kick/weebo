@@ -164,8 +164,10 @@ export function useCalendarBookings(businessId, startDate, endDate, filters = {}
   if (filters.serviceId && filters.serviceId !== 'all') params.append('serviceId', filters.serviceId);
   if (filters.status && filters.status !== 'all') params.append('status', filters.status);
 
+  // Use a reasonable limit for calendar bookings (date range filtering handles the rest)
+  params.append('limit', '500');
+
   const queryString = params.toString();
-  // Allow fetching without date range (will fetch all bookings for the business)
   const url = businessId ? `/api/bookings?${queryString}` : null;
 
   const { data, error, mutate, isLoading } = useSWR(url, fetcher);

@@ -8,18 +8,19 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Save, CheckCircle, AlertCircle, Info, Eye, EyeOff, Key } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useBusiness } from '@/hooks/useDashboardData';
 import { useToast } from '@/contexts/ToastContext';
 import { useNotificationBadge } from '@/hooks/useNotificationBadge';
 import Skeleton from '@/components/loading/Skeleton';
 import LINEMessagePreview from '@/components/dashboard/LINEMessagePreview';
-import { DEFAULT_TEMPLATES } from '@/lib/messageTemplates';
+import { getLocalizedTemplates } from '@/lib/messageTemplates';
 import LineBotIdHelpModal from '@/components/modals/LineBotIdHelpModal';
 import LineTokenHelpModal from '@/components/modals/LineTokenHelpModal';
 
 export default function MessagingView({ businessId }) {
   const t = useTranslations('dashboard.messaging');
+  const locale = useLocale();
   const toast = useToast();
   const searchParams = useSearchParams();
   const { business, isLoading, mutate } = useBusiness(businessId);
@@ -30,11 +31,12 @@ export default function MessagingView({ businessId }) {
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showTokenHelpModal, setShowTokenHelpModal] = useState(false);
 
-  // Form state
+  // Form state - use localized templates based on user's locale
+  const localizedTemplates = getLocalizedTemplates(locale);
   const [templates, setTemplates] = useState({
-    confirmation: { ...DEFAULT_TEMPLATES.confirmation },
-    cancellation: { ...DEFAULT_TEMPLATES.cancellation },
-    reminder: { ...DEFAULT_TEMPLATES.reminder },
+    confirmation: { ...localizedTemplates.confirmation },
+    cancellation: { ...localizedTemplates.cancellation },
+    reminder: { ...localizedTemplates.reminder },
   });
 
   const [enableReminders, setEnableReminders] = useState(true);
@@ -78,13 +80,36 @@ export default function MessagingView({ businessId }) {
   // Load business data
   useEffect(() => {
     if (business) {
-      // Parse message templates
+      // Parse message templates - use localized defaults for English default values
       if (business.messageTemplates) {
         try {
           const parsedTemplates = typeof business.messageTemplates === 'string'
             ? JSON.parse(business.messageTemplates)
             : business.messageTemplates;
-          setTemplates(parsedTemplates);
+
+          // Default English templates (what we want to replace)
+          const englishDefaults = {
+            confirmation: { header: 'Your booking is confirmed!', body: 'We look forward to seeing you!' },
+            cancellation: { header: 'Booking Cancelled', body: 'Your booking has been cancelled. We hope to see you again soon!' },
+            reminder: { header: 'Reminder: Upcoming Appointment', body: "Don't forget your appointment tomorrow!" },
+          };
+
+          // Replace English defaults with localized versions
+          const localizedTemplates = getLocalizedTemplates(locale);
+          const mergedTemplates = {};
+
+          ['confirmation', 'cancellation', 'reminder'].forEach(type => {
+            mergedTemplates[type] = {
+              header: parsedTemplates[type]?.header === englishDefaults[type]?.header
+                ? localizedTemplates[type].header
+                : (parsedTemplates[type]?.header || localizedTemplates[type].header),
+              body: parsedTemplates[type]?.body === englishDefaults[type]?.body
+                ? localizedTemplates[type].body
+                : (parsedTemplates[type]?.body || localizedTemplates[type].body),
+            };
+          });
+
+          setTemplates(mergedTemplates);
         } catch (error) {
           console.error('Failed to parse message templates:', error);
         }

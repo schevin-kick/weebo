@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Calendar as BigCalendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import enUS from 'date-fns/locale/en-US';
@@ -68,12 +68,55 @@ export default function CalendarView({ businessId }) {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Fetch data using SWR
-  // For simplicity, load all bookings (you can optimize with date range later)
+  // Date range state for calendar view
+  const [dateRange, setDateRange] = useState(null);
+
+  // Initialize date range on mount (default to current month)
+  useEffect(() => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    setDateRange({
+      start: start.toISOString(),
+      end: end.toISOString(),
+    });
+  }, []);
+
+  // Handle calendar range change (when user navigates months/weeks/days)
+  const handleRangeChange = (range) => {
+    let start, end;
+
+    if (Array.isArray(range)) {
+      // Week/Day view returns array of dates
+      start = range[0];
+      end = range[range.length - 1];
+    } else if (range.start && range.end) {
+      // Month view returns { start, end }
+      start = range.start;
+      end = range.end;
+    } else {
+      return; // Unsupported view (e.g., agenda)
+    }
+
+    // Extend the range slightly to ensure we get all bookings
+    // that might span across the visible boundaries
+    const startDate = new Date(start);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(end);
+    endDate.setHours(23, 59, 59, 999);
+
+    setDateRange({
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
+    });
+  };
+
+  // Fetch data using SWR with date range filtering
   const { bookings, isLoading: bookingsLoading, mutate: mutateBookings } = useCalendarBookings(
     businessId,
-    null, // startDate - could calculate based on calendar view
-    null, // endDate
+    dateRange?.start,
+    dateRange?.end,
     {
       staffId: filterByStaff,
       serviceId: filterByService,
@@ -352,6 +395,7 @@ export default function CalendarView({ businessId }) {
           views={['month', 'week', 'day', 'agenda']}
           eventPropGetter={eventStyleGetter}
           onSelectEvent={handleSelectEvent}
+          onRangeChange={handleRangeChange}
           step={30}
           timeslots={2}
           scrollToTime={new Date()}
