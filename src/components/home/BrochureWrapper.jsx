@@ -24,6 +24,6 @@ const BrochureV2Content = dynamic(
   }
 );
 
-export default function BrochureWrapper() {
-  return <BrochureV2Content />;
+export default function BrochureWrapper({ pricingConfig }) {
+  return <BrochureV2Content pricingConfig={pricingConfig} />;
 }

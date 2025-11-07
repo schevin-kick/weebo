@@ -19,7 +19,7 @@ export async function getSubscriptionConfig() {
   if (!stripe) {
     console.warn('[SubscriptionConfig] Stripe not configured, using defaults');
     return {
-      priceAmount: 200,
+      priceAmount: 210,
       priceCurrency: 'TWD',
       trialDays: 14,
       interval: 'month',
@@ -30,7 +30,7 @@ export async function getSubscriptionConfig() {
   if (!process.env.STRIPE_PRICE_ID) {
     console.warn('[SubscriptionConfig] STRIPE_PRICE_ID not set, using defaults');
     return {
-      priceAmount: 200,
+      priceAmount: 210,
       priceCurrency: 'TWD',
       trialDays: 14,
       interval: 'month',
@@ -70,7 +70,7 @@ export async function getSubscriptionConfig() {
     console.error('[SubscriptionConfig] Error fetching from Stripe:', error);
     // Fallback to defaults if Stripe fetch fails
     return {
-      priceAmount: 200,
+      priceAmount: 210,
       priceCurrency: 'TWD',
       trialDays: 14,
       interval: 'month',

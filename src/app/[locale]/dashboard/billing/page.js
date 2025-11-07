@@ -328,54 +328,54 @@ export default function BillingPage() {
         {/* Plan Details */}
         <div className="bg-white rounded-lg border border-slate-200 p-6">
           <h2 className="text-xl font-bold text-slate-900 mb-4">
-            Weebo Plan
+            {t('plan.title')}
           </h2>
 
           <div className="mb-4">
             <div className="text-3xl font-bold text-orange-600 mb-1">
               {config
                 ? `${config.priceAmount} ${config.priceCurrency}`
-                : 'Loading...'}
-              <span className="text-lg text-slate-600 font-normal"> / month</span>
+                : t('plan.loading')}
+              <span className="text-lg text-slate-600 font-normal">{t('plan.pricePerMonth')}</span>
             </div>
             <p className="text-sm text-slate-600">
               {config
-                ? `${config.trialDays}-day free trial included`
-                : 'Loading...'}
+                ? t('plan.trialIncluded', { days: config.trialDays })
+                : t('plan.loading')}
             </p>
           </div>
 
           <div className="space-y-2">
             <h3 className="font-semibold text-slate-900 mb-3">
-              Everything you need:
+              {t('plan.everythingYouNeed')}
             </h3>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <span className="text-slate-700">Unlimited bookings</span>
+              <span className="text-slate-700">{t('plan.features.unlimitedBookings')}</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <span className="text-slate-700">Custom services & pricing</span>
+              <span className="text-slate-700">{t('plan.features.customServicesPricing')}</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <span className="text-slate-700">Staff management</span>
+              <span className="text-slate-700">{t('plan.features.staffManagement')}</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <span className="text-slate-700">Availability management</span>
+              <span className="text-slate-700">{t('plan.features.availabilityManagement')}</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <span className="text-slate-700">Customer management</span>
+              <span className="text-slate-700">{t('plan.features.customerManagement')}</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <span className="text-slate-700">LINE messaging integration</span>
+              <span className="text-slate-700">{t('plan.features.lineMessaging')}</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <span className="text-slate-700">Analytics dashboard</span>
+              <span className="text-slate-700">{t('plan.features.analyticsDashboard')}</span>
             </div>
           </div>
         </div>

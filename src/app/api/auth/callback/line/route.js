@@ -15,11 +15,11 @@ export async function GET(request) {
   // Handle OAuth errors
   if (error) {
     console.error('LINE OAuth error:', error);
-    return redirect('/setup?error=auth_failed');
+    return redirect('/dashboard?error=auth_failed');
   }
 
   if (!code) {
-    return redirect('/setup?error=missing_code');
+    return redirect('/dashboard?error=missing_code');
   }
 
   try {
@@ -75,8 +75,8 @@ export async function GET(request) {
     console.log(`[Auth] Session cookie set for user ${owner.id}, CSRF token: ${csrfToken ? 'generated' : 'failed'}`);
     console.log(`[Auth] Cookie config: secure=true, sameSite=none, httpOnly=true`);
 
-    // Redirect to setup (outside try/catch to avoid catching NEXT_REDIRECT)
-    redirect('/setup');
+    // Redirect to dashboard (will auto-route to setup if no businesses)
+    redirect('/dashboard');
   } catch (error) {
     // Don't catch NEXT_REDIRECT errors - let them propagate
     if (error.message === 'NEXT_REDIRECT') {
@@ -84,6 +84,6 @@ export async function GET(request) {
     }
 
     console.error('LINE authentication error:', error);
-    return redirect('/setup?error=auth_failed');
+    return redirect('/dashboard?error=auth_failed');
   }
 }

@@ -37,7 +37,7 @@ import LanguageSelector from '@/components/shared/LanguageSelector';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import '@/styles/brochure-v2.css';
 
-export default function BrochureV2Content() {
+export default function BrochureV2Content({ pricingConfig }) {
   const t = useTranslations('brochureV2');
   const isMobile = useIsMobile();
   const [showSubheading, setShowSubheading] = useState(false);
@@ -45,9 +45,15 @@ export default function BrochureV2Content() {
   const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.1 });
   const [activeNotification, setActiveNotification] = useState(0);
   const [modalImage, setModalImage] = useState(null);
-  const [config, setConfig] = useState(null);
   const qrSectionRef = useRef(null);
   const phoneRef = useRef(null);
+
+  // Use pricing config passed from server
+  const config = pricingConfig || {
+    priceAmount: 210,
+    priceCurrency: 'TWD',
+    trialDays: 14,
+  };
 
   // Global page scroll for background sphere
   const { scrollYProgress: globalScrollProgress } = useScroll();
@@ -92,28 +98,6 @@ export default function BrochureV2Content() {
       gradient: 'from-purple-500 to-violet-500'
     }
   ];
-
-
-  // Load pricing config
-  useEffect(() => {
-    async function loadConfig() {
-      try {
-        const res = await fetch('/api/subscription/config');
-        if (res.ok) {
-          const data = await res.json();
-          setConfig(data);
-        }
-      } catch (err) {
-        console.error('Failed to load config:', err);
-        setConfig({
-          priceAmount: 200,
-          priceCurrency: 'TWD',
-          trialDays: 14,
-        });
-      }
-    }
-    loadConfig();
-  }, []);
 
   // Cycle through notifications
   useEffect(() => {
