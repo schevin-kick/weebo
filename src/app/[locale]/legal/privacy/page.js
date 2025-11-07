@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Shield, ArrowUp } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LegalNav from '@/components/legal/LegalNav';
 import LanguageSelector from '@/components/shared/LanguageSelector';
 
@@ -17,11 +17,14 @@ export default function PrivacyPolicyPage() {
   };
 
   // Show/hide scroll to top button
-  if (typeof window !== 'undefined') {
-    window.addEventListener('scroll', () => {
+  useEffect(() => {
+    const handleScroll = () => {
       setShowScrollTop(window.scrollY > 300);
-    });
-  }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen px-4 py-12">
