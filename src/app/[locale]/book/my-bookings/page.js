@@ -8,6 +8,9 @@ export default function MyBookingsPage() {
   const [bookings, setBookings] = useState([]);
   const [liffProfile, setLiffProfile] = useState(null);
   const [error, setError] = useState(null);
+  const [isStandaloneMode, setIsStandaloneMode] = useState(false);
+  const [standaloneEmail, setStandaloneEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
 
   useEffect(() => {
     initializeLIFF();
@@ -19,35 +22,62 @@ export default function MyBookingsPage() {
     }
   }, [liffProfile]);
 
+  // Helper function to check if user is in LINE app
+  function isLineApp() {
+    if (typeof window === 'undefined') return false;
+    return /line\//i.test(window.navigator.userAgent);
+  }
+
   async function initializeLIFF() {
     try {
-      if (typeof window !== 'undefined' && window.liff) {
-        const liff = window.liff;
+      // 1. Check if this is the LINE app
+      const inLineApp = isLineApp();
 
-        await liff.init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID || '' });
-
-        if (!liff.isLoggedIn()) {
-          liff.login();
-          return;
-        }
-
-        const profile = await liff.getProfile();
-        setLiffProfile({
-          userId: profile.userId,
-          displayName: profile.displayName,
-          pictureUrl: profile.pictureUrl,
-        });
-      } else {
-        // Test mode
-        setLiffProfile({
-          userId: 'test_user_123',
-          displayName: 'Test User',
-          pictureUrl: null,
-        });
+      if (!inLineApp) {
+        // Not in LINE - use standalone mode
+        console.log('Not in LINE app - showing email lookup form');
+        setIsStandaloneMode(true);
+        setLoading(false);
+        return;
       }
+
+      // 2. In LINE app - check if LIFF SDK loaded
+      if (!window.liff) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      if (!window.liff || !process.env.NEXT_PUBLIC_LIFF_ID) {
+        console.warn('LIFF SDK not available - using standalone mode');
+        setIsStandaloneMode(true);
+        setLoading(false);
+        return;
+      }
+
+      // 3. LIFF SDK exists - initialize
+      const liff = window.liff;
+      await liff.init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID });
+
+      if (!liff.isLoggedIn()) {
+        // User not logged in - use standalone mode
+        console.log('LIFF not logged in - showing email lookup form');
+        setIsStandaloneMode(true);
+        setLoading(false);
+        return;
+      }
+
+      // Get user profile
+      const profile = await liff.getProfile();
+      setLiffProfile({
+        userId: profile.userId,
+        displayName: profile.displayName,
+        pictureUrl: profile.pictureUrl,
+      });
+      setIsStandaloneMode(false);
     } catch (err) {
       console.error('LIFF error:', err);
-      setError('Failed to initialize LINE app');
+      // Fallback to standalone mode
+      setIsStandaloneMode(true);
+      setLoading(false);
     }
   }
 
@@ -71,6 +101,45 @@ export default function MyBookingsPage() {
     } catch (err) {
       console.error('Load bookings error:', err);
       setError('Failed to load your bookings');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleEmailLookup(e) {
+    e.preventDefault();
+    setEmailError('');
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!standaloneEmail || !emailRegex.test(standaloneEmail)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(`/api/bookings?customerEmail=${encodeURIComponent(standaloneEmail)}`);
+      if (!response.ok) throw new Error('Failed to load bookings');
+
+      const data = await response.json();
+
+      // Only show future bookings that are not cancelled
+      const now = new Date();
+      const upcoming = data.bookings.filter(b =>
+        new Date(b.dateTime) >= now &&
+        b.status !== 'cancelled'
+      );
+
+      setBookings({ upcoming });
+
+      if (upcoming.length === 0) {
+        setEmailError('No bookings found for this email address');
+      }
+    } catch (err) {
+      console.error('Load bookings error:', err);
+      setEmailError('Failed to load bookings. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -103,6 +172,55 @@ export default function MyBookingsPage() {
       console.error('Cancel error:', err);
       alert(`Failed to cancel booking: ${err.message}`);
     }
+  }
+
+  // Show email lookup form for standalone mode
+  if (isStandaloneMode && !bookings.upcoming) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50/50 to-orange-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 max-w-md w-full">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Calendar className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Find My Bookings</h1>
+            <p className="text-slate-600">Enter your email to view your bookings</p>
+          </div>
+
+          <form onSubmit={handleEmailLookup} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={standaloneEmail}
+                onChange={(e) => setStandaloneEmail(e.target.value)}
+                placeholder="your.email@example.com"
+                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                required
+              />
+              {emailError && (
+                <p className="mt-2 text-sm text-red-600">{emailError}</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition-all shadow-lg shadow-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Searching...' : 'Find Bookings'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center text-sm text-slate-500">
+            <p>Only bookings made with this email will be shown</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (loading) {

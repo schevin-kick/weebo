@@ -83,7 +83,7 @@ model Customer {
   id                  String               @id @default(cuid())
   lineUserId          String?              @unique
   displayName         String
-  email               String?
+  email               String?              @unique
   phone               String?
   pictureUrl          String?
   language            String?

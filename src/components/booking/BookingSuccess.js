@@ -11,7 +11,8 @@ export default function BookingSuccess({
   businessPhone,
   businessName,
   businessMessagingMode,
-  bookingId
+  bookingId,
+  liffProfile = null, // null if standalone mode
 }) {
   const t = useTranslations('booking.success');
   const [showConfetti, setShowConfetti] = useState(true);
@@ -30,6 +31,13 @@ export default function BookingSuccess({
 
   async function checkFriendship() {
     try {
+      // Skip friendship check if no LINE profile (standalone mode)
+      if (!liffProfile) {
+        setCheckingFriendship(false);
+        setFriendshipStatus(null);
+        return;
+      }
+
       if (typeof window !== 'undefined' && window.liff) {
         const liff = window.liff;
 
@@ -71,10 +79,17 @@ export default function BookingSuccess({
   }
 
   function handleClose() {
-    if (typeof window !== 'undefined' && window.liff) {
+    if (liffProfile && typeof window !== 'undefined' && window.liff) {
       const liff = window.liff;
       // Close the LIFF window
       liff.closeWindow();
+    } else {
+      // Standalone mode - just close the window/tab or go back
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.close();
+      }
     }
   }
 
@@ -150,6 +165,11 @@ export default function BookingSuccess({
             <p className="text-center text-slate-700 leading-relaxed">
               {t('description')}
             </p>
+            {!liffProfile && (
+              <p className="text-center text-slate-600 text-sm mt-3">
+                {t('standaloneNote', { defaultValue: 'A confirmation has been recorded. Please check back for updates.' })}
+              </p>
+            )}
           </div>
 
           {/* Location Info */}

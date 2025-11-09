@@ -53,6 +53,7 @@ export default function BookingPage() {
   // LIFF user profile
   const [liffProfile, setLiffProfile] = useState(null);
   const [liffReady, setLiffReady] = useState(false);
+  const [isStandaloneMode, setIsStandaloneMode] = useState(false);
 
   // Booking store
   const currentPageIndex = useBookingStore((state) => state.currentPageIndex);
@@ -85,56 +86,82 @@ export default function BookingPage() {
     }
   }, [businessId, liffReady]);
 
+  // Helper function to check if user is in LINE app
+  function isLineApp() {
+    if (typeof window === 'undefined') return false;
+    return /line\//i.test(window.navigator.userAgent);
+  }
+
   async function initializeLIFF() {
     try {
-      // Check if LIFF SDK is available
-      if (typeof window !== 'undefined' && window.liff) {
-        const liff = window.liff;
+      // 1. Quick check: Is this the LINE app?
+      const inLineApp = isLineApp();
 
-        // Initialize LIFF
-        await liff.init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID || '' });
-
-        // Check if user is logged in
-        if (!liff.isLoggedIn()) {
-          liff.login();
-          return;
-        }
-
-        // Get user profile
-        const profile = await liff.getProfile();
-        setLiffProfile({
-          userId: profile.userId,
-          displayName: profile.displayName,
-          pictureUrl: profile.pictureUrl,
-        });
-
-        // Detect language from LINE profile if available
-        // Note: LINE profile may include language in some cases
-        if (profile.language) {
-          console.log('LINE profile language detected:', profile.language);
-          detectAndSetLanguage(profile.language);
-        } else {
-          // Store current locale preference in cookie for future visits
-          storeLanguagePreference();
-        }
-
-        setLiffReady(true);
-      } else {
-        // Development mode without LIFF
-        console.warn('LIFF SDK not available. Using test mode.');
-        setLiffProfile({
-          userId: 'test_user_123',
-          displayName: 'Test User',
-          pictureUrl: null,
-        });
+      if (!inLineApp) {
+        // Not in LINE - go straight to standalone mode
+        console.log('Not in LINE app - using standalone mode');
+        setIsStandaloneMode(true);
+        setLiffProfile(null);
         storeLanguagePreference();
         setLiffReady(true);
+        return;
       }
+
+      // 2. In LINE app - check if LIFF SDK loaded
+      if (!window.liff) {
+        // Wait 1 second for SDK to load
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      if (!window.liff || !process.env.NEXT_PUBLIC_LIFF_ID) {
+        console.warn('LIFF SDK not available - using standalone mode');
+        setIsStandaloneMode(true);
+        setLiffProfile(null);
+        storeLanguagePreference();
+        setLiffReady(true);
+        return;
+      }
+
+      // 3. LIFF SDK exists - initialize
+      const liff = window.liff;
+      await liff.init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID });
+
+      // Check if user is logged in
+      if (!liff.isLoggedIn()) {
+        // User declined permissions or not logged in - use standalone mode
+        console.log('LIFF not logged in - using standalone mode');
+        setIsStandaloneMode(true);
+        setLiffProfile(null);
+        storeLanguagePreference();
+        setLiffReady(true);
+        return;
+      }
+
+      // Get user profile - LIFF mode successful
+      const profile = await liff.getProfile();
+      setLiffProfile({
+        userId: profile.userId,
+        displayName: profile.displayName,
+        pictureUrl: profile.pictureUrl,
+      });
+      setIsStandaloneMode(false);
+
+      // Detect language from LINE profile if available
+      if (profile.language) {
+        console.log('LINE profile language detected:', profile.language);
+        detectAndSetLanguage(profile.language);
+      } else {
+        storeLanguagePreference();
+      }
+
+      setLiffReady(true);
     } catch (err) {
       console.error('LIFF initialization error:', err);
-      setError(t('errors.lineInitFailed'));
+      // Fallback to standalone mode on any error
+      setIsStandaloneMode(true);
+      setLiffProfile(null);
       storeLanguagePreference();
-      setLiffReady(true); // Continue anyway for testing
+      setLiffReady(true);
     }
   }
 
@@ -338,6 +365,7 @@ export default function BookingPage() {
         businessName={businessConfig?.businessName}
         businessMessagingMode={businessConfig?.messagingMode}
         bookingId={createdBooking?.id}
+        liffProfile={liffProfile}
       />
     );
   }

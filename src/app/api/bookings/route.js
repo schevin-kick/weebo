@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 import { sendBookingConfirmation, sendBusinessOwnerNotification } from '@/lib/lineMessaging';
 import { publicRateLimit, authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
 import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
+import { extractContactInfo } from '@/utils/contactExtractor';
 
 /**
  * POST /api/bookings
@@ -185,6 +186,7 @@ export async function POST(request) {
     // Create or update customer
     let customer;
     if (customerLineUserId) {
+      // LINE mode - use LINE user ID for identification
       customer = await prisma.customer.upsert({
         where: { lineUserId: customerLineUserId },
         update: {
@@ -198,18 +200,42 @@ export async function POST(request) {
           displayName: customerDisplayName,
           pictureUrl: customerPictureUrl,
           language: locale, // Store language preference for future cron jobs
+          customerType: 'line',
         },
       });
     } else {
-      // For testing without LIFF, create anonymous customer
-      customer = await prisma.customer.create({
-        data: {
-          lineUserId: `test_${Date.now()}`,
-          displayName: customerDisplayName || 'Anonymous',
-          pictureUrl: customerPictureUrl || null,
-          language: locale,
-        },
-      });
+      // Standalone mode - extract contact info from custom field responses
+      const { email, phone, name } = await extractContactInfo(businessId, responses);
+
+      if (email) {
+        // Found email in custom fields - use it for customer identification
+        customer = await prisma.customer.upsert({
+          where: { email },
+          update: {
+            displayName: name || customerDisplayName || email.split('@')[0],
+            phone: phone || undefined,
+            lastActiveAt: new Date(),
+            language: locale,
+          },
+          create: {
+            email,
+            displayName: name || customerDisplayName || email.split('@')[0],
+            phone: phone || null,
+            language: locale,
+            customerType: 'web',
+          },
+        });
+      } else {
+        // No email found - create anonymous customer (booking still succeeds)
+        customer = await prisma.customer.create({
+          data: {
+            displayName: name || customerDisplayName || 'Guest',
+            phone: phone || null,
+            language: locale,
+            customerType: 'anonymous',
+          },
+        });
+      }
     }
 
     // Validate and sanitize serviceId if provided (gracefully handle deleted/invalid services)
@@ -363,6 +389,7 @@ export async function GET(request) {
     const businessId = searchParams.get('businessId');
     const customerId = searchParams.get('customerId');
     const customerLineUserId = searchParams.get('customerLineUserId');
+    const customerEmail = searchParams.get('customerEmail');
 
     // Pagination params
     const page = parseInt(searchParams.get('page') || '1', 10);
@@ -429,6 +456,17 @@ export async function GET(request) {
       // Customer checking their own bookings (LIFF)
       const customer = await prisma.customer.findUnique({
         where: { lineUserId: customerLineUserId },
+      });
+
+      if (!customer) {
+        return NextResponse.json({ bookings: [], totalCount: 0 });
+      }
+
+      whereClause.customerId = customer.id;
+    } else if (customerEmail) {
+      // Customer checking their own bookings (standalone - by email)
+      const customer = await prisma.customer.findUnique({
+        where: { email: customerEmail },
       });
 
       if (!customer) {
