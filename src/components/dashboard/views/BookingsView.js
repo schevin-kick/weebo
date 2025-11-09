@@ -348,7 +348,11 @@ export default function BookingsView({ businessId }) {
                   </tr>
                 ) : (
                   filteredBookings.map((booking) => (
-                  <tr key={booking.id} className="hover:bg-slate-50">
+                  <tr
+                    key={booking.id}
+                    onClick={() => handleViewBooking(booking)}
+                    className="hover:bg-slate-50 cursor-pointer transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-slate-900">
                         {formatDateTime(booking.dateTime, locale)}

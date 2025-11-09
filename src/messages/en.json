@@ -776,6 +776,38 @@
           "reasonLabel": "Cancellation Reason (optional)",
           "reasonPlaceholder": "This will be sent to the customer via LINE"
         }
+      },
+      "createAppointment": "Create Appointment",
+      "appointmentCreated": "Appointment created successfully!"
+    },
+    "appointments": {
+      "createTitle": "Create Appointment",
+      "createSubtitle": "Add a walk-in or phone booking",
+      "customerInfo": "Customer Information",
+      "customerName": "Customer Name",
+      "customerNamePlaceholder": "Enter customer name",
+      "customerPhone": "Phone Number",
+      "customerPhonePlaceholder": "Optional",
+      "customerEmail": "Email Address",
+      "customerEmailPlaceholder": "Optional",
+      "serviceDetails": "Service Details",
+      "service": "Service",
+      "noService": "No specific service",
+      "staff": "Staff Member",
+      "noStaff": "Any staff member",
+      "duration": "Duration",
+      "notes": "Notes",
+      "notesPlaceholder": "Add any special notes or requirements",
+      "dateTime": "Date & Time",
+      "selectTime": "Select Time Slot",
+      "noSlotsAvailable": "No time slots available for this date",
+      "todaysSchedule": "Today's Schedule",
+      "noAppointments": "No appointments scheduled for this day",
+      "cancel": "Cancel",
+      "create": "Create Appointment",
+      "creating": "Creating...",
+      "fallbacks": {
+        "unknownCustomer": "Unknown Customer"
       }
     },
     "bookings": {

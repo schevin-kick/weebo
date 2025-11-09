@@ -106,8 +106,8 @@ export async function POST(request, { params }) {
         if (recentBooking) {
           console.log('[LINE Webhook] Found recent booking:', recentBooking.id);
 
-          // Create mapping for new customer
-          if (!existingMapping) {
+          // Create mapping for new customer (only if customer has LINE ID)
+          if (!existingMapping && recentBooking.customer.lineUserId) {
             await prisma.customerBotMapping.create({
               data: {
                 customerId: recentBooking.customerId,
@@ -116,6 +116,8 @@ export async function POST(request, { params }) {
                 businessBotUserId: businessBotUserId,
               }
             });
+          } else if (!recentBooking.customer.lineUserId) {
+            console.warn('[LINE Webhook] Customer has no LINE ID, skipping bot mapping creation');
           }
 
           console.log('[LINE Webhook] Linked user IDs:', {
@@ -157,24 +159,28 @@ export async function POST(request, { params }) {
           if (booking && booking.businessId === businessId) {
             console.log('[LINE Webhook] Valid booking found:', bookingId);
 
-            // Create mapping
-            await prisma.customerBotMapping.upsert({
-              where: {
-                customerId_businessId: {
+            // Create mapping (only if customer has LINE ID)
+            if (booking.customer.lineUserId) {
+              await prisma.customerBotMapping.upsert({
+                where: {
+                  customerId_businessId: {
+                    customerId: booking.customerId,
+                    businessId: businessId
+                  }
+                },
+                create: {
                   customerId: booking.customerId,
-                  businessId: businessId
+                  businessId: businessId,
+                  liffUserId: booking.customer.lineUserId,
+                  businessBotUserId: businessBotUserId,
+                },
+                update: {
+                  businessBotUserId: businessBotUserId,
                 }
-              },
-              create: {
-                customerId: booking.customerId,
-                businessId: businessId,
-                liffUserId: booking.customer.lineUserId,
-                businessBotUserId: businessBotUserId,
-              },
-              update: {
-                businessBotUserId: businessBotUserId,
-              }
-            });
+              });
+            } else {
+              console.warn('[LINE Webhook] Customer has no LINE ID, skipping bot mapping creation');
+            }
 
             console.log('[LINE Webhook] Linked user IDs via booking ID:', {
               liffUserId: booking.customer.lineUserId,

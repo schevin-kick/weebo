@@ -7,10 +7,12 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Menu, LogOut } from 'lucide-react';
+import { Menu, LogOut, Plus } from 'lucide-react';
 import Sidebar from './Sidebar';
 import BusinessPicker from './BusinessPicker';
 import FallingSakura from '@/components/background/FallingSakura';
+import CreateAppointmentModal from '@/components/modals/CreateAppointmentModal';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function DashboardLayout({
   children,
@@ -19,10 +21,21 @@ export default function DashboardLayout({
   currentBusinessId,
 }) {
   const t = useTranslations('dashboard.header');
+  const tAppointments = useTranslations('dashboard.appointments');
+  const tCalendar = useTranslations('dashboard.calendar');
+  const toast = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const handleLogout = () => {
     window.location.href = '/api/auth/logout';
+  };
+
+  const handleAppointmentSuccess = () => {
+    setShowCreateModal(false);
+    toast.success(tCalendar('appointmentCreated'));
+    // Trigger a refresh of the current view if needed
+    window.dispatchEvent(new CustomEvent('appointment-created'));
   };
 
   return (
@@ -65,6 +78,16 @@ export default function DashboardLayout({
 
                 {/* Right side */}
                 <div className="flex items-center gap-3">
+                  {/* Create Appointment Button */}
+                  <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-sm hover:shadow-md text-sm font-medium"
+                    title={tAppointments('createTitle')}
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden sm:inline">{tAppointments('createTitle')}</span>
+                  </button>
+
                   {/* User menu */}
                   {user && (
                     <div className="flex items-center gap-3 pl-3 border-l border-slate-200">
@@ -100,6 +123,14 @@ export default function DashboardLayout({
           </main>
         </div>
       </div>
+
+      {/* Create Appointment Modal */}
+      <CreateAppointmentModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        businessId={currentBusinessId}
+        onSuccess={handleAppointmentSuccess}
+      />
     </>
   );
 }

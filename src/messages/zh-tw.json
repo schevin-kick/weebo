@@ -775,6 +775,38 @@
           "reasonLabel": "取消原因（選擇性）",
           "reasonPlaceholder": "這將透過 LINE 傳送給客戶"
         }
+      },
+      "createAppointment": "建立預約",
+      "appointmentCreated": "預約建立成功！"
+    },
+    "appointments": {
+      "createTitle": "建立預約",
+      "createSubtitle": "新增現場或電話預約",
+      "customerInfo": "客戶資訊",
+      "customerName": "客戶姓名",
+      "customerNamePlaceholder": "輸入客戶姓名",
+      "customerPhone": "電話號碼",
+      "customerPhonePlaceholder": "選填",
+      "customerEmail": "電子郵件地址",
+      "customerEmailPlaceholder": "選填",
+      "serviceDetails": "服務詳情",
+      "service": "服務項目",
+      "noService": "無特定服務",
+      "staff": "服務人員",
+      "noStaff": "任何服務人員",
+      "duration": "時長",
+      "notes": "備註",
+      "notesPlaceholder": "新增任何特殊備註或要求",
+      "dateTime": "日期與時間",
+      "selectTime": "選擇時段",
+      "noSlotsAvailable": "此日期沒有可用時段",
+      "todaysSchedule": "今日行程",
+      "noAppointments": "當日無預約",
+      "cancel": "取消",
+      "create": "建立預約",
+      "creating": "建立中...",
+      "fallbacks": {
+        "unknownCustomer": "未知客戶"
       }
     },
     "bookings": {

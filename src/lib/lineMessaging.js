@@ -22,6 +22,16 @@ const LINE_CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
  * @returns {Promise<object>} Response from LINE API
  */
 export async function sendLineMessage(lineUserId, messages, business = null) {
+  // Check if LINE user ID is provided
+  if (!lineUserId) {
+    console.warn('[LINE] No LINE user ID provided - skipping message send');
+    return {
+      status: 'skipped',
+      reason: 'no_line_id',
+      message: 'Customer does not have a LINE account'
+    };
+  }
+
   let channelAccessToken = LINE_CHANNEL_ACCESS_TOKEN;
   let targetUserId = lineUserId;
   let tokenSource = 'shared';
@@ -838,6 +848,14 @@ function createBookingReminderMessage(booking, business, locale = 'en') {
  * @returns {Promise<object>} Result of send operation
  */
 export async function sendBookingConfirmation(booking, business, locale = null) {
+  if (!booking.customer?.lineUserId) {
+    console.warn('[LINE] Cannot send confirmation - customer has no LINE ID');
+    return {
+      status: 'skipped',
+      reason: 'no_line_id',
+      message: 'Customer does not have a LINE account'
+    };
+  }
   const effectiveLocale = locale || booking.customer?.language || 'en';
   const message = createBookingConfirmationMessage(booking, business, effectiveLocale);
   return await sendLineMessage(booking.customer.lineUserId, [message], business);
@@ -852,6 +870,14 @@ export async function sendBookingConfirmation(booking, business, locale = null) 
  * @returns {Promise<object>} Result of send operation
  */
 export async function sendBookingCancellation(booking, business, reason = null, locale = null) {
+  if (!booking.customer?.lineUserId) {
+    console.warn('[LINE] Cannot send cancellation - customer has no LINE ID');
+    return {
+      status: 'skipped',
+      reason: 'no_line_id',
+      message: 'Customer does not have a LINE account'
+    };
+  }
   const effectiveLocale = locale || booking.customer?.language || 'en';
   const message = createBookingCancellationMessage(booking, business, reason, effectiveLocale);
   return await sendLineMessage(booking.customer.lineUserId, [message], business);
@@ -864,6 +890,14 @@ export async function sendBookingCancellation(booking, business, reason = null, 
  * @returns {Promise<object>} Result of send operation
  */
 export async function sendBookingReminder(booking, business) {
+  if (!booking.customer?.lineUserId) {
+    console.warn('[LINE] Cannot send reminder - customer has no LINE ID');
+    return {
+      status: 'skipped',
+      reason: 'no_line_id',
+      message: 'Customer does not have a LINE account'
+    };
+  }
   const locale = booking.customer?.language || 'en';
   const message = createBookingReminderMessage(booking, business, locale);
   return await sendLineMessage(booking.customer.lineUserId, [message], business);

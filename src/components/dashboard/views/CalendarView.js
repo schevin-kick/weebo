@@ -68,6 +68,10 @@ export default function CalendarView({ businessId }) {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  // Calendar view state
+  const [view, setView] = useState('week');
+  const [currentDate, setCurrentDate] = useState(new Date());
+
   // Date range state for calendar view
   const [dateRange, setDateRange] = useState(null);
 
@@ -125,6 +129,18 @@ export default function CalendarView({ businessId }) {
   );
 
   const { services, staff, isLoading: settingsLoading } = useBusinessSettings(businessId);
+
+  // Listen for appointment creation events from the navbar button
+  useEffect(() => {
+    const handleAppointmentCreated = () => {
+      mutateBookings();
+    };
+
+    window.addEventListener('appointment-created', handleAppointmentCreated);
+    return () => {
+      window.removeEventListener('appointment-created', handleAppointmentCreated);
+    };
+  }, [mutateBookings]);
 
   // Mutation hooks
   const updateStatus = useUpdateBookingStatus();
@@ -298,13 +314,15 @@ export default function CalendarView({ businessId }) {
           <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('title')}</h1>
           <p className="text-slate-600">{t('subtitle')}</p>
         </div>
-        <button
-          onClick={handleRefresh}
-          className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-          title={t('refreshTitle')}
-        >
-          <RefreshCw className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleRefresh}
+            className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+            title={t('refreshTitle')}
+          >
+            <RefreshCw className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -391,7 +409,10 @@ export default function CalendarView({ businessId }) {
           startAccessor="start"
           endAccessor="end"
           style={{ height: 600 }}
-          defaultView="week"
+          date={currentDate}
+          onNavigate={setCurrentDate}
+          view={view}
+          onView={setView}
           views={['month', 'week', 'day', 'agenda']}
           eventPropGetter={eventStyleGetter}
           onSelectEvent={handleSelectEvent}

@@ -81,11 +81,14 @@ model Business {
 
 model Customer {
   id                  String               @id @default(cuid())
-  lineUserId          String               @unique
+  lineUserId          String?              @unique
   displayName         String
+  email               String?
+  phone               String?
   pictureUrl          String?
   language            String?
   statusMessage       String?
+  customerType        String               @default("line")
   lastActiveAt        DateTime             @default(now())
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
@@ -93,6 +96,9 @@ model Customer {
   customerBotMappings CustomerBotMapping[]
 
   @@index([lineUserId])
+  @@index([email])
+  @@index([phone])
+  @@index([customerType])
   @@index([lastActiveAt])
 }
 

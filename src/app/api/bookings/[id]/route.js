@@ -87,7 +87,7 @@ export async function PATCH(request, { params }) {
 
     // If customer is canceling, verify they own the booking
     if (customerLineUserId) {
-      if (existing.customer.lineUserId !== customerLineUserId) {
+      if (!existing.customer.lineUserId || existing.customer.lineUserId !== customerLineUserId) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
     }
