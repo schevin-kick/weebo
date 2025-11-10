@@ -1,24 +1,18 @@
 /**
  * Mobile Booking Detail Page
- * Standalone, authenticated view for a single booking
+ * Public view for a single booking (no authentication required)
  * Accessed via LINE notification link
+ * Security: Booking ID acts as access key (UUID is unguessable)
  */
 
-import { redirect, notFound } from 'next/navigation';
-import { getSession } from '@/lib/auth';
+import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import BookingDetailMobile from '@/components/booking/BookingDetailMobile';
 
 export default async function BookingDetailPage({ params }) {
   const { bookingId } = await params;
 
-  // Require authentication
-  const session = await getSession();
-  if (!session) {
-    redirect('/api/auth/login');
-  }
-
-  // Fetch booking with all relations
+  // Fetch booking with all relations (no auth required)
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
     include: {
@@ -56,11 +50,6 @@ export default async function BookingDetailPage({ params }) {
 
   if (!booking) {
     notFound();
-  }
-
-  // CRITICAL: Verify ownership
-  if (booking.business.ownerId !== session.id) {
-    redirect('/dashboard');
   }
 
   return <BookingDetailMobile booking={booking} />;

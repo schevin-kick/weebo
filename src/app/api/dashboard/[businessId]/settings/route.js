@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, canAccessBusiness } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
 /**
@@ -35,7 +35,7 @@ export async function GET(request, { params }) {
     }
 
     // Verify ownership
-    if (business.ownerId !== session.id) {
+    if (!canAccessBusiness(session, businessId, business.ownerId)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

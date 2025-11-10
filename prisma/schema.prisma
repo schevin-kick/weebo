@@ -14,6 +14,7 @@ model BusinessOwner {
   displayName           String
   pictureUrl            String?
   email                 String?           @unique
+  language              String?           @default("zh-tw")
   createdAt             DateTime          @default(now())
   updatedAt             DateTime          @updatedAt
 
@@ -27,8 +28,8 @@ model BusinessOwner {
   canceledAt            DateTime?
 
   businesses            Business[]
-  pageTemplates         PageTemplate[]
-  serviceTemplates      ServiceTemplate[]
+  permissionsGranted    BusinessPermission[]
+  invitationLinksCreated BusinessInvitationLink[]
 
   @@index([lineUserId])
   @@index([email])
@@ -73,6 +74,8 @@ model Business {
   services               Service[]
   staff                  Staff[]
   customerBotMappings    CustomerBotMapping[]
+  permissions            BusinessPermission[]
+  invitationLinks        BusinessInvitationLink[]
 
   @@index([ownerId])
   @@index([lineDeepLink])
@@ -204,33 +207,6 @@ model BookingMessage {
   @@index([bookingId, messageType])
 }
 
-model ServiceTemplate {
-  id          String        @id @default(cuid())
-  ownerId     String
-  name        String
-  description String?
-  duration    Int
-  price       Float?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  owner       BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
-  @@index([ownerId])
-}
-
-model PageTemplate {
-  id         String        @id @default(cuid())
-  ownerId    String
-  type       String
-  title      String
-  components Json
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  owner      BusinessOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
-  @@index([ownerId])
-}
-
 model CustomerBotMapping {
   id                String   @id @default(cuid())
   customerId        String
@@ -244,4 +220,36 @@ model CustomerBotMapping {
   @@unique([customerId, businessId])
   @@index([liffUserId])
   @@index([businessBotUserId])
+}
+
+model BusinessPermission {
+  id          String        @id @default(cuid())
+  businessId  String
+  lineUserId  String
+  displayName String
+  grantedById String
+  createdAt   DateTime      @default(now())
+  business    Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  grantedBy   BusinessOwner @relation(fields: [grantedById], references: [id], onDelete: Cascade)
+
+  @@unique([businessId, lineUserId])
+  @@index([lineUserId])
+  @@index([businessId])
+}
+
+model BusinessInvitationLink {
+  id          String        @id @default(cuid())
+  businessId  String
+  code        String        @unique
+  maxUses     Int           @default(1)
+  usedCount   Int           @default(0)
+  isActive    Boolean       @default(true)
+  expiresAt   DateTime
+  createdById String
+  createdAt   DateTime      @default(now())
+  business    Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  createdBy   BusinessOwner @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([businessId, isActive])
+  @@index([code])
 }

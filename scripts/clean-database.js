@@ -37,14 +37,6 @@ async function cleanDatabase() {
     const services = await prisma.service.deleteMany();
     console.log(`✓ Deleted ${services.count} services`);
 
-    console.log('Deleting ServiceTemplates...');
-    const serviceTemplates = await prisma.serviceTemplate.deleteMany();
-    console.log(`✓ Deleted ${serviceTemplates.count} service templates`);
-
-    console.log('Deleting PageTemplates...');
-    const pageTemplates = await prisma.pageTemplate.deleteMany();
-    console.log(`✓ Deleted ${pageTemplates.count} page templates`);
-
     console.log('Deleting Businesses...');
     const businesses = await prisma.business.deleteMany();
     console.log(`✓ Deleted ${businesses.count} businesses`);
@@ -68,8 +60,6 @@ async function cleanDatabase() {
     console.log(`  - Bookings: ${bookings.count}`);
     console.log(`  - Booking Messages: ${bookingMessages.count}`);
     console.log(`  - Closed Dates: ${closedDates.count}`);
-    console.log(`  - Service Templates: ${serviceTemplates.count}`);
-    console.log(`  - Page Templates: ${pageTemplates.count}`);
 
   } catch (error) {
     console.error('\n❌ Error cleaning database:', error);

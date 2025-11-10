@@ -5,7 +5,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, canAccessBusiness } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
 import { validateCSRFToken } from '@/lib/csrf';
@@ -47,7 +47,7 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Business not found' }, { status: 404 });
     }
 
-    if (business.ownerId !== session.id) {
+    if (!canAccessBusiness(session, businessId, business.ownerId)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 

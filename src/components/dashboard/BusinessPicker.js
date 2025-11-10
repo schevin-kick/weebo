@@ -8,7 +8,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { ChevronDown, Store, Plus, Search, Loader2 } from 'lucide-react';
+import { ChevronDown, Store, Plus, Search, Loader2, Users } from 'lucide-react';
 
 export default function BusinessPicker({ businesses, currentBusinessId }) {
   const t = useTranslations('dashboard.businessPicker');
@@ -23,8 +23,25 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
 
   const currentBusiness = businesses.find((b) => b.id === currentBusinessId);
 
+  // Separate owned and shared businesses
+  const ownedBusinesses = businesses.filter((b) => b.isOwner);
+  const sharedBusinesses = businesses.filter((b) => !b.isOwner);
+
   // Determine which businesses to display
-  const displayedBusinesses = searchQuery.trim().length > 0 ? searchResults : businesses.slice(0, 5);
+  let displayedOwnedBusinesses = [];
+  let displayedSharedBusinesses = [];
+
+  if (searchQuery.trim().length > 0) {
+    // When searching, separate search results by ownership
+    displayedOwnedBusinesses = searchResults.filter((b) => b.isOwner);
+    displayedSharedBusinesses = searchResults.filter((b) => !b.isOwner);
+  } else {
+    // Show first 5 owned, then shared
+    displayedOwnedBusinesses = ownedBusinesses.slice(0, 5);
+    displayedSharedBusinesses = sharedBusinesses.slice(0, 5);
+  }
+
+  const displayedBusinesses = [...displayedOwnedBusinesses, ...displayedSharedBusinesses];
   const showingCount = displayedBusinesses.length;
   const totalBusinesses = searchQuery.trim().length > 0 ? totalCount : businesses.length;
 
@@ -189,48 +206,112 @@ export default function BusinessPicker({ businesses, currentBusinessId }) {
                 </p>
               </div>
             ) : (
-              displayedBusinesses.map((business) => (
-                <button
-                  key={business.id}
-                  onClick={() => handleSelectBusiness(business.id)}
-                  className={`w-full flex items-center gap-4 px-4 py-4 hover:bg-slate-50 transition-colors ${business.id === currentBusinessId ? 'bg-orange-50' : ''
-                    }`}
-                >
-                <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
-                  {business.logoUrl ? (
-                    <img
-                      src={business.logoUrl}
-                      alt={business.businessName}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <Store className="w-6 h-6 text-slate-400" />
-                  )}
-                </div>
-                <div className="flex-1 text-left min-w-0">
-                  <p
-                    className={`text-base font-medium truncate ${business.id === currentBusinessId
-                      ? 'text-orange-600'
-                      : 'text-slate-900'
-                      }`}
-                  >
-                    {business.businessName}
-                  </p>
-                  {business.address && (
-                    <p className="text-sm text-slate-500 truncate">
-                      {business.address}
-                    </p>
-                  )}
-                  <p className="text-sm text-slate-500">
-                    {t('servicesCount', { count: business._count?.services || 0 })},{' '}
-                    {t('staffCount', { count: business._count?.staff || 0 })}
-                  </p>
-                </div>
-                {business.id === currentBusinessId && (
-                  <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0" />
+              <div>
+                {/* Owned Businesses Section */}
+                {displayedOwnedBusinesses.length > 0 && (
+                  <div>
+                    {displayedOwnedBusinesses.map((business) => (
+                      <button
+                        key={business.id}
+                        onClick={() => handleSelectBusiness(business.id)}
+                        className={`w-full flex items-center gap-4 px-4 py-4 hover:bg-slate-50 transition-colors ${
+                          business.id === currentBusinessId ? 'bg-orange-50' : ''
+                        }`}
+                      >
+                        <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
+                          {business.logoUrl ? (
+                            <img
+                              src={business.logoUrl}
+                              alt={business.businessName}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Store className="w-6 h-6 text-slate-400" />
+                          )}
+                        </div>
+                        <div className="flex-1 text-left min-w-0">
+                          <p
+                            className={`text-base font-medium truncate ${
+                              business.id === currentBusinessId ? 'text-orange-600' : 'text-slate-900'
+                            }`}
+                          >
+                            {business.businessName}
+                          </p>
+                          {business.address && (
+                            <p className="text-sm text-slate-500 truncate">{business.address}</p>
+                          )}
+                          <p className="text-sm text-slate-500">
+                            {t('servicesCount', { count: business._count?.services || 0 })},{' '}
+                            {t('staffCount', { count: business._count?.staff || 0 })}
+                          </p>
+                        </div>
+                        {business.id === currentBusinessId && (
+                          <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 )}
-              </button>
-              ))
+
+                {/* Shared Businesses Section */}
+                {displayedSharedBusinesses.length > 0 && (
+                  <div>
+                    {displayedOwnedBusinesses.length > 0 && (
+                      <div className="px-4 py-2 border-t border-slate-200">
+                        <p className="text-xs font-semibold text-slate-500 uppercase">
+                          {t('sharedWithYou')}
+                        </p>
+                      </div>
+                    )}
+                    {displayedSharedBusinesses.map((business) => (
+                      <button
+                        key={business.id}
+                        onClick={() => handleSelectBusiness(business.id)}
+                        className={`w-full flex items-center gap-4 px-4 py-4 hover:bg-slate-50 transition-colors ${
+                          business.id === currentBusinessId ? 'bg-orange-50' : ''
+                        }`}
+                      >
+                        <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
+                          {business.logoUrl ? (
+                            <img
+                              src={business.logoUrl}
+                              alt={business.businessName}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Store className="w-6 h-6 text-slate-400" />
+                          )}
+                        </div>
+                        <div className="flex-1 text-left min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p
+                              className={`text-base font-medium truncate ${
+                                business.id === currentBusinessId ? 'text-orange-600' : 'text-slate-900'
+                              }`}
+                            >
+                              {business.businessName}
+                            </p>
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-medium flex-shrink-0">
+                              <Users className="w-3 h-3" />
+                              {t('shared')}
+                            </span>
+                          </div>
+                          {business.address && (
+                            <p className="text-sm text-slate-500 truncate">{business.address}</p>
+                          )}
+                          <p className="text-sm text-slate-500">
+                            {t('servicesCount', { count: business._count?.services || 0 })},{' '}
+                            {t('staffCount', { count: business._count?.staff || 0 })}
+                          </p>
+                        </div>
+                        {business.id === currentBusinessId && (
+                          <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
           </div>
 

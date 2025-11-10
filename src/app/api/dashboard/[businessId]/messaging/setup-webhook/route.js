@@ -5,7 +5,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession, getBaseUrl } from '@/lib/auth';
+import { getSession, getBaseUrl, canAccessBusiness } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
@@ -29,13 +29,17 @@ export async function POST(request, { params }) {
       );
     }
 
-    // Verify business ownership
+    // Verify business access (owner or has permission)
     const business = await prisma.business.findUnique({
       where: { id: businessId },
       select: { id: true, ownerId: true }
     });
 
-    if (!business || business.ownerId !== session.id) {
+    if (!business) {
+      return NextResponse.json({ error: 'Business not found' }, { status: 404 });
+    }
+
+    if (!canAccessBusiness(session, businessId, business.ownerId)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 

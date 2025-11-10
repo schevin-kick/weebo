@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, canAccessBusiness } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { sendBookingConfirmation, sendBusinessOwnerNotification } from '@/lib/lineMessaging';
 import { publicRateLimit, authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
@@ -415,12 +415,12 @@ export async function GET(request) {
         return NextResponse.json({ error: errorMessage }, { status: 401 });
       }
 
-      // Verify business ownership
+      // Verify business access (owner or has permission)
       const business = await prisma.business.findUnique({
         where: { id: businessId },
       });
 
-      if (!business || business.ownerId !== session.id) {
+      if (!business || !canAccessBusiness(session, businessId, business.ownerId)) {
         const locale = detectLocaleFromRequest(request);
         const errorMessage = await translate(locale, 'api.errors.forbidden');
         return NextResponse.json({ error: errorMessage }, { status: 403 });

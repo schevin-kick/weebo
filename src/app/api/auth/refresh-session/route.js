@@ -41,14 +41,21 @@ export async function POST(request) {
     // Calculate fresh subscription access
     const subscriptionData = calculateAccess(owner);
 
-    // Create new session token with updated subscription data
+    // Fetch fresh permissions from database
+    const permissions = await prisma.businessPermission.findMany({
+      where: { lineUserId: owner.lineUserId },
+      select: { businessId: true },
+    });
+    const permittedBusinessIds = permissions.map(p => p.businessId);
+
+    // Create new session token with updated subscription data AND permissions
     const newSessionToken = await createSession({
       id: owner.id,
       lineUserId: owner.lineUserId,
       displayName: owner.displayName,
       pictureUrl: owner.pictureUrl,
       email: owner.email,
-    }, subscriptionData);
+    }, subscriptionData, permittedBusinessIds);
 
     const newCsrfToken = await setSessionCookie(newSessionToken);
 

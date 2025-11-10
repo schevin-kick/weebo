@@ -913,7 +913,7 @@ export async function sendBookingReminder(booking, business) {
 function createBusinessOwnerNotificationMessage(booking, business, locale = 'en') {
   const labels = getFieldLabels(locale);
   const appUrl = getBaseUrl();
-  const viewBookingUrl = `${appUrl}/booking/${booking.id}`;
+  const viewBookingUrl = `${appUrl}/${locale}/booking/${booking.id}`;
 
   const bodyContents = [
     {
@@ -1132,7 +1132,7 @@ function createBusinessOwnerNotificationMessage(booking, business, locale = 'en'
  * Send notification to business owner about new booking
  * @param {object} booking - Full booking object with relations
  * @param {object} business - Full business object with owner info
- * @param {string|null} locale - Optional locale override (from request); if null, uses customer.language from DB
+ * @param {string|null} locale - Optional locale override; if null, uses owner's language preference from DB
  * @returns {Promise<object>} Result of send operation
  */
 export async function sendBusinessOwnerNotification(booking, business, locale = null) {
@@ -1152,7 +1152,8 @@ export async function sendBusinessOwnerNotification(booking, business, locale = 
     ownerLineUserId: business.owner.lineUserId,
   });
 
-  const effectiveLocale = locale || booking.customer?.language || 'en';
+  // Use owner's language preference, fallback to locale param, then customer language, finally default to 'zh-tw'
+  const effectiveLocale = business.owner?.language || locale || booking.customer?.language || 'zh-tw';
   const message = createBusinessOwnerNotificationMessage(booking, business, effectiveLocale);
 
   // Always use shared bot token for owner notifications (null = use shared bot)
@@ -1169,7 +1170,7 @@ export async function sendBusinessOwnerNotification(booking, business, locale = 
 function createBusinessOwnerCancellationNotificationMessage(booking, business, locale = 'en') {
   const labels = getFieldLabels(locale);
   const appUrl = getBaseUrl();
-  const viewBookingUrl = `${appUrl}/booking/${booking.id}`;
+  const viewBookingUrl = `${appUrl}/${locale}/booking/${booking.id}`;
 
   const bodyContents = [
     {
@@ -1368,7 +1369,7 @@ function createBusinessOwnerCancellationNotificationMessage(booking, business, l
  * Send notification to business owner about booking cancellation
  * @param {object} booking - Full booking object with relations
  * @param {object} business - Full business object with owner info
- * @param {string|null} locale - Optional locale override (from request); if null, uses customer.language from DB
+ * @param {string|null} locale - Optional locale override; if null, uses owner's language preference from DB
  * @returns {Promise<object>} Result of send operation
  */
 export async function sendBusinessOwnerCancellationNotification(booking, business, locale = null) {
@@ -1394,7 +1395,8 @@ export async function sendBusinessOwnerCancellationNotification(booking, busines
     ownerLineUserId: business.owner.lineUserId,
   });
 
-  const effectiveLocale = locale || booking.customer?.language || 'en';
+  // Use owner's language preference, fallback to locale param, then customer language, finally default to 'zh-tw'
+  const effectiveLocale = business.owner?.language || locale || booking.customer?.language || 'zh-tw';
   const message = createBusinessOwnerCancellationNotificationMessage(booking, business, effectiveLocale);
 
   // Always use shared bot token for owner notifications (null = use shared bot)

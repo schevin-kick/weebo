@@ -27,6 +27,9 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
+  // Find current business from businesses array
+  const currentBusiness = businesses?.find((b) => b.id === currentBusinessId);
+
   const handleLogout = () => {
     window.location.href = '/api/auth/logout';
   };
@@ -49,6 +52,7 @@ export default function DashboardLayout({
         {/* Sidebar */}
         <Sidebar
           businessId={currentBusinessId}
+          currentBusiness={currentBusiness}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
         />

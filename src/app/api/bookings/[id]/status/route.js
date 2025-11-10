@@ -2,28 +2,23 @@
  * Booking Status API
  * PATCH /api/bookings/[id]/status
  * Update booking status (confirm/cancel) and send LINE message
+ * No authentication required - booking ID acts as access key
  */
 
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { sendBookingConfirmation, sendBookingCancellation } from '@/lib/lineMessaging';
-import { authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
+import { publicRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
 import { validateCSRFToken } from '@/lib/csrf';
 import { getCustomerLocale, detectLocaleFromRequest, translate } from '@/lib/localeUtils';
 
 export async function PATCH(request, { params }) {
   try {
     const locale = detectLocaleFromRequest(request);
-    const session = await getSession();
-    if (!session) {
-      const errorMessage = await translate(locale, 'api.errors.unauthorized');
-      return NextResponse.json({ error: errorMessage }, { status: 401 });
-    }
 
-    // Apply rate limiting
-    const identifier = getIdentifier(request, session);
-    const rateLimitResult = await checkRateLimit(authenticatedRateLimit, identifier);
+    // Apply rate limiting (using public rate limit)
+    const identifier = getIdentifier(request, null);
+    const rateLimitResult = await checkRateLimit(publicRateLimit, identifier);
 
     if (!rateLimitResult.success) {
       return createRateLimitResponse(rateLimitResult);
@@ -62,12 +57,6 @@ export async function PATCH(request, { params }) {
     if (!booking) {
       const errorMessage = await translate(locale, 'api.booking.errors.bookingNotFound');
       return NextResponse.json({ error: errorMessage }, { status: 404 });
-    }
-
-    // Verify business ownership
-    if (booking.business.ownerId !== session.id) {
-      const errorMessage = await translate(locale, 'api.errors.unauthorized');
-      return NextResponse.json({ error: errorMessage }, { status: 403 });
     }
 
     // Update booking status

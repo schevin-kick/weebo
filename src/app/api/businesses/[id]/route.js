@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, canAccessBusiness } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { generateBusinessQRCode } from '@/lib/qrGenerator';
 import { authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
@@ -34,17 +34,19 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Business not found' }, { status: 404 });
     }
 
-    // Check if authenticated user owns this business
+    // Check if authenticated user owns or has access to this business
     const session = await getSession();
     const isOwner = session && session.id === business.ownerId;
+    const hasAccess = session && canAccessBusiness(session, businessId, business.ownerId);
 
-    // Return full data for owner, limited data for public
-    if (isOwner) {
-      // For owner, also include the shared Kitsune bot ID if they're using shared mode
+    // Return full data for owner/authorized users, limited data for public
+    if (hasAccess) {
+      // For owner/authorized users, also include the shared Kitsune bot ID if they're using shared mode
       const kitsuneSharedBotId = process.env.LINE_BOT_BASIC_ID;
       return NextResponse.json({
         business,
-        isOwner: true,
+        isOwner: isOwner,
+        hasAccess: true,
         kitsuneSharedBotId
       });
     } else {
@@ -115,7 +117,7 @@ export async function PUT(request, { params }) {
     const { id: businessId } = await params;
     const data = await request.json();
 
-    // Verify ownership
+    // Verify access (owner or has permission)
     const existing = await prisma.business.findUnique({
       where: { id: businessId },
     });
@@ -124,8 +126,8 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: 'Business not found' }, { status: 404 });
     }
 
-    if (existing.ownerId !== session.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!canAccessBusiness(session, businessId, existing.ownerId)) {
+      return NextResponse.json({ error: 'Forbidden - You do not have access to this business' }, { status: 403 });
     }
 
     // Check subscription status before allowing business updates
@@ -252,7 +254,7 @@ export async function DELETE(request, { params }) {
 
     const { id: businessId } = await params;
 
-    // Verify ownership
+    // Verify ownership (DELETE is owner-only, not for team members)
     const existing = await prisma.business.findUnique({
       where: { id: businessId },
     });
@@ -262,7 +264,7 @@ export async function DELETE(request, { params }) {
     }
 
     if (existing.ownerId !== session.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden - Only business owner can delete' }, { status: 403 });
     }
 
     // Soft delete

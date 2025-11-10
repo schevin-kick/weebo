@@ -23,11 +23,15 @@ import {
   Bell,
   X,
   Mail,
+  Users,
 } from 'lucide-react';
 
-export default function Sidebar({ businessId, isOpen, onClose }) {
+export default function Sidebar({ businessId, isOpen, onClose, currentBusiness }) {
   const t = useTranslations('dashboard.sidebar');
   const locale = useLocale();
+
+  // Check if current user is the owner
+  const isOwner = currentBusiness?.isOwner !== false; // Default to true if not provided for backwards compatibility
 
   const navItems = [
     {
@@ -61,9 +65,16 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
       icon: Settings,
     },
     {
+      name: t('navigation.permissions'),
+      href: '/permissions',
+      icon: Users,
+      ownerOnly: true, // Only show to business owners
+    },
+    {
       name: t('navigation.billing'),
       href: '/billing',
       icon: CreditCard,
+      ownerOnly: true, // Only show to business owners
     },
     {
       name: t('navigation.messaging'),
@@ -151,42 +162,44 @@ export default function Sidebar({ businessId, isOpen, onClose }) {
 
         {/* Navigation */}
         <nav className="px-3 py-4 space-y-1 flex-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const active = isActive(item.href);
-            const Icon = item.icon;
-            const showBadge =
-              (item.name === 'Messaging' && showMessagingBadge) ||
-              (item.name === 'Notifications' && showNotificationsBadge);
+          {navItems
+            .filter((item) => !item.ownerOnly || isOwner) // Filter out owner-only items for non-owners
+            .map((item) => {
+              const active = isActive(item.href);
+              const Icon = item.icon;
+              const showBadge =
+                (item.name === 'Messaging' && showMessagingBadge) ||
+                (item.name === 'Notifications' && showNotificationsBadge);
 
-            // External routes (like /contact) don't include dashboard/businessId
-            // All other routes are under the businessId
-            const href = item.external
-              ? `/${locale}${item.href}`
-              : `/${locale}/dashboard/${businessId}${item.href}`;
+              // External routes (like /contact) don't include dashboard/businessId
+              // All other routes are under the businessId
+              const href = item.external
+                ? `/${locale}${item.href}`
+                : `/${locale}/dashboard/${businessId}${item.href}`;
 
-            return (
-              <Link
-                key={item.name}
-                href={href}
-                onClick={onClose}
-                className={`
-                  flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative
-                  ${active
-                    ? 'bg-orange-50 text-orange-600 font-medium'
-                    : 'text-slate-700 hover:bg-slate-50'
-                  }
-                `}
-              >
-                <Icon className="w-5 h-5 flex-shrink-0" />
-                <span>{item.name}</span>
+              return (
+                <Link
+                  key={item.name}
+                  href={href}
+                  onClick={onClose}
+                  className={`
+                    flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative
+                    ${active
+                      ? 'bg-orange-50 text-orange-600 font-medium'
+                      : 'text-slate-700 hover:bg-slate-50'
+                    }
+                  `}
+                >
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <span>{item.name}</span>
 
-                {/* Notification Badge */}
-                {showBadge && (
-                  <span className="ml-auto w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                )}
-              </Link>
-            );
-          })}
+                  {/* Notification Badge */}
+                  {showBadge && (
+                    <span className="ml-auto w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                  )}
+                </Link>
+              );
+            })}
         </nav>
 
         {/* Footer */}

@@ -19,15 +19,21 @@ export function getBaseUrl() {
  * Create a session token for authenticated user
  * @param {object} user - User data { id, lineUserId, displayName, pictureUrl, email }
  * @param {object} subscription - Optional subscription data for caching
+ * @param {array} permittedBusinessIds - Optional array of business IDs user has permission to access
  * @returns {Promise<string>} JWT token
  */
-export async function createSession(user, subscription = null) {
+export async function createSession(user, subscription = null, permittedBusinessIds = []) {
   const payload = { user };
 
   // Include subscription data for session-level caching
   if (subscription) {
     payload.subscription = subscription;
     payload.subscriptionCheckedAt = new Date().toISOString();
+  }
+
+  // Include permitted business IDs for fast authorization checks
+  if (permittedBusinessIds && permittedBusinessIds.length > 0) {
+    payload.permittedBusinessIds = permittedBusinessIds;
   }
 
   const token = await new SignJWT(payload)
@@ -42,16 +48,17 @@ export async function createSession(user, subscription = null) {
 /**
  * Verify and decode session token
  * @param {string} token - JWT token
- * @returns {Promise<object|null>} Full payload including user, subscription data, or null if invalid
+ * @returns {Promise<object|null>} Full payload including user, subscription data, permittedBusinessIds, or null if invalid
  */
 export async function verifySession(token) {
   try {
     const { payload } = await jwtVerify(token, SESSION_SECRET);
-    // Return full payload including subscription cache data
+    // Return full payload including subscription cache data and permissions
     return {
       ...payload.user,
       subscription: payload.subscription,
       subscriptionCheckedAt: payload.subscriptionCheckedAt,
+      permittedBusinessIds: payload.permittedBusinessIds || [],
     };
   } catch (error) {
     return null;
@@ -209,6 +216,28 @@ export async function refreshLINEToken(refreshToken) {
   return response.json();
 }
 
+/**
+ * Check if a session has access to a specific business
+ * @param {object} session - Session object from getSession()
+ * @param {string} businessId - Business ID to check access for
+ * @param {string} ownerId - Business owner ID (if available, for faster checks)
+ * @returns {boolean} True if user can access the business
+ */
+export function canAccessBusiness(session, businessId, ownerId = null) {
+  if (!session || !businessId) {
+    return false;
+  }
+
+  // Check if user is the owner
+  if (ownerId && session.id === ownerId) {
+    return true;
+  }
+
+  // Check if user has permission via BusinessPermission (cached in JWT)
+  const permittedIds = session.permittedBusinessIds || [];
+  return permittedIds.includes(businessId);
+}
+
 export default {
   createSession,
   verifySession,
@@ -219,4 +248,5 @@ export default {
   getLINEProfile,
   getLINELoginUrl,
   refreshLINEToken,
+  canAccessBusiness,
 };

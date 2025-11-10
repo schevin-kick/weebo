@@ -277,13 +277,12 @@ export default function PresetDateTimePage({
                     key={slot.time}
                     onClick={() => handleTimeSelect(slot.time)}
                     disabled={!slot.available}
-                    className={`p-3 rounded-xl border-2 font-medium text-sm transition-all min-h-[48px] ${
-                      isSelected
+                    className={`p-3 rounded-xl border-2 font-medium text-sm transition-all min-h-[48px] ${isSelected
                         ? 'border-orange-500 bg-orange-500 text-white shadow-md'
                         : slot.available
-                        ? 'border-slate-200 bg-white hover:border-orange-300 hover:shadow-sm text-slate-700'
-                        : 'border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed'
-                    }`}
+                          ? 'border-slate-200 bg-white hover:border-orange-300 hover:shadow-sm text-slate-700'
+                          : 'border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed'
+                      }`}
                   >
                     <div className="flex flex-col items-center gap-1">
                       {formatTimeForDisplay(slot.time)}
@@ -314,6 +313,7 @@ export default function PresetDateTimePage({
         .kitsune-calendar .react-calendar {
           border: none;
           font-family: inherit;
+          width: 100%;
         }
 
         .kitsune-calendar .react-calendar__tile {

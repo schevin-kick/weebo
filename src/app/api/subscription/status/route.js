@@ -20,9 +20,29 @@ export async function GET(request) {
     // Check if bypass cache is requested (for billing pages and Stripe redirects)
     const { searchParams } = new URL(request.url);
     const bypassCache = searchParams.get('bypass') === 'true';
+    const businessId = searchParams.get('businessId');
 
     if (bypassCache) {
       console.log(`[Subscription] Bypass cache requested for user ${session.id}`);
+    }
+
+    // Determine whose subscription to check
+    let ownerIdToCheck = session.id;
+
+    if (businessId) {
+      // Get the business to find its owner
+      const { default: prisma } = await import('@/lib/prisma');
+      const business = await prisma.business.findUnique({
+        where: { id: businessId },
+        select: { ownerId: true },
+      });
+
+      if (business) {
+        ownerIdToCheck = business.ownerId;
+        console.log(`[Subscription] Checking subscription for business ${businessId} owner ${ownerIdToCheck} (current user: ${session.id})`);
+      } else {
+        console.log(`[Subscription] Business ${businessId} not found, checking current user's subscription`);
+      }
     }
 
     // Check if session cache is expired
@@ -36,13 +56,15 @@ export async function GET(request) {
     }
 
     // Check subscription access (with optional cache bypass)
-    let subscriptionInfo = await checkSubscriptionAccess(session.id, session, {
+    // Note: We check the owner's subscription, not necessarily the current user's
+    let subscriptionInfo = await checkSubscriptionAccess(ownerIdToCheck, ownerIdToCheck === session.id ? session : null, {
       bypassCache
     });
 
     // If status is "incomplete" and bypass was requested (e.g., returning from Stripe checkout),
     // sync directly from Stripe to get the most up-to-date status (webhooks might be delayed)
-    if (subscriptionInfo.status === 'incomplete' && bypassCache) {
+    // Only sync if we're checking the current user's subscription (not a business owner's)
+    if (subscriptionInfo.status === 'incomplete' && bypassCache && ownerIdToCheck === session.id) {
       console.log(`[Subscription] Status is "incomplete" with bypass - syncing from Stripe for user ${session.id}`);
       const { syncStripeSubscription } = await import('@/lib/subscriptionHelpers');
       const syncedInfo = await syncStripeSubscription(session.id);
@@ -54,8 +76,9 @@ export async function GET(request) {
 
     // If session cache expired or bypass was requested, update session cookie with fresh data
     // This ensures subsequent requests can use fresh session cache for 5 more minutes
+    // Only update session if we're checking the current user's subscription
     let newCsrfToken = null;
-    if (sessionCacheExpired || bypassCache) {
+    if ((sessionCacheExpired || bypassCache) && ownerIdToCheck === session.id) {
       try {
         const newSessionToken = await createSession({
           id: session.id,

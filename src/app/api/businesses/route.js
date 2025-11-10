@@ -30,26 +30,33 @@ export async function GET(request) {
     const searchQuery = searchParams.get('q');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')) : undefined;
 
-    // Build where clause
+    // Build where clause - include both owned businesses AND businesses user has permissions to
     const whereClause = {
-      ownerId: session.id,
+      OR: [
+        { ownerId: session.id },
+        { id: { in: session.permittedBusinessIds || [] } },
+      ],
       isActive: true,
     };
 
     // Add search filter if query provided
     if (searchQuery && searchQuery.trim().length > 0) {
-      whereClause.OR = [
+      whereClause.AND = [
         {
-          businessName: {
-            contains: searchQuery.trim(),
-            mode: 'insensitive',
-          },
-        },
-        {
-          address: {
-            contains: searchQuery.trim(),
-            mode: 'insensitive',
-          },
+          OR: [
+            {
+              businessName: {
+                contains: searchQuery.trim(),
+                mode: 'insensitive',
+              },
+            },
+            {
+              address: {
+                contains: searchQuery.trim(),
+                mode: 'insensitive',
+              },
+            },
+          ],
         },
       ];
     }

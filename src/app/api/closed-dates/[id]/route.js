@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, canAccessBusiness } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
 export async function DELETE(request, { params }) {
@@ -29,7 +29,7 @@ export async function DELETE(request, { params }) {
     }
 
     // Verify business ownership
-    if (closedDate.business.ownerId !== session.id) {
+    if (!canAccessBusiness(session, closedDate.businessId, closedDate.business.ownerId)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 

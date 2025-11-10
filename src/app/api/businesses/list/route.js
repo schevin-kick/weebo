@@ -20,26 +20,34 @@ export async function GET(request) {
     const searchQuery = searchParams.get('q');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')) : undefined;
 
-    // Build where clause
+    // Build where clause - include both owned businesses AND businesses user has permissions to
     const whereClause = {
-      ownerId: session.id,
+      OR: [
+        { ownerId: session.id },
+        { id: { in: session.permittedBusinessIds || [] } },
+      ],
       isActive: true,
     };
 
     // Add search filter if query provided (searches both name and address)
     if (searchQuery && searchQuery.trim().length > 0) {
-      whereClause.OR = [
+      // Combine with existing OR clause for ownership/permissions
+      whereClause.AND = [
         {
-          businessName: {
-            contains: searchQuery.trim(),
-            mode: 'insensitive',
-          },
-        },
-        {
-          address: {
-            contains: searchQuery.trim(),
-            mode: 'insensitive',
-          },
+          OR: [
+            {
+              businessName: {
+                contains: searchQuery.trim(),
+                mode: 'insensitive',
+              },
+            },
+            {
+              address: {
+                contains: searchQuery.trim(),
+                mode: 'insensitive',
+              },
+            },
+          ],
         },
       ];
     }
@@ -57,6 +65,7 @@ export async function GET(request) {
         businessName: true,
         logoUrl: true,
         address: true,
+        ownerId: true, // Include ownerId to determine if user is owner
         _count: {
           select: {
             services: { where: { isActive: true } },
@@ -71,9 +80,10 @@ export async function GET(request) {
       take: limit,
     });
 
-    // Transform _count for easier access
+    // Transform _count and add isOwner flag
     const businessesWithCounts = businesses.map((business) => ({
       ...business,
+      isOwner: business.ownerId === session.id,
       _count: {
         services: business._count.services,
         staff: business._count.staff,

@@ -65,6 +65,20 @@ export default function SubscriptionCheck({ children }) {
 
   async function checkSubscription() {
     try {
+      // Extract businessId from URL if present (e.g., /dashboard/[businessId])
+      const pathParts = pathname.split('/');
+      const dashboardIndex = pathParts.findIndex(part => part === 'dashboard');
+      let businessId = null;
+
+      if (dashboardIndex !== -1 && pathParts[dashboardIndex + 1]) {
+        const potentialBusinessId = pathParts[dashboardIndex + 1];
+        // Check if it's a valid businessId (not "billing", "subscription-required", etc.)
+        if (potentialBusinessId && !['billing', 'subscription-required'].includes(potentialBusinessId)) {
+          businessId = potentialBusinessId;
+          console.log(`[SubscriptionCheck] Extracted businessId from URL: ${businessId}`);
+        }
+      }
+
       // Check if current page should always bypass cache
       const isAlwaysBypassPath = ALWAYS_BYPASS_CACHE_PATHS.some((path) =>
         pathMatches(pathname, path)
@@ -79,9 +93,17 @@ export default function SubscriptionCheck({ children }) {
       // Bypass cache if on billing page OR returning from Stripe OR created first business
       const shouldBypassCache = isAlwaysBypassPath || fromStripeCheckout || fromStripePortal || fromSetupFirstBusiness;
 
-      // Build API URL with bypass parameter if needed
-      const apiUrl = shouldBypassCache
-        ? '/api/subscription/status?bypass=true'
+      // Build API URL with parameters
+      const params = new URLSearchParams();
+      if (shouldBypassCache) {
+        params.append('bypass', 'true');
+      }
+      if (businessId) {
+        params.append('businessId', businessId);
+      }
+
+      const apiUrl = params.toString()
+        ? `/api/subscription/status?${params.toString()}`
         : '/api/subscription/status';
 
       if (shouldBypassCache) {

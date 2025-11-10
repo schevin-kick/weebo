@@ -5,7 +5,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, canAccessBusiness } from '@/lib/auth';
 import { PrismaClient } from '@prisma/client';
 import { validateTemplates } from '@/lib/messageTemplates';
 import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
@@ -48,9 +48,14 @@ export async function GET(request, { params }) {
       },
     });
 
-    if (!business || business.ownerId !== session.id) {
+    if (!business) {
       const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.businessNotFound');
       return NextResponse.json({ error: errorMessage }, { status: 404 });
+    }
+
+    if (!canAccessBusiness(session, businessId, business.ownerId)) {
+      const errorMessage = await translate(locale, 'api.errors.forbidden');
+      return NextResponse.json({ error: errorMessage }, { status: 403 });
     }
 
     return NextResponse.json({
@@ -101,9 +106,14 @@ export async function PATCH(request, { params }) {
       select: { id: true, ownerId: true },
     });
 
-    if (!business || business.ownerId !== session.id) {
+    if (!business) {
       const errorMessage = await translate(locale, 'api.dashboard.messaging.errors.businessNotFound');
       return NextResponse.json({ error: errorMessage }, { status: 404 });
+    }
+
+    if (!canAccessBusiness(session, businessId, business.ownerId)) {
+      const errorMessage = await translate(locale, 'api.errors.forbidden');
+      return NextResponse.json({ error: errorMessage }, { status: 403 });
     }
 
     // Validate message templates if provided

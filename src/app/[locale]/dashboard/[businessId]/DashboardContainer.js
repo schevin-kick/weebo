@@ -23,6 +23,7 @@ import SettingsView from '@/components/dashboard/views/SettingsView';
 import MessagingView from '@/components/dashboard/views/MessagingView';
 import NotificationsView from '@/components/dashboard/views/NotificationsView';
 import HolidayHoursView from '@/components/dashboard/views/HolidayHoursView';
+import PermissionsView from '@/components/dashboard/views/PermissionsView';
 
 export default function DashboardContainer({ businessId, view = 'home' }) {
   const router = useRouter();
@@ -121,6 +122,8 @@ export default function DashboardContainer({ businessId, view = 'home' }) {
         return <QRCodeView businessId={businessId} />;
       case 'settings':
         return <SettingsView businessId={businessId} />;
+      case 'permissions':
+        return <PermissionsView businessId={businessId} />;
       case 'messaging':
         return <MessagingView businessId={businessId} />;
       case 'notifications':

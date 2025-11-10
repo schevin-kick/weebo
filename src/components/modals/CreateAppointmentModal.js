@@ -8,8 +8,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ModalPortal from '@/components/portal/ModalPortal';
-import { useTranslations } from 'next-intl';
-import { X, User, Mail, Phone, Calendar as CalendarIcon, Clock, Users, Briefcase, Loader2 } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
+import { X, User, Mail, Phone, Calendar as CalendarIcon, Clock, Users, Briefcase, Loader2, ExternalLink } from 'lucide-react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { format, addMinutes, isSameDay, set } from 'date-fns';
@@ -21,6 +21,7 @@ export default function CreateAppointmentModal({
   onSuccess,
 }) {
   const t = useTranslations('dashboard.appointments');
+  const locale = useLocale();
 
   // Form state
   const [customerName, setCustomerName] = useState('');
@@ -271,6 +272,32 @@ export default function CreateAppointmentModal({
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Custom Booking Form Button */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0">
+                          <ExternalLink className="w-5 h-5 text-blue-600 mt-0.5" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-blue-900 mb-1">
+                            {t('useCustomForm')}
+                          </h4>
+                          <p className="text-xs text-blue-700 mb-3">
+                            {t('useCustomFormDesc')}
+                          </p>
+                          <a
+                            href={`/${locale}/book?liff.state=%3Fbusiness_id%3D${businessId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+                          >
+                            {t('useCustomForm')}
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Left Column - Customer Info */}
                       <div className="space-y-6">

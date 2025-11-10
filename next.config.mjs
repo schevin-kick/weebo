@@ -15,6 +15,20 @@ const nextConfig = {
     'localhost:3000',
   ],
 
+  // Configure allowed image domains
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.r2.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.cloudflarestorage.com',
+      },
+    ],
+  },
+
   // Webpack configuration to include Prisma binaries
   webpack: (config, { isServer }) => {
     if (isServer) {

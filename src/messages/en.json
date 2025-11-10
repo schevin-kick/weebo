@@ -1,4 +1,20 @@
 {
+  "loading": "Loading...",
+  "goHome": "Go Home",
+  "loginWithLine": "Login with LINE",
+  "accepting": "Accepting...",
+  "acceptAndJoin": "Accept & Join Team",
+  "teamInvitation": "Team Invitation",
+  "invitedBy": "{name} has invited you to join their team",
+  "businessInvitation": "Business Team Member",
+  "invitationExpiresAt": "This invitation expires on {date}",
+  "invitationSingleUse": "This invitation link can only be used once",
+  "invitationNotFound": "Invitation Not Found",
+  "invitationNotFoundDescription": "This invitation link is invalid or has been removed.",
+  "invitationInvalid": "Invitation Invalid",
+  "invitationExpired": "This invitation has expired",
+  "invitationUsedUp": "This invitation has already been used",
+  "invitationDeactivated": "This invitation has been deactivated",
   "homePage": {
     "loading": "Loading...",
     "redirecting": "Taking you to your dashboard..."
@@ -451,6 +467,7 @@
       "bookingId": "Booking ID",
       "viewBookings": "View My Bookings",
       "bookAgain": "Book Another Service",
+      "standaloneNote": "A confirmation has been recorded. Please check back for updates.",
       "lineBot": {
         "getUpdates": "Get Booking Updates",
         "addBotPrompt": "Add {businessName}'s LINE bot to receive booking confirmations and reminders!",
@@ -557,6 +574,7 @@
         "bookings": "Bookings",
         "qrCode": "QR Code",
         "settings": "Settings",
+        "permissions": "Permissions",
         "billing": "Billing",
         "messaging": "Messaging",
         "notifications": "Notifications",
@@ -569,6 +587,8 @@
     },
     "businessPicker": {
       "yourBusinesses": "Your Businesses",
+      "sharedWithYou": "Shared With You",
+      "shared": "Shared",
       "searchPlaceholder": "Search by name or address...",
       "showingCount": "Showing {showing} of {total} {count, plural, one {business} other {businesses}}",
       "noBusinessesFound": "No businesses found",
@@ -576,6 +596,46 @@
       "createNew": "Create New Business",
       "servicesCount": "{count, plural, one {# service} other {# services}}",
       "staffCount": "{count, plural, one {# staff} other {# staff}}"
+    },
+    "permissions": {
+      "title": "Team Permissions",
+      "description": "Manage who has access to this business. Team members with permissions can view and manage all aspects of the business.",
+      "addMember": "Add Team Member",
+      "lineId": "LINE User ID",
+      "lineIdHint": "33-character ID starting with 'U'",
+      "displayName": "Display Name",
+      "displayNamePlaceholder": "Enter team member's name",
+      "addButton": "Add Permission",
+      "adding": "Adding...",
+      "teamMembers": "Team Members",
+      "noMembers": "No team members with permissions yet",
+      "noMembersHint": "Add team members to give them access to manage this business",
+      "lineIdLabel": "LINE ID",
+      "grantedOn": "Added on",
+      "by": "by",
+      "remove": "Remove",
+      "confirmRemove": "Are you sure you want to remove this permission? This user will no longer have access to this business.",
+      "invalidLineId": "Invalid LINE User ID. Must start with 'U' and be 33 characters long.",
+      "nameRequired": "Display name is required.",
+      "addSuccess": "Permission added successfully",
+      "removeSuccess": "Permission removed successfully",
+      "fetchError": "Failed to load permissions",
+      "ownerOnly": "Permissions Management",
+      "ownerOnlyDescription": "Only the business owner can manage team permissions.",
+      "invitationLinks": "Invitation Links",
+      "invitationLinksDescription": "Generate a single-use link to invite team members. They simply click and log in with LINE.",
+      "generateLink": "Generate Link",
+      "generating": "Generating...",
+      "copyLink": "Copy Link",
+      "copied": "Copied!",
+      "linkCopied": "Link copied to clipboard",
+      "linkGenerated": "Invitation link generated and copied!",
+      "linkGenerateError": "Failed to generate invitation link",
+      "copyError": "Failed to copy link",
+      "expires": "Expires",
+      "singleUse": "Single use",
+      "used": "Used",
+      "available": "Available"
     },
     "home": {
       "title": "Dashboard",
@@ -783,6 +843,8 @@
     "appointments": {
       "createTitle": "Create Appointment",
       "createSubtitle": "Add a walk-in or phone booking",
+      "useCustomForm": "Use Custom Booking Form",
+      "useCustomFormDesc": "Opens the full booking experience in a new tab",
       "customerInfo": "Customer Information",
       "customerName": "Customer Name",
       "customerNamePlaceholder": "Enter customer name",
@@ -1173,7 +1235,11 @@
     "lineWebhook": {
       "welcomeSharedBot": "Thanks for adding us! You'll receive booking confirmations and reminders here.",
       "welcomeBusinessBot": "Welcome back! You'll continue to receive booking updates here.",
-      "bookingLinked": "Booking linked! You'll receive updates for booking #{bookingId}."
+      "bookingLinked": "Booking linked! You'll receive updates for booking #{bookingId}.",
+      "errors": {
+        "businessNotFound": "Business not found",
+        "internalError": "Internal error"
+      }
     },
     "errors": {
       "unauthorized": "Unauthorized",
@@ -1293,12 +1359,6 @@
       "errors": {
         "unauthorized": "Unauthorized",
         "jobFailed": "Cron job failed"
-      }
-    },
-    "lineWebhook": {
-      "errors": {
-        "businessNotFound": "Business not found",
-        "internalError": "Internal error"
       }
     }
   },

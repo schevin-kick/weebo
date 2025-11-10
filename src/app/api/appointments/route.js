@@ -1,23 +1,23 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getSession, canAccessBusiness } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { sendBusinessOwnerNotification } from '@/lib/lineMessaging';
 import { authenticatedRateLimit, getIdentifier, checkRateLimit, createRateLimitResponse } from '@/lib/ratelimit';
 
 /**
  * POST /api/appointments
- * Create a new ad hoc appointment from the dashboard (business owner only)
+ * Create a new ad hoc appointment from the dashboard (business owner or authorized users)
  * This endpoint is separate from /api/bookings to maintain separation of concerns:
  * - /api/bookings: LINE LIFF app bookings with LINE customers
  * - /api/appointments: Dashboard-created appointments with ad hoc customers
  */
 export async function POST(request) {
   try {
-    // Require authentication (business owner only)
+    // Require authentication
     const session = await getSession();
     if (!session?.id) {
       return NextResponse.json(
-        { error: 'Unauthorized - Business owner login required' },
+        { error: 'Unauthorized - Login required' },
         { status: 401 }
       );
     }
@@ -71,9 +71,10 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Business not found or inactive' }, { status: 404 });
     }
 
-    if (business.owner.id !== session.id) {
+    // Check if user is owner or has been granted permissions
+    if (!canAccessBusiness(session, businessId, business.owner.id)) {
       return NextResponse.json(
-        { error: 'Forbidden - You can only create appointments for your own business' },
+        { error: 'Forbidden - You do not have access to this business' },
         { status: 403 }
       );
     }
