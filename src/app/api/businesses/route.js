@@ -252,15 +252,23 @@ export async function POST(request) {
       if (updatedOwner) {
         const { createSession, setSessionCookie } = await import('@/lib/auth');
         const subscriptionData = calculateAccess(updatedOwner);
+
+        // Fetch user's existing permissions to preserve them in the new session
+        const permissions = await prisma.businessPermission.findMany({
+          where: { lineUserId: session.lineUserId },
+          select: { businessId: true },
+        });
+        const permittedBusinessIds = permissions.map(p => p.businessId);
+
         const newSessionToken = await createSession({
           id: session.id,
           lineUserId: session.lineUserId,
           displayName: session.displayName,
           pictureUrl: session.pictureUrl,
           email: session.email,
-        }, subscriptionData);
+        }, subscriptionData, permittedBusinessIds);
         newCsrfToken = await setSessionCookie(newSessionToken);
-        console.log(`[Subscription] Updated session cookie with trial data for user ${session.id}`);
+        console.log(`[Subscription] Updated session cookie with trial data for user ${session.id}, preserving ${permittedBusinessIds.length} permitted businesses`);
       }
     }
 

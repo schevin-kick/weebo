@@ -79,14 +79,7 @@ export default function PermissionsView({ businessId }) {
         throw new Error('Failed to generate invitation link');
       }
 
-      const data = await response.json();
       await fetchInvitationLinks();
-
-      // Auto-copy the new link
-      const inviteUrl = `${window.location.origin}/${params.locale}/join/${data.code}`;
-      await navigator.clipboard.writeText(inviteUrl);
-      setCopiedLinkId(data.id);
-      setTimeout(() => setCopiedLinkId(null), 2000);
 
       toast.success(t('linkGenerated'));
     } catch (error) {

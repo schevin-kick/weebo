@@ -204,8 +204,8 @@ export default function SubscriptionCheck({ children }) {
 
   return (
     <SubscriptionContext.Provider value={{ subscription, loading, error, refetch: checkSubscription }}>
-      {/* Show trial banner if in trial */}
-      <TrialBanner subscription={subscription} />
+      {/* Show trial banner if in trial AND user is the business owner (not a team member) */}
+      {subscription?.isOwner && <TrialBanner subscription={subscription} />}
 
       {/* Render children */}
       {children}

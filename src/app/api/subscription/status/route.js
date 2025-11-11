@@ -28,6 +28,7 @@ export async function GET(request) {
 
     // Determine whose subscription to check
     let ownerIdToCheck = session.id;
+    let isOwner = true; // By default, user is checking their own subscription
 
     if (businessId) {
       // Get the business to find its owner
@@ -39,7 +40,8 @@ export async function GET(request) {
 
       if (business) {
         ownerIdToCheck = business.ownerId;
-        console.log(`[Subscription] Checking subscription for business ${businessId} owner ${ownerIdToCheck} (current user: ${session.id})`);
+        isOwner = business.ownerId === session.id; // Check if current user is the owner
+        console.log(`[Subscription] Checking subscription for business ${businessId} owner ${ownerIdToCheck} (current user: ${session.id}, isOwner: ${isOwner})`);
       } else {
         console.log(`[Subscription] Business ${businessId} not found, checking current user's subscription`);
       }
@@ -96,7 +98,7 @@ export async function GET(request) {
     }
 
     // Include new CSRF token in response if session was regenerated
-    const response = { ...subscriptionInfo };
+    const response = { ...subscriptionInfo, isOwner };
     if (newCsrfToken) {
       response.newCsrfToken = newCsrfToken;
       console.log(`[Subscription] ✓ Returning new CSRF token to client for user ${session.id}`);
