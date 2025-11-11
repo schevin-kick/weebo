@@ -803,6 +803,7 @@
         "title": "Booking Details",
         "customer": "Customer",
         "lineUser": "LINE User",
+        "adHocCustomer": "Walk-in Customer",
         "bookingInfo": "Booking Information",
         "dateTime": "Date & Time",
         "service": "Service",

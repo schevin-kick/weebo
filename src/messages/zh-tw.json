@@ -803,6 +803,7 @@
         "title": "預訂詳情",
         "customer": "客戶",
         "lineUser": "LINE 使用者",
+        "adHocCustomer": "現場客戶",
         "bookingInfo": "預訂資訊",
         "dateTime": "日期與時間",
         "service": "服務",

@@ -153,7 +153,9 @@ export default function BookingDetailsModal({
                     <p className="font-medium text-slate-900">
                       {booking.customer?.displayName || 'Unknown'}
                     </p>
-                    <p className="text-sm text-slate-500">{t('lineUser')}</p>
+                    <p className="text-sm text-slate-500">
+                      {booking.customer?.lineUserId ? t('lineUser') : t('adHocCustomer')}
+                    </p>
                   </div>
                 </div>
               </div>
