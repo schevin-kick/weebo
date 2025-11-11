@@ -39,8 +39,11 @@ export async function GET(request, { params }) {
         },
         customer: {
           select: {
+            id: true,
             displayName: true,
+            lineUserId: true,
             pictureUrl: true,
+            customerType: true,
           },
         },
       },

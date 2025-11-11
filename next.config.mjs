@@ -9,12 +9,6 @@ const nextConfig = {
   reactCompiler: true,
   reactStrictMode: false,
 
-  // Allow ngrok and localhost origins in development
-  allowedDevOrigins: [
-    'cozies-unentreated-aleen.ngrok-free.dev',
-    'localhost:3000',
-  ],
-
   // Configure allowed image domains
   images: {
     remotePatterns: [

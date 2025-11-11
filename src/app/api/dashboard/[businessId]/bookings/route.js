@@ -57,6 +57,7 @@ export async function GET(request, { params }) {
             displayName: true,
             lineUserId: true,
             pictureUrl: true,
+            customerType: true,
           },
         },
         service: {

@@ -6,11 +6,9 @@
 
 import { NextResponse } from 'next/server';
 import { getSession, canAccessBusiness } from '@/lib/auth';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import { validateTemplates } from '@/lib/messageTemplates';
 import { detectLocaleFromRequest, translate } from '@/lib/localeUtils';
-
-const prisma = new PrismaClient();
 
 /**
  * GET /api/dashboard/[businessId]/messaging

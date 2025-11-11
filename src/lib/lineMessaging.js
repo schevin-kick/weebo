@@ -8,9 +8,7 @@ import { formatDateTime, formatDuration } from './localizedDateUtils';
 import { getValidChannelAccessToken } from './lineTokenManager';
 import { getMessageTemplate, getFieldLabels } from './messageTemplates';
 import { getBaseUrl } from './auth';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from './prisma';
 const LINE_MESSAGING_API_URL = 'https://api.line.me/v2/bot/message/push';
 const LINE_CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
