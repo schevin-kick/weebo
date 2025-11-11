@@ -543,7 +543,7 @@
       }
     },
     "plan": {
-      "title": "Weebo Pro 計劃",
+      "title": "Weebo 計劃",
       "pricePerMonth": "/月",
       "trialIncluded": "包含 {days} 天免費試用",
       "loading": "載入中...",
@@ -557,6 +557,42 @@
         "lineMessaging": "LINE 訊息整合",
         "analyticsDashboard": "分析儀表板"
       }
+    }
+  },
+  "subscriptionRequired": {
+    "loading": "載入中...",
+    "headings": {
+      "paymentRequired": "需要付款",
+      "subscriptionCanceled": "取消訂閱",
+      "freeTrialEnded": "免費試用結束",
+      "subscriptionRequired": "需要訂閱"
+    },
+    "messages": {
+      "paymentPastDue": "您的付款已逾期，請更新您的付款方式以繼續使用 Weebo。",
+      "subscriptionCanceled": "您的訂閱已取消，請重新訂閱以繼續管理您的業務。",
+      "trialExpired": "您的免費試用已結束，請訂閱 Weebo 以繼續管理您的業務。",
+      "subscriptionRequired": "存取此功能需要有效的訂閱。"
+    },
+    "plan": {
+      "title": "Weebo 計劃包括",
+      "features": {
+        "unlimitedBookings": "無限制預約",
+        "customServicesPricing": "客製化服務與定價",
+        "staffManagement": "員工管理",
+        "lineMessaging": "LINE 訊息整合",
+        "analyticsDashboard": "分析儀表板"
+      }
+    },
+    "pricing": {
+      "perMonth": "/月",
+      "trialIncluded": "包含 {days} 天免費試用"
+    },
+    "actions": {
+      "loading": "載入中...",
+      "updatePaymentMethod": "更新付款方式",
+      "subscribeNow": "立即訂閱",
+      "viewBillingDetails": "檢視帳單詳細資料",
+      "signOut": "登出"
     }
   },
   "dashboard": {
@@ -1313,8 +1349,10 @@
     },
     "stripe": {
       "errors": {
+        "unauthorized": "未經授權",
         "notConfigured": "Stripe 未設定",
         "priceIdMissing": "Stripe 價格 ID 未設定",
+        "priceIdMissingForRegion": "此區域未設定 Stripe 價格 ID",
         "userNotFound": "未找到使用者",
         "noCustomer": "未找到 Stripe 客戶，請先訂閱。",
         "failedCheckout": "建立結帳階段失敗",

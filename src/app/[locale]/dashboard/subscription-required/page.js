@@ -15,8 +15,10 @@ import {
   LogOut,
 } from 'lucide-react';
 import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useTranslations } from 'next-intl';
 
 export default function SubscriptionRequiredPage() {
+  const t = useTranslations('subscriptionRequired');
   const { subscription, loading: subscriptionLoading, refetch } = useSubscription();
   const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -95,7 +97,7 @@ export default function SubscriptionRequiredPage() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
+          <p className="text-slate-600">{t('loading')}</p>
         </div>
       </div>
     );
@@ -116,23 +118,20 @@ export default function SubscriptionRequiredPage() {
 
           {/* Heading */}
           <h1 className="text-2xl font-bold text-slate-900 text-center mb-3">
-            {isPastDue && 'Payment Required'}
-            {isCanceled && 'Subscription Canceled'}
-            {isTrialExpired && 'Free Trial Ended'}
+            {isPastDue && t('headings.paymentRequired')}
+            {isCanceled && t('headings.subscriptionCanceled')}
+            {isTrialExpired && t('headings.freeTrialEnded')}
             {!isPastDue && !isCanceled && !isTrialExpired &&
-              'Subscription Required'}
+              t('headings.subscriptionRequired')}
           </h1>
 
           {/* Message */}
           <p className="text-slate-600 text-center mb-6">
-            {isPastDue &&
-              'Your payment is past due. Please update your payment method to continue using Weebo.'}
-            {isCanceled &&
-              'Your subscription has been canceled. Resubscribe to continue managing your business.'}
-            {isTrialExpired &&
-              'Your free trial has ended. Subscribe to Weebo Pro to continue managing your business.'}
+            {isPastDue && t('messages.paymentPastDue')}
+            {isCanceled && t('messages.subscriptionCanceled')}
+            {isTrialExpired && t('messages.trialExpired')}
             {!isPastDue && !isCanceled && !isTrialExpired &&
-              'An active subscription is required to access this feature.'}
+              t('messages.subscriptionRequired')}
           </p>
 
           {/* Error Message */}
@@ -148,32 +147,32 @@ export default function SubscriptionRequiredPage() {
           {/* Features List */}
           <div className="bg-slate-50 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-slate-900 mb-3 text-sm">
-              Weebo plan includes:
+              {t('plan.title')}
             </h3>
             <div className="space-y-2">
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-700">Unlimited bookings</span>
+                <span className="text-sm text-slate-700">{t('plan.features.unlimitedBookings')}</span>
               </div>
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
                 <span className="text-sm text-slate-700">
-                  Custom services & pricing
+                  {t('plan.features.customServicesPricing')}
                 </span>
               </div>
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-700">Staff management</span>
+                <span className="text-sm text-slate-700">{t('plan.features.staffManagement')}</span>
               </div>
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
                 <span className="text-sm text-slate-700">
-                  LINE messaging integration
+                  {t('plan.features.lineMessaging')}
                 </span>
               </div>
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-slate-700">Analytics dashboard</span>
+                <span className="text-sm text-slate-700">{t('plan.features.analyticsDashboard')}</span>
               </div>
             </div>
           </div>
@@ -183,12 +182,12 @@ export default function SubscriptionRequiredPage() {
             <div className="text-3xl font-bold text-orange-600 mb-1">
               {config
                 ? `${config.priceAmount} ${config.priceCurrency}`
-                : 'Loading...'}
-              <span className="text-lg text-slate-600 font-normal"> / month</span>
+                : t('loading')}
+              <span className="text-lg text-slate-600 font-normal"> {t('pricing.perMonth')}</span>
             </div>
             {!isPastDue && config && (
               <p className="text-sm text-slate-600">
-                {config.trialDays}-day free trial included
+                {t('pricing.trialIncluded', { days: config.trialDays })}
               </p>
             )}
           </div>
@@ -204,12 +203,12 @@ export default function SubscriptionRequiredPage() {
                 {actionLoading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Loading...
+                    {t('actions.loading')}
                   </>
                 ) : (
                   <>
                     <ExternalLink className="w-5 h-5" />
-                    Update Payment Method
+                    {t('actions.updatePaymentMethod')}
                   </>
                 )}
               </button>
@@ -222,10 +221,10 @@ export default function SubscriptionRequiredPage() {
                 {actionLoading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Loading...
+                    {t('actions.loading')}
                   </>
                 ) : (
-                  <>Subscribe Now</>
+                  <>{t('actions.subscribeNow')}</>
                 )}
               </button>
             )}
@@ -242,7 +241,7 @@ export default function SubscriptionRequiredPage() {
               className="flex items-center justify-center gap-2 text-center text-sm text-slate-500 hover:text-slate-700 transition-colors mt-4"
             >
               <LogOut className="w-4 h-4" />
-              Sign out
+              {t('actions.signOut')}
             </a>
           </div>
         </div>

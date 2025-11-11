@@ -543,7 +543,7 @@
       }
     },
     "plan": {
-      "title": "Weebo Pro Plan",
+      "title": "Weebo Plan",
       "pricePerMonth": "/ month",
       "trialIncluded": "{days}-day free trial included",
       "loading": "Loading...",
@@ -557,6 +557,42 @@
         "lineMessaging": "LINE messaging integration",
         "analyticsDashboard": "Analytics dashboard"
       }
+    }
+  },
+  "subscriptionRequired": {
+    "loading": "Loading...",
+    "headings": {
+      "paymentRequired": "Payment Required",
+      "subscriptionCanceled": "Subscription Canceled",
+      "freeTrialEnded": "Free Trial Ended",
+      "subscriptionRequired": "Subscription Required"
+    },
+    "messages": {
+      "paymentPastDue": "Your payment is past due. Please update your payment method to continue using Weebo.",
+      "subscriptionCanceled": "Your subscription has been canceled. Resubscribe to continue managing your business.",
+      "trialExpired": "Your free trial has ended. Subscribe to Weebo to continue managing your business.",
+      "subscriptionRequired": "An active subscription is required to access this feature."
+    },
+    "plan": {
+      "title": "Weebo plan includes:",
+      "features": {
+        "unlimitedBookings": "Unlimited bookings",
+        "customServicesPricing": "Custom services & pricing",
+        "staffManagement": "Staff management",
+        "lineMessaging": "LINE messaging integration",
+        "analyticsDashboard": "Analytics dashboard"
+      }
+    },
+    "pricing": {
+      "perMonth": "/ month",
+      "trialIncluded": "{days}-day free trial included"
+    },
+    "actions": {
+      "loading": "Loading...",
+      "updatePaymentMethod": "Update Payment Method",
+      "subscribeNow": "Subscribe Now",
+      "viewBillingDetails": "View billing details",
+      "signOut": "Sign out"
     }
   },
   "dashboard": {
