@@ -79,6 +79,10 @@ export async function POST(request) {
         await handleInvoicePaymentFailed(event.data.object);
         break;
 
+      case 'charge.refunded':
+        await handleChargeRefunded(event.data.object);
+        break;
+
       default:
         console.log(`[Stripe Webhook] Unhandled event type: ${event.type}`);
     }
@@ -291,4 +295,58 @@ async function handleInvoicePaymentFailed(invoice) {
     await invalidateSubscriptionCache(owner.id);
     console.log(`[Stripe Webhook] Payment failed for user ${owner.id} - status: ${subscription.status}`);
   }
+}
+
+/**
+ * Handle charge.refunded
+ * Charge was refunded (full or partial)
+ */
+async function handleChargeRefunded(charge) {
+  console.log(`[Stripe Webhook] Charge refunded: ${charge.id} - amount: ${charge.amount_refunded}`);
+
+  const customerId = charge.customer;
+
+  if (!customerId) {
+    console.log('[Stripe Webhook] No customer ID in refunded charge');
+    return;
+  }
+
+  // Get business owner to find their subscription
+  const owner = await prisma.businessOwner.findUnique({
+    where: { stripeCustomerId: customerId },
+    select: {
+      id: true,
+      stripeSubscriptionId: true,
+    },
+  });
+
+  if (!owner) {
+    console.log(`[Stripe Webhook] No business owner found for customer ${customerId}`);
+    return;
+  }
+
+  if (!owner.stripeSubscriptionId) {
+    console.log(`[Stripe Webhook] No subscription found for user ${owner.id}`);
+    return;
+  }
+
+  // Fetch current subscription status from Stripe
+  const subscription = await stripe.subscriptions.retrieve(owner.stripeSubscriptionId);
+
+  // Update database with current subscription status
+  await prisma.businessOwner.update({
+    where: { stripeCustomerId: customerId },
+    data: {
+      subscriptionStatus: subscription.status,
+      currentPeriodEnd: subscription.current_period_end
+        ? new Date(subscription.current_period_end * 1000)
+        : null,
+      canceledAt: subscription.canceled_at
+        ? new Date(subscription.canceled_at * 1000)
+        : null,
+    },
+  });
+
+  await invalidateSubscriptionCache(owner.id);
+  console.log(`[Stripe Webhook] Updated subscription after refund for user ${owner.id} - status: ${subscription.status}`);
 }
