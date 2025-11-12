@@ -31,8 +31,8 @@ export async function setCSRFCookie(token) {
 
   cookieStore.set(CSRF_COOKIE_NAME, hashedToken, {
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 60 * 60 * 24, // 24 hours
     path: '/',
   });
