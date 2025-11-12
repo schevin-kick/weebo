@@ -117,8 +117,16 @@ export default function BrochureV2Content({ pricingConfig }) {
       {/* Scroll Progress Bar */}
       <ScrollProgress />
 
-      {/* Language Selector - Fixed position */}
-      <div className="fixed top-4 right-4 z-50">
+      {/* Fixed Header - Language Selector and Sign In */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-3">
+        <motion.a
+          href="/api/auth/login"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="hidden sm:flex px-6 py-2 glass rounded-full text-gray-800 font-bold text-sm hover:shadow-lg transition-all border-2 border-pink-200"
+        >
+          Sign In
+        </motion.a>
         <LanguageSelector variant='light' />
       </div>
 
@@ -186,43 +194,8 @@ export default function BrochureV2Content({ pricingConfig }) {
             ))}
           </motion.div>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: showSubheading ? 1 : 0, y: showSubheading ? 0 : 20 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4"
-          >
-            <motion.a
-              href="/api/auth/login"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="group px-8 py-4 bg-gradient-to-r from-orange-400 to-pink-400 rounded-full text-white font-bold text-lg shadow-2xl hover:shadow-xl soft-glow transition-all flex items-center gap-2"
-            >
-              {t('hero.cta.startTrial')}
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </motion.a>
-            <motion.a
-              href="/api/auth/login"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 glass rounded-full text-gray-800 font-bold text-lg hover:shadow-lg transition-all border-2 border-pink-200"
-            >
-              {t('hero.cta.signIn')}
-            </motion.a>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showSubheading ? 1 : 0 }}
-            transition={{ duration: 1, delay: 1.2 }}
-            className="text-sm text-gray-600"
-          >
-            {t('hero.cta.finePrint')}
-          </motion.p>
-
           {/* Desktop: Floating mockup video with full animations */}
-          <div className="hidden md:block">
+          <div className="hidden md:block mb-12">
             <motion.div
               ref={phoneRef}
               initial={{ opacity: 0, y: 50, scale: 0.95 }}
@@ -236,7 +209,6 @@ export default function BrochureV2Content({ pricingConfig }) {
                 }
               }}
               viewport={{ once: true, margin: "-100px" }}
-              className="mt-20"
             >
               <div className="relative max-w-sm mx-auto perspective-container">
                 <InteractiveCard hoverScale={1.03} tiltIntensity={5}>
@@ -304,7 +276,7 @@ export default function BrochureV2Content({ pricingConfig }) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.5 }}
-            className="mt-16 md:hidden"
+            className="mb-12 md:hidden"
           >
             <video
               autoPlay
@@ -317,6 +289,41 @@ export default function BrochureV2Content({ pricingConfig }) {
               <source src="/brochure/waving-home-mobile.mp4" type="video/mp4" />
             </video>
           </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: showSubheading ? 1 : 0, y: showSubheading ? 0 : 20 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4"
+          >
+            <motion.a
+              href="/api/auth/login"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="group px-8 py-4 bg-gradient-to-r from-orange-400 to-pink-400 rounded-full text-white font-bold text-lg shadow-2xl hover:shadow-xl soft-glow transition-all flex items-center gap-2"
+            >
+              {t('hero.cta.startTrial')}
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </motion.a>
+            <motion.a
+              href="/api/auth/login"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-8 py-4 glass rounded-full text-gray-800 font-bold text-lg hover:shadow-lg transition-all border-2 border-pink-200"
+            >
+              {t('hero.cta.signIn')}
+            </motion.a>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showSubheading ? 1 : 0 }}
+            transition={{ duration: 1, delay: 1.2 }}
+            className="text-sm text-gray-600"
+          >
+            {t('hero.cta.finePrint')}
+          </motion.p>
         </div>
       </section>
 
