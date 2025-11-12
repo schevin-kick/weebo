@@ -109,7 +109,7 @@ async function handleCheckoutCompleted(session) {
   }
 
   // Update business owner with customer and subscription IDs
-  await prisma.businessOwner.updateMany({
+  await prisma.businessOwner.update({
     where: { stripeCustomerId: customerId },
     data: {
       stripeSubscriptionId: subscriptionId,
@@ -137,7 +137,7 @@ async function handleSubscriptionCreated(subscription) {
 
   const customerId = subscription.customer;
 
-  await prisma.businessOwner.updateMany({
+  await prisma.businessOwner.update({
     where: { stripeCustomerId: customerId },
     data: {
       stripeSubscriptionId: subscription.id,
@@ -169,7 +169,7 @@ async function handleSubscriptionUpdated(subscription) {
 
   const customerId = subscription.customer;
 
-  await prisma.businessOwner.updateMany({
+  await prisma.businessOwner.update({
     where: { stripeCustomerId: customerId },
     data: {
       subscriptionStatus: subscription.status,
@@ -202,7 +202,7 @@ async function handleSubscriptionDeleted(subscription) {
 
   const customerId = subscription.customer;
 
-  await prisma.businessOwner.updateMany({
+  await prisma.businessOwner.update({
     where: { stripeCustomerId: customerId },
     data: {
       subscriptionStatus: 'canceled',
@@ -239,7 +239,7 @@ async function handleInvoicePaymentSucceeded(invoice) {
   // Fetch subscription to get current period
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
-  await prisma.businessOwner.updateMany({
+  await prisma.businessOwner.update({
     where: { stripeCustomerId: customerId },
     data: {
       subscriptionStatus: subscription.status,
@@ -275,7 +275,7 @@ async function handleInvoicePaymentFailed(invoice) {
   // Fetch subscription to get current status
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
-  await prisma.businessOwner.updateMany({
+  await prisma.businessOwner.update({
     where: { stripeCustomerId: customerId },
     data: {
       subscriptionStatus: subscription.status, // Usually 'past_due'
