@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { notFound } from 'next/navigation';
+import { Analytics } from '@vercel/analytics/react';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -143,6 +144,7 @@ export default async function LocaleLayout({ children, params }) {
           </ToastProvider>
           <div id="modal-root" />
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
