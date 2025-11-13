@@ -1852,6 +1852,17 @@
             "description": "Build booking flow"
           }
         }
+      },
+      "navigation": {
+        "back": "Back",
+        "next": "Next",
+        "saveAndDeploy": "Save & Deploy",
+        "saving": "Saving...",
+        "preview": "Preview"
+      },
+      "header": {
+        "createNew": "Create New Business",
+        "editBusiness": "Edit Business"
       }
     },
     "metadata": {

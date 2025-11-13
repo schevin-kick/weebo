@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import useStepValidation from '@/hooks/useStepValidation';
 import { useToast } from '@/contexts/ToastContext';
@@ -18,6 +19,7 @@ import BookingFlowPreview from '@/components/preview/BookingFlowPreview';
 import { ArrowLeft, Eye } from 'lucide-react';
 
 export default function BusinessWizardPage() {
+  const t = useTranslations('setup.wizard');
   const params = useParams();
   const router = useRouter();
   const businessId = params.businessId;
@@ -253,7 +255,7 @@ export default function BusinessWizardPage() {
                     Weebo
                   </h1>
                   <p className="text-sm text-slate-600">
-                    {businessId === 'new' ? 'Create New Business' : 'Edit Business'}
+                    {businessId === 'new' ? t('header.createNew') : t('header.editBusiness')}
                   </p>
                 </div>
               </div>
@@ -263,7 +265,7 @@ export default function BusinessWizardPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all shadow-md hover:shadow-lg"
               >
                 <Eye className="w-4 h-4" />
-                <span className="font-medium">Preview</span>
+                <span className="font-medium">{t('navigation.preview')}</span>
               </button>
             </div>
           </div>

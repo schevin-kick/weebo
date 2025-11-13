@@ -89,7 +89,7 @@ export default function CustomFieldsPage({ page, responses, onResponseChange }) 
             value={value}
             onChange={(e) => handleChange(component.id, e.target.value)}
             onBlur={() => handleBlur(component)}
-            placeholder={t('enterPlaceholder', { label: label.toLowerCase() })}
+            placeholder={label}
             className={inputClasses}
           />
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -109,7 +109,7 @@ export default function CustomFieldsPage({ page, responses, onResponseChange }) 
             value={value}
             onChange={(e) => handleChange(component.id, e.target.value)}
             onBlur={() => handleBlur(component)}
-            placeholder={t('enterPlaceholder', { label: label.toLowerCase() })}
+            placeholder={label}
             min={component.min}
             max={component.max}
             className={inputClasses}
@@ -130,7 +130,7 @@ export default function CustomFieldsPage({ page, responses, onResponseChange }) 
             value={value}
             onChange={(e) => handleChange(component.id, e.target.value)}
             onBlur={() => handleBlur(component)}
-            placeholder={t('enterPlaceholder', { label: label.toLowerCase() })}
+            placeholder={label}
             rows={4}
             className={inputClasses}
           />

@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import useSetupWizardStore from '@/stores/setupWizardStore';
 import StaffAvatar from '@/components/shared/StaffAvatar';
 
 export default function PhonePreview() {
+  const t = useTranslations('setup.wizard.navigation');
   const pages = useSetupWizardStore((state) => state.pages);
   const services = useSetupWizardStore((state) => state.services);
   const staff = useSetupWizardStore((state) => state.staff);
@@ -340,7 +342,7 @@ export default function PhonePreview() {
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" />
-                Back
+                {t('back')}
               </button>
               <button
                 onClick={handleNext}
@@ -351,7 +353,7 @@ export default function PhonePreview() {
                     : 'bg-orange-200 text-orange-400 cursor-not-allowed'
                 }`}
               >
-                Next
+                {t('next')}
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>

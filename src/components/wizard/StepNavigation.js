@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronLeft, ChevronRight, Save, Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function StepNavigation({
   currentStep,
@@ -11,6 +12,7 @@ export default function StepNavigation({
   isLastStep = false,
   isSaving = false,
 }) {
+  const t = useTranslations('setup.wizard.navigation');
   return (
     <div className="border-t border-slate-200 bg-white/95 backdrop-blur-sm px-4 py-4 sm:px-6 shadow-[0_-4px_12px_rgba(0,0,0,0.1)]">
       <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -21,7 +23,7 @@ export default function StepNavigation({
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
-            Back
+            {t('back')}
           </button>
         ) : (
           <div />
@@ -44,12 +46,12 @@ export default function StepNavigation({
             {isSaving ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Saving...
+                {t('saving')}
               </>
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                Save & Deploy
+                {t('saveAndDeploy')}
               </>
             )}
           </button>
@@ -66,7 +68,7 @@ export default function StepNavigation({
               }
             `}
           >
-            Next
+            {t('next')}
             <ChevronRight className="w-4 h-4" />
           </button>
         )}
