@@ -61,6 +61,9 @@ export async function generateMetadata({ params }) {
       'geo.region': t('metadata.geoRegion'),
       'geo.placename': t('metadata.geoPlacename'),
       'geo.position': '25.0330;121.5654',
+      ...(process.env.NEXT_PUBLIC_FB_APP_ID && {
+        'fb:app_id': process.env.NEXT_PUBLIC_FB_APP_ID,
+      }),
     },
     openGraph: {
       title: t('metadata.ogTitle'),
