@@ -71,7 +71,7 @@ export async function generateMetadata({ params }) {
       siteName: 'Weebo',
       images: [
         {
-          url: `${baseUrl}/brochure/og-image.png`,
+          url: '/brochure/og-image.png',
           width: 1200,
           height: 630,
           alt: t('metadata.ogImageAlt'),
@@ -85,7 +85,7 @@ export async function generateMetadata({ params }) {
       title: t('metadata.twitterTitle'),
       description: t('metadata.twitterDescription'),
       images: {
-        url: `${baseUrl}/brochure/og-image.png`,
+        url: '/brochure/og-image.png',
         alt: t('metadata.ogImageAlt'),
       },
     },
